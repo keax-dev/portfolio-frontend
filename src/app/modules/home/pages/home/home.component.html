@@ -1,0 +1,65 @@
+<header>
+  <nav class="navbar bg-primary navbar-dark fixed-top position-relative">
+    <div class="container-fluid">
+      <div class="d-flex justify-content-center align-items-center">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasNavbar"
+          aria-controls="offcanvasNavbar"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <a class="text-light mx-3 fs-4 text-decoration-none" routerLink="/home"
+          >Home</a
+        >
+      </div>
+
+      <div
+        class="offcanvas offcanvas-start bg-primary"
+        tabindex="-1"
+        id="offcanvasNavbar"
+        aria-labelledby="offcanvasNavbarLabel"
+      >
+        <div class="offcanvas-header">
+          <img
+            src="/images/logo.png"
+            class="logo bg-light border border-light rounded-circle"
+            alt="Logo"
+          />
+
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+          ></button>
+        </div>
+
+        <div class="offcanvas-body">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            @for (menu of menuList; track $index) {
+            <li class="nav-item">
+              <a
+                class="nav-link fs-5"
+                [routerLink]="menu.routerLink"
+                data-bs-dismiss="offcanvas"
+              >
+                <i [class]="menu.icon"></i>
+                {{ menu.label }}
+              </a>
+            </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <router-outlet></router-outlet>
+</main>

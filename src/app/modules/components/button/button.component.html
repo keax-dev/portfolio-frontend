@@ -1,0 +1,11 @@
+<button
+  (click)="clickAction()"
+  [class]="class + ' d-flex justify-content-center align-items-center'"
+  [type]="type"
+  [disabled]="disabled"
+>
+  @if (icon) {
+  <i [class]="icon + '   mx-2'"></i>
+  }
+  <span>{{ text }}</span>
+</button>

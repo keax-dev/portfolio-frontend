@@ -1,7 +1,7 @@
-import { TableInstitutionComponent } from './pages/institution/table-institution/table-institution.component';
-import { TableEducationComponent } from './pages/education/table-education/table-education.component';
+import { TableInstitutionComponent } from '@app/home/pages/institution/table-institution/table-institution.component';
+import { TableEducationComponent } from '@app/home/pages/education/table-education/table-education.component';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
+import { HomeComponent } from '@app/home/pages/home/home.component';
 import { NgModule } from '@angular/core';
 
 const routes: Routes = [

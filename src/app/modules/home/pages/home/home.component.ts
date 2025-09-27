@@ -7,18 +7,11 @@ import { MenuItem } from 'primeng/api';
   styleUrls: ['./home.component.css'],
   standalone: false
 })
-export class HomeComponent implements OnInit {
-
+export class HomeComponent {
 
   menuList: MenuItem[] = [
     { icon: 'pi pi-warehouse', label: "Institutions", routerLink: 'institution' },
     { icon: 'pi pi-graduation-cap', label: "Education", routerLink: 'education' }
   ];
-
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

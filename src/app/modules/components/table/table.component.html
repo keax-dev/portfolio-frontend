@@ -1,5 +1,6 @@
 <div class="w-100 d-flex justify-content-end align-items-center mt-3">
   <app-button
+    [classPadding]="'px-4 py-2'"
     [icon]="'pi-plus pi'"
     [text]="newTxt"
     [type]="'button'"
@@ -69,35 +70,41 @@
 
   <ng-template pTemplate="body" let-row>
     <tr>
-      @for (column of columns; track $index) {
-        @if (column.image){
-        <th>
-          <img [src]="row[column.value]" alt="Image" />
-        </th>
-        }@else{
-        <td>
-          {{ row[column.value] }}
-        </td>
+      @for (column of columns; track $index) { @if (column.image){
+      <td>
+        @if (row[column.value]) {
+        <img [src]="row[column.value]" class="img" alt="Image" />
+        }@else {
+        <p>No image</p>
         }
-      }
-
-      @if (details) {
+      </td>
+      }@else{
+      <td>
+        {{ row[column.value] }}
+      </td>
+      } } @if (details) {
       <td>
         <button type="button" class="btn-icon" (click)="detailsItem(row)">
-          <i class="fa fa-eye fs-5"></i>
+          <i class="pi pi-eye"></i>
         </button>
       </td>
-      }
-
-      @if (actions) {
+      } @if (actions) {
       <td>
-        <button type="button" class="btn-icon" (click)="modifyItem(row)">
-          <i class="fa fa-pencil fs-5"></i>
+        <button
+          type="button"
+          class="btn btn-success m-1"
+          (click)="modifyItem(row)"
+        >
+          <i class="pi pi-pencil"></i>
         </button>
 
         @if (delete) {
-        <button type="button" class="btn-icon" (click)="deleteItem(row)">
-          <i class="fa fa-trash fs-5"></i>
+        <button
+          type="button"
+          class="btn btn-danger m-1"
+          (click)="deleteItem(row)"
+        >
+          <i class="pi pi-eraser"></i>
         </button>
         }
       </td>

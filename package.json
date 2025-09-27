@@ -10,6 +10,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^19.2.15",
     "@angular/common": "^19.2.0",
     "@angular/compiler": "^19.2.0",
     "@angular/core": "^19.2.0",
@@ -21,11 +22,13 @@
     "@types/file-saver-es": "^2.0.3",
     "bootstrap": "^5.3.8",
     "file-saver-es": "^2.0.5",
+    "ngx-spinner": "^19.0.0",
     "ngx-toastr": "^19.1.0",
     "primeicons": "^7.0.0",
     "primeng": "^19.1.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "typescript-eslint": "^8.44.1",
     "xlsx": "^0.18.5",
     "zone.js": "~0.15.0"
   },

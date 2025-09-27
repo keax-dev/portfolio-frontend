@@ -8,6 +8,9 @@
   <hr />
 
   <app-tabla
+    (itemDelete)="confirmDelete($event)"
+    (itemEdit)="modalInstitution($event)"
+    (itemNew)="modalInstitution()"
     [records]="records"
     [columns]="columns"
     [newTxt]="'Institution'"

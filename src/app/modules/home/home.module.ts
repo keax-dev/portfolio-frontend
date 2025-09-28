@@ -5,7 +5,10 @@ import { FrmEducationComponent } from '@app/home/pages/education/frm-education/f
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { TableSkillComponent } from './pages/skill/table-skill/table-skill.component';
+import { UppercaseDirective } from './pages/directive/uppercase.directive';
 import { HomeRoutingModule } from '@app/home/home-routing.module';
+import { FrmSkillComponent } from './pages/skill/frm-skill/frm-skill.component';
 import { ComponentsModule } from '@app/components/components.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { HomeComponent } from '@app/home/pages/home/home.component';
@@ -19,6 +22,9 @@ import { NgModule } from '@angular/core';
     FrmInstitutionComponent,
     TableEducationComponent,
     FrmEducationComponent,
+    TableSkillComponent,
+    UppercaseDirective,
+    FrmSkillComponent,
     HomeComponent
   ],
   imports: [

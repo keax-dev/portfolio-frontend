@@ -1,9 +1,10 @@
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InstitutionService } from '@app/home/services/institution.service';
 import { Subject, takeUntil } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ParameterService } from '@app/shared/services/parameter.service';
 import { AlertService } from '@app/shared/services/alert.service';
 import { ImageService } from '@app/home/services/images.service';
 import { Institution } from '@app/home/interfaces/Institution';
@@ -20,6 +21,7 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
 
   private institutionService = inject(InstitutionService);
   private imageService = inject(ImageService);
+  private parameter = inject(ParameterService);
   private spinner = inject(NgxSpinnerService);
   private config = inject(DynamicDialogConfig);
   private alert = inject(AlertService);
@@ -27,7 +29,7 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
 
   institutionForm!: FormGroup;
-  tittle = 'New Institution';
+  title = 'New Institution';
 
   update!: boolean;
   urlImage!: string;
@@ -43,22 +45,29 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
   }
 
   loadVariables(): void {
-    this.institutionForm = this.fb.group({
-      name: ['', [Validators.required]],
-      image: [null, [Validators.required, this.imageFileValidator]]
-    });
-
     if (this.config.data) {
       this.update = true;
       this.urlImage = this.config.data.url;
-      this.institutionForm = this.fb.group({
-        name: [this.config.data.name, [Validators.required]],
-        image: [null, [this.imageFileValidator]]
-      });
+      this.title = 'Update Institution';
+      this.buildForm(this.config.data.name);
+      return;
     }
+
+    this.buildForm();
   }
 
-  ngSubmit(): void {
+  buildForm(name: string = ''): void {
+    const validatorsImg = [this.parameter.imageFileValidator];
+
+    if (!name) validatorsImg.push(Validators.required);
+
+    this.institutionForm = this.fb.group({
+      name: [name, [Validators.required]],
+      image: [null, validatorsImg]
+    });
+  }
+
+  onSubmit(): void {
     if (this.institutionForm.invalid) {
       this.institutionForm.markAllAsTouched();
       return;
@@ -130,15 +139,6 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
     if (input?.files && input.files.length > 0) {
       this.institutionForm.get('image')?.setValue(input.files[0]);
     }
-  }
-
-  imageFileValidator(control: AbstractControl): ValidationErrors | null {
-    const file: File = control.value;
-    if (file) {
-      const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-      return allowedTypes.includes(file.type) ? null : { invalidFileType: true };
-    }
-    return null;
   }
 
   close(institution?: Institution): void {

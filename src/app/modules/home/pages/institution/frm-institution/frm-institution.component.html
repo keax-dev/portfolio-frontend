@@ -1,6 +1,6 @@
-<form [formGroup]="institutionForm" (ngSubmit)="ngSubmit()" class="m-3">
+<form [formGroup]="institutionForm" (ngSubmit)="onSubmit()" class="m-3">
   <header>
-    <h4 class="text-primary">{{ tittle }}</h4>
+    <h4 class="text-primary">{{ title }}</h4>
   </header>
 
   <hr />
@@ -40,8 +40,7 @@
       >
       }
 
-      @if (controls['image'].touched &&
-      controls['image'].errors?.['invalidFileType']) {
+      @if (controls['image'].touched && controls['image'].errors?.['invalidFileType']) {
       <small class="text-danger appear"
         >Only image files (png, jpg, jpeg, gif) are allowed</small
       >
@@ -55,7 +54,7 @@
       <p class="fw-bolder text-center mb-2">Previous Image</p>
 
       <div class="text-center">
-        <img [src]="urlImage" alt="Institution Image" />
+        <img [src]="urlImage" class="img-max" alt="Institution Image" />
       </div>
     </div>
     }

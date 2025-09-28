@@ -23,7 +23,7 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
   private spinner = inject(NgxSpinnerService);
   private alert = inject(AlertService);
 
-  records!: Institution[];
+  records: Institution[] = [];
 
   columns: Column[] = [
     { name: "Institution", value: "name" },
@@ -42,7 +42,7 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
 
   getInstitutionListByDeleted(): void {
     this.spinner.show();
-    this.institutionService.getInstitutionListByDeleted(false).pipe(takeUntil(this.destroy$)).subscribe({
+    this.institutionService.getInstitutionListByDeleted().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result.status) this.records = result.data;
         else this.records = [];

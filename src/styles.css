@@ -22,6 +22,10 @@ p {
   padding: 0 !important;
 }
 
+.img-max {
+  max-height: 100px !important;
+}
+
 .appear {
   opacity: 0;
   animation: appearKey 1s ease forwards;

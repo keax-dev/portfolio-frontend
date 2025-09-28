@@ -13,7 +13,7 @@ export class InstitutionService {
 
   private header = inject(HeaderService);
 
-  getInstitutionListByDeleted(deleted: boolean): Observable<ApiResponse<Institution[]>> {
+  getInstitutionListByDeleted(deleted: boolean = false): Observable<ApiResponse<Institution[]>> {
     return this.header.http.get<ApiResponse<Institution[]>>(this.header.url + this.reference + `/by-deleted/${deleted}`, this.header.httpOptions);
   }
 

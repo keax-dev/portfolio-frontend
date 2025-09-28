@@ -1,3 +1,4 @@
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { inject, Injectable, Type } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
@@ -18,6 +19,15 @@ export class ParameterService {
       showHeader: false,
       data: data
     });
+  }
+
+  imageFileValidator(control: AbstractControl): ValidationErrors | null {
+    const file: File = control.value;
+    if (file) {
+      const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+      return allowedTypes.includes(file.type) ? null : { invalidFileType: true };
+    }
+    return null;
   }
 
   get getModalWidth(): string {

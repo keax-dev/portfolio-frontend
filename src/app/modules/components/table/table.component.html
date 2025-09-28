@@ -73,7 +73,7 @@
       @for (column of columns; track $index) { @if (column.image){
       <td>
         @if (row[column.value]) {
-        <img [src]="row[column.value]" class="img" alt="Image" />
+        <img [src]="row[column.value]" class="img-max" alt="Image" />
         }@else {
         <p>No image</p>
         }

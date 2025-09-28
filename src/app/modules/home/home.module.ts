@@ -1,12 +1,14 @@
 import { TableInstitutionComponent } from '@app/home/pages/institution/table-institution/table-institution.component';
+import { TableTechnologyComponent } from './pages/technology/table-technology/table-technology.component';
 import { TableEducationComponent } from '@app/home/pages/education/table-education/table-education.component';
 import { FrmInstitutionComponent } from '@app/home/pages/institution/frm-institution/frm-institution.component';
+import { FrmTechnologyComponent } from './pages/technology/frm-technology/frm-technology.component';
 import { FrmEducationComponent } from '@app/home/pages/education/frm-education/frm-education.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { TableSkillComponent } from './pages/skill/table-skill/table-skill.component';
-import { UppercaseDirective } from './pages/directive/uppercase.directive';
+import { UppercaseDirective } from './directive/uppercase.directive';
 import { HomeRoutingModule } from '@app/home/home-routing.module';
 import { FrmSkillComponent } from './pages/skill/frm-skill/frm-skill.component';
 import { ComponentsModule } from '@app/components/components.module';
@@ -19,8 +21,10 @@ import { NgModule } from '@angular/core';
 @NgModule({
   declarations: [
     TableInstitutionComponent,
+    TableTechnologyComponent,
     FrmInstitutionComponent,
     TableEducationComponent,
+    FrmTechnologyComponent,
     FrmEducationComponent,
     TableSkillComponent,
     UppercaseDirective,

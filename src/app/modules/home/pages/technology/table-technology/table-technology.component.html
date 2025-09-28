@@ -1,0 +1,18 @@
+<section class="container-fluid p-4">
+  <header>
+    <h1 class="text-center text-primary">Management of Technology</h1>
+  </header>
+
+  <hr />
+  <h2 class="text-secondary">List of Technology</h2>
+  <hr />
+
+  <app-tabla
+    (itemDelete)="confirmDelete($event)"
+    (itemEdit)="modalTechnology($event)"
+    (itemNew)="modalTechnology()"
+    [records]="records"
+    [columns]="columns"
+    [newTxt]="'Technology'"
+  ></app-tabla>
+</section>

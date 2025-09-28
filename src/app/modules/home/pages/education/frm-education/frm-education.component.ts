@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InstitutionService } from '@app/home/services/institution.service';
 import { Subject, takeUntil } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ParameterService } from '@app/shared/services/parameter.service';
 import { EducationService } from '@app/home/services/education.service';
 import { AlertService } from '@app/shared/services/alert.service';
 import { Institution } from '@app/home/interfaces/institution';
@@ -22,7 +21,6 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
 
   private institutionService = inject(InstitutionService);
   private educationService = inject(EducationService);
-  private parameter = inject(ParameterService);
   private spinner = inject(NgxSpinnerService);
   private config = inject(DynamicDialogConfig);
   private alert = inject(AlertService);

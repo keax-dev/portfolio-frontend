@@ -1,0 +1,44 @@
+<form [formGroup]="technologyForm" (ngSubmit)="onSubmit()" class="m-3">
+  <header>
+    <h4 class="text-primary">{{ title }}</h4>
+  </header>
+
+  <hr />
+
+  <section class="row g-3">
+    <div class="col-md-6">
+      <label for="name" class="form-label fw-bold">Name: </label>
+      <input
+        pInputText
+        id="name"
+        class="form-control"
+        formControlName="name"
+        oninput="this.value = this.value.toUpperCase()"
+      />
+      @if (controls['name'].touched && controls['name'].invalid) {
+      <small class="text-danger appear">The name is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="position" class="form-label fw-bold">Position: </label>
+      <p-select
+        formControlName="position"
+        [options]="positionList"
+        id="position"
+        class="w-100"
+        appendTo="body"
+        [filter]="true"
+      />
+      @if (controls['position'].touched && controls['position'].invalid) {
+      <small class="text-danger appear">The position is required</small>
+      }
+    </div>
+  </section>
+
+  <footer class="w-100 d-flex justify-content-center align-items-center mt-3">
+    <app-button [cancel]="true" (action)="close()"></app-button>
+
+    <app-button></app-button>
+  </footer>
+</form>

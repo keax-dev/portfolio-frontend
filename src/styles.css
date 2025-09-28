@@ -2,7 +2,15 @@
 
 :root {
   --primary: rgb(13, 110, 253) !important;
+  --primary-hover: rgba(13, 109, 253, 0.75) !important;
+  --p-select-option-selected-focus-background: var(--primary) !important;
+  --p-select-option-selected-focus-color: white !important;
+  --p-select-option-selected-background: var(--primary) !important;
+  --p-select-option-focus-background: var(--primary-hover) !important;
   --p-inputtext-focus-border-color: var(--primary) !important;
+  --p-select-option-selected-color: white !important;
+  --p-select-focus-border-color: var(--primary) !important;
+  --p-select-option-focus-color: white !important;
 }
 
 * {

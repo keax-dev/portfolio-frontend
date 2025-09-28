@@ -1,3 +1,18 @@
-<p>
-  table-education works!
-</p>
+<section class="container-fluid p-4">
+  <header>
+    <h1 class="text-center text-primary">Management of Educations</h1>
+  </header>
+
+  <hr />
+  <h2 class="text-secondary">List of Educations</h2>
+  <hr />
+
+  <app-tabla
+    (itemDelete)="confirmDelete($event)"
+    (itemEdit)="modalEducation($event)"
+    (itemNew)="modalEducation()"
+    [records]="records"
+    [columns]="columns"
+    [newTxt]="'Education'"
+  ></app-tabla>
+</section>

@@ -9,6 +9,7 @@ import { HomeRoutingModule } from '@app/home/home-routing.module';
 import { ComponentsModule } from '@app/components/components.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { HomeComponent } from '@app/home/pages/home/home.component';
+import { SelectModule } from 'primeng/select';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
@@ -27,6 +28,7 @@ import { NgModule } from '@angular/core';
     HomeRoutingModule,
     ComponentsModule,
     InputTextModule,
+    SelectModule,
     CommonModule
   ]
 })

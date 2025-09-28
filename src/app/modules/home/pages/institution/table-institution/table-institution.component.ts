@@ -5,7 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@app/shared/services/parameter.service';
 import { AlertService } from '@app/shared/services/alert.service';
-import { Institution } from '@app/home/interfaces/Institution';
+import { Institution } from '@app/home/interfaces/institution';
 import { Column } from '@app/components/interfaces/column';
 
 @Component({
@@ -28,7 +28,7 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
   columns: Column[] = [
     { name: "Institution", value: "name" },
     { name: "Picture", value: "url", image: true }
-  ]
+  ];
 
   ngOnInit(): void {
     this.getInstitutionListByDeleted();
@@ -56,7 +56,7 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
     const dialogRef = this.parameter.openDialog(FrmInstitutionComponent, institution);
     dialogRef.onClose.pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
-        if (result) this.getInstitutionListByDeleted()
+        if (result) this.getInstitutionListByDeleted();
       }
     });
   }

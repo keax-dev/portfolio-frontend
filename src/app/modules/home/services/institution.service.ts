@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HeaderService } from '@app/home/services/header.service';
-import { Institution } from '@app/home/interfaces/Institution';
+import { Institution } from '@app/home/interfaces/institution';
 import { ApiResponse } from '@app/shared/interfaces/apiresponse';
 import { Observable } from 'rxjs';
 

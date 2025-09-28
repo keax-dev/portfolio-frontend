@@ -7,7 +7,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@app/shared/services/parameter.service';
 import { AlertService } from '@app/shared/services/alert.service';
 import { ImageService } from '@app/home/services/images.service';
-import { Institution } from '@app/home/interfaces/Institution';
+import { Institution } from '@app/home/interfaces/institution';
 
 @Component({
   selector: 'app-frm-institution',

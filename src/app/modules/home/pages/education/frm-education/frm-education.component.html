@@ -1,3 +1,100 @@
-<p>
-  frm-education works!
-</p>
+<form [formGroup]="educationForm" (ngSubmit)="onSubmit()" class="m-3">
+  <header>
+    <h4 class="text-primary">{{ title }}</h4>
+  </header>
+
+  <hr />
+
+  <section class="row g-3">
+    <div class="col-md-6">
+      <label for="title" class="form-label fw-bold">Title: </label>
+      <input
+        pInputText
+        id="title"
+        class="form-control"
+        formControlName="title"
+        oninput="this.value = this.value.toUpperCase()"
+      />
+      @if (controls['title'].touched && controls['title'].invalid) {
+      <small class="text-danger appear">The title is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="institution" class="form-label fw-bold">Institution: </label>
+      <p-select
+        formControlName="institution"
+        [options]="institutionList"
+        optionLabel="name"
+        optionValue="id"
+        id="institution"
+        class="w-100"
+        appendTo="body"
+        [filter]="true"
+      />
+      @if (controls['institution'].touched && controls['institution'].invalid) {
+      <small class="text-danger appear">The institution is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="place" class="form-label fw-bold">Place: </label>
+      <input
+        pInputText
+        id="place"
+        class="form-control"
+        formControlName="place"
+        oninput="this.value = this.value.toUpperCase()"
+      />
+      @if (controls['place'].touched && controls['place'].invalid) {
+      <small class="text-danger appear">The place is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="start" class="form-label fw-bold">Start: </label>
+      <input
+        pInputText
+        id="start"
+        class="form-control"
+        formControlName="start"
+        oninput="this.value = this.value.toUpperCase()"
+      />
+    </div>
+
+    <div class="col-md-6">
+      <label for="end" class="form-label fw-bold">End: </label>
+      <input
+        pInputText
+        id="end"
+        class="form-control"
+        formControlName="end"
+        oninput="this.value = this.value.toUpperCase()"
+      />
+      @if (controls['end'].touched && controls['end'].invalid) {
+      <small class="text-danger appear">The end is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="position" class="form-label fw-bold">Position: </label>
+      <p-select
+        formControlName="position"
+        [options]="positionList"
+        id="position"
+        class="w-100"
+        appendTo="body"
+        [filter]="true"
+      />
+      @if (controls['position'].touched && controls['position'].invalid) {
+      <small class="text-danger appear">The position is required</small>
+      }
+    </div>
+  </section>
+
+  <footer class="w-100 d-flex justify-content-center align-items-center mt-3">
+    <app-button [cancel]="true" (action)="close()"></app-button>
+
+    <app-button></app-button>
+  </footer>
+</form>

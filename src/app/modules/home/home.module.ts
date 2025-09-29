@@ -1,3 +1,5 @@
+import { TableSocialNetworkComponent } from './pages/social-network/table-social-network/table-social-network.component';
+import { FrmSocialNetworkComponent } from './pages/social-network/frm-social-network/frm-social-network.component';
 import { TableInstitutionComponent } from '@app/home/pages/institution/table-institution/table-institution.component';
 import { TableTechnologyComponent } from './pages/technology/table-technology/table-technology.component';
 import { TableEducationComponent } from '@app/home/pages/education/table-education/table-education.component';
@@ -22,6 +24,8 @@ import { NgModule } from '@angular/core';
 
 @NgModule({
   declarations: [
+    TableSocialNetworkComponent,
+    FrmSocialNetworkComponent,
     TableInstitutionComponent,
     TableTechnologyComponent,
     FrmInstitutionComponent,

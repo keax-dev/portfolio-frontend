@@ -1,3 +1,4 @@
+import { TableSocialNetworkComponent } from './pages/social-network/table-social-network/table-social-network.component';
 import { TableInstitutionComponent } from '@app/home/pages/institution/table-institution/table-institution.component';
 import { TableTechnologyComponent } from '@app/home/pages/technology/table-technology/table-technology.component';
 import { TableEducationComponent } from '@app/home/pages/education/table-education/table-education.component';
@@ -17,7 +18,8 @@ const routes: Routes = [
       { path: 'education', component: TableEducationComponent, title: 'Educations' },
       { path: 'skill', component: TableSkillComponent, title: 'Skills' },
       { path: 'technology', component: TableTechnologyComponent, title: 'Technologies' },
-      { path: 'project', component: TableProjectComponent, title: 'Projects' }
+      { path: 'project', component: TableProjectComponent, title: 'Projects' },
+      { path: 'social-network', component: TableSocialNetworkComponent, title: 'Social Networks' }
     ]
   },
   {

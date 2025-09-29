@@ -4,6 +4,7 @@ import { Institution } from '@app/home/interfaces/institution';
 import { ApiResponse } from '@app/shared/interfaces/apiresponse';
 import { Observable } from 'rxjs';
 import { Project } from '../interfaces/project';
+import { Profile } from '../interfaces/profile';
 import { Skill } from '../interfaces/skill';
 
 @Injectable({
@@ -25,6 +26,10 @@ export class ImageService {
 
   uploadImageProject(projectId: number, image: File): Observable<ApiResponse<Project>> {
     return this.header.http.post<ApiResponse<Project>>(this.header.url + this.reference + `/project/${projectId}`, this.formData(image), this.header.httpOptions);
+  }
+
+  uploadImageProfile(image: File): Observable<ApiResponse<Profile>> {
+    return this.header.http.post<ApiResponse<Profile>>(this.header.url + this.reference + `/profile`, this.formData(image), this.header.httpOptions);
   }
 
   formData(image: File): FormData {

@@ -105,24 +105,23 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
 
   updateSkill(): void {
     this.spinner.show();
-    const skill =
-      this.skillService.updateSkill(this.config.data.skill.id, this.skill).pipe(takeUntil(this.destroy$)).subscribe({
-        next: result => {
-          if (result.status) {
-            this.alert.success(result.alert);
-            if (this.controls['image'].value) {
-              this.uploadImageInstitution(result.data);
-            } else {
-              this.close(result.data);
-              this.spinner.hide();
-            }
+    this.skillService.updateSkill(this.config.data.skill.id, this.skill).pipe(takeUntil(this.destroy$)).subscribe({
+      next: result => {
+        if (result.status) {
+          this.alert.success(result.alert);
+          if (this.controls['image'].value) {
+            this.uploadImageInstitution(result.data);
           } else {
-            this.alert.resultWarnings(result);
+            this.close(result.data);
             this.spinner.hide();
           }
-        },
-        error: () => this.alert.applicationError()
-      });
+        } else {
+          this.alert.resultWarnings(result);
+          this.spinner.hide();
+        }
+      },
+      error: () => this.alert.applicationError()
+    });
   }
 
   uploadImageInstitution(skill: Skill): void {

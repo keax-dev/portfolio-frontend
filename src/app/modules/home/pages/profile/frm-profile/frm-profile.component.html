@@ -1,0 +1,94 @@
+<form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="m-3">
+  <h4 class="text-primary text-center">{{ title }}</h4>
+  <hr />
+
+  @if (update) {
+  <div class="w-100 d-flex justify-content-center align-items-center">
+    <img [src]="urlPicture" alt="Profile Picture" />
+  </div>
+  <hr />
+  }
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label for="name" class="form-label fw-bold">Name:</label>
+      <input
+        pInputText
+        id="name"
+        class="form-control"
+        formControlName="name"
+        appUppercase
+      />
+      @if (controls['name'].touched && controls['name'].errors?.['required']){
+      <small class="text-danger appear">The name is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="last_name" class="form-label fw-bold">Last Name:</label>
+      <input
+        pInputText
+        id="last_name"
+        class="form-control"
+        formControlName="last_name"
+        appUppercase
+      />
+      @if (controls['last_name'].touched &&
+      controls['last_name'].errors?.['required']){
+      <small class="text-danger appear">The last name is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="title" class="form-label fw-bold">Title:</label>
+      <input
+        pInputText
+        id="title"
+        class="form-control"
+        formControlName="title"
+        appUppercase
+      />
+      @if (controls['title'].touched && controls['title'].errors?.['required']){
+      <small class="text-danger appear">The title is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="cv" class="form-label fw-bold">CV:</label>
+      <input
+        pInputText
+        type="url"
+        id="cv"
+        class="form-control"
+        formControlName="cv"
+      />
+      @if (controls['cv'].touched && controls['cv'].errors?.['required']){
+      <small class="text-danger appear">The cv is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="image" class="form-label fw-bold">Image:</label>
+      <input
+        id="image"
+        type="file"
+        class="form-control"
+        (change)="onFileSelected($event)"
+      />
+      @if (controls['image'].touched && controls['image'].errors?.['required']){
+      <small class="text-danger appear">The image required</small>
+      } @if (controls['image'].touched &&
+      controls['image'].errors?.['invalidFileType']) {
+      <small class="text-danger appear"
+        >Only image files (png, jpg, jpeg, gif) are allowed</small
+      >
+      }
+    </div>
+  </div>
+
+  <footer class="w-100 d-flex justify-content-center align-items-center mt-3">
+    <app-button [cancel]="true" (action)="cancel()"></app-button>
+
+    <app-button></app-button>
+  </footer>
+</form>

@@ -15,7 +15,8 @@ export class HomeComponent {
     { icon: 'pi pi-star', label: "Skills", routerLink: 'skill' },
     { icon: 'pi pi-code', label: "Technologies", routerLink: 'technology' },
     { icon: 'pi pi-folder-open', label: "Projects", routerLink: 'project' },
-    { icon: 'pi pi-instagram', label: "Social Networks", routerLink: 'social-network' }
+    { icon: 'pi pi-instagram', label: "Social Networks", routerLink: 'social-network' },
+    { icon: 'pi pi-user', label: "Profile", routerLink: 'profile' }
   ];
 
 }

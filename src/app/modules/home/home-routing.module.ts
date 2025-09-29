@@ -5,6 +5,7 @@ import { TableEducationComponent } from '@app/home/pages/education/table-educati
 import { TableProjectComponent } from '@app/home/pages/project/table-project/table-project.component';
 import { RouterModule, Routes } from '@angular/router';
 import { TableSkillComponent } from '@app/home/pages/skill/table-skill/table-skill.component';
+import { FrmProfileComponent } from './pages/profile/frm-profile/frm-profile.component';
 import { HomeComponent } from '@app/home/pages/home/home.component';
 import { NgModule } from '@angular/core';
 
@@ -19,7 +20,8 @@ const routes: Routes = [
       { path: 'skill', component: TableSkillComponent, title: 'Skills' },
       { path: 'technology', component: TableTechnologyComponent, title: 'Technologies' },
       { path: 'project', component: TableProjectComponent, title: 'Projects' },
-      { path: 'social-network', component: TableSocialNetworkComponent, title: 'Social Networks' }
+      { path: 'social-network', component: TableSocialNetworkComponent, title: 'Social Networks' },
+      { path: 'profile', component: FrmProfileComponent, title: 'Profile' }
     ]
   },
   {

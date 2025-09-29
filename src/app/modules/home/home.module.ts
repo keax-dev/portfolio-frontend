@@ -21,6 +21,7 @@ import { HomeComponent } from '@app/home/pages/home/home.component';
 import { SelectModule } from 'primeng/select';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FrmProfileComponent } from './pages/profile/frm-profile/frm-profile.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { NgModule } from '@angular/core';
     TableProjectComponent,
     FrmEducationComponent,
     FrmProjectComponent,
+    FrmProfileComponent,
     TableSkillComponent,
     UppercaseDirective,
     FrmSkillComponent,

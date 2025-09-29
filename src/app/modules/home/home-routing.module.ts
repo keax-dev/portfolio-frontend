@@ -1,8 +1,9 @@
 import { TableInstitutionComponent } from '@app/home/pages/institution/table-institution/table-institution.component';
-import { TableTechnologyComponent } from './pages/technology/table-technology/table-technology.component';
+import { TableTechnologyComponent } from '@app/home/pages/technology/table-technology/table-technology.component';
 import { TableEducationComponent } from '@app/home/pages/education/table-education/table-education.component';
+import { TableProjectComponent } from '@app/home/pages/project/table-project/table-project.component';
 import { RouterModule, Routes } from '@angular/router';
-import { TableSkillComponent } from './pages/skill/table-skill/table-skill.component';
+import { TableSkillComponent } from '@app/home/pages/skill/table-skill/table-skill.component';
 import { HomeComponent } from '@app/home/pages/home/home.component';
 import { NgModule } from '@angular/core';
 
@@ -15,7 +16,8 @@ const routes: Routes = [
       { path: 'institution', component: TableInstitutionComponent, title: 'Institutions' },
       { path: 'education', component: TableEducationComponent, title: 'Educations' },
       { path: 'skill', component: TableSkillComponent, title: 'Skills' },
-      { path: 'technology', component: TableTechnologyComponent, title: 'Technologies' }
+      { path: 'technology', component: TableTechnologyComponent, title: 'Technologies' },
+      { path: 'project', component: TableProjectComponent, title: 'Projects' }
     ]
   },
   {

@@ -1,0 +1,132 @@
+<form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="m-3">
+  <header>
+    <h4 class="text-primary">{{ title }}</h4>
+  </header>
+
+  <hr />
+
+  <section class="row g-3">
+    <div class="col-md-6">
+      <label for="title" class="form-label fw-bold">Title:</label>
+      <input
+        pInputText
+        id="title"
+        class="form-control"
+        formControlName="title"
+        appUppercase
+      />
+      @if (controls['title'].touched && controls['title'].invalid) {
+      <small class="text-danger appear">The title is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="description" class="form-label fw-bold">Description:</label>
+      <input
+        pInputText
+        id="description"
+        class="form-control"
+        formControlName="description"
+        appUppercase
+      />
+      @if (controls['description'].touched && controls['description'].invalid) {
+      <small class="text-danger appear">The description is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="deploy" class="form-label fw-bold">Deploy:</label>
+      <input
+        pInputText
+        id="deploy"
+        class="form-control"
+        formControlName="deploy"
+      />
+      @if (controls['deploy'].touched && controls['deploy'].invalid) {
+      <small class="text-danger appear">The deploy is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="github" class="form-label fw-bold">GitHub:</label>
+      <input
+        pInputText
+        id="github"
+        class="form-control"
+        formControlName="github"
+      />
+      @if (controls['github'].touched && controls['github'].invalid) {
+      <small class="text-danger appear">The github is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="technology" class="form-label fw-bold">Technology: </label>
+      <p-select
+        formControlName="technology"
+        [options]="technologyList"
+        optionLabel="name"
+        optionValue="id"
+        id="technology"
+        class="w-100"
+        appendTo="body"
+        [filter]="true"
+        (onChange)="loadPositionByTechnology($event.value)"
+      />
+      @if (controls['technology'].touched && controls['technology'].invalid) {
+      <small class="text-danger appear">The technology is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="position" class="form-label fw-bold">Position: </label>
+      <p-select
+        formControlName="position"
+        [options]="positionList"
+        id="position"
+        class="w-100"
+        appendTo="body"
+        [filter]="true"
+      />
+      @if (controls['position'].touched && controls['position'].invalid) {
+      <small class="text-danger appear">The position is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="image" class="form-label fw-bold">Image:</label>
+      <input
+        id="image"
+        type="file"
+        class="form-control"
+        (change)="onFileSelected($event)"
+      />
+      @if (controls['image'].touched && controls['image'].errors?.['required']){
+      <small class="text-danger appear">The image is required</small>
+      } @if (controls['image'].touched &&
+      controls['image'].errors?.['invalidFileType']) {
+      <small class="text-danger appear"
+        >Only image files (png, jpg, jpeg, gif) are allowed</small
+      >
+      }
+    </div>
+
+    @if (update) {
+    <div class="col-md-6"></div>
+
+    <div class="col-md-6">
+      <p class="fw-bolder text-center mb-2">Previous Image:</p>
+
+      <div class="text-center">
+        <img [src]="urlImage" class="img-max" alt="Institution Image" />
+      </div>
+    </div>
+    }
+  </section>
+
+  <footer class="w-100 d-flex justify-content-center align-items-center mt-3">
+    <app-button [cancel]="true" (action)="close()"></app-button>
+
+    <app-button></app-button>
+  </footer>
+</form>

@@ -1,4 +1,5 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { FrmEducationComponent } from '../frm-education/frm-education.component';
 import { Subject, takeUntil } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@app/shared/services/parameter.service';
@@ -6,7 +7,6 @@ import { EducationService } from '@app/home/services/education.service';
 import { AlertService } from '@app/shared/services/alert.service';
 import { Education } from '@app/home/interfaces/education';
 import { Column } from '@app/components/interfaces/column';
-import { FrmEducationComponent } from '../frm-education/frm-education.component';
 
 @Component({
   selector: 'app-table-education',

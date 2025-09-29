@@ -13,7 +13,8 @@ export class HomeComponent {
     { icon: 'pi pi-warehouse', label: "Institutions", routerLink: 'institution' },
     { icon: 'pi pi-graduation-cap', label: "Education", routerLink: 'education' },
     { icon: 'pi pi-star', label: "Skills", routerLink: 'skill' },
-    { icon: 'pi pi-code', label: "Technologies", routerLink: 'technology' }
+    { icon: 'pi pi-code', label: "Technologies", routerLink: 'technology' },
+    { icon: 'pi pi-folder-open', label: "Projects", routerLink: 'project' }
   ];
 
 }

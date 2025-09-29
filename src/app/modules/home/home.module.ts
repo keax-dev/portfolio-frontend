@@ -4,6 +4,8 @@ import { TableEducationComponent } from '@app/home/pages/education/table-educati
 import { FrmInstitutionComponent } from '@app/home/pages/institution/frm-institution/frm-institution.component';
 import { FrmTechnologyComponent } from './pages/technology/frm-technology/frm-technology.component';
 import { FrmEducationComponent } from '@app/home/pages/education/frm-education/frm-education.component';
+import { TableProjectComponent } from './pages/project/table-project/table-project.component';
+import { FrmProjectComponent } from './pages/project/frm-project/frm-project.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
@@ -25,7 +27,9 @@ import { NgModule } from '@angular/core';
     FrmInstitutionComponent,
     TableEducationComponent,
     FrmTechnologyComponent,
+    TableProjectComponent,
     FrmEducationComponent,
+    FrmProjectComponent,
     TableSkillComponent,
     UppercaseDirective,
     FrmSkillComponent,

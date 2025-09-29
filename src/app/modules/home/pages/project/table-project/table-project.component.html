@@ -1,0 +1,18 @@
+<section class="container-fluid p-4">
+  <header>
+    <h1 class="text-center text-primary">Management of Projects</h1>
+  </header>
+
+  <hr />
+  <h2 class="text-secondary">List of Projects</h2>
+  <hr />
+
+  <app-tabla
+    (itemDelete)="confirmDelete($event)"
+    (itemEdit)="modalProject($event)"
+    (itemNew)="modalProject()"
+    [records]="records"
+    [columns]="columns"
+    [newTxt]="'Project'"
+  ></app-tabla>
+</section>

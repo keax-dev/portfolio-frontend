@@ -11,9 +11,6 @@ import { NgModule } from '@angular/core';
 
 const routes: Routes = [
   {
-    path: '', redirectTo: 'home', pathMatch: 'full'
-  },
-  {
     path: '', component: HomeComponent, children: [
       { path: 'institution', component: TableInstitutionComponent, title: 'Institutions' },
       { path: 'education', component: TableEducationComponent, title: 'Educations' },
@@ -21,11 +18,9 @@ const routes: Routes = [
       { path: 'technology', component: TableTechnologyComponent, title: 'Technologies' },
       { path: 'project', component: TableProjectComponent, title: 'Projects' },
       { path: 'social-network', component: TableSocialNetworkComponent, title: 'Social Networks' },
-      { path: 'profile', component: FrmProfileComponent, title: 'Profile' }
+      { path: 'profile', component: FrmProfileComponent, title: 'Profile' },
+      { path: '**', redirectTo: '', pathMatch: 'full' }
     ]
-  },
-  {
-    path: '**', redirectTo: '/home', pathMatch: 'full'
   }
 ];
 

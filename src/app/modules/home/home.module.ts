@@ -9,6 +9,7 @@ import { FrmEducationComponent } from '@app/home/pages/education/frm-education/f
 import { TableProjectComponent } from './pages/project/table-project/table-project.component';
 import { FrmProjectComponent } from './pages/project/frm-project/frm-project.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { FrmProfileComponent } from './pages/profile/frm-profile/frm-profile.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { TableSkillComponent } from './pages/skill/table-skill/table-skill.component';
@@ -21,7 +22,6 @@ import { HomeComponent } from '@app/home/pages/home/home.component';
 import { SelectModule } from 'primeng/select';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FrmProfileComponent } from './pages/profile/frm-profile/frm-profile.component';
 
 @NgModule({
   declarations: [

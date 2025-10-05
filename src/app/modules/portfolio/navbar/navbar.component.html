@@ -1,0 +1,42 @@
+<nav
+  class="navbar navbar-dark bg-primary shadow-lg position-static top-0 p-0"
+  role="navigation"
+  aria-label="Main navigation"
+>
+  <div class="container-fluid px-0">
+    <a
+      class="d-flex align-items-center text-light link-dark text-decoration-none"
+      href="#"
+    >
+      <i class="pi pi-desktop mx-2 fs-5"></i>
+      {{ name + " " + lastName | titlecase }} |
+      <small class="mx-1">{{ title | titlecase }}</small>
+    </a>
+
+    <button
+      class="navbar-toggler m-2"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        @for (navItem of navItems; track $index) {
+        <li class="nav-item text-center">
+          <a
+            class="nav-link text-light link-dark"
+            [href]="navItem.routerLink"
+            >{{ navItem.label }}</a
+          >
+        </li>
+        }
+      </ul>
+    </div>
+  </div>
+</nav>

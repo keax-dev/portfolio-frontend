@@ -1,1 +1,9 @@
 <app-header [profile]="profile"></app-header>
+<app-navbar
+  [name]="profile.name"
+  [lastName]="profile.last_name"
+  [title]="profile.title"
+></app-navbar>
+<main>
+  <app-education [educationList]="educationList"></app-education>
+</main>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Profile } from '@app/home/interfaces/profile';
 
 @Component({
@@ -7,14 +7,10 @@ import { Profile } from '@app/home/interfaces/profile';
   styleUrls: ['./header.component.css'],
   standalone: false
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
 
   @Input() profile!: Profile;
 
   aria_label = "View resume of ";
-
-  ngOnInit(): void {
-
-  }
 
 }

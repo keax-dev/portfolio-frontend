@@ -41,6 +41,10 @@ p {
   animation: appearKey 1s ease forwards;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 @keyframes appearKey {
   from {
     opacity: 0;

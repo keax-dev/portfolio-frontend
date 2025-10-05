@@ -4,6 +4,7 @@ import { PortfolioService } from '../services/portfolio.service';
 import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { AlertService } from '@app/shared/services/alert.service';
 import { Profile } from '@app/home/interfaces/profile';
+import { Education } from '@app/home/interfaces/education';
 
 @Component({
   selector: 'app-portfolio',
@@ -27,6 +28,8 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     image: '/images/profile.jpg'
   };
 
+  educationList: Education[] = [];
+
   ngOnInit(): void {
     this.getInformation();
   }
@@ -39,10 +42,13 @@ export class PortfolioComponent implements OnInit, OnDestroy {
 
   getInformation(): void {
     this.spinner.show();
-    forkJoin([this.portfolioService.getProfile()]).pipe(takeUntil(this.destroy$)).subscribe({
-      next: ([portResult]) => {
+    forkJoin([this.portfolioService.getProfile(), this.portfolioService.getEducation()]).pipe(takeUntil(this.destroy$)).subscribe({
+      next: ([portResult, educResult]) => {
         if (portResult.status) {
           this.profile = portResult.data;
+        }
+        if (educResult.status) {
+          this.educationList = educResult.data;
         }
       },
       complete: () => this.spinner.hide(),

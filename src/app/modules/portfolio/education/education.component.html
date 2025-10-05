@@ -1,0 +1,16 @@
+<section class="container my-4 shadow-lg" id="education">
+  <div class="row">
+    <div class="col-md-3 col-12">
+      <h2 class="text-center text-primary py-4 lead display-5">Education</h2>
+    </div>
+
+    <div class="col-md-9 col-12 py-4">
+      @for (education of educationList; track $index) {
+      <app-card-education
+        [education]="education"
+        [position]="$index % 2 !== 0"
+      ></app-card-education>
+      }
+    </div>
+  </div>
+</section>

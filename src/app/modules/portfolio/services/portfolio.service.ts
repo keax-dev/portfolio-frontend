@@ -4,6 +4,7 @@ import { ApiResponse } from '@app/shared/interfaces/apiresponse';
 import { Observable } from 'rxjs';
 import { Education } from '@app/home/interfaces/education';
 import { Profile } from '@app/home/interfaces/profile';
+import { Skill } from '@app/home/interfaces/skill';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,10 @@ export class PortfolioService {
 
   getEducation(): Observable<ApiResponse<Education[]>> {
     return this.header.http.get<ApiResponse<Education[]>>(this.header.url + this.reference + `/education`);
+  }
+
+  getSkill(): Observable<ApiResponse<Skill[]>> {
+    return this.header.http.get<ApiResponse<Skill[]>>(this.header.url + this.reference + `/skill`);
   }
 
 }

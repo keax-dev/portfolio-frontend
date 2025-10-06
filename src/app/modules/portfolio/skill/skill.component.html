@@ -1,0 +1,26 @@
+<section class="container my-5" id="skills">
+  <div class="row">
+    <div class="col-md-9 col-12 py-4 shadow-lg order-2 order-md-1">
+      <ul
+        class="d-flex flex-wrap gap-4 justify-content-center list-unstyled p-4"
+      >
+        @for (skill of skillList; track skill.id) {
+        <li>
+          <figure class="card skill-card text-center pointer shadow">
+            <img
+              [src]="skill.picture"
+              [alt]="skill.name"
+              class="card-img-top p-3"
+            />
+            <figcaption>{{ skill.name }}</figcaption>
+          </figure>
+        </li>
+        }
+      </ul>
+    </div>
+
+    <header class="col-md-3 col-12 order-1 order-md-2">
+      <h2 class="text-center text-primary py-4 lead display-5">Skills</h2>
+    </header>
+  </div>
+</section>

@@ -1,5 +1,5 @@
 <nav
-  class="navbar navbar-dark bg-primary shadow-lg position-static top-0 p-0"
+  class="navbar navbar-dark bg-primary shadow-lg sticky-top"
   role="navigation"
   aria-label="Main navigation"
 >
@@ -14,6 +14,7 @@
     </a>
 
     <button
+      id="navbarBtn"
       class="navbar-toggler m-2"
       type="button"
       data-bs-toggle="collapse"
@@ -32,6 +33,7 @@
           <a
             class="nav-link text-light link-dark"
             [href]="navItem.routerLink"
+            (click)="closeNavbar()"
             >{{ navItem.label }}</a
           >
         </li>

@@ -4,6 +4,7 @@ import { PortfolioComponent } from './portfolio/portfolio.component';
 import { EducationComponent } from './education/education.component';
 import { HeaderComponent } from './header/header.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { SkillComponent } from './skill/skill.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
@@ -13,7 +14,8 @@ import { NgModule } from '@angular/core';
     PortfolioComponent,
     EducationComponent,
     NavbarComponent,
-    HeaderComponent
+    HeaderComponent,
+    SkillComponent
   ],
   imports: [
     PortfolioRoutingModule,

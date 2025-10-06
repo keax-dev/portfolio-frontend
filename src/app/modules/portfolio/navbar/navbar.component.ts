@@ -22,4 +22,9 @@ export class NavbarComponent {
     { label: 'Login', routerLink: '/login' },
   ];
 
+  closeNavbar(): void {
+    const navbarBtn = document.getElementById('navbarBtn');
+    if (navbarBtn) navbarBtn.click();
+  }
+
 }

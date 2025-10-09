@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HeaderService } from '@app/home/services/header.service';
 import { ApiResponse } from '@app/shared/interfaces/apiresponse';
+import { Technology } from '@app/home/interfaces/technology';
 import { Observable } from 'rxjs';
 import { Education } from '@app/home/interfaces/education';
 import { Profile } from '@app/home/interfaces/profile';
@@ -25,6 +26,10 @@ export class PortfolioService {
 
   getSkill(): Observable<ApiResponse<Skill[]>> {
     return this.header.http.get<ApiResponse<Skill[]>>(this.header.url + this.reference + `/skill`);
+  }
+
+  getTechnology(): Observable<ApiResponse<Technology[]>> {
+    return this.header.http.get<ApiResponse<Technology[]>>(this.header.url + this.reference + `/technology`);
   }
 
 }

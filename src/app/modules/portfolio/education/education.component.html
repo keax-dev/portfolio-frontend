@@ -4,7 +4,7 @@
       <h2 class="text-center text-primary py-4 lead display-5">Education</h2>
     </header>
 
-    <div class="col-md-9 col-12 py-4 shadow-lg">
+    <div class="col-md-9 col-12 py-4 shadow-lg bg-white card">
       @for (education of educationList; track education.id) {
       <app-card-education
         [education]="education"

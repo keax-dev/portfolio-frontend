@@ -1,0 +1,21 @@
+<section>
+  <header>
+    <h2 class="text-center text-primary py-4 lead display-5">Portfolio</h2>
+  </header>
+
+  <p-accordion class="w-100 shadow-lg card mt-4 bg-white card" [value]="value">
+    @for (technology of technologyList; track technology.id) {
+    <p-accordion-panel [value]="technology.id!">
+      <p-accordion-header>
+        <h5 class="text-secondary">{{ technology.name | titlecase }}</h5>
+      </p-accordion-header>
+      <p-accordion-content>
+        <app-project-carousel
+          [projectList]="technology.projects"
+          [technology]="technology.id!"
+        ></app-project-carousel>
+      </p-accordion-content>
+    </p-accordion-panel>
+    }
+  </p-accordion>
+</section>

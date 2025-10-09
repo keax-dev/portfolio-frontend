@@ -1,0 +1,55 @@
+<div [id]="carouselId" class="carousel slide">
+  <div class="carousel-inner">
+    @for (project of projectList; track $index) {
+    <div class="carousel-item" [class.active]="$index === 0">
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <img
+          [src]="project.picture"
+          class="d-block img-fluid"
+          [alt]="project.title"
+        />
+
+        <div class="my-4">
+          <a
+            target="_blank"
+            class="btn btn-primary m-1"
+            title="Github"
+            [href]="project.deploy"
+          >
+            <i class="pi pi-external-link"></i>
+          </a>
+
+          <a
+            target="_blank"
+            class="btn btn-dark m-1"
+            title="Github"
+            [href]="project.github"
+          >
+            <i class="pi pi-github"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <button
+    class="carousel-control-prev bg-primary"
+    type="button"
+    [attr.data-bs-target]="'#' + carouselId"
+    data-bs-slide="prev"
+  >
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+
+  <button
+    class="carousel-control-next bg-primary"
+    type="button"
+    [attr.data-bs-target]="'#' + carouselId"
+    data-bs-slide="next"
+  >
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>

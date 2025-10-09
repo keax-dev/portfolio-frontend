@@ -3,8 +3,9 @@ import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PortfolioService } from '../services/portfolio.service';
 import { AlertService } from '@app/shared/services/alert.service';
-import { Profile } from '@app/home/interfaces/profile';
+import { Technology } from '@app/home/interfaces/technology';
 import { Education } from '@app/home/interfaces/education';
+import { Profile } from '@app/home/interfaces/profile';
 import { Skill } from '@app/home/interfaces/skill';
 
 @Component({
@@ -29,6 +30,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     image: './images/profile.jpg'
   };
 
+  technologyList: Technology[] = [];
   educationList: Education[] = [];
   skillList: Skill[] = [];
 
@@ -44,8 +46,8 @@ export class PortfolioComponent implements OnInit, OnDestroy {
 
   getInformation(): void {
     this.spinner.show();
-    forkJoin([this.portfolioService.getProfile(), this.portfolioService.getEducation(), this.portfolioService.getSkill()]).pipe(takeUntil(this.destroy$)).subscribe({
-      next: ([portResult, educResult, skiResult]) => {
+    forkJoin([this.portfolioService.getProfile(), this.portfolioService.getEducation(), this.portfolioService.getSkill(), this.portfolioService.getTechnology()]).pipe(takeUntil(this.destroy$)).subscribe({
+      next: ([portResult, educResult, skiResult, techResult]) => {
         if (portResult.status) {
           this.profile = portResult.data;
         }
@@ -53,7 +55,13 @@ export class PortfolioComponent implements OnInit, OnDestroy {
           this.educationList = educResult.data.sort((a, b) => a.position - b.position);
         }
         if (skiResult.status) {
-          this.skillList = skiResult.data.sort((a, b) => a.position - b.position);;
+          this.skillList = skiResult.data.sort((a, b) => a.position - b.position);
+        }
+        if (techResult.status) {
+          this.technologyList = techResult.data.map(technology => {
+            technology.projects = technology.projects.sort((a, b) => a.position - b.position);
+            return technology;
+          }).sort((a, b) => a.position - b.position);
         }
       },
       complete: () => this.spinner.hide(),

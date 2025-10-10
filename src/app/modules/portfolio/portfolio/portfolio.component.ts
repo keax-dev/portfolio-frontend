@@ -7,6 +7,8 @@ import { Technology } from '@app/home/interfaces/technology';
 import { Education } from '@app/home/interfaces/education';
 import { Profile } from '@app/home/interfaces/profile';
 import { Skill } from '@app/home/interfaces/skill';
+import { SocialNetwork } from '@app/home/interfaces/social-network';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-portfolio',
@@ -30,8 +32,18 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     image: './images/profile.jpg'
   };
 
+  navItems: MenuItem[] = [
+    { label: 'Home', routerLink: '#home' },
+    { label: 'Education', routerLink: '#education' },
+    { label: 'Skills', routerLink: '#skills' },
+    { label: 'Portfolio', routerLink: '#portfolio' },
+    { label: 'Contact', routerLink: '#contact' },
+    { label: 'Login', routerLink: '/login' },
+  ];
+
   technologyList: Technology[] = [];
   educationList: Education[] = [];
+  socialNetworkList: SocialNetwork[] = [];
   skillList: Skill[] = [];
 
   ngOnInit(): void {
@@ -46,8 +58,8 @@ export class PortfolioComponent implements OnInit, OnDestroy {
 
   getInformation(): void {
     this.spinner.show();
-    forkJoin([this.portfolioService.getProfile(), this.portfolioService.getEducation(), this.portfolioService.getSkill(), this.portfolioService.getTechnology()]).pipe(takeUntil(this.destroy$)).subscribe({
-      next: ([portResult, educResult, skiResult, techResult]) => {
+    forkJoin([this.portfolioService.getProfile(), this.portfolioService.getEducation(), this.portfolioService.getSkill(), this.portfolioService.getTechnology(), this.portfolioService.getSocialNetwork()]).pipe(takeUntil(this.destroy$)).subscribe({
+      next: ([portResult, educResult, skiResult, techResult, sociResult]) => {
         if (portResult.status) {
           this.profile = portResult.data;
         }
@@ -62,6 +74,9 @@ export class PortfolioComponent implements OnInit, OnDestroy {
             technology.projects = technology.projects.sort((a, b) => a.position - b.position);
             return technology;
           }).sort((a, b) => a.position - b.position);
+        }
+        if (sociResult.status) {
+          this.socialNetworkList = sociResult.data.sort((a, b) => a.position - b.position);
         }
       },
       complete: () => this.spinner.hide(),

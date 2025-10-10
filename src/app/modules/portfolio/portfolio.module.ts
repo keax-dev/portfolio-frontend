@@ -7,6 +7,7 @@ import { EducationComponent } from './education/education.component';
 import { HeaderComponent } from './header/header.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AccordionModule } from 'primeng/accordion';
+import { FooterComponent } from './footer/footer.component';
 import { SkillComponent } from './skill/skill.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -20,6 +21,7 @@ import { NgModule } from '@angular/core';
     EducationComponent,
     NavbarComponent,
     HeaderComponent,
+    FooterComponent,
     SkillComponent
   ],
   imports: [

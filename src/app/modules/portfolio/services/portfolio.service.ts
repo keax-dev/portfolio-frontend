@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { SocialNetwork } from '@app/home/interfaces/social-network';
 import { HeaderService } from '@app/home/services/header.service';
 import { ApiResponse } from '@app/shared/interfaces/apiresponse';
 import { Technology } from '@app/home/interfaces/technology';
@@ -30,6 +31,10 @@ export class PortfolioService {
 
   getTechnology(): Observable<ApiResponse<Technology[]>> {
     return this.header.http.get<ApiResponse<Technology[]>>(this.header.url + this.reference + `/technology`);
+  }
+
+  getSocialNetwork(): Observable<ApiResponse<SocialNetwork[]>> {
+    return this.header.http.get<ApiResponse<SocialNetwork[]>>(this.header.url + this.reference + `/socialNetwork`);
   }
 
 }

@@ -1,9 +1,9 @@
-<section>
+<section class="mb-5" id="portfolio">
   <header>
     <h2 class="text-center text-primary py-4 lead display-5">Portfolio</h2>
   </header>
 
-  <p-accordion class="w-100 shadow-lg card mt-4 bg-white card" [value]="value">
+  <p-accordion class="w-100 shadow-lg card bg-white card" [value]="value">
     @for (technology of technologyList; track technology.id) {
     <p-accordion-panel [value]="technology.id!">
       <p-accordion-header>

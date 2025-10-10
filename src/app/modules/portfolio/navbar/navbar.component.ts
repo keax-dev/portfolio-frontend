@@ -9,18 +9,10 @@ import { MenuItem } from 'primeng/api';
 })
 export class NavbarComponent {
 
-  @Input() name = '';
+  @Input() navItems: MenuItem[] = [];
   @Input() lastName = '';
   @Input() title = '';
-
-  navItems: MenuItem[] = [
-    { label: 'Home', routerLink: '#home' },
-    { label: 'Education', routerLink: '#education' },
-    { label: 'Skills', routerLink: '#skills' },
-    { label: 'Portfolio', routerLink: '#portfolio' },
-    { label: 'Contact', routerLink: '#contact' },
-    { label: 'Login', routerLink: '/login' },
-  ];
+  @Input() name = '';
 
   closeNavbar(): void {
     const navbarBtn = document.getElementById('navbarBtn');

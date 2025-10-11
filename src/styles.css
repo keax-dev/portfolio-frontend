@@ -25,6 +25,10 @@ body {
   background-color: #e1e4e571 !important;
 }
 
+section[id] {
+  scroll-margin-top: 300px;
+}
+
 h1,
 h2,
 h3,

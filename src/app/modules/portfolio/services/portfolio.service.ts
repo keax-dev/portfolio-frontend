@@ -37,4 +37,8 @@ export class PortfolioService {
     return this.header.http.get<ApiResponse<SocialNetwork[]>>(this.header.url + this.reference + `/socialNetwork`);
   }
 
+  sendEmail(info: { name: string; email: string; message: string }): Observable<ApiResponse<null>> {
+    return this.header.http.post<ApiResponse<null>>(this.header.url + this.reference + `/contact`, info);
+  }
+
 }

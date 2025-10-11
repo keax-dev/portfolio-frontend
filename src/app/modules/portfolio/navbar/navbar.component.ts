@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 
 @Component({
@@ -9,6 +9,8 @@ import { MenuItem } from 'primeng/api';
 })
 export class NavbarComponent {
 
+  @Output() contact = new EventEmitter<number>();
+
   @Input() navItems: MenuItem[] = [];
   @Input() lastName = '';
   @Input() title = '';
@@ -17,6 +19,11 @@ export class NavbarComponent {
   closeNavbar(): void {
     const navbarBtn = document.getElementById('navbarBtn');
     if (navbarBtn) navbarBtn.click();
+  }
+
+  contactEmit(): void {
+    this.closeNavbar();
+    this.contact.emit();
   }
 
 }

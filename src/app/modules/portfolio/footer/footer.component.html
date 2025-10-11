@@ -50,11 +50,20 @@
           >
             @for (nav of navItems; track $index) {
             <li>
+              @if (nav.routerLink) {
               <a
                 [href]="nav.routerLink"
                 class="text-light text-decoration-none link-dark"
                 >{{ nav.label }}</a
               >
+              }@else {
+              <a
+                (click)="contactEmit()"
+                href="javascript:void(0)"
+                class="text-light text-decoration-none link-dark"
+                >{{ nav.label }}</a
+              >
+              }
             </li>
             }
           </ul>
@@ -64,7 +73,8 @@
 
     <p class="text-center text-light pb-2">
       <small>
-        Copyright &copy; {{ year }} Kevin Galarza. Todos los derechos reservados.
+        Copyright &copy; {{ year }} Kevin Galarza. Todos los derechos
+        reservados.
       </small>
     </p>
   </div>

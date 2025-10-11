@@ -13,7 +13,6 @@ import { FrmProfileComponent } from './pages/profile/frm-profile/frm-profile.com
 import { ReactiveFormsModule } from '@angular/forms';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { TableSkillComponent } from './pages/skill/table-skill/table-skill.component';
-import { UppercaseDirective } from './directive/uppercase.directive';
 import { HomeRoutingModule } from '@app/home/home-routing.module';
 import { FrmSkillComponent } from './pages/skill/frm-skill/frm-skill.component';
 import { ComponentsModule } from '@app/components/components.module';
@@ -37,7 +36,6 @@ import { NgModule } from '@angular/core';
     FrmProjectComponent,
     FrmProfileComponent,
     TableSkillComponent,
-    UppercaseDirective,
     FrmSkillComponent,
     HomeComponent
   ],

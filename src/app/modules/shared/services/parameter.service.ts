@@ -13,6 +13,7 @@ export class ParameterService {
 
   openDialog<T, D>(component: Type<T>, data?: D, computer?: string, mobile?: string): DynamicDialogRef {
     return this.dialog.open(component, {
+      modal: true,
       width: computer && mobile ? this.getModalWidthByParameters(computer, mobile) : this.getModalWidth,
       contentStyle: { padding: '0' },
       baseZIndex: 10000,

@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { PortfolioService } from '../services/portfolio.service';
+import { PortfolioService } from '@app/portfolio/services/portfolio.service';
 import { ContactComponent } from '../contact/contact.component';
 import { ParameterService } from '@app/shared/services/parameter.service';
 import { SocialNetwork } from '@app/home/interfaces/social-network';
@@ -18,7 +18,7 @@ import { Skill } from '@app/home/interfaces/skill';
   styleUrls: ['./portfolio.component.css'],
   standalone: false
 })
-export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PortfolioComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
@@ -51,10 +51,6 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.getInformation();
-  }
-
-  ngAfterViewInit(): void {
-    this.modalContact();
   }
 
   ngOnDestroy(): void {

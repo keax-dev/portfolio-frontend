@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { PortfolioService } from '../services/portfolio.service';
+import { PortfolioService } from '@app/portfolio/services/portfolio.service';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AlertService } from '@app/shared/services/alert.service';
 

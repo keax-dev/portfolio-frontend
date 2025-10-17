@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SocialNetwork } from '@app/home/interfaces/social-network';
 import { MenuItem } from 'primeng/api';
 
@@ -8,7 +8,7 @@ import { MenuItem } from 'primeng/api';
   styleUrls: ['./footer.component.css'],
   standalone: false
 })
-export class FooterComponent implements OnInit {
+export class FooterComponent {
 
   @Output() contact = new EventEmitter<number>();
 
@@ -16,10 +16,6 @@ export class FooterComponent implements OnInit {
   @Input() navItems: MenuItem[] = [];
 
   year = new Date().getFullYear();
-
-  ngOnInit(): void {
-    this.navItems = this.navItems.filter(nav => nav.label !== "Login");
-  }
 
   contactEmit(): void {
     this.contact.emit();

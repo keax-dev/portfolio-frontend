@@ -41,7 +41,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     { label: 'Skills', routerLink: '#skills' },
     { label: 'Portfolio', routerLink: '#portfolio' },
     { label: 'Contact', routerLink: '' },
-    { label: 'Login', routerLink: '/login' },
+    { label: 'Login', routerLink: '/login' }
   ];
 
   technologyList: Technology[] = [];

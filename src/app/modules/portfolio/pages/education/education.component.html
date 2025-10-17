@@ -1,7 +1,9 @@
 <section class="container pt-0 pt-md-5" id="education">
   <div class="row">
     <header class="col-md-3 col-12">
-      <h2 class="text-center text-primary py-4 pt-md-0 lead display-5">Education</h2>
+      <h2 class="text-center text-primary py-4 pt-md-0 lead display-5">
+        Education
+      </h2>
     </header>
 
     <div class="col-md-9 col-12 py-4 shadow-lg bg-white card">
@@ -10,6 +12,8 @@
         [education]="education"
         [position]="$index % 2 !== 0"
       ></app-card-education>
+      }@empty {
+      <p class="text-center text-secondary">**There are no records**</p>
       }
     </div>
   </div>

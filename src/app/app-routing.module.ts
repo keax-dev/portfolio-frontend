@@ -1,4 +1,5 @@
 import { RouterModule, Routes } from '@angular/router';
+import { HomeGuard } from '@app/guards/home.guard';
 import { NgModule } from '@angular/core';
 
 const routes: Routes = [
@@ -11,7 +12,7 @@ const routes: Routes = [
     loadChildren: () => import('./modules/login/login.module')
   },
   {
-    path: 'home', title: 'Home',
+    path: 'home', title: 'Home', canActivate: [HomeGuard],
     loadChildren: () => import('./modules/home/home.module')
   },
   {

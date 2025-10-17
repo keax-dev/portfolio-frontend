@@ -1,6 +1,8 @@
 <section class="container pt-0 pt-md-5" id="skills">
   <div class="row">
-    <div class="col-md-9 col-12 py-4 shadow-lg order-2 order-md-1 bg-white card">
+    <div
+      class="col-md-9 col-12 py-4 shadow-lg order-2 order-md-1 bg-white card"
+    >
       <ul
         class="d-flex flex-wrap gap-4 justify-content-center list-unstyled p-4"
       >
@@ -15,6 +17,8 @@
             <figcaption>{{ skill.name }}</figcaption>
           </figure>
         </li>
+        }@empty {
+        <p class="text-center text-secondary">**There are no records**</p>
         }
       </ul>
     </div>

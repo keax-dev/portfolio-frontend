@@ -1,3 +1,68 @@
-<p>
-  login works!
-</p>
+<main
+  class="container-fluid min-vh-100 d-flex justify-content-center align-items-center"
+>
+  <form
+    [formGroup]="authForm"
+    (ngSubmit)="onSubmit()"
+    class="card shadow-lg border border-primary p-3 w-100"
+  >
+    <header>
+      <h1 class="text-primary text-center">Login</h1>
+    </header>
+
+    <hr />
+
+    <section class="container-fluid px-0">
+      <div class="mb-3">
+        <label for="username" class="form-label fw-bold">Username: </label>
+        <input
+          pInputText
+          id="username"
+          class="form-control border-primary"
+          formControlName="username"
+          [minlength]="1"
+          [maxLength]="25"
+        />
+        @if (controls['username'].touched && controls['username'].invalid) {
+        <small class="text-danger appear">The username is required</small>
+        }
+      </div>
+
+      <div>
+        <label for="password" class="form-label fw-bold">Password: </label>
+        <div class="row p-0 m-0">
+          <div class="col p-0">
+            <input
+              [type]="hide ? 'password' : 'text'"
+              id="password"
+              class="form-control border-primary"
+              formControlName="password"
+              [minlength]="4"
+              [maxLength]="25"
+            />
+          </div>
+          <div class="col-auto p-0">
+            <button
+              (click)="hide = !hide"
+              type="button"
+              class="btn border border-primary"
+            >
+              @if (hide) {
+              <i class="pi pi-eye"></i>
+              }@else {
+              <i class="pi pi-eye-slash"></i>
+              }
+            </button>
+          </div>
+        </div>
+        @if (controls['password'].touched && controls['password'].invalid) {
+        <small class="text-danger appear">The password is required</small>
+        }
+      </div>
+    </section>
+
+    <footer class="w-100 d-flex justify-content-center align-items-center mt-3">
+      <app-button [text]="'Login'" [icon]="'pi pi-sign-in'"></app-button>
+    </footer>
+  </form>
+</main>

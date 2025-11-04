@@ -61,7 +61,8 @@
 }
 
 .machine-1,
-.machine-2 {
+.machine-2,
+.machine-2-es {
   display: inline-block;
   font-family: monospace;
   white-space: nowrap;
@@ -72,8 +73,13 @@
 }
 
 .machine-2 {
-  width: 17ch;
-  animation: typing 2s steps(15), blink 0.5s infinite step-end alternate;
+  width: 28ch;
+  animation: typing 2s steps(28), blink 0.5s infinite step-end alternate;
+}
+
+.machine-2-es {
+  width: 36ch;
+  animation: typing 2s steps(36), blink 0.5s infinite step-end alternate;
 }
 
 @keyframes typing {

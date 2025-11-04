@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@app/shared/services/parameter.service';
+import { TranslateService } from '@app/home/services/translate.service';
 import { ProfileService } from '@app/home/services/profile.service';
 import { AlertService } from '@app/shared/services/alert.service';
 import { ImageService } from '@app/home/services/images.service';
@@ -18,6 +19,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  private translateService = inject(TranslateService);
   private profileService = inject(ProfileService);
   private imageService = inject(ImageService);
   private parameter = inject(ParameterService);
@@ -48,6 +50,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
       name: ['', [Validators.required]],
       last_name: ['', [Validators.required]],
       title: ['', [Validators.required]],
+      title_es: [''],
       cv: ['', [Validators.required]],
       image: [null, [Validators.required, this.parameter.imageFileValidator]]
     });
@@ -56,6 +59,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
       name: '',
       last_name: '',
       title: '',
+      title_es: '',
       cv: '',
       image: null
     };
@@ -95,12 +99,24 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.update) {
-      this.updateProfile();
-      return;
-    }
+    this.translateTitle();
+  }
 
-    this.createProfile();
+  translateTitle(): void {
+    this.spinner.show();
+    this.translateService.translate(this.controls['title'].value).pipe(takeUntil(this.destroy$)).subscribe({
+      next: result => {
+        this.controls['title_es'].patchValue(result.data.translations[0].translatedText);
+
+        if (this.update) {
+          this.updateProfile();
+          return;
+        }
+
+        this.createProfile();
+      },
+      error: () => this.alert.applicationError()
+    });
   }
 
   updateProfile(): void {
@@ -169,6 +185,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
       name: this.controls['name'].value,
       last_name: this.controls['last_name'].value,
       title: this.controls['title'].value,
+      title_es: this.controls['title_es'].value,
       cv: this.controls['cv'].value
     }
   }

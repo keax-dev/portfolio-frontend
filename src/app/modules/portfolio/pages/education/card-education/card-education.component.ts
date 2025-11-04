@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
+import { TranslateService } from '@app/home/services/translate.service';
 import { Education } from '@app/home/interfaces/education';
 
 @Component({
@@ -8,6 +9,8 @@ import { Education } from '@app/home/interfaces/education';
   standalone: false
 })
 export class CardEducationComponent {
+
+  protected readonly translate = inject(TranslateService);
 
   @Input() education!: Education;
   @Input() position!: boolean;

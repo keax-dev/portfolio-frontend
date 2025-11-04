@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   saveUserInfo(data: Auth): void {
     this.userInfoService.setToken = data.token;
-    this.userInfoService.setTimeExpiration = new Date(Date.now() + (10 * 1000)).getTime();
+    this.userInfoService.setTimeExpiration = new Date(Date.now() + 14000000).getTime();
     this.headerService.loadHeaders();
     this.router.navigateByUrl("/home");
   }

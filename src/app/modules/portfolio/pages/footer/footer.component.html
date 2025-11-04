@@ -16,7 +16,7 @@
           class="w-100 h-100 d-flex justify-content-center align-items-center flex-column"
         >
           <p class="text-center text-light my-3">
-            <small>You can contact me through my social networks.</small>
+            {{ messageSN | language : "label" : translate.getLang }}
           </p>
 
           <div
@@ -27,7 +27,7 @@
               [title]="socialNetwork.name | titlecase"
               [href]="socialNetwork.url"
               target="_blank"
-              class="btn btn-light m-1 py-1 px-2"
+              class="btn btn-light m-1 py-1 px-2 d-flex justify-content-center align-items-center"
               rel="noopener noreferrer"
             >
               <i
@@ -48,20 +48,20 @@
           <ul
             class="list-unstyled d-flex flex-wrap justify-content-center align-content-center gap-2 mb-0"
           >
-            @for (nav of navItems; track $index) {
+            @for (navItem of navItems; track $index) {
             <li>
-              @if (nav.routerLink) {
+              @if (navItem.routerLink) {
               <a
-                [href]="nav.routerLink"
+                [href]="navItem.routerLink"
                 class="text-light text-decoration-none link-dark"
-                >{{ nav.label }}</a
+                >{{ navItem | language : "label" : translate.getLang }}</a
               >
               }@else {
               <a
                 (click)="contactEmit()"
                 href="javascript:void(0)"
                 class="text-light text-decoration-none link-dark"
-                >{{ nav.label }}</a
+                >{{ navItem | language : "label" : translate.getLang }}</a
               >
               }
             </li>
@@ -73,8 +73,7 @@
 
     <p class="text-center text-light pb-2">
       <small>
-        Copyright &copy; {{ year }} Kevin Galarza. Todos los derechos
-        reservados.
+        Copyright &copy; {{ year }}. {{ messageSN | language : "label" : translate.getLang }}
       </small>
     </p>
   </div>

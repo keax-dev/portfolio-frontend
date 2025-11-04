@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InstitutionService } from '@app/home/services/institution.service';
 import { Subject, takeUntil } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { TranslateService } from '@app/home/services/translate.service';
 import { ParameterService } from '@app/shared/services/parameter.service';
 import { AlertService } from '@app/shared/services/alert.service';
 import { ImageService } from '@app/home/services/images.service';
@@ -20,6 +21,7 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   private institutionService = inject(InstitutionService);
+  private translateService = inject(TranslateService);
   private imageService = inject(ImageService);
   private parameter = inject(ParameterService);
   private spinner = inject(NgxSpinnerService);
@@ -63,6 +65,7 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
 
     this.institutionForm = this.fb.group({
       name: [name, [Validators.required]],
+      name_es: [''],
       image: [null, validatorsImg]
     });
   }
@@ -73,17 +76,29 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.update) {
-      this.updateInstitution();
-      return;
-    }
+    this.translateName();
+  }
 
-    this.createInstitution();
+  translateName(): void {
+    this.spinner.show();
+    this.translateService.translate(this.controls['name'].value).pipe(takeUntil(this.destroy$)).subscribe({
+      next: result => {
+        this.controls['name_es'].patchValue(result.data.translations[0].translatedText);
+
+        if (this.update) {
+          this.updateInstitution();
+          return;
+        }
+
+        this.createInstitution();
+      },
+      error: () => this.alert.applicationError()
+    });
   }
 
   createInstitution(): void {
     this.spinner.show();
-    this.institutionService.createInstitution({ name: this.controls['name'].value }).pipe(takeUntil(this.destroy$)).subscribe({
+    this.institutionService.createInstitution({ name: this.controls['name'].value, name_es: this.controls['name_es'].value }).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result.status) {
           this.alert.success(result.alert);
@@ -99,7 +114,7 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
 
   updateInstitution(): void {
     this.spinner.show();
-    this.institutionService.updateInstitution(this.config.data.id, { name: this.controls['name'].value }).pipe(takeUntil(this.destroy$)).subscribe({
+    this.institutionService.updateInstitution(this.config.data.id, { name: this.controls['name'].value, name_es: this.controls['name_es'].value }).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result.status) {
           this.alert.success(result.alert);
@@ -118,7 +133,7 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
     });
   }
 
-  uploadImageInstitution(institution: Institution): void {
+  uploadImageInstitution(institution: Institution): any {
     this.imageService.uploadImageInstitution(institution.id!, this.controls['image'].value).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result.status) {

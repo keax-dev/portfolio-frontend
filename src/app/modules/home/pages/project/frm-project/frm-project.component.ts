@@ -1,10 +1,11 @@
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { TechnologyService } from '@app/home/services/technology.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@app/shared/services/parameter.service';
+import { TranslateService } from '@app/home/services/translate.service';
 import { ProjectService } from '@app/home/services/project.service';
 import { AlertService } from '@app/shared/services/alert.service';
 import { ImageService } from '@app/home/services/images.service';
@@ -22,6 +23,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   private technologyService = inject(TechnologyService);
+  private translateService = inject(TranslateService);
   private projectService = inject(ProjectService);
   private imageService = inject(ImageService);
   private parameter = inject(ParameterService);
@@ -73,7 +75,9 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
 
     this.projectForm = this.fb.group({
       title: [title, [Validators.required]],
+      title_es: [''],
       description: [description, [Validators.required]],
+      description_es: [''],
       deploy: [deploy],
       github: [github],
       position: [position, [Validators.required]],
@@ -104,12 +108,25 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.update) {
-      this.updateProject();
-      return;
-    }
+    this.translateEs();
+  }
 
-    this.createProject();
+  translateEs(): void {
+    this.spinner.show();
+    forkJoin([this.translateService.translate(this.controls['title'].value), this.translateService.translate(this.controls['description'].value)]).pipe(takeUntil(this.destroy$)).subscribe({
+      next: result => {
+        this.controls['title_es'].patchValue(result[0].data.translations[0].translatedText);
+        this.controls['description_es'].patchValue(result[1].data.translations[0].translatedText);
+
+        if (this.update) {
+          this.updateProject();
+          return;
+        }
+
+        this.createProject();
+      },
+      error: () => this.alert.applicationError()
+    });
   }
 
   createProject(): void {
@@ -179,7 +196,9 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
   get project() {
     return {
       title: this.controls['title'].value,
+      title_es: this.controls['title_es'].value,
       description: this.controls['description'].value,
+      description_es: this.controls['description_es'].value,
       deploy: this.controls['deploy'].value,
       github: this.controls['github'].value,
       position: this.controls['position'].value,

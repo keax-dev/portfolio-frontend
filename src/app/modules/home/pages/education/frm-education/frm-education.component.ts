@@ -1,10 +1,11 @@
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subject, takeUntil, forkJoin } from 'rxjs';
 import { InstitutionService } from '@app/home/services/institution.service';
-import { Subject, takeUntil } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { EducationService } from '@app/home/services/education.service';
+import { TranslateService } from '@app/home/services/translate.service';
 import { AlertService } from '@app/shared/services/alert.service';
 import { Institution } from '@app/home/interfaces/institution';
 import { Education } from '@app/home/interfaces/education';
@@ -20,6 +21,7 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   private institutionService = inject(InstitutionService);
+  private translateService = inject(TranslateService);
   private educationService = inject(EducationService);
   private spinner = inject(NgxSpinnerService);
   private config = inject(DynamicDialogConfig);
@@ -48,10 +50,14 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
   loadVariables(): void {
     this.educationForm = this.fb.group({
       title: ['', [Validators.required]],
+      title_es: [''],
       institution: [null, [Validators.required]],
       place: ['', [Validators.required]],
+      place_es: [''],
       start: [''],
+      start_es: [''],
       end: ['', [Validators.required]],
+      end_es: [''],
       position: [null, [Validators.required]]
     });
 
@@ -72,12 +78,28 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.update) {
-      this.updateEducation();
-      return;
-    }
+    this.translateEs();
+  }
 
-    this.createEducation();
+  translateEs(): void {
+    this.spinner.show();
+    const translates = [this.translateService.translate(this.controls['title'].value), this.translateService.translate(this.controls['end'].value)];
+    if (this.controls['start'].value) translates.push(this.translateService.translate(this.controls['start'].value));
+    forkJoin(translates).pipe(takeUntil(this.destroy$)).subscribe({
+      next: result => {
+        this.controls['title_es'].patchValue(result[0].data.translations[0].translatedText);
+        this.controls['end_es'].patchValue(result[1].data.translations[0].translatedText);
+        if (this.controls['start'].value) this.controls['start_es'].patchValue(result[2].data.translations[0].translatedText);
+
+        if (this.update) {
+          this.updateEducation();
+          return;
+        }
+
+        this.createEducation();
+      },
+      error: () => this.alert.applicationError()
+    });
   }
 
   createEducation(): void {

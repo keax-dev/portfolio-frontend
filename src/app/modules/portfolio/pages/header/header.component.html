@@ -1,5 +1,10 @@
 <header class="position-relative text-center text-white" id="home">
-  <video autoPlay muted loop class="header-video-bg position-absolute top-0 end-0 w-100 h-100 opacity">
+  <video
+    autoPlay
+    muted
+    loop
+    class="header-video-bg position-absolute top-0 end-0 w-100 h-100 opacity"
+  >
     <source src="/background/bg-header.mp4" />
     Your browser does not support HTML5 video.
   </video>
@@ -20,14 +25,13 @@
         >
       </h1>
       <h3 class="my-2">
-        <span class="machine-2">{{ profile.title }}</span>
+        <span [class]="classTitle">{{ profile | language: 'title' : translate.getLang }}</span>
       </h3>
     </div>
 
     <div class="container mt-3">
       <a
         [href]="profile.cv"
-        [attr.aria-label]="aria_label + profile.name"
         class="btn btn-cv btn-primary position-relative overflow-hidden px-4 py-1"
         target="_blank"
       >

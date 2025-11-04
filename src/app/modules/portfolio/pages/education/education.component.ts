@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
+import { TranslateService } from '@app/home/services/translate.service';
 import { Education } from '@app/home/interfaces/education';
 
 @Component({
@@ -9,6 +10,10 @@ import { Education } from '@app/home/interfaces/education';
 })
 export class EducationComponent {
 
+  protected readonly translate = inject(TranslateService);
+
   @Input() educationList: Education[] = [];
+
+  title = { label: 'Education', label_es: 'Educación' }
 
 }

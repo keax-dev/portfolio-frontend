@@ -4,14 +4,33 @@
   aria-label="Main navigation"
 >
   <div class="container-fluid px-0">
-    <a
-      class="d-flex align-items-center text-light link-dark text-decoration-none"
-      href="#"
-    >
-      <i class="pi pi-desktop mx-2 fs-5"></i>
-      {{ name + " " + lastName | titlecase }} |
-      <small class="mx-1">{{ title | titlecase }}</small>
-    </a>
+    <div class="d-flex justify-content-start align-items-center">
+      <a
+        class="d-flex align-items-center text-light link-dark text-decoration-none"
+        href="#"
+      >
+        <i class="pi pi-desktop mx-2 fs-5"></i>
+        {{ profile.name + " " + profile.last_name | titlecase }} |
+        <small class="mx-1">{{
+          profile | language : "title" : translate.getLang
+        }}</small>
+        |
+      </a>
+
+      @for (lang of languages; track $index) {
+      <a
+        [ngClass]="{
+          'text-dark fw-bolder': translate.getLang === lang.code.toLowerCase()
+        }"
+        [title]="lang.language"
+        (click)="translate.setLang = lang.code.toLowerCase()"
+        class="d-flex align-items-center text-light link-dark text-decoration-none mx-1"
+        href="javascript:void(0)"
+      >
+        {{ lang.code }}
+      </a>
+      }
+    </div>
 
     <button
       id="navbarBtn"
@@ -35,14 +54,14 @@
             [href]="navItem.routerLink"
             (click)="closeNavbar()"
             class="nav-link text-light link-dark"
-            >{{ navItem.label }}</a
+            >{{ navItem | language : "label" : translate.getLang }}</a
           >
           }@else {
           <a
             (click)="contactEmit()"
             href="javascript:void(0)"
             class="nav-link text-light link-dark"
-            >{{ navItem.label }}</a
+            >{{ navItem | language : "label" : translate.getLang }}</a
           >
           }
         </li>

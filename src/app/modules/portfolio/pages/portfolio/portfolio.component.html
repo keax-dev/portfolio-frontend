@@ -1,9 +1,8 @@
 <app-header [profile]="profile"></app-header>
 <app-navbar
-  [lastName]="profile.last_name"
   [navItems]="navItems"
+  [profile]="profile"
   [title]="profile.title"
-  [name]="profile.name"
   (contact)="modalContact()"
 ></app-navbar>
 <main>

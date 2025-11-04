@@ -30,18 +30,19 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   profile: Profile = {
     name: 'KEVIN',
     last_name: 'GALARZA',
-    title: 'SOFTWARE ENGINEER',
+    title: 'INFORMATION SYSTEMS ENGINEER',
+    title_es: 'INGENIERO EN SISTEMAS DE INFORMACIÓN',
     cv: '',
     image: './images/profile.jpg'
   };
 
   navItems: MenuItem[] = [
-    { label: 'Home', routerLink: '#home' },
-    { label: 'Education', routerLink: '#education' },
-    { label: 'Skills', routerLink: '#skills' },
-    { label: 'Portfolio', routerLink: '#portfolio' },
-    { label: 'Contact', routerLink: '' },
-    { label: 'Login', routerLink: '/login' }
+    { label: 'Home', label_es: 'Home', routerLink: '#home' },
+    { label: 'Education', label_es: 'Educación', routerLink: '#education' },
+    { label: 'Skills', label_es: 'Habilidades', routerLink: '#skills' },
+    { label: 'Portfolio', label_es: 'Portafolio', routerLink: '#portfolio' },
+    { label: 'Contact', label_es: 'Contacto', routerLink: '' },
+    { label: 'Login', label_es: 'Login', routerLink: '/login' }
   ];
 
   technologyList: Technology[] = [];
@@ -65,6 +66,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
       next: ([portResult, educResult, skiResult, techResult, sociResult]) => {
         if (portResult.status) {
           this.profile = portResult.data;
+          console.log(this.profile.title_es.length)
         }
         if (educResult.status) {
           this.educationList = educResult.data.sort((a, b) => a.position - b.position);

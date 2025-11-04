@@ -13,6 +13,8 @@ import { AccordionModule } from 'primeng/accordion';
 import { FooterComponent } from '@app/portfolio/pages/footer/footer.component';
 import { SkillComponent } from '@app/portfolio/pages/skill/skill.component';
 import { CommonModule } from '@angular/common';
+import { SelectModule } from 'primeng/select';
+import { LanguagePipe } from './pipe/language.pipe';
 import { NgModule } from '@angular/core';
 
 @NgModule({
@@ -26,13 +28,15 @@ import { NgModule } from '@angular/core';
     NavbarComponent,
     HeaderComponent,
     FooterComponent,
-    SkillComponent
+    SkillComponent,
+    LanguagePipe
   ],
   imports: [
     PortfolioRoutingModule,
     ReactiveFormsModule,
     ComponentsModule,
     AccordionModule,
+    SelectModule,
     CommonModule
   ]
 })

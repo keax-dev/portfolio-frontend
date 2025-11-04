@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
+import { TranslateService } from '@app/home/services/translate.service';
 import { Profile } from '@app/home/interfaces/profile';
 
 @Component({
@@ -9,8 +10,19 @@ import { Profile } from '@app/home/interfaces/profile';
 })
 export class HeaderComponent {
 
+  protected readonly translate = inject(TranslateService);
+
   @Input() profile!: Profile;
 
-  aria_label = "View resume of ";
+  get classTitle() {
+    switch (this.translate.getLang) {
+      case 'en':
+        return 'machine-2';
+      case 'es':
+        return 'machine-2-es';
+      default:
+        return '';
+    }
+  }
 
 }

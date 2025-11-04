@@ -24,19 +24,6 @@
     <div
       class="w-100 d-flex justify-content-between align-items-center flex-wrap"
     >
-      <!-- @if (excel) {
-      <app-boton
-        (click)="downloadExcel()"
-        [icono]="'pi pi-file-excel'"
-        [texto]="'Excel'"
-        [clases]="'btn-gris rounded-1 p-2 my-1'"
-        [tipo]="'button'"
-      >
-      </app-boton>
-      }@else {
-        <div></div>
-      } -->
-
       @if(search){
       <p-iconfield iconPosition="left" class="ml-auto my-1">
         <p-inputicon>
@@ -60,9 +47,13 @@
         {{ column.name }}
         <p-sortIcon [field]="column.value"></p-sortIcon>
       </th>
-      } @if (details) {
+      }
+
+      @if (details) {
       <th class="bg-primary text-light">{{ detailsTxt }}</th>
-      } @if (actions) {
+      }
+
+      @if (actions) {
       <th class="bg-primary text-light">Actions</th>
       }
     </tr>
@@ -70,7 +61,8 @@
 
   <ng-template pTemplate="body" let-row>
     <tr>
-      @for (column of columns; track $index) { @if (column.image){
+      @for (column of columns; track $index) {
+      @if (column.image){
       <td>
         @if (row[column.value]) {
         <img [src]="row[column.value]" class="img-max" alt="Image" />
@@ -82,7 +74,9 @@
       <td>
         {{ row[column.value] }}
       </td>
-      } } @if (details) {
+      }
+
+      } @if (details) {
       <td>
         <button type="button" class="btn-icon" (click)="detailsItem(row)">
           <i class="pi pi-eye"></i>

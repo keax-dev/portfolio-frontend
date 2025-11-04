@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
+import { TranslateService } from '@app/home/services/translate.service';
 import { Skill } from '@app/home/interfaces/skill';
 
 @Component({
@@ -9,6 +10,10 @@ import { Skill } from '@app/home/interfaces/skill';
 })
 export class SkillComponent {
 
+  protected readonly translate = inject(TranslateService);
+
   @Input() skillList: Skill[] = [];
+
+  title = { label: 'Skill', label_es: 'Habilidades' }
 
 }

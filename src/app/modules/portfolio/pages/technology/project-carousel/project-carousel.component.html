@@ -5,25 +5,26 @@
       <div class="d-flex justify-content-center align-items-center flex-column">
         <img
           [src]="project.picture"
-          class="d-block img-fluid"
           [alt]="project.title"
+          class="d-block img-fluid img-hover"
+          (click)="showProjectDetails(project)"
         />
 
         <div class="my-4">
           <a
+            [href]="project.deploy"
             target="_blank"
             class="btn btn-primary m-1"
             title="Github"
-            [href]="project.deploy"
           >
             <i class="pi pi-external-link"></i>
           </a>
 
           <a
+            [href]="project.github"
             target="_blank"
             class="btn btn-dark m-1"
             title="Github"
-            [href]="project.github"
           >
             <i class="pi pi-github"></i>
           </a>

@@ -9,7 +9,7 @@ import { Profile } from '@app/home/interfaces/profile';
   styleUrls: ['./navbar.component.css'],
   standalone: false
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
 
   protected translate = inject(TranslateService);
 
@@ -19,10 +19,6 @@ export class NavbarComponent implements OnInit {
   @Input() profile!: Profile;
 
   languages = [{ code: 'En', language: 'English' }, { code: 'Es', language: 'Español' }];
-
-  ngOnInit(): void {
-    console.log(this.profile);
-  }
 
   closeNavbar(): void {
     const navbarBtn = document.getElementById('navbarBtn');

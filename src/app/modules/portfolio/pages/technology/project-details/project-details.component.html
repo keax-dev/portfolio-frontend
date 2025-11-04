@@ -1,0 +1,43 @@
+<article class="container-fluid p-4">
+  <header class="text-center mb-3">
+    <h2 class="text-primary fw-bolder">
+      {{ project | language : "title" : translate.getLang }}
+    </h2>
+  </header>
+
+  <hr />
+  <p>{{ project | language : "description" : translate.getLang }}</p>
+  <hr />
+
+  <figure>
+    <img
+      [src]="project.picture"
+      [alt]="project.title"
+      class="d-block img-fluid img-hover"
+    />
+
+    <figcaption class="visually-hidden">
+      Vista previa del proyecto
+      {{ project | language : "title" : translate.getLang }}
+    </figcaption>
+  </figure>
+
+  <hr />
+
+  <footer class="row text-center">
+    <div class="col">
+      <a [href]="project.deploy" target="_blank" class="btn btn-primary m-1">
+        <i class="pi pi-external-link"></i>
+        <span class="visually-hidden">Abrir demo</span>
+      </a>
+
+      <a [href]="project.github" target="_blank" class="btn btn-dark m-1">
+        <i class="pi pi-github"></i>
+      </a>
+
+      <a (click)="close()" href="javascript:void(0)" class="btn btn-danger m-1">
+        <i class="pi pi-times"></i>
+      </a>
+    </div>
+  </footer>
+</article>

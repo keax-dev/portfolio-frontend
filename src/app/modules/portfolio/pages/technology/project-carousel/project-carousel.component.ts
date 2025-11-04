@@ -1,4 +1,6 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ProjectDetailsComponent } from '../project-details/project-details.component';
+import { ParameterService } from '@app/shared/services/parameter.service';
 import { Project } from '@app/home/interfaces/project';
 
 @Component({
@@ -8,6 +10,8 @@ import { Project } from '@app/home/interfaces/project';
   standalone: false
 })
 export class ProjectCarouselComponent implements OnChanges {
+
+  private parameter = inject(ParameterService);
 
   @Input() projectList: Project[] = [];
   @Input() technology = 0;
@@ -22,8 +26,12 @@ export class ProjectCarouselComponent implements OnChanges {
     if (changes['technology']) this.updateCarouselId();
   }
 
-  private updateCarouselId() {
+  updateCarouselId() {
     this.carouselId = `carouselProject${this.technology}`;
+  }
+
+  showProjectDetails(project: Project) {
+    this.parameter.openDialog(ProjectDetailsComponent, project, '30%', '90%');
   }
 
 }

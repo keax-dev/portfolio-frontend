@@ -1,4 +1,5 @@
 import { ProjectCarouselComponent } from '@app/portfolio/pages/technology/project-carousel/project-carousel.component';
+import { ProjectDetailsComponent } from './pages/technology/project-details/project-details.component';
 import { CardEducationComponent } from '@app/portfolio/pages/education/card-education/card-education.component';
 import { PortfolioRoutingModule } from '@app/portfolio/portfolio-routing.module';
 import { TechnologyComponent } from '@app/portfolio/pages/technology/technology.component';
@@ -20,6 +21,7 @@ import { NgModule } from '@angular/core';
 @NgModule({
   declarations: [
     ProjectCarouselComponent,
+    ProjectDetailsComponent,
     CardEducationComponent,
     TechnologyComponent,
     PortfolioComponent,

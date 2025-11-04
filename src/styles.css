@@ -53,6 +53,16 @@ p {
   cursor: pointer;
 }
 
+.img-hover {
+  transition: 1s ease;
+  cursor: pointer;
+}
+
+.img-hover:hover {
+  scale: 1.05;
+  transition: 1s ease;
+}
+
 @keyframes appearKey {
   from {
     opacity: 0;

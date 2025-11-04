@@ -66,7 +66,6 @@ export class PortfolioComponent implements OnInit, OnDestroy {
       next: ([portResult, educResult, skiResult, techResult, sociResult]) => {
         if (portResult.status) {
           this.profile = portResult.data;
-          console.log(this.profile.title_es.length)
         }
         if (educResult.status) {
           this.educationList = educResult.data.sort((a, b) => a.position - b.position);

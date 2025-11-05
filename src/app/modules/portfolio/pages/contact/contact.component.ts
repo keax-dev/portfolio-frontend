@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PortfolioService } from '@app/portfolio/services/portfolio.service';
+import { TranslateService } from '@app/home/services/translate.service';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AlertService } from '@app/shared/services/alert.service';
 
@@ -16,6 +17,7 @@ export class ContactComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  protected readonly translate = inject(TranslateService);
   private portfolioService = inject(PortfolioService);
   private spinner = inject(NgxSpinnerService);
   private alert = inject(AlertService);
@@ -23,6 +25,13 @@ export class ContactComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
 
   contactForm!: FormGroup;
+
+  labels = {
+    title: { label: 'Contact me', label_es: 'Contactame' },
+    name: { label: 'Name: ', label_es: 'Nombre: ', required: 'The name is required', required_es: 'El nombre es requerido' },
+    email: { label: 'Email: ', label_es: 'Email: ', required: 'The email is required', required_es: 'El email es requerido' },
+    message: { label: 'Message: ', label_es: 'Mensaje: ', required: 'The message is required', required_es: 'El mensaje es requerido' }
+  };
 
   ngOnInit() {
     this.contactForm = this.fb.group({

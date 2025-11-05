@@ -12,7 +12,7 @@
         <i class="pi pi-desktop mx-2 fs-5"></i>
         {{ profile.name + " " + profile.last_name | titlecase }} |
         <small class="mx-1">{{
-          profile | language : "title" : translate.getLang
+          profile | language : "title" : translate.getLang | titlecase
         }}</small>
         |
       </a>

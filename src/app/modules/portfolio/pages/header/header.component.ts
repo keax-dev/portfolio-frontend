@@ -14,6 +14,8 @@ export class HeaderComponent {
 
   @Input() profile!: Profile;
 
+  cv = { label: 'View CV', label_es: 'Visualizar CV' }
+
   get classTitle() {
     switch (this.translate.getLang) {
       case 'en':

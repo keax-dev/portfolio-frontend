@@ -20,12 +20,14 @@
 
     <div class="container d-flex justify-content-center flex-column">
       <h1 class="border-bottom border-primary border-2 pb-2">
-        <span class="machine-1"
-          >{{ profile.name }} {{ profile.last_name }}</span
-        >
+        <span class="machine-1">{{
+          profile.name + " " + profile.last_name | titlecase
+        }}</span>
       </h1>
       <h3 class="my-2">
-        <span [class]="classTitle">{{ profile | language: 'title' : translate.getLang }}</span>
+        <span [class]="classTitle">{{
+          profile | language : "title" : translate.getLang | titlecase
+        }}</span>
       </h3>
     </div>
 
@@ -39,7 +41,7 @@
         <span></span>
         <span></span>
         <span></span>
-        Visualizar CV
+        {{ cv | language : "label" : translate.getLang | titlecase }}
       </a>
     </div>
   </div>

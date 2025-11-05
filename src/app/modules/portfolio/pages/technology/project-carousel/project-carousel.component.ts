@@ -26,11 +26,11 @@ export class ProjectCarouselComponent implements OnChanges {
     if (changes['technology']) this.updateCarouselId();
   }
 
-  updateCarouselId() {
+  updateCarouselId(): void {
     this.carouselId = `carouselProject${this.technology}`;
   }
 
-  showProjectDetails(project: Project) {
+  showProjectDetails(project: Project): void {
     this.parameter.openDialog(ProjectDetailsComponent, project, '30%', '90%');
   }
 

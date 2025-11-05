@@ -7,19 +7,30 @@
           [src]="project.picture"
           [alt]="project.title"
           class="d-block img-fluid img-hover"
-          (click)="showProjectDetails(project)"
         />
 
         <div class="my-4">
           <a
+            (click)="showProjectDetails(project)"
+            href="javascript:void(0)"
+            class="btn btn-primary m-1"
+            title="Github"
+          >
+            <i class="pi pi-eye"></i>
+          </a>
+
+          @if (project.deploy) {
+          <a
             [href]="project.deploy"
             target="_blank"
-            class="btn btn-primary m-1"
+            class="btn btn-secondary m-1"
             title="Github"
           >
             <i class="pi pi-external-link"></i>
           </a>
+          }
 
+          @if (project.github) {
           <a
             [href]="project.github"
             target="_blank"
@@ -28,6 +39,7 @@
           >
             <i class="pi pi-github"></i>
           </a>
+          }
         </div>
       </div>
     </div>
@@ -35,9 +47,9 @@
   </div>
 
   <button
+    [attr.data-bs-target]="'#' + carouselId"
     class="carousel-control-prev bg-primary"
     type="button"
-    [attr.data-bs-target]="'#' + carouselId"
     data-bs-slide="prev"
   >
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -45,9 +57,9 @@
   </button>
 
   <button
+    [attr.data-bs-target]="'#' + carouselId"
     class="carousel-control-next bg-primary"
     type="button"
-    [attr.data-bs-target]="'#' + carouselId"
     data-bs-slide="next"
   >
     <span class="carousel-control-next-icon" aria-hidden="true"></span>

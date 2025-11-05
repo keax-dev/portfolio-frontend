@@ -26,14 +26,18 @@
 
   <footer class="row text-center">
     <div class="col">
+      @if (project.deploy) {
       <a [href]="project.deploy" target="_blank" class="btn btn-primary m-1">
         <i class="pi pi-external-link"></i>
         <span class="visually-hidden">Abrir demo</span>
       </a>
+      }
 
+      @if (project.github) {
       <a [href]="project.github" target="_blank" class="btn btn-dark m-1">
         <i class="pi pi-github"></i>
       </a>
+      }
 
       <a (click)="close()" href="javascript:void(0)" class="btn btn-danger m-1">
         <i class="pi pi-times"></i>

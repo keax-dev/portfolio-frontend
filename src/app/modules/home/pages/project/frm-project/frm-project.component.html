@@ -27,7 +27,6 @@
         id="description"
         class="form-control"
         formControlName="description"
-        appUppercase
       />
       @if (controls['description'].touched && controls['description'].invalid) {
       <small class="text-danger appear">The description is required</small>
@@ -42,9 +41,6 @@
         class="form-control"
         formControlName="deploy"
       />
-      @if (controls['deploy'].touched && controls['deploy'].invalid) {
-      <small class="text-danger appear">The deploy is required</small>
-      }
     </div>
 
     <div class="col-md-6">
@@ -55,9 +51,6 @@
         class="form-control"
         formControlName="github"
       />
-      @if (controls['github'].touched && controls['github'].invalid) {
-      <small class="text-danger appear">The github is required</small>
-      }
     </div>
 
     <div class="col-md-6">

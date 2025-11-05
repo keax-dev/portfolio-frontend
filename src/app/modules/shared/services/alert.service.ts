@@ -39,7 +39,6 @@ export class AlertService {
     this.error(response.alert);
   }
 
-
   confirmDelete(function_: () => void) {
     this.confirmation.confirm({
       message: "You won't be able to undo this!",

@@ -10,7 +10,6 @@ import { AlertService } from '@app/shared/services/alert.service';
 @Component({
   selector: 'app-contact',
   templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.css'],
   standalone: false
 })
 export class ContactComponent implements OnInit, OnDestroy {
@@ -59,9 +58,10 @@ export class ContactComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.close(result.status);
-        } else {
-          this.alert.resultWarnings(result);
+          return;
         }
+
+        this.alert.resultWarnings(result);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()

@@ -11,7 +11,6 @@ import { Skill } from '@app/home/interfaces/skill';
 @Component({
   selector: 'app-table-skill',
   templateUrl: './table-skill.component.html',
-  styleUrls: ['./table-skill.component.css'],
   standalone: false
 })
 export class TableSkillComponent implements OnInit, OnDestroy {
@@ -45,8 +44,12 @@ export class TableSkillComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.skillService.getSkillListByDeleted().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
-        if (result.status) this.records = result.data;
-        else this.records = [];
+        if (result.status) {
+          this.records = result.data;
+          return;
+        }
+
+        this.records = [];
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()
@@ -76,9 +79,10 @@ export class TableSkillComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.getSkillListByDeleted();
-        } else {
-          this.alert.resultWarnings(result);
+          return;
         }
+
+        this.alert.resultWarnings(result);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()

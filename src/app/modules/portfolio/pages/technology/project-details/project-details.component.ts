@@ -6,7 +6,6 @@ import { Project } from '@app/home/interfaces/project';
 @Component({
   selector: 'app-project-details',
   templateUrl: './project-details.component.html',
-  styleUrls: ['./project-details.component.css'],
   standalone: false
 })
 export class ProjectDetailsComponent implements OnInit {

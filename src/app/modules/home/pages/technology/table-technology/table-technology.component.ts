@@ -12,7 +12,6 @@ import { Column } from '@app/components/interfaces/column';
 @Component({
   selector: 'app-table-education',
   templateUrl: './table-technology.component.html',
-  styleUrls: ['./table-technology.component.css'],
   standalone: false
 })
 export class TableTechnologyComponent implements OnInit, OnDestroy {
@@ -45,8 +44,12 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.technologyService.getTechnologyListByDeleted().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
-        if (result.status) this.records = result.data;
-        else this.records = [];
+        if (result.status) {
+          this.records = result.data;
+          return;
+        }
+
+        this.records = [];
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()
@@ -76,14 +79,14 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.getTechnologyListByDeleted();
-        } else {
-          this.alert.resultWarnings(result);
+          return;
         }
+
+        this.alert.resultWarnings(result);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()
     });
   }
-
 
 }

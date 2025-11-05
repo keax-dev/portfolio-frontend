@@ -1,7 +1,6 @@
 <nav
   class="navbar navbar-dark bg-primary shadow-lg sticky-top"
   role="navigation"
-  aria-label="Main navigation"
 >
   <div class="container-fluid px-0">
     <div class="d-flex justify-content-start align-items-center">
@@ -59,8 +58,8 @@
           }@else {
           <a
             (click)="contactEmit()"
-            href="javascript:void(0)"
             class="nav-link text-light link-dark"
+            href="javascript:void(0)"
             >{{ navItem | language : "label" : translate.getLang }}</a
           >
           }

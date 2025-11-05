@@ -16,12 +16,12 @@
       <div class="mb-3">
         <label for="username" class="form-label fw-bold">Username: </label>
         <input
-          pInputText
-          id="username"
-          class="form-control border-primary"
-          formControlName="username"
-          [minlength]="1"
           [maxLength]="25"
+          [minlength]="1"
+          formControlName="username"
+          class="form-control border-primary"
+          id="username"
+          pInputText
         />
         @if (controls['username'].touched && controls['username'].invalid) {
         <small class="text-danger appear">The username is required</small>
@@ -33,19 +33,19 @@
         <div class="row p-0 m-0">
           <div class="col p-0">
             <input
-              [type]="hide ? 'password' : 'text'"
-              id="password"
-              class="form-control border-primary"
-              formControlName="password"
-              [minlength]="4"
               [maxLength]="25"
+              [minlength]="4"
+              [type]="hide ? 'password' : 'text'"
+              formControlName="password"
+              class="form-control border-primary"
+              id="password"
             />
           </div>
           <div class="col-auto p-0">
             <button
               (click)="hide = !hide"
-              type="button"
               class="btn border border-primary"
+              type="button"
             >
               @if (hide) {
               <i class="pi pi-eye"></i>

@@ -11,7 +11,6 @@ import { Column } from '@app/components/interfaces/column';
 @Component({
   selector: 'app-table-institution',
   templateUrl: './table-institution.component.html',
-  styleUrls: ['./table-institution.component.css'],
   standalone: false
 })
 export class TableInstitutionComponent implements OnInit, OnDestroy {
@@ -44,8 +43,12 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.institutionService.getInstitutionListByDeleted().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
-        if (result.status) this.records = result.data;
-        else this.records = [];
+        if (result.status) {
+          this.records = result.data;
+          return;
+        }
+
+        this.records = [];
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()
@@ -72,9 +75,10 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.getInstitutionListByDeleted();
-        } else {
-          this.alert.resultWarnings(result);
+          return;
         }
+
+        this.alert.resultWarnings(result);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()

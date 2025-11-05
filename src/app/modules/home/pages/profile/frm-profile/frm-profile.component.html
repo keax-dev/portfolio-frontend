@@ -1,5 +1,5 @@
 <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="m-3">
-  <h4 class="text-primary text-center">{{ title }}</h4>
+  <h3 class="text-primary text-center">{{ title }}</h3>
   <hr />
 
   @if (update) {
@@ -13,11 +13,11 @@
     <div class="col-md-6">
       <label for="name" class="form-label fw-bold">Name:</label>
       <input
-        pInputText
-        id="name"
-        class="form-control"
         formControlName="name"
+        class="form-control"
+        id="name"
         appUppercase
+        pInputText
       />
       @if (controls['name'].touched && controls['name'].errors?.['required']){
       <small class="text-danger appear">The name is required</small>
@@ -27,11 +27,11 @@
     <div class="col-md-6">
       <label for="last_name" class="form-label fw-bold">Last Name:</label>
       <input
-        pInputText
-        id="last_name"
-        class="form-control"
         formControlName="last_name"
+        class="form-control"
+        id="last_name"
         appUppercase
+        pInputText
       />
       @if (controls['last_name'].touched &&
       controls['last_name'].errors?.['required']){
@@ -42,11 +42,11 @@
     <div class="col-md-6">
       <label for="title" class="form-label fw-bold">Title:</label>
       <input
-        pInputText
-        id="title"
-        class="form-control"
         formControlName="title"
+        class="form-control"
+        id="title"
         appUppercase
+        pInputText
       />
       @if (controls['title'].touched && controls['title'].errors?.['required']){
       <small class="text-danger appear">The title is required</small>
@@ -56,11 +56,11 @@
     <div class="col-md-6">
       <label for="cv" class="form-label fw-bold">CV:</label>
       <input
-        pInputText
-        type="url"
-        id="cv"
-        class="form-control"
         formControlName="cv"
+        class="form-control"
+        type="text"
+        id="cv"
+        pInputText
       />
       @if (controls['cv'].touched && controls['cv'].errors?.['required']){
       <small class="text-danger appear">The cv is required</small>
@@ -70,15 +70,16 @@
     <div class="col-md-6">
       <label for="image" class="form-label fw-bold">Image:</label>
       <input
-        id="image"
-        type="file"
-        class="form-control"
         (change)="onFileSelected($event)"
+        class="form-control"
+        type="file"
+        id="image"
       />
       @if (controls['image'].touched && controls['image'].errors?.['required']){
       <small class="text-danger appear">The image required</small>
-      } @if (controls['image'].touched &&
-      controls['image'].errors?.['invalidFileType']) {
+      }
+
+      @if (controls['image'].touched && controls['image'].errors?.['invalidFileType']) {
       <small class="text-danger appear"
         >Only image files (png, jpg, jpeg, gif) are allowed</small
       >

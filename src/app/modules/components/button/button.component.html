@@ -1,16 +1,15 @@
 <button
-  (click)="clickAction()"
+  [disabled]="disabled"
   [class]="
     class +
-    ' ' +
     classPadding +
-    ' d-flex justify-content-center align-items-center m-2'
+    'd-flex justify-content-center align-items-center m-2'
   "
   [type]="type"
-  [disabled]="disabled"
+  (click)="clickAction()"
 >
   @if (icon) {
-  <i [class]="icon + '   mx-2'"></i>
+  <i [class]="icon"></i>
   }
-    {{ text }}
+  {{ text }}
 </button>

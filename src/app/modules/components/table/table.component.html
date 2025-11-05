@@ -10,15 +10,15 @@
 
 <p-table
   #dt
-  stripedRows
-  [value]="records"
-  [paginator]="true"
-  [rows]="10"
+  [paginatorDropdownAppendTo]="'body'"
   [globalFilterFields]="columnNames"
   [rowsPerPageOptions]="[5, 10, 20, 50]"
-  [paginatorDropdownAppendTo]="'body'"
+  [paginator]="true"
   [sortField]="sortName"
   [sortOrder]="order"
+  [value]="records"
+  [rows]="10"
+  stripedRows
 >
   <ng-template pTemplate="caption" class="m-0 p-0">
     <div
@@ -30,10 +30,10 @@
           <i class="pi pi-search"></i>
         </p-inputicon>
         <input
-          pInputText
-          type="text"
           (input)="dt.filterGlobal(valueSearch($event), 'contains')"
           placeholder="Buscar"
+          type="text"
+          pInputText
         />
       </p-iconfield>
       }
@@ -43,7 +43,7 @@
   <ng-template pTemplate="header">
     <tr>
       @for (column of columns; track $index) {
-      <th class="bg-primary text-light" [pSortableColumn]="column.value">
+      <th [pSortableColumn]="column.value" class="bg-primary text-light">
         {{ column.name }}
         <p-sortIcon [field]="column.value"></p-sortIcon>
       </th>
@@ -62,41 +62,44 @@
   <ng-template pTemplate="body" let-row>
     <tr>
       @for (column of columns; track $index) {
-      @if (column.image){
-      <td>
-        @if (row[column.value]) {
-        <img [src]="row[column.value]" class="img-max" alt="Image" />
-        }@else {
-        <p>No image</p>
-        }
-      </td>
+        @if (column.image){
+        <td>
+          @if (row[column.value]) {
+          <img [src]="row[column.value]" class="img-max" alt="Image" />
+          }@else {
+          <p>No image</p>
+          }
+        </td>
       }@else{
-      <td>
-        {{ row[column.value] }}
-      </td>
+        <td>
+          {{ row[column.value] }}
+        </td>
+        }
       }
 
-      } @if (details) {
+      @if (details) {
       <td>
-        <button type="button" class="btn-icon" (click)="detailsItem(row)">
+        <button (click)="detailsItem(row)" type="button" class="btn-icon">
           <i class="pi pi-eye"></i>
         </button>
       </td>
-      } @if (actions) {
+      }
+
+      @if (actions) {
       <td>
         <button
-          type="button"
-          class="btn btn-success m-1"
           (click)="modifyItem(row)"
+          class="btn btn-success m-1"
+          type="button"
         >
           <i class="pi pi-pencil"></i>
         </button>
 
         @if (delete) {
         <button
-          type="button"
-          class="btn btn-danger m-1"
           (click)="deleteItem(row)"
+          class="btn btn-danger m-1"
+          type="button"
         >
           <i class="pi pi-eraser"></i>
         </button>

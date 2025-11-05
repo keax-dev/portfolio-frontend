@@ -13,7 +13,6 @@ import { Institution } from '@app/home/interfaces/institution';
 @Component({
   selector: 'app-frm-institution',
   templateUrl: './frm-institution.component.html',
-  styleUrls: ['./frm-institution.component.css'],
   standalone: false
 })
 export class FrmInstitutionComponent implements OnInit, OnDestroy {
@@ -103,10 +102,11 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.uploadImageInstitution(result.data);
-        } else {
-          this.alert.resultWarnings(result);
-          this.spinner.hide();
+          return;
         }
+
+        this.alert.resultWarnings(result);
+        this.spinner.hide();
       },
       error: () => this.alert.applicationError()
     });
@@ -116,33 +116,36 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.institutionService.updateInstitution(this.config.data.id, { name: this.controls['name'].value, name_es: this.controls['name_es'].value }).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
-        if (result.status) {
-          this.alert.success(result.alert);
-          if (this.controls['image'].value) {
-            this.uploadImageInstitution(result.data);
-          } else {
-            this.close(result.data);
-            this.spinner.hide();
-          }
-        } else {
+        if (!result.status) {
           this.alert.resultWarnings(result);
           this.spinner.hide();
+          return;
         }
+
+        this.alert.success(result.alert);
+        if (this.controls['image'].value) {
+          this.uploadImageInstitution(result.data);
+          return;
+        }
+
+        this.close(result.data);
+        this.spinner.hide();
       },
       error: () => this.alert.applicationError()
     });
   }
 
-  uploadImageInstitution(institution: Institution): any {
+  uploadImageInstitution(institution: Institution): void {
     this.imageService.uploadImageInstitution(institution.id!, this.controls['image'].value).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result.status) {
           this.alert.success(result.alert);
           this.close(result.data);
-        } else {
-          this.alert.resultWarnings(result);
-          this.close(institution);
+          return;
         }
+
+        this.alert.resultWarnings(result);
+        this.close(institution);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()

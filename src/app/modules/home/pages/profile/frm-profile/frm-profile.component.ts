@@ -12,7 +12,6 @@ import { Profile } from '@app/home/interfaces/profile';
 @Component({
   selector: 'app-frm-profile',
   templateUrl: './frm-profile.component.html',
-  styleUrls: ['./frm-profile.component.css'],
   standalone: false
 })
 export class FrmProfileComponent implements OnInit, OnDestroy {
@@ -125,10 +124,11 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
         this.alert.success('Profile updated successfully');
         if (this.controls['image'].value) {
           this.uploadImageProfile(result.data);
-        } else {
-          this.previousProfile = result.data;
-          this.spinner.hide();
+          return;
         }
+
+        this.previousProfile = result.data;
+        this.spinner.hide();
       },
       error: () => this.alert.applicationError()
     });
@@ -141,10 +141,11 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
         this.alert.success('Profile created successfully');
         if (this.controls['image'].value) {
           this.uploadImageProfile(result.data, true);
-        } else {
-          this.previousProfile = result.data;
-          this.spinner.hide();
+          return;
         }
+
+        this.previousProfile = result.data;
+        this.spinner.hide();
       },
       error: () => this.alert.applicationError()
     });
@@ -159,10 +160,11 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
           this.previousProfile = result.data;
           this.urlPicture = result.data.image!;
           if (create) this.loadVariablesUpdate(result.data);
-        } else {
-          this.alert.resultWarnings(result);
-          this.previousProfile = profile;
+          return;
         }
+
+        this.alert.resultWarnings(result);
+        this.previousProfile = profile;
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()

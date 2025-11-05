@@ -15,7 +15,6 @@ import { Project } from '@app/home/interfaces/project';
 @Component({
   selector: 'app-frm-project',
   templateUrl: './frm-project.component.html',
-  styleUrls: ['./frm-project.component.css'],
   standalone: false
 })
 export class FrmProjectComponent implements OnInit, OnDestroy {
@@ -136,10 +135,11 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.uploadImageInstitution(result.data);
-        } else {
-          this.alert.resultWarnings(result);
-          this.spinner.hide();
+          return;
         }
+
+        this.alert.resultWarnings(result);
+        this.spinner.hide();
       },
       error: () => this.alert.applicationError()
     });
@@ -149,18 +149,20 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.projectService.updateProject(this.config.data.project.id, this.project).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
-        if (result.status) {
-          this.alert.success(result.alert);
-          if (this.controls['image'].value) {
-            this.uploadImageInstitution(result.data);
-          } else {
-            this.close(result.data);
-            this.spinner.hide();
-          }
-        } else {
+        if (!result.status) {
           this.alert.resultWarnings(result);
           this.spinner.hide();
+          return;
         }
+
+        this.alert.success(result.alert);
+        if (this.controls['image'].value) {
+          this.uploadImageInstitution(result.data);
+          return;
+        }
+
+        this.close(result.data);
+        this.spinner.hide();
       },
       error: () => this.alert.applicationError()
     });
@@ -172,10 +174,11 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.close(result.data);
-        } else {
-          this.alert.resultWarnings(result);
-          this.close(project);
+          return;
         }
+
+        this.alert.resultWarnings(result);
+        this.close(project);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()

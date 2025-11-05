@@ -13,7 +13,6 @@ import { Education } from '@app/home/interfaces/education';
 @Component({
   selector: 'app-frm-education',
   templateUrl: './frm-education.component.html',
-  styleUrls: ['./frm-education.component.css'],
   standalone: false
 })
 export class FrmEducationComponent implements OnInit, OnDestroy {
@@ -109,9 +108,10 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.close(result.data);
-        } else {
-          this.alert.resultWarnings(result);
+          return;
         }
+
+        this.alert.resultWarnings(result);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()
@@ -125,9 +125,10 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.close(result.data);
-        } else {
-          this.alert.resultWarnings(result);
+          return;
         }
+
+        this.alert.resultWarnings(result);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()

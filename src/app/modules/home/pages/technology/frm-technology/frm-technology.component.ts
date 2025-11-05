@@ -10,7 +10,6 @@ import { Technology } from '@app/home/interfaces/technology';
 @Component({
   selector: 'app-frm-technology',
   templateUrl: './frm-technology.component.html',
-  styleUrls: ['./frm-technology.component.css'],
   standalone: false
 })
 export class FrmTechnologyComponent implements OnInit, OnDestroy {
@@ -77,9 +76,10 @@ export class FrmTechnologyComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.close(result.data);
-        } else {
-          this.alert.resultWarnings(result);
+          return;
         }
+
+        this.alert.resultWarnings(result);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()
@@ -93,9 +93,10 @@ export class FrmTechnologyComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.close(result.data);
-        } else {
-          this.alert.resultWarnings(result);
+          return;
         }
+
+        this.alert.resultWarnings(result);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()

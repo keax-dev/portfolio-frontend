@@ -12,7 +12,6 @@ import { Project } from '@app/home/interfaces/project';
 @Component({
   selector: 'app-table-project',
   templateUrl: './table-project.component.html',
-  styleUrls: ['./table-project.component.css'],
   standalone: false
 })
 export class TableProjectComponent implements OnInit, OnDestroy {
@@ -37,7 +36,6 @@ export class TableProjectComponent implements OnInit, OnDestroy {
     { name: "Github", value: "github" }
   ];
 
-
   ngOnInit(): void {
     this.getProjectListByDeleted();
   }
@@ -59,9 +57,10 @@ export class TableProjectComponent implements OnInit, OnDestroy {
             acc[techName] = (acc[techName] || 0) + 1;
             return acc;
           }, {} as Record<number, number>);
-        } else {
-          this.records = [];
+          return;
         }
+
+        this.records = [];
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()
@@ -91,9 +90,10 @@ export class TableProjectComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.getProjectListByDeleted();
-        } else {
-          this.alert.resultWarnings(result);
+          return;
         }
+
+        this.alert.resultWarnings(result);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()

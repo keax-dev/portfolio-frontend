@@ -11,7 +11,6 @@ import { Column } from '@app/components/interfaces/column';
 @Component({
   selector: 'app-table-education',
   templateUrl: './table-education.component.html',
-  styleUrls: ['./table-education.component.css'],
   standalone: false
 })
 export class TableEducationComponent implements OnInit, OnDestroy {
@@ -49,8 +48,12 @@ export class TableEducationComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.educationService.getEducationListByDeleted().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
-        if (result.status) this.records = result.data;
-        else this.records = [];
+        if (result.status) {
+          this.records = result.data;
+          return;
+        }
+
+        this.records = [];
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()
@@ -80,9 +83,10 @@ export class TableEducationComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.getEducationListByDeleted();
-        } else {
-          this.alert.resultWarnings(result);
+          return;
         }
+
+        this.alert.resultWarnings(result);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()

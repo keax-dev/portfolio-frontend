@@ -12,7 +12,6 @@ import { Skill } from '@app/home/interfaces/skill';
 @Component({
   selector: 'app-frm-skill',
   templateUrl: './frm-skill.component.html',
-  styleUrls: ['./frm-skill.component.css'],
   standalone: false
 })
 export class FrmSkillComponent implements OnInit, OnDestroy {
@@ -94,10 +93,11 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.uploadImageInstitution(result.data);
-        } else {
-          this.alert.resultWarnings(result);
-          this.spinner.hide();
+          return;
         }
+
+        this.alert.resultWarnings(result);
+        this.spinner.hide();
       },
       error: () => this.alert.applicationError()
     });
@@ -107,18 +107,19 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.skillService.updateSkill(this.config.data.skill.id, this.skill).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
-        if (result.status) {
-          this.alert.success(result.alert);
-          if (this.controls['image'].value) {
-            this.uploadImageInstitution(result.data);
-          } else {
-            this.close(result.data);
-            this.spinner.hide();
-          }
-        } else {
+        if (!result.status) {
           this.alert.resultWarnings(result);
           this.spinner.hide();
         }
+
+        this.alert.success(result.alert);
+        if (this.controls['image'].value) {
+          this.uploadImageInstitution(result.data);
+          return;
+        }
+
+        this.close(result.data);
+        this.spinner.hide();
       },
       error: () => this.alert.applicationError()
     });
@@ -130,10 +131,11 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.close(result.data);
-        } else {
-          this.alert.resultWarnings(result);
-          this.close(skill);
+          return;
         }
+
+        this.alert.resultWarnings(result);
+        this.close(skill);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()

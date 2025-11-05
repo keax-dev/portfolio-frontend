@@ -6,7 +6,6 @@ import { saveAs } from 'file-saver-es';
 @Component({
   selector: 'app-tabla',
   templateUrl: './table.component.html',
-  styleUrls: ['./table.component.css'],
   standalone: false
 })
 export class TableComponent<T> implements OnInit {
@@ -14,18 +13,18 @@ export class TableComponent<T> implements OnInit {
   @Input() records: T[] = [];
   @Input() columns: Column[] = [];
 
-  @Input() sortName = '';
   @Input() detailsTxt = "Details";
-  @Input() newTxt = "";
   @Input() fileName = "Reporte";
+  @Input() sortName = '';
+  @Input() newTxt = "";
   @Input() order = 1;
 
   @Input() details = false;
   @Input() actions = true;
   @Input() delete = true;
   @Input() search = true;
-  @Input() new = true;
   @Input() excel = true;
+  @Input() new = true;
 
   @Output() itemDetails = new EventEmitter();
   @Output() itemDelete = new EventEmitter();

@@ -11,7 +11,6 @@ import { Column } from '@app/components/interfaces/column';
 @Component({
   selector: 'app-table-social-network',
   templateUrl: './table-social-network.component.html',
-  styleUrls: ['./table-social-network.component.css'],
   standalone: false
 })
 export class TableSocialNetworkComponent implements OnInit, OnDestroy {
@@ -47,8 +46,12 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.socialNetworkService.getSocialNetworkListByDeleted().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
-        if (result.status) this.records = result.data;
-        else this.records = [];
+        if (result.status) {
+          this.records = result.data;
+          return;
+        }
+
+        this.records = [];
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()
@@ -78,14 +81,14 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.getSocialNetworkListByDeleted();
-        } else {
-          this.alert.resultWarnings(result);
+          return;
         }
+
+        this.alert.resultWarnings(result);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()
     });
   }
-
 
 }

@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@app/home/services/translate.service';
 import { Profile } from '@app/home/interfaces/profile';
 

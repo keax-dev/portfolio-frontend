@@ -9,11 +9,11 @@
     <div class="col-md-6">
       <label for="name" class="form-label fw-bold">Name: </label>
       <input
-        pInputText
-        id="name"
-        class="form-control"
         formControlName="name"
+        class="form-control"
+        id="name"
         appUppercase
+        pInputText
       />
       @if (controls['name'].touched && controls['name'].invalid) {
       <small class="text-danger appear">The name is required</small>
@@ -22,12 +22,7 @@
 
     <div class="col-md-6">
       <label for="icon" class="form-label fw-bold">Icon: </label>
-      <input
-        pInputText
-        id="icon"
-        class="form-control"
-        formControlName="icon"
-      />
+      <input formControlName="icon" class="form-control" id="icon" pInputText />
       @if (controls['icon'].touched && controls['icon'].invalid) {
       <small class="text-danger appear">The icon is required</small>
       }
@@ -36,10 +31,10 @@
     <div class="col-md-6">
       <label for="color" class="form-label fw-bold">Color: </label>
       <input
-        pInputText
-        id="color"
-        class="form-control"
         formControlName="color"
+        class="form-control"
+        id="color"
+        pInputText
       />
       @if (controls['color'].touched && controls['color'].invalid) {
       <small class="text-danger appear">The color is required</small>
@@ -48,12 +43,7 @@
 
     <div class="col-md-6">
       <label for="url" class="form-label fw-bold">Url: </label>
-      <input
-        pInputText
-        id="url"
-        class="form-control"
-        formControlName="url"
-      />
+      <input formControlName="url" class="form-control" id="url" pInputText />
       @if (controls['url'].touched && controls['url'].invalid) {
       <small class="text-danger appear">The url is required</small>
       }
@@ -62,12 +52,12 @@
     <div class="col-md-6">
       <label for="position" class="form-label fw-bold">Position: </label>
       <p-select
-        formControlName="position"
         [options]="positionList"
-        id="position"
-        class="w-100"
-        appendTo="body"
         [filter]="true"
+        formControlName="position"
+        appendTo="body"
+        class="w-100"
+        id="position"
       />
       @if (controls['position'].touched && controls['position'].invalid) {
       <small class="text-danger appear">The position is required</small>

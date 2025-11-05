@@ -3,11 +3,11 @@
     <div class="row row-cols-1 row-cols-md-3 g-4 pt-3 mx-0">
       <div class="col text-center my-1">
         <img
+          decoding="async"
+          loading="lazy"
+          class="rounded-circle bg-white border-dark border border-2"
           src="./images/logo.png"
           alt="Keax logo"
-          class="rounded-circle bg-white border-dark border border-2"
-          loading="lazy"
-          decoding="async"
         />
       </div>
 
@@ -43,7 +43,6 @@
       <div class="col my-3">
         <nav
           class="w-100 h-100 d-flex justify-content-center align-items-center flex-wrap"
-          aria-label="Footer"
         >
           <ul
             class="list-unstyled d-flex flex-wrap justify-content-center align-content-center gap-2 mb-0"
@@ -59,8 +58,8 @@
               }@else {
               <a
                 (click)="contactEmit()"
-                href="javascript:void(0)"
                 class="text-light text-decoration-none link-dark"
+                href="javascript:void(0)"
                 >{{ navItem | language : "label" : translate.getLang }}</a
               >
               }
@@ -73,7 +72,8 @@
 
     <p class="text-center text-light pb-2">
       <small>
-        Copyright &copy; {{ year }}. {{ messageSN | language : "label" : translate.getLang }}
+        Copyright &copy; {{ year }}.
+        {{ messageSN | language : "label" : translate.getLang }}
       </small>
     </p>
   </div>

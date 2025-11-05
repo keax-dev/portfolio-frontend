@@ -8,11 +8,11 @@
   <hr />
 
   <app-tabla
-    (itemDelete)="confirmDelete($event)"
-    (itemEdit)="modalTechnology($event)"
-    (itemNew)="modalTechnology()"
     [records]="records"
     [columns]="columns"
     [newTxt]="'Technology'"
+    (itemDelete)="confirmDelete($event)"
+    (itemEdit)="modalTechnology($event)"
+    (itemNew)="modalTechnology()"
   ></app-tabla>
 </section>

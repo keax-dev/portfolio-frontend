@@ -15,7 +15,6 @@ import { Skill } from '@app/home/interfaces/skill';
 @Component({
   selector: 'app-portfolio',
   templateUrl: './portfolio.component.html',
-  styleUrls: ['./portfolio.component.css'],
   standalone: false
 })
 export class PortfolioComponent implements OnInit, OnDestroy {
@@ -62,7 +61,13 @@ export class PortfolioComponent implements OnInit, OnDestroy {
 
   getInformation(): void {
     this.spinner.show();
-    forkJoin([this.portfolioService.getProfile(), this.portfolioService.getEducation(), this.portfolioService.getSkill(), this.portfolioService.getTechnology(), this.portfolioService.getSocialNetwork()]).pipe(takeUntil(this.destroy$)).subscribe({
+    forkJoin([
+      this.portfolioService.getProfile(),
+      this.portfolioService.getEducation(),
+      this.portfolioService.getSkill(),
+      this.portfolioService.getTechnology(),
+      this.portfolioService.getSocialNetwork()
+    ]).pipe(takeUntil(this.destroy$)).subscribe({
       next: ([portResult, educResult, skiResult, techResult, sociResult]) => {
         if (portResult.status) {
           this.profile = portResult.data;

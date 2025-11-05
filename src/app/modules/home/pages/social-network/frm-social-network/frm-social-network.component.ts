@@ -10,7 +10,6 @@ import { AlertService } from '@app/shared/services/alert.service';
 @Component({
   selector: 'app-frm-social-network',
   templateUrl: './frm-social-network.component.html',
-  styleUrls: ['./frm-social-network.component.css'],
   standalone: false
 })
 export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
@@ -80,9 +79,10 @@ export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.close(result.data);
-        } else {
-          this.alert.resultWarnings(result);
+          return;
         }
+
+        this.alert.resultWarnings(result);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()
@@ -96,9 +96,10 @@ export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.close(result.data);
-        } else {
-          this.alert.resultWarnings(result);
+          return;
         }
+
+        this.alert.resultWarnings(result);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()

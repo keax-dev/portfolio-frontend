@@ -9,11 +9,11 @@
     <div class="col-md-6">
       <label for="title" class="form-label fw-bold">Title:</label>
       <input
-        pInputText
-        id="title"
-        class="form-control"
         formControlName="title"
+        class="form-control"
+        id="title"
         appUppercase
+        pInputText
       />
       @if (controls['title'].touched && controls['title'].invalid) {
       <small class="text-danger appear">The title is required</small>
@@ -23,10 +23,10 @@
     <div class="col-md-6">
       <label for="description" class="form-label fw-bold">Description:</label>
       <input
-        pInputText
-        id="description"
-        class="form-control"
         formControlName="description"
+        class="form-control"
+        id="description"
+        pInputText
       />
       @if (controls['description'].touched && controls['description'].invalid) {
       <small class="text-danger appear">The description is required</small>
@@ -36,35 +36,35 @@
     <div class="col-md-6">
       <label for="deploy" class="form-label fw-bold">Deploy:</label>
       <input
-        pInputText
-        id="deploy"
-        class="form-control"
         formControlName="deploy"
+        class="form-control"
+        id="deploy"
+        pInputText
       />
     </div>
 
     <div class="col-md-6">
       <label for="github" class="form-label fw-bold">GitHub:</label>
       <input
-        pInputText
-        id="github"
-        class="form-control"
         formControlName="github"
+        class="form-control"
+        id="github"
+        pInputText
       />
     </div>
 
     <div class="col-md-6">
       <label for="technology" class="form-label fw-bold">Technology: </label>
       <p-select
-        formControlName="technology"
         [options]="technologyList"
-        optionLabel="name"
-        optionValue="id"
-        id="technology"
-        class="w-100"
-        appendTo="body"
         [filter]="true"
         (onChange)="loadPositionByTechnology($event.value)"
+        formControlName="technology"
+        optionLabel="name"
+        optionValue="id"
+        appendTo="body"
+        class="w-100"
+        id="technology"
       />
       @if (controls['technology'].touched && controls['technology'].invalid) {
       <small class="text-danger appear">The technology is required</small>
@@ -74,12 +74,12 @@
     <div class="col-md-6">
       <label for="position" class="form-label fw-bold">Position: </label>
       <p-select
-        formControlName="position"
         [options]="positionList"
-        id="position"
-        class="w-100"
-        appendTo="body"
         [filter]="true"
+        formControlName="position"
+        appendTo="body"
+        class="w-100"
+        id="position"
       />
       @if (controls['position'].touched && controls['position'].invalid) {
       <small class="text-danger appear">The position is required</small>
@@ -89,15 +89,16 @@
     <div class="col-md-6">
       <label for="image" class="form-label fw-bold">Image:</label>
       <input
-        id="image"
-        type="file"
-        class="form-control"
         (change)="onFileSelected($event)"
+        class="form-control"
+        type="file"
+        id="image"
       />
       @if (controls['image'].touched && controls['image'].errors?.['required']){
       <small class="text-danger appear">The image is required</small>
-      } @if (controls['image'].touched &&
-      controls['image'].errors?.['invalidFileType']) {
+      }
+
+      @if (controls['image'].touched && controls['image'].errors?.['invalidFileType']) {
       <small class="text-danger appear"
         >Only image files (png, jpg, jpeg, gif) are allowed</small
       >

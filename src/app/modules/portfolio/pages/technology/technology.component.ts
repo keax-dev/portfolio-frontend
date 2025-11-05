@@ -5,7 +5,6 @@ import { Technology } from '@app/home/interfaces/technology';
 @Component({
   selector: 'app-technology',
   templateUrl: './technology.component.html',
-  styleUrls: ['./technology.component.css'],
   standalone: false
 })
 export class TechnologyComponent implements OnChanges {
@@ -21,7 +20,7 @@ export class TechnologyComponent implements OnChanges {
     if (changes['technologyList']) this.updateValue();
   }
 
-  private updateValue() {
+  updateValue() {
     this.value = this.technologyList.length !== 0 ? this.technologyList[0].id! : 0;
   }
 

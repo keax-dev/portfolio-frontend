@@ -56,9 +56,10 @@ export class LoginComponent implements OnInit, OnDestroy {
         if (result.status) {
           this.alert.success(result.alert);
           this.saveUserInfo(result.data);
-        } else {
-          this.alert.resultWarnings(result);
+          return;
         }
+
+        this.alert.resultWarnings(result);
       },
       complete: () => this.spinner.hide(),
       error: () => this.alert.applicationError()

@@ -15,7 +15,7 @@ export class LanguagePipe implements PipeTransform {
         return object[key + '_es'];
     }
 
-    return null;
+    return '';
   }
 
 }

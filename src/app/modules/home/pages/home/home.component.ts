@@ -1,7 +1,7 @@
-import { AlertService } from './../../../shared/services/alert.service';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { UserInfoService } from '@app/shared/services/user-info.service';
 import { HeaderService } from '@app/home/services/header.service';
+import { AlertService } from '@app/shared/services/alert.service';
 import { MenuItem } from 'primeng/api';
 import { Router } from '@angular/router';
 

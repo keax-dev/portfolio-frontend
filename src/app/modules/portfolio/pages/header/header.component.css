@@ -60,26 +60,17 @@
   object-position: bottom;
 }
 
-.machine-1,
-.machine-2,
-.machine-2-es {
-  display: inline-block;
+.machine-text {
   font-family: monospace;
+}
+
+.machine-1 {
+  display: inline-block;
   white-space: nowrap;
   border-right: 2px solid white;
   width: 13ch;
   animation: typing 1s steps(15), blink 0.5s infinite step-end alternate;
   overflow: hidden;
-}
-
-.machine-2 {
-  width: 28ch;
-  animation: typing 2s steps(28), blink 0.5s infinite step-end alternate;
-}
-
-.machine-2-es {
-  width: 36ch;
-  animation: typing 2s steps(36), blink 0.5s infinite step-end alternate;
 }
 
 @keyframes typing {

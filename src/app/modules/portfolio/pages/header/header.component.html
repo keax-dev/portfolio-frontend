@@ -20,12 +20,12 @@
 
     <div class="container d-flex justify-content-center flex-column">
       <h1 class="border-bottom border-primary border-2 pb-2">
-        <span class="machine-1">{{
+        <span class="machine-1 machine-text">{{
           profile.name + " " + profile.last_name | titlecase
         }}</span>
       </h1>
-      <h3 class="my-2">
-        <span [class]="classTitle">{{
+      <h3 class="my-2 machine-text">
+        <span class="text-wrap">{{
           profile | language : "title" : translate.getLang | titlecase
         }}</span>
       </h3>

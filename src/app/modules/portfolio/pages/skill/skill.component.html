@@ -3,6 +3,9 @@
     <div
       class="col-md-9 col-12 py-4 shadow-lg order-2 order-md-1 bg-white card"
     >
+      @if (skillList.length === 0) {
+      <p class="text-center text-secondary">**There are no records**</p>
+      }
       <ul
         class="d-flex flex-wrap gap-4 justify-content-center list-unstyled p-4"
       >
@@ -17,14 +20,14 @@
             <figcaption>{{ skill.name }}</figcaption>
           </figure>
         </li>
-        }@empty {
-        <p class="text-center text-secondary">**There are no records**</p>
         }
       </ul>
     </div>
 
     <header class="col-md-3 col-12 order-1 order-md-2 position-relative">
-      <h2 class="text-center text-primary py-4 mt-0 mt-md-5 pt-md-5 lead display-5 sticky-top">
+      <h2
+        class="text-center text-primary py-4 mt-0 mt-md-5 pt-md-5 lead display-5 sticky-top"
+      >
         {{ title | language : "label" : translate.getLang }}
       </h2>
     </header>

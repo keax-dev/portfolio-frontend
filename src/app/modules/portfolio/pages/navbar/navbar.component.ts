@@ -18,7 +18,10 @@ export class NavbarComponent {
   @Input() navItems: MenuItem[] = [];
   @Input() profile!: Profile;
 
-  languages = [{ code: 'En', language: 'English' }, { code: 'Es', language: 'Español' }];
+  languages = [
+    { code: 'Es', language: 'Español' },
+    { code: 'En', language: 'English' }
+  ];
 
   closeNavbar(): void {
     const navbarBtn = document.getElementById('navbarBtn');

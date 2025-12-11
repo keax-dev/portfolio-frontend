@@ -6,19 +6,11 @@
         <img
           [src]="project.picture"
           [alt]="project.title"
-          class="d-block img-fluid img-hover"
+          (click)="showImage(project)"
+          class="img-project img-hover"
         />
 
         <div class="my-4">
-          <a
-            (click)="showProjectDetails(project)"
-            href="javascript:void(0)"
-            class="btn btn-primary m-1"
-            title="Github"
-          >
-            <i class="pi pi-eye"></i>
-          </a>
-
           @if (project.deploy) {
           <a
             [href]="project.deploy"
@@ -40,6 +32,15 @@
             <i class="pi pi-github"></i>
           </a>
           }
+
+          <a
+            (click)="showProjectDetails(project)"
+            href="javascript:void(0)"
+            class="btn btn-primary m-1"
+            title="Github"
+          >
+            <i class="pi pi-eye"></i>
+          </a>
         </div>
       </div>
     </div>

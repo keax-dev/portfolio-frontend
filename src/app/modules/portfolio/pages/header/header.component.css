@@ -1,3 +1,11 @@
+header {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url("/background/bg-header.gif");
+  background-position: left top;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .btn-cv:hover {
   border-radius: 0%;
 }

@@ -1,5 +1,6 @@
 import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ProjectDetailsComponent } from '../project-details/project-details.component';
+import { ShowImageComponent } from '../show-image/show-image.component';
 import { ParameterService } from '@app/shared/services/parameter.service';
 import { Project } from '@app/home/interfaces/project';
 
@@ -31,6 +32,11 @@ export class ProjectCarouselComponent implements OnChanges {
 
   showProjectDetails(project: Project): void {
     this.parameter.openDialog(ProjectDetailsComponent, project, '30%', '90%');
+  }
+
+  showImage(project: Project): void {
+    const info = { url: project.picture, alt: project.title };
+    this.parameter.openDialog(ShowImageComponent, info, '95%', '97.5%');
   }
 
 }

@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { WorkSheet, WorkBook, utils, write } from 'xlsx';
 import { Column } from '../interfaces/column';
 import { saveAs } from 'file-saver-es';
 
@@ -42,24 +41,7 @@ export class TableComponent<T> implements OnInit {
     const input = event.target as HTMLInputElement;
     return input.value || '';
   }
-
-  downloadExcel(): void {
-    if (this.records.length !== 0) {
-      const data = this.records.map(r => {
-        const row: Record<string, unknown> = {};
-        this.columns.forEach(c => {
-          row[c.name] = (r as Record<string, unknown>)[c.value];
-        });
-        return row;
-      });
-      const worksheet: WorkSheet = utils.json_to_sheet(data);
-      const workbook: WorkBook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
-      const excelBuffer = write(workbook, { bookType: 'xlsx', type: 'array' });
-      const blobData = new Blob([excelBuffer], { type: 'application/octet-stream' });
-      saveAs(blobData, this.fileName + '.xlsx');
-    }
-  }
-
+ 
   newItem(): void {
     this.itemNew.emit();
   }

@@ -6,6 +6,7 @@ import { TechnologyComponent } from '@app/portfolio/pages/technology/technology.
 import { ReactiveFormsModule } from '@angular/forms';
 import { PortfolioComponent } from '@app/portfolio/pages/portfolio/portfolio.component';
 import { EducationComponent } from '@app/portfolio/pages/education/education.component';
+import { ShowImageComponent } from './pages/technology/show-image/show-image.component';
 import { ContactComponent } from '@app/portfolio/pages/contact/contact.component';
 import { ComponentsModule } from '@app/components/components.module';
 import { HeaderComponent } from '@app/portfolio/pages/header/header.component';
@@ -25,6 +26,7 @@ import { NgModule } from '@angular/core';
     CardEducationComponent,
     TechnologyComponent,
     PortfolioComponent,
+    ShowImageComponent,
     EducationComponent,
     ContactComponent,
     NavbarComponent,

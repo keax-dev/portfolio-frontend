@@ -58,6 +58,16 @@ p {
   cursor: pointer;
 }
 
+.img-project {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .img-project {
+    width: 50%;
+  }
+}
+
 .img-hover:hover {
   scale: 1.05;
   transition: 1s ease;

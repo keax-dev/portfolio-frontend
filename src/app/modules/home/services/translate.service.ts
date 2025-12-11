@@ -13,7 +13,7 @@ export class TranslateService {
 
   private translationApiUrl = environment.apiTranslateUrl;
   private apiKey = environment.apiTranslateKey;
-  private lang = 'en';
+  private lang = 'es';
 
   constructor() {
     this.loadLanguage();

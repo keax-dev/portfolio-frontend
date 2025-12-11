@@ -1,5 +1,7 @@
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Component, inject, OnInit } from '@angular/core';
+import { ShowImageComponent } from '../show-image/show-image.component';
+import { ParameterService } from '@app/shared/services/parameter.service';
 import { TranslateService } from '@app/home/services/translate.service';
 import { Project } from '@app/home/interfaces/project';
 
@@ -11,6 +13,7 @@ import { Project } from '@app/home/interfaces/project';
 export class ProjectDetailsComponent implements OnInit {
 
   protected translate = inject(TranslateService);
+  private parameter = inject(ParameterService);
   private config = inject(DynamicDialogConfig);
   private ref = inject(DynamicDialogRef);
 
@@ -22,6 +25,11 @@ export class ProjectDetailsComponent implements OnInit {
 
   close(): void {
     this.ref.close();
+  }
+
+  showImage(): void {
+    const info = { url: this.project.picture, alt: this.project.title };
+    this.parameter.openDialog(ShowImageComponent, info, '95%', '97.5%');
   }
 
 }

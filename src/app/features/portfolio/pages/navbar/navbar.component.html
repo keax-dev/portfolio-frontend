@@ -1,0 +1,69 @@
+<nav
+  class="navbar navbar-dark bg-primary shadow-lg sticky-top z-index-navbar"
+  role="navigation"
+>
+  <div class="container-fluid px-0">
+    <div class="d-flex justify-content-start align-items-center">
+      <a
+        class="d-none d-md-flex align-items-center text-light link-dark text-decoration-none"
+        href="#home"
+      >
+        <i class="pi pi-desktop mx-2 fs-5"></i>
+        {{ profile.name + " " + profile.last_name | titlecase }} |
+        <small class="mx-1">{{
+          profile | language : "title" : translate.getLang | titlecase
+        }}</small>
+        |
+      </a>
+
+      @for (lang of languages; track $index) {
+      <button
+        [ngClass]="{
+          'text-dark fw-bolder': translate.getLang === lang.code.toLowerCase()
+        }"
+        [title]="lang.language"
+        (click)="selectLanguage(lang.code)"
+        class="btn btn-link d-flex align-items-center text-light link-dark text-decoration-none mx-1 p-0 border-0"
+        type="button"
+      >
+        {{ lang.code }}
+      </button>
+      }
+    </div>
+
+    <button
+      class="navbar-toggler mx-2 d-flex justify-content-center align-items-center"
+      type="button"
+      (click)="toggleNavbar()"
+      aria-controls="navbarNav"
+      [attr.aria-expanded]="navbarExpanded"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav" [class.show]="navbarExpanded">
+      <ul class="navbar-nav">
+        @for (navItem of navItems; track $index) {
+        <li class="nav-item text-center">
+          @if (navItem.routerLink) {
+          <a
+            [href]="navItem.routerLink"
+            (click)="closeNavbar()"
+            class="nav-link text-light link-dark"
+            >{{ navItem | language : "label" : translate.getLang }}</a
+          >
+          }@else {
+          <button
+            (click)="contactEmit()"
+            class="btn btn-link nav-link text-light link-dark text-decoration-none w-100"
+            type="button"
+            >{{ navItem | language : "label" : translate.getLang }}</button
+          >
+          }
+        </li>
+        }
+      </ul>
+    </div>
+  </div>
+</nav>

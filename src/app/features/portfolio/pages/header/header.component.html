@@ -1,0 +1,40 @@
+<header class="text-center text-white" id="home">
+
+  <div class="py-4">
+    <div class="container">
+      <img
+        [attr.alt]="'Foto de ' + profile.name"
+        [src]="profile.image"
+        class="img-fluid rounded-circle border border-primary border-2 mb-3"
+      />
+    </div>
+
+    <div class="container d-flex justify-content-center flex-column">
+      <h1 class="border-bottom border-primary border-2 pb-2">
+        <span class="machine-1 machine-text">{{
+          profile.name + " " + profile.last_name | titlecase
+        }}</span>
+      </h1>
+      <h3 class="my-2 machine-text">
+        <span class="text-wrap">{{
+          profile | language : "title" : translate.getLang | titlecase
+        }}</span>
+      </h3>
+    </div>
+
+    <div class="container mt-3">
+      <a
+        [href]="profile.cv"
+        target="_blank"
+        class="btn btn-cv btn-primary position-relative overflow-hidden px-4 py-1"
+        rel="noopener noreferrer"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        {{ cv | language : "label" : translate.getLang | titlecase }}
+      </a>
+    </div>
+  </div>
+</header>

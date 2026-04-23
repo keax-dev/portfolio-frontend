@@ -1,6 +1,4 @@
 export const environment = {
-  url: '',
-  cryptoJS: '',
-  apiTranslateUrl: '',
-  apiTranslateKey: ''
+  url: 'https://www.api.keax.dev/api',
+  cryptoJS: '8uaX651i1Z1mNj8P'
 };

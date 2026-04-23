@@ -1,0 +1,80 @@
+<div [id]="carouselId" class="carousel slide">
+  <div class="carousel-inner">
+    @for (project of projectList; track $index) {
+    <div class="carousel-item" [class.active]="$index === 0">
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <button
+          (click)="showImage(project)"
+          [attr.aria-label]="'Open image of ' + project.title"
+          class="p-0 border-0 bg-transparent"
+          type="button"
+        >
+          <img
+            [src]="project.picture"
+            [alt]="project.title"
+            class="img-project img-hover"
+          />
+        </button>
+
+        <div class="my-4">
+          @if (project.deploy) {
+          <a
+            [href]="project.deploy"
+            [attr.aria-label]="'Open deployment for ' + project.title"
+            target="_blank"
+            class="btn btn-secondary m-1"
+            title="Open deployment"
+            rel="noopener noreferrer"
+          >
+            <i class="pi pi-external-link" aria-hidden="true"></i>
+          </a>
+          }
+
+          @if (project.github) {
+          <a
+            [href]="project.github"
+            [attr.aria-label]="'Open GitHub repository for ' + project.title"
+            target="_blank"
+            class="btn btn-dark m-1"
+            title="GitHub"
+            rel="noopener noreferrer"
+          >
+            <i class="pi pi-github" aria-hidden="true"></i>
+          </a>
+          }
+
+          <button
+            (click)="showProjectDetails(project)"
+            [attr.aria-label]="'View details of ' + project.title"
+            class="btn btn-primary m-1"
+            title="View details"
+            type="button"
+          >
+            <i class="pi pi-eye" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <button
+    [attr.data-bs-target]="'#' + carouselId"
+    class="carousel-control-prev bg-primary"
+    type="button"
+    data-bs-slide="prev"
+  >
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+
+  <button
+    [attr.data-bs-target]="'#' + carouselId"
+    class="carousel-control-next bg-primary"
+    type="button"
+    data-bs-slide="next"
+  >
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>

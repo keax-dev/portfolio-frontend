@@ -1,19 +1,24 @@
 import { RouterModule, Routes } from '@angular/router';
-import { HomeGuard } from '@app/guards/home.guard';
+import { guestMatchGuard } from '@core/guards/guest.guard';
+import { authMatchGuard } from '@core/guards/auth.guard';
 import { NgModule } from '@angular/core';
 
 const routes: Routes = [
   {
     path: '', title: 'Keax',
-    loadChildren: () => import('./modules/portfolio/portfolio.module')
+    loadChildren: () => import('./features/portfolio/modules/portfolio.module').then((m) => m.PortfolioModule)
   },
   {
-    path: 'login', title: 'Login',
-    loadChildren: () => import('./modules/login/login.module')
+    path: 'login',
+    title: 'Login',
+    canMatch: [guestMatchGuard],
+    loadChildren: () => import('./features/auth/modules/login.module').then((m) => m.LoginModule)
   },
   {
-    path: 'home', title: 'Home', canActivate: [HomeGuard],
-    loadChildren: () => import('./modules/home/home.module')
+    path: 'home',
+    title: 'Home',
+    canMatch: [authMatchGuard],
+    loadChildren: () => import('./features/admin/modules/home.module').then((m) => m.HomeModule)
   },
   {
     path: '**', redirectTo: '', pathMatch: 'full'
@@ -21,7 +26,10 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    anchorScrolling: 'enabled',
+    scrollPositionRestoration: 'enabled'
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

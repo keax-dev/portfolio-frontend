@@ -1,0 +1,78 @@
+<form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="m-3">
+  <header>
+    <h4 class="text-primary">
+      {{ labels.title | language : "label" : translate.getLang }}
+    </h4>
+  </header>
+
+  <hr />
+
+  <div class="container-fluid">
+    <div class="col my-2">
+      <label for="name" class="form-label fw-bold"
+        >{{ labels.name | language : "label" : translate.getLang }}
+      </label>
+      <input
+        [maxLength]="100"
+        [minlength]="2"
+        formControlName="name"
+        class="form-control"
+        id="name"
+        appUppercase
+        pInputText
+      />
+      @if (controls['name'].touched && controls['name'].invalid) {
+      <small class="text-danger appear">{{
+        labels.name | language : "required" : translate.getLang
+      }}</small>
+      }
+    </div>
+
+    <div class="col my-2">
+      <label for="email" class="form-label fw-bold"
+        >{{ labels.email | language : "label" : translate.getLang }}
+      </label>
+      <input
+        [maxLength]="254"
+        formControlName="email"
+        class="form-control"
+        id="email"
+        type="email"
+        appLowerCase
+        pInputText
+      />
+      @if (controls['email'].touched && controls['email'].invalid) {
+      <small class="text-danger appear">{{
+        labels.email | language : "required" : translate.getLang
+      }}</small>
+      }
+    </div>
+
+    <div class="col my-2">
+      <label for="message" class="form-label fw-bold">{{
+        labels.message | language : "label" : translate.getLang
+      }}</label>
+      <textarea
+        [maxLength]="500"
+        [minlength]="5"
+        pInputText
+        formControlName="message"
+        class="form-control"
+        id="message"
+        appUppercase
+      >
+      </textarea>
+      @if (controls['message'].touched && controls['message'].invalid) {
+      <small class="text-danger appear">{{
+        labels.message | language : "required" : translate.getLang
+      }}</small>
+      }
+    </div>
+  </div>
+
+  <footer class="w-100 d-flex justify-content-center align-items-center mt-3">
+    <app-button [cancel]="true" (action)="close()"></app-button>
+
+    <app-button [text]="'Send'" [icon]="'pi pi-send'"></app-button>
+  </footer>
+</form>

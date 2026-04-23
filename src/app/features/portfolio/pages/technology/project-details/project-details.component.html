@@ -1,0 +1,70 @@
+<article class="container-fluid p-4 position-relative">
+  <button
+    (click)="close()"
+    aria-label="Close project details"
+    class="btn btn-close position-absolute top-0 end-0 m-2"
+    title="Close"
+    type="button"
+  ></button>
+
+  <header class="text-center mb-3">
+    <h2 class="text-primary fw-bolder">
+      {{ project | language : "title" : translate.getLang }}
+    </h2>
+  </header>
+
+  <hr />
+  <p>{{ project | language : "description" : translate.getLang }}</p>
+  <hr />
+
+  <figure class="d-flex justify-content-center align-items-center">
+    <button
+      (click)="showImage()"
+      [attr.aria-label]="'Open image of ' + (project | language : 'title' : translate.getLang)"
+      class="p-0 border-0 bg-transparent"
+      type="button"
+    >
+      <img
+        [src]="project.picture"
+        [alt]="project.title"
+        class="w-75 img-hover"
+      />
+    </button>
+
+    <figcaption class="visually-hidden">
+      {{ project | language : "title" : translate.getLang }}
+    </figcaption>
+  </figure>
+
+  <hr />
+
+  <footer class="row">
+    <div class="col-12 text-center">
+      @if (project.deploy) {
+      <a
+        [href]="project.deploy"
+        [attr.aria-label]="'Open deployment for ' + (project | language : 'title' : translate.getLang)"
+        target="_blank"
+        class="btn btn-secondary m-1"
+        rel="noopener noreferrer"
+        title="Open deployment"
+      >
+        <i class="pi pi-external-link" aria-hidden="true"></i>
+      </a>
+      }
+
+      @if (project.github) {
+      <a
+        [href]="project.github"
+        [attr.aria-label]="'Open GitHub repository for ' + (project | language : 'title' : translate.getLang)"
+        target="_blank"
+        class="btn btn-dark m-1"
+        rel="noopener noreferrer"
+        title="Open GitHub repository"
+      >
+        <i class="pi pi-github" aria-hidden="true"></i>
+      </a>
+      }
+    </div>
+  </footer>
+</article>

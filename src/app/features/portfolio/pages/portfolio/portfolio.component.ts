@@ -1,0 +1,163 @@
+import { catchError, forkJoin, map, Observable, of, Subject, takeUntil, tap, throwError } from 'rxjs';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { HttpErrorResponse } from '@angular/common/http';
+import { PortfolioService } from '@features/portfolio/services/portfolio.service';
+import { ParameterService } from '@core/services/parameter.service';
+import { ContactComponent } from '../contact/contact.component';
+import { SocialNetwork } from '@shared/models/social-network';
+import { AlertService } from '@core/services/alert.service';
+import { ApiResponse } from '@core/interfaces/apiresponse';
+import { Technology } from '@shared/models/technology';
+import { Education } from '@shared/models/education';
+import { MenuItem } from 'primeng/api';
+import { Profile } from '@shared/models/profile';
+import { Router } from '@angular/router';
+import { Skill } from '@shared/models/skill';
+
+@Component({
+  selector: 'app-portfolio',
+  templateUrl: './portfolio.component.html',
+  standalone: false
+})
+export class PortfolioComponent implements OnInit, OnDestroy {
+
+  private destroy$ = new Subject<void>();
+
+  private portfolioService = inject(PortfolioService);
+  private parameter = inject(ParameterService);
+  private spinner = inject(NgxSpinnerService);
+  private alert = inject(AlertService);
+  private router = inject(Router);
+
+  profile: Profile = {
+    name: 'KEVIN',
+    last_name: 'GALARZA',
+    title: 'INFORMATION SYSTEMS ENGINEER',
+    title_es: 'INGENIERO EN SISTEMAS DE INFORMACIÓN',
+    cv: '',
+    image: './images/profile.jpg'
+  };
+
+  navItems: MenuItem[] = [
+    { label: 'Home', label_es: 'Home', routerLink: '#home' },
+    { label: 'Education', label_es: 'Educación', routerLink: '#education' },
+    { label: 'Skills', label_es: 'Habilidades', routerLink: '#skills' },
+    { label: 'Portfolio', label_es: 'Portafolio', routerLink: '#portfolio' },
+    { label: 'Contact', label_es: 'Contacto', routerLink: '' },
+    { label: 'Login', label_es: 'Login', routerLink: '/login' }
+  ];
+
+  technologyList: Technology[] = [];
+  educationList: Education[] = [];
+  socialNetworkList: SocialNetwork[] = [];
+  skillList: Skill[] = [];
+
+  ngOnInit(): void {
+    this.getInformation();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$?.next();
+    this.destroy$?.complete();
+    this.spinner.hide();
+  }
+
+  getInformation(): void {
+    this.spinner.show();
+    forkJoin([
+      this.uploadSocialNetwork(),
+      this.uploadTechnology(),
+      this.uploadEducation(),
+      this.uploadProfile(),
+      this.uploadSkill()
+    ]).pipe(takeUntil(this.destroy$)).subscribe({
+      complete: () => this.spinner.hide(),
+      error: error => this.alert.httpError(error)
+    });
+  }
+
+  uploadProfile(): Observable<null> {
+    return this.portfolioService.getProfile().pipe(
+      catchError(e => this.infoEmpty<Profile>(e)),
+      takeUntil(this.destroy$),
+      tap(result => {
+        if (result.status) this.profile = result.data;
+      }),
+      map(() => null)
+    );
+  }
+
+  uploadEducation(): Observable<null> {
+    return this.portfolioService.getEducation().pipe(
+      catchError(e => this.infoEmpty<Education[]>(e)),
+      takeUntil(this.destroy$),
+      tap(result => {
+        if (result.status) {
+          this.educationList = result.data.sort((a, b) => a.position - b.position);
+        }
+      }),
+      map(() => null)
+    );
+  }
+
+  uploadSkill(): Observable<null> {
+    return this.portfolioService.getSkill().pipe(
+      catchError(e => this.infoEmpty<Skill[]>(e)),
+      takeUntil(this.destroy$),
+      tap(result => {
+        if (result.status) {
+          this.skillList = result.data.sort((a, b) => a.position - b.position);
+        }
+      }),
+      map(() => null)
+    );
+  }
+
+  uploadTechnology(): Observable<null> {
+    return this.portfolioService.getTechnology().pipe(
+      catchError(e => this.infoEmpty<Technology[]>(e)),
+      takeUntil(this.destroy$),
+      tap(result => {
+        if (result.status) {
+          this.technologyList = result.data.map(technology => {
+            technology.projects = technology.projects.sort((a, b) => a.position - b.position);
+            return technology;
+          }).sort((a, b) => a.position - b.position);
+        }
+      }),
+      map(() => null)
+    );
+  }
+
+  uploadSocialNetwork(): Observable<null> {
+    return this.portfolioService.getSocialNetwork().pipe(
+      catchError(e => this.infoEmpty<SocialNetwork[]>(e)),
+      takeUntil(this.destroy$),
+      tap(result => {
+        if (result.status) {
+          this.socialNetworkList = result.data.sort((a, b) => a.position - b.position);
+        }
+      }),
+      map(() => null)
+    );
+  }
+
+  infoEmpty<T>(e: HttpErrorResponse): Observable<ApiResponse<T>> {
+    if (e.status === 400) {
+      return of(e.error as ApiResponse<T>);
+    }
+
+    return throwError(() => e);
+  }
+
+  modalContact(): void {
+    const dialogRef = this.parameter.openDialog(ContactComponent, null, '30%', '90%');
+    dialogRef.onClose.pipe(takeUntil(this.destroy$)).subscribe({
+      next: result => {
+        if (result) void this.router.navigate(['/'], { fragment: 'home' });
+      }
+    });
+  }
+
+}

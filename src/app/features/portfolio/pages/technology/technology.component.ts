@@ -1,0 +1,27 @@
+import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { TranslateService } from '@core/services/translate.service';
+import { Technology } from '@shared/models/technology';
+
+@Component({
+  selector: 'app-technology',
+  templateUrl: './technology.component.html',
+  standalone: false
+})
+export class TechnologyComponent implements OnChanges {
+
+  protected readonly translate = inject(TranslateService);
+
+  @Input() technologyList: Technology[] = [];
+
+  value!: number;
+  title = { label: 'Portfolio', label_es: 'Portafolio' }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['technologyList']) this.updateValue();
+  }
+
+  updateValue() {
+    this.value = this.technologyList.length !== 0 ? this.technologyList[0].id! : 0;
+  }
+
+}

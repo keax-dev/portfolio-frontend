@@ -1,0 +1,73 @@
+<form [formGroup]="skillForm" (ngSubmit)="onSubmit()" class="m-3">
+  <header>
+    <h4 class="text-primary">{{ title }}</h4>
+  </header>
+
+  <hr />
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label for="name" class="form-label fw-bold">Name:</label>
+      <input
+        formControlName="name"
+        class="form-control"
+        id="name"
+        appUppercase
+        pInputText
+      />
+      @if (controls['name'].touched && controls['name'].invalid) {
+      <small class="text-danger appear">The name is required</small>
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="image" class="form-label fw-bold">Image:</label>
+      <input
+        (change)="onFileSelected($event)"
+        class="form-control"
+        type="file"
+        id="image"
+      />
+      @if (controls['image'].touched && controls['image'].errors?.['required']){
+      <small class="text-danger appear">The image is required</small>
+      }
+
+      @if (controls['image'].touched && controls['image'].errors?.['invalidFileType']) {
+      <small class="text-danger appear"
+        >Only image files (png, jpg, jpeg, gif) are allowed</small
+      >
+      }
+    </div>
+
+    <div class="col-md-6">
+      <label for="position" class="form-label fw-bold">Position: </label>
+      <p-select
+        [options]="positionList"
+        [filter]="true"
+        formControlName="position"
+        appendTo="body"
+        class="w-100"
+        id="position"
+      />
+      @if (controls['position'].touched && controls['position'].invalid) {
+      <small class="text-danger appear">The position is required</small>
+      }
+    </div>
+
+    @if (update) {
+    <div class="col-md-6">
+      <p class="fw-bolder text-center mb-2">Previous Image:</p>
+
+      <div class="text-center">
+        <img [src]="urlImage" class="img-max" alt="Previous skill image" />
+      </div>
+    </div>
+    }
+  </div>
+
+  <footer class="w-100 d-flex justify-content-center align-items-center mt-3">
+    <app-button [cancel]="true" (action)="close()"></app-button>
+
+    <app-button></app-button>
+  </footer>
+</form>

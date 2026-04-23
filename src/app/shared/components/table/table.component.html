@@ -1,0 +1,141 @@
+<div class="w-100 d-flex justify-content-end align-items-center mt-3">
+  <app-button
+    [classPadding]="'px-4 py-2'"
+    [icon]="'pi-plus pi'"
+    [text]="newTxt"
+    [type]="'button'"
+    (click)="newItem()"
+  ></app-button>
+</div>
+
+<p-table
+  #dt
+  [paginatorDropdownAppendTo]="'body'"
+  [globalFilterFields]="columnNames"
+  [rowsPerPageOptions]="[5, 10, 20, 50]"
+  [paginator]="true"
+  [sortField]="sortName"
+  [sortOrder]="order"
+  [value]="records"
+  [rows]="10"
+  stripedRows
+>
+  <ng-template pTemplate="caption" class="m-0 p-0">
+    <div
+      class="w-100 d-flex justify-content-between align-items-center flex-wrap"
+    >
+      @if(search){
+      <p-iconfield iconPosition="left" class="ml-auto my-1">
+        <p-inputicon>
+          <i class="pi pi-search" aria-hidden="true"></i>
+        </p-inputicon>
+        <input
+          (input)="dt.filterGlobal(valueSearch($event), 'contains')"
+          aria-label="Search records"
+          placeholder="Buscar"
+          type="search"
+          pInputText
+        />
+      </p-iconfield>
+      }
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="header">
+      <tr>
+      @for (column of columns; track $index) {
+      <th
+        [pSortableColumn]="column.value"
+        class="bg-primary text-light"
+        scope="col"
+      >
+        {{ column.name }}
+        <p-sortIcon [field]="column.value"></p-sortIcon>
+      </th>
+      }
+
+      @if (details) {
+      <th scope="col" class="bg-primary text-light">{{ detailsTxt }}</th>
+      }
+
+      @if (actions) {
+      <th scope="col" class="bg-primary text-light">Actions</th>
+      }
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-row>
+    <tr>
+      @for (column of columns; track $index) {
+        @if (column.image){
+        <td>
+          @if (row[column.value]) {
+          <img
+            [src]="row[column.value]"
+            class="img-max"
+            [alt]="$any(row)['name'] || $any(row)['title'] || $any(row)['institution_name'] || 'Record image'"
+          />
+          }@else {
+          <p>No image</p>
+          }
+        </td>
+      }@else{
+        <td>
+          {{ row[column.value] }}
+        </td>
+        }
+      }
+
+      @if (details) {
+      <td>
+        <button
+          (click)="detailsItem(row)"
+          aria-label="View details"
+          class="btn-icon"
+          title="View details"
+          type="button"
+        >
+          <i class="pi pi-eye" aria-hidden="true"></i>
+        </button>
+      </td>
+      }
+
+      @if (actions) {
+      <td>
+        <button
+          (click)="modifyItem(row)"
+          aria-label="Edit record"
+          class="btn btn-success m-1"
+          title="Edit record"
+          type="button"
+        >
+          <i class="pi pi-pencil" aria-hidden="true"></i>
+        </button>
+
+        @if (delete) {
+        <button
+          (click)="deleteItem(row)"
+          aria-label="Delete record"
+          class="btn btn-danger m-1"
+          title="Delete record"
+          type="button"
+        >
+          <i class="pi pi-eraser" aria-hidden="true"></i>
+        </button>
+        }
+      </td>
+      }
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td
+        [attr.colspan]="columns.length + (actions ? 1 : 0) + (details ? 1 : 0)"
+        class="text-center py-3"
+      >
+        There are no records.
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

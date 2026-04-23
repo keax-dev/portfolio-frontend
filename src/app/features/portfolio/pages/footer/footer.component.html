@@ -1,0 +1,87 @@
+<footer class="bg-primary">
+  <div class="container-fluid">
+    <div class="row row-cols-1 row-cols-md-3 g-4 pt-3 mx-0">
+      <div class="col text-center my-1">
+        <img
+          decoding="async"
+          loading="lazy"
+          class="rounded-circle bg-white border-dark border border-2"
+          src="./images/logo.png"
+          alt="Keax logo"
+        />
+      </div>
+
+      <div class="col my-1">
+        <div
+          class="w-100 h-100 d-flex justify-content-center align-items-center flex-column"
+        >
+          <p class="text-center text-light my-3">
+            {{ messageSN | language : "label" : translate.getLang }}
+          </p>
+
+          <nav aria-label="Social media links" class="w-100">
+            <ul
+              class="list-unstyled d-flex justify-content-center align-items-center flex-wrap mb-0"
+            >
+              @for (socialNetwork of socialNetworkList; track socialNetwork.id) {
+              <li>
+                <a
+                  [attr.aria-label]="'Open ' + (socialNetwork.name | titlecase)"
+                  [title]="socialNetwork.name | titlecase"
+                  [href]="socialNetwork.url"
+                  target="_blank"
+                  class="btn btn-light m-1 py-1 px-2 d-flex justify-content-center align-items-center"
+                  rel="noopener noreferrer"
+                >
+                  <i
+                    [class]="socialNetwork.icon + ' fs-2'"
+                    [style.color]="socialNetwork.color"
+                    aria-hidden="true"
+                  ></i>
+                </a>
+              </li>
+              }
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <div class="col my-3">
+        <nav
+          aria-label="Footer navigation"
+          class="w-100 h-100 d-flex justify-content-center align-items-center flex-wrap"
+        >
+          <ul
+            class="list-unstyled d-flex flex-wrap justify-content-center align-content-center gap-2 mb-0"
+          >
+            @for (navItem of navItems; track $index) {
+            <li>
+              @if (navItem.routerLink) {
+              <a
+                [href]="navItem.routerLink"
+                class="text-light text-decoration-none link-dark"
+                >{{ navItem | language : "label" : translate.getLang }}</a
+              >
+              }@else {
+              <button
+                (click)="contactEmit()"
+                class="btn btn-link text-light text-decoration-none link-dark p-0 border-0"
+                type="button"
+                >{{ navItem | language : "label" : translate.getLang }}</button
+              >
+              }
+            </li>
+            }
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <p class="text-center text-light pb-2">
+      <small>
+        Copyright &copy; {{ year }}.
+        {{ messageCR | language : "label" : translate.getLang }}
+      </small>
+    </p>
+  </div>
+</footer>

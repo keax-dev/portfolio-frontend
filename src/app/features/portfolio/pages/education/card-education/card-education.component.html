@@ -4,8 +4,10 @@
       <div class="row align-items-center">
         <div class="col-3">
           <img
+            decoding="async"
+            loading="lazy"
             [src]="education.institution_url"
-            [alt]="education.institution_name"
+            alt=""
             class="w-100"
           />
         </div>
@@ -14,13 +16,13 @@
             {{ education.place | titlecase }},
             {{ education | language : "end" : translate.getLang | titlecase }}
           </p>
-          <h6 class="card-title mb-1 fw-bold text-dark">
+          <h3 class="card-title h6 mb-1 fw-bold text-dark">
             {{
               education
                 | language : "institution_name" : translate.getLang
                 | titlecase
             }}
-          </h6>
+          </h3>
           <p class="card-text mb-0 text-secondary">
             {{ education | language : "title" : translate.getLang | titlecase }}
           </p>

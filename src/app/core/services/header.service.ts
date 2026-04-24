@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { environment } from '@src/environments/environment';
-import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +8,6 @@ import { Injectable } from '@angular/core';
 export class HeaderService {
 
   url = environment.url;
-
-  constructor(public http: HttpClient) { }
+  readonly http = inject(HttpClient);
 
 }

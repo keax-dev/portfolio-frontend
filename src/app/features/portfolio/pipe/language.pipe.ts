@@ -6,16 +6,14 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class LanguagePipe implements PipeTransform {
 
-  transform(object: any, key: string, language: string): any {
+  transform(object: unknown, key: string, language: string): string {
+    if (!object || typeof object !== 'object') return '';
 
-    switch (language) {
-      case 'en':
-        return object[key];
-      case 'es':
-        return object[key + '_es'];
-    }
+    const translatedKey = language === 'es' ? `${key}_es` : key;
+    const source = object as Record<string, unknown>;
+    const value = source[translatedKey];
 
-    return '';
+    return typeof value === 'string' ? value : '';
   }
 
 }

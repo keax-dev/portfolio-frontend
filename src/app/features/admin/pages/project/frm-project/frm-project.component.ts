@@ -75,12 +75,12 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
   }
 
   buildForm(
-    title: string = '',
-    titleEs: string = '',
-    description: string = '',
-    descriptionEs: string = '',
-    deploy: string = '',
-    github: string = '',
+    title = '',
+    titleEs = '',
+    description = '',
+    descriptionEs = '',
+    deploy = '',
+    github = '',
     position: number | null = null,
     technology: number | null = null
   ): void {

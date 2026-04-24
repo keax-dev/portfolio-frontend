@@ -1,6 +1,6 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { ConfirmationService } from 'primeng/api';
 import { inject, Injectable } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { ApiResponse } from '@core/interfaces/apiresponse';
@@ -35,7 +35,7 @@ export class AlertService {
     this.toastr.error(sms || "Please contact support", title || 'An error occurred');
   }
 
-  httpError(error: unknown, fallbackMessage?: string, hideSpinner: boolean = true): void {
+  httpError(error: unknown, fallbackMessage?: string, hideSpinner = true): void {
     if (hideSpinner) {
       this.spinner.hide();
     }

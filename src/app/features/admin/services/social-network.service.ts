@@ -13,17 +13,19 @@ export class SocialNetworkService {
 
   private header = inject(HeaderService);
 
-  getSocialNetworkListByDeleted(deleted: boolean = false): Observable<ApiResponse<SocialNetwork[]>> {
+  getSocialNetworkListByDeleted(deleted = false): Observable<ApiResponse<SocialNetwork[]>> {
     return this.header.http.get<ApiResponse<SocialNetwork[]>>(this.header.url + this.reference + `/by-deleted/${deleted}`);
   }
 
   createSocialNetwork(socialNetwork: SocialNetwork): Observable<ApiResponse<SocialNetwork>> {
-    const { id: _id, ...payload } = socialNetwork;
+    const payload = { ...socialNetwork };
+    delete payload.id;
     return this.header.http.post<ApiResponse<SocialNetwork>>(this.header.url + this.reference, payload);
   }
 
   updateSocialNetwork(socialNetworkId: number, socialNetwork: SocialNetwork): Observable<ApiResponse<SocialNetwork>> {
-    const { id: _id, ...payload } = socialNetwork;
+    const payload = { ...socialNetwork };
+    delete payload.id;
     return this.header.http.put<ApiResponse<SocialNetwork>>(this.header.url + this.reference + `/${socialNetworkId}`, payload);
   }
 

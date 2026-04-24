@@ -28,10 +28,10 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
 
   institutionForm!: FormGroup;
+  urlImage!: string;
   title = 'New Institution';
 
   update!: boolean;
-  urlImage!: string;
 
   ngOnInit(): void {
     this.loadVariables();
@@ -55,7 +55,7 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
     this.buildForm();
   }
 
-  buildForm(name: string = '', nameEs: string = ''): void {
+  buildForm(name = '', nameEs = ''): void {
     const validatorsImg = [this.parameter.imageFileValidator];
 
     if (!name) validatorsImg.push(Validators.required);
@@ -83,7 +83,7 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
 
   createInstitution(): void {
     this.spinner.show();
-    this.institutionService.createInstitution({ name: this.controls['name'].value, name_es: this.controls['name_es'].value }).pipe(takeUntil(this.destroy$)).subscribe({
+    this.institutionService.createInstitution(this.valuesName).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.uploadImageInstitution(result.data);
@@ -94,7 +94,7 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
 
   updateInstitution(): void {
     this.spinner.show();
-    this.institutionService.updateInstitution(this.config.data.id, { name: this.controls['name'].value, name_es: this.controls['name_es'].value }).pipe(takeUntil(this.destroy$)).subscribe({
+    this.institutionService.updateInstitution(this.config.data.id, this.valuesName).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         if (this.controls['image'].value) {
@@ -136,6 +136,13 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
 
   get controls() {
     return this.institutionForm.controls;
+  }
+
+  get valuesName() {
+    return {
+      name: this.controls['name'].value,
+      name_es: this.controls['name_es'].value
+    }
   }
 
 }

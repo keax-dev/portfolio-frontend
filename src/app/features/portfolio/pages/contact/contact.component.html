@@ -1,8 +1,13 @@
-<form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="m-3">
+<form
+  [formGroup]="contactForm"
+  (ngSubmit)="onSubmit()"
+  aria-labelledby="contact-title"
+  class="m-3"
+>
   <header>
-    <h4 class="text-primary">
+    <h2 id="contact-title" class="h4 text-primary">
       {{ labels.title | language : "label" : translate.getLang }}
-    </h4>
+    </h2>
   </header>
 
   <hr />
@@ -15,14 +20,19 @@
       <input
         [maxLength]="100"
         [minlength]="2"
+        [attr.aria-describedby]="
+          controls['name'].touched && controls['name'].invalid ? 'name-error' : null
+        "
+        [attr.aria-invalid]="controls['name'].touched && controls['name'].invalid"
         formControlName="name"
         class="form-control"
         id="name"
+        required
         appUppercase
         pInputText
       />
       @if (controls['name'].touched && controls['name'].invalid) {
-      <small class="text-danger appear">{{
+      <small class="text-danger appear" id="name-error" role="alert">{{
         labels.name | language : "required" : translate.getLang
       }}</small>
       }
@@ -34,15 +44,20 @@
       </label>
       <input
         [maxLength]="254"
+        [attr.aria-describedby]="
+          controls['email'].touched && controls['email'].invalid ? 'email-error' : null
+        "
+        [attr.aria-invalid]="controls['email'].touched && controls['email'].invalid"
         formControlName="email"
         class="form-control"
         id="email"
+        required
         type="email"
         appLowerCase
         pInputText
       />
       @if (controls['email'].touched && controls['email'].invalid) {
-      <small class="text-danger appear">{{
+      <small class="text-danger appear" id="email-error" role="alert">{{
         labels.email | language : "required" : translate.getLang
       }}</small>
       }
@@ -55,15 +70,20 @@
       <textarea
         [maxLength]="500"
         [minlength]="5"
+        [attr.aria-describedby]="
+          controls['message'].touched && controls['message'].invalid ? 'message-error' : null
+        "
+        [attr.aria-invalid]="controls['message'].touched && controls['message'].invalid"
         pInputText
         formControlName="message"
         class="form-control"
         id="message"
+        required
         appUppercase
       >
       </textarea>
       @if (controls['message'].touched && controls['message'].invalid) {
-      <small class="text-danger appear">{{
+      <small class="text-danger appear" id="message-error" role="alert">{{
         labels.message | language : "required" : translate.getLang
       }}</small>
       }

@@ -13,17 +13,19 @@ export class ProjectService {
 
   private header = inject(HeaderService);
 
-  getProjectListByDeleted(deleted: boolean = false): Observable<ApiResponse<Project[]>> {
+  getProjectListByDeleted(deleted = false): Observable<ApiResponse<Project[]>> {
     return this.header.http.get<ApiResponse<Project[]>>(this.header.url + this.reference + `/by-deleted/${deleted}`);
   }
 
   createProject(project: Project): Observable<ApiResponse<Project>> {
-    const { id: _id, ...payload } = project;
+    const payload = { ...project };
+    delete payload.id;
     return this.header.http.post<ApiResponse<Project>>(this.header.url + this.reference, payload);
   }
 
   updateProject(projectId: number, project: Project): Observable<ApiResponse<Project>> {
-    const { id: _id, ...payload } = project;
+    const payload = { ...project };
+    delete payload.id;
     return this.header.http.put<ApiResponse<Project>>(this.header.url + this.reference + `/${projectId}`, payload);
   }
 

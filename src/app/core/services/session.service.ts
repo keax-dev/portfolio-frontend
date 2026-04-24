@@ -1,7 +1,7 @@
-import { Router, UrlTree } from '@angular/router';
 import { inject, Injectable } from '@angular/core';
-import { AlertService } from '@core/services/alert.service';
+import { Router, UrlTree } from '@angular/router';
 import { UserInfoService } from '@core/services/user-info.service';
+import { AlertService } from '@core/services/alert.service';
 
 @Injectable({
   providedIn: 'root'
@@ -93,7 +93,7 @@ export class SessionService {
     void this.router.navigateByUrl('/login');
   }
 
-  private clearExpiredStoredSession(notify: boolean = false): boolean {
+  clearExpiredStoredSession(notify = false): boolean {
     if (!this.userInfoService.hasStoredSession || this.userInfoService.hasValidSession) {
       return false;
     }

@@ -60,7 +60,7 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
     this.buildForm();
   }
 
-  buildForm(name: string = '', position: number | null = null): void {
+  buildForm(name = '', position: number | null = null): void {
     const validatorsImg = [this.parameter.imageFileValidator];
 
     if (!name) validatorsImg.push(Validators.required);

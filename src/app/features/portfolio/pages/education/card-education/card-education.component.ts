@@ -10,7 +10,7 @@ import { Education } from '@shared/models/education';
 })
 export class CardEducationComponent {
 
-  protected readonly translate = inject(TranslateService);
+  readonly translate = inject(TranslateService);
 
   @Input() education!: Education;
   @Input() position!: boolean;

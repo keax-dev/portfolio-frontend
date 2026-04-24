@@ -13,17 +13,19 @@ export class EducationService {
 
   private header = inject(HeaderService);
 
-  getEducationListByDeleted(deleted: boolean = false): Observable<ApiResponse<Education[]>> {
+  getEducationListByDeleted(deleted = false): Observable<ApiResponse<Education[]>> {
     return this.header.http.get<ApiResponse<Education[]>>(this.header.url + this.reference + `/by-deleted/${deleted}`);
   }
 
   createEducation(education: Education): Observable<ApiResponse<Education>> {
-    const { id: _id, ...payload } = education;
+    const payload = { ...education };
+    delete payload.id;
     return this.header.http.post<ApiResponse<Education>>(this.header.url + this.reference, payload);
   }
 
   updateEducation(educationId: number, education: Education): Observable<ApiResponse<Education>> {
-    const { id: _id, ...payload } = education;
+    const payload = { ...education };
+    delete payload.id;
     return this.header.http.put<ApiResponse<Education>>(this.header.url + this.reference + `/${educationId}`, payload);
   }
 

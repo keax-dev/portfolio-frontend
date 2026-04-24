@@ -44,10 +44,7 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
     this.institutionService.getInstitutionListByDeleted().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => this.records = result.data,
       complete: () => this.spinner.hide(),
-      error: error => {
-        this.records = [];
-        this.alert.httpError(error);
-      }
+      error: error => this.alert.httpError(error)
     });
   }
 

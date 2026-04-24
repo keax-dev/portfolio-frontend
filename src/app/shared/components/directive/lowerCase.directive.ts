@@ -1,4 +1,4 @@
-import { Directive, HostListener } from '@angular/core';
+import { Directive, HostListener, inject } from '@angular/core';
 import { NgControl } from '@angular/forms';
 
 @Directive({
@@ -7,7 +7,7 @@ import { NgControl } from '@angular/forms';
 })
 export class LowerCaseDirective {
 
-  constructor(private control: NgControl) { }
+  private readonly control = inject(NgControl);
 
   @HostListener('input', ['$event'])
   onInputChange(event: Event): void {

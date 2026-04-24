@@ -13,17 +13,19 @@ export class InstitutionService {
 
   private header = inject(HeaderService);
 
-  getInstitutionListByDeleted(deleted: boolean = false): Observable<ApiResponse<Institution[]>> {
+  getInstitutionListByDeleted(deleted = false): Observable<ApiResponse<Institution[]>> {
     return this.header.http.get<ApiResponse<Institution[]>>(this.header.url + this.reference + `/by-deleted/${deleted}`);
   }
 
   createInstitution(institution: Institution): Observable<ApiResponse<Institution>> {
-    const { id: _id, ...payload } = institution;
+    const payload = { ...institution };
+    delete payload.id;
     return this.header.http.post<ApiResponse<Institution>>(this.header.url + this.reference, payload);
   }
 
   updateInstitution(institutionId: number, institution: Institution): Observable<ApiResponse<Institution>> {
-    const { id: _id, ...payload } = institution;
+    const payload = { ...institution };
+    delete payload.id;
     return this.header.http.put<ApiResponse<Institution>>(this.header.url + this.reference + `/${institutionId}`, payload);
   }
 

@@ -19,8 +19,8 @@
         appUppercase
         pInputText
       />
-      @if (controls['name'].touched && controls['name'].invalid) {
-      <small class="text-danger appear">The name is required</small>
+      @if (controls["name"].touched && controls["name"].invalid) {
+        <small class="text-danger appear">The name is required</small>
       }
     </div>
 
@@ -33,8 +33,8 @@
         appUppercase
         pInputText
       />
-      @if (controls['name_es'].touched && controls['name_es'].invalid) {
-      <small class="text-danger appear">The Spanish name is required</small>
+      @if (controls["name_es"].touched && controls["name_es"].invalid) {
+        <small class="text-danger appear">The Spanish name is required</small>
       }
     </div>
 
@@ -46,32 +46,44 @@
         type="file"
         id="image"
       />
-      @if (controls['image'].touched && controls['image'].errors?.['required']){
-      <small class="text-danger appear">The image is required</small>
-
+      @if (
+        controls["image"].touched && controls["image"].errors?.["required"]
+      ) {
+        <small class="text-danger appear">The image is required</small>
       }
 
-      @if (controls['image'].touched && controls['image'].errors?.['invalidFileType']) {
-      <small class="text-danger appear"
-        >Only image files (png, jpg, jpeg, gif) are allowed</small
-      >
+      @if (
+        controls["image"].touched &&
+        controls["image"].errors?.["invalidFileType"]
+      ) {
+        <small class="text-danger appear"
+          >Only image files (png, jpg, jpeg, gif) are allowed</small
+        >
       }
     </div>
 
     @if (update) {
-    <div class="col-md-6">
-      <p class="fw-bolder text-center mb-2">Previous Image:</p>
+      <div class="col-md-6">
+        <p class="fw-bolder text-center mb-2">Previous Image:</p>
 
-      <div class="text-center">
-        <img [src]="urlImage" class="img-max" alt="Previous institution image" />
+        <div class="text-center">
+          <img
+            [src]="urlImage"
+            class="img-max"
+            alt="Previous institution image"
+          />
+        </div>
       </div>
-    </div>
     }
   </div>
 
-  <footer class="w-100 d-flex justify-content-center align-items-center">
-    <app-button [cancel]="true" (action)="close()"></app-button>
+  <footer class="row g-3 justify-content-center mt-2">
+    <div class="col-auto">
+      <app-button [cancel]="true" (action)="close()"></app-button>
+    </div>
 
-    <app-button></app-button>
+    <div class="col-auto">
+      <app-button></app-button>
+    </div>
   </footer>
 </form>

@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import { ProjectDetailsComponent } from '../project-details/project-details.component';
 import { ShowImageComponent } from '../show-image/show-image.component';
 import { ParameterService } from '@core/services/parameter.service';
@@ -9,7 +9,7 @@ import { Project } from '@shared/models/project';
   templateUrl: './project-carousel.component.html',
   standalone: false
 })
-export class ProjectCarouselComponent implements OnChanges {
+export class ProjectCarouselComponent implements OnChanges, OnInit {
 
   private parameter = inject(ParameterService);
 

@@ -7,13 +7,13 @@
     <div
       class="col-md-9 col-12 py-4 shadow-lg order-2 order-md-1 bg-white card"
     >
-      @if (skillList.length === 0) {
+      @if (skillList().length === 0) {
       <p class="text-center text-secondary">There are no records</p>
       }
       <ul
         class="d-flex flex-wrap gap-4 justify-content-center list-unstyled p-4"
       >
-        @for (skill of skillList; track skill.id) {
+        @for (skill of skillList(); track skill.id) {
         <li>
           <figure class="card skill-card text-center pointer shadow">
             <img

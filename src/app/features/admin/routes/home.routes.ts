@@ -1,15 +1,14 @@
+import { Routes } from '@angular/router';
 import { TableSocialNetworkComponent } from '../pages/social-network/table-social-network/table-social-network.component';
-import { TableInstitutionComponent } from '@features/admin/pages/institution/table-institution/table-institution.component';
-import { TableTechnologyComponent } from '@features/admin/pages/technology/table-technology/table-technology.component';
-import { TableEducationComponent } from '@features/admin/pages/education/table-education/table-education.component';
-import { TableProjectComponent } from '@features/admin/pages/project/table-project/table-project.component';
-import { RouterModule, Routes } from '@angular/router';
-import { TableSkillComponent } from '@features/admin/pages/skill/table-skill/table-skill.component';
+import { TableInstitutionComponent } from '../pages/institution/table-institution/table-institution.component';
+import { TableTechnologyComponent } from '../pages/technology/table-technology/table-technology.component';
+import { TableEducationComponent } from '../pages/education/table-education/table-education.component';
+import { TableProjectComponent } from '../pages/project/table-project/table-project.component';
+import { TableSkillComponent } from '../pages/skill/table-skill/table-skill.component';
 import { FrmProfileComponent } from '../pages/profile/frm-profile/frm-profile.component';
-import { HomeComponent } from '@features/admin/pages/home/home.component';
-import { NgModule } from '@angular/core';
+import { HomeComponent } from '../pages/home/home.component';
 
-const routes: Routes = [
+export const homeRoutes: Routes = [
   {
     path: '',
     component: HomeComponent,
@@ -26,9 +25,3 @@ const routes: Routes = [
     ]
   }
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class HomeRoutingModule { }

@@ -1,21 +1,23 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FrmProjectComponent } from '../frm-project/frm-project.component';
-import { Subject, takeUntil } from 'rxjs';
+
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
 import { ProjectService } from '@features/admin/services/project.service';
 import { AlertService } from '@core/services/alert.service';
 import { Column } from '@shared/components/interfaces/column';
 import { Project } from '@shared/models/project';
+import { TableComponent } from '../../../../../shared/components/table/table.component';
 
 @Component({
-  selector: 'app-table-project',
-  templateUrl: './table-project.component.html',
-  standalone: false
+    selector: 'app-table-project',
+    templateUrl: './table-project.component.html',
+    imports: [TableComponent]
 })
 export class TableProjectComponent implements OnInit, OnDestroy {
 
-  private destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   private projectService = inject(ProjectService);
   private parameter = inject(ParameterService);
@@ -40,14 +42,12 @@ export class TableProjectComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$?.next();
-    this.destroy$?.complete();
     this.spinner.hide();
   }
 
   getProjectListByDeleted(): void {
     this.spinner.show();
-    this.projectService.getProjectListByDeleted().pipe(takeUntil(this.destroy$)).subscribe({
+    this.projectService.getProjectListByDeleted().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.records = result.data;
         this.positionsInfo = this.records.reduce((acc, project) => {
@@ -70,7 +70,7 @@ export class TableProjectComponent implements OnInit, OnDestroy {
       positionsInfo: this.positionsInfo,
       project: project
     });
-    dialogRef.onClose.pipe(takeUntil(this.destroy$)).subscribe({
+    dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         if (result) this.getProjectListByDeleted();
       }
@@ -83,7 +83,7 @@ export class TableProjectComponent implements OnInit, OnDestroy {
 
   deleteProject(project: Project): void {
     this.spinner.show();
-    this.projectService.deleteProject(project.id!).pipe(takeUntil(this.destroy$)).subscribe({
+    this.projectService.deleteProject(project.id!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.getProjectListByDeleted();

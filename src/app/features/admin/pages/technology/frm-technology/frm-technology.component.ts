@@ -1,20 +1,25 @@
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { TechnologyService } from '@features/admin/services/technology.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertService } from '@core/services/alert.service';
 import { Technology } from '@shared/models/technology';
+import { UppercaseDirective } from '../../../../../shared/components/directive/uppercase.directive';
+import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
+import { ButtonComponent } from '../../../../../shared/components/button/button.component';
 
 @Component({
-  selector: 'app-frm-technology',
-  templateUrl: './frm-technology.component.html',
-  standalone: false
+    selector: 'app-frm-technology',
+    templateUrl: './frm-technology.component.html',
+    imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, InputText, Select, ButtonComponent]
 })
 export class FrmTechnologyComponent implements OnInit, OnDestroy {
 
-  private destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   private technologyService = inject(TechnologyService);
   private spinner = inject(NgxSpinnerService);
@@ -35,8 +40,6 @@ export class FrmTechnologyComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$?.next();
-    this.destroy$?.complete();
     this.spinner.hide();
   }
 
@@ -71,7 +74,7 @@ export class FrmTechnologyComponent implements OnInit, OnDestroy {
 
   createTechnology(): void {
     this.spinner.show();
-    this.technologyService.createTechnology(this.technologyForm.value).pipe(takeUntil(this.destroy$)).subscribe({
+    this.technologyService.createTechnology(this.technologyForm.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.close(result.data);
@@ -83,7 +86,7 @@ export class FrmTechnologyComponent implements OnInit, OnDestroy {
 
   updateTechnology(): void {
     this.spinner.show();
-    this.technologyService.updateTechnology(this.config.data.technology.id, this.technologyForm.value).pipe(takeUntil(this.destroy$)).subscribe({
+    this.technologyService.updateTechnology(this.config.data.technology.id, this.technologyForm.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.close(result.data);

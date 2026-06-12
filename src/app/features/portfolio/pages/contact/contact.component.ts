@@ -1,20 +1,25 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PortfolioService } from '@features/portfolio/services/portfolio.service';
 import { TranslateService } from '@core/services/translate.service';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AlertService } from '@core/services/alert.service';
+import { UppercaseDirective } from '../../../../shared/components/directive/uppercase.directive';
+import { LowerCaseDirective } from '../../../../shared/components/directive/lowerCase.directive';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { LanguagePipe } from '../../pipe/language.pipe';
 
 @Component({
-  selector: 'app-contact',
-  templateUrl: './contact.component.html',
-  standalone: false
+    selector: 'app-contact',
+    templateUrl: './contact.component.html',
+    imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, LowerCaseDirective, ButtonComponent, LanguagePipe]
 })
 export class ContactComponent implements OnInit, OnDestroy {
 
-  private destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly translate = inject(TranslateService);
   private portfolioService = inject(PortfolioService);
@@ -41,8 +46,6 @@ export class ContactComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$?.next();
-    this.destroy$?.complete();
     this.spinner.hide();
   }
 
@@ -53,7 +56,7 @@ export class ContactComponent implements OnInit, OnDestroy {
     }
 
     this.spinner.show();
-    this.portfolioService.sendEmail(this.contactForm.value).pipe(takeUntil(this.destroy$)).subscribe({
+    this.portfolioService.sendEmail(this.contactForm.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.close(true);

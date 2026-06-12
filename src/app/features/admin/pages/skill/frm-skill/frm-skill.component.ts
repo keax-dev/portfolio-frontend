@@ -1,22 +1,27 @@
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
 import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
 import { SkillService } from '@features/admin/services/skill.service';
 import { Skill } from '@shared/models/skill';
+import { UppercaseDirective } from '../../../../../shared/components/directive/uppercase.directive';
+import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
+import { ButtonComponent } from '../../../../../shared/components/button/button.component';
 
 @Component({
-  selector: 'app-frm-skill',
-  templateUrl: './frm-skill.component.html',
-  standalone: false
+    selector: 'app-frm-skill',
+    templateUrl: './frm-skill.component.html',
+    imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, InputText, Select, ButtonComponent]
 })
 export class FrmSkillComponent implements OnInit, OnDestroy {
 
-  private destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   private skillService = inject(SkillService);
   private imageService = inject(ImageService);
@@ -40,8 +45,6 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$?.next();
-    this.destroy$?.complete();
     this.spinner.hide();
   }
 
@@ -88,7 +91,7 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
 
   createSkill(): void {
     this.spinner.show();
-    this.skillService.createSkill(this.skill).pipe(takeUntil(this.destroy$)).subscribe({
+    this.skillService.createSkill(this.skill).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.uploadImageInstitution(result.data);
@@ -99,7 +102,7 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
 
   updateSkill(): void {
     this.spinner.show();
-    this.skillService.updateSkill(this.config.data.skill.id, this.skill).pipe(takeUntil(this.destroy$)).subscribe({
+    this.skillService.updateSkill(this.config.data.skill.id, this.skill).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         if (this.controls['image'].value) {
@@ -115,7 +118,7 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
   }
 
   uploadImageInstitution(skill: Skill): void {
-    this.imageService.uploadImageSkill(skill.id!, this.controls['image'].value).pipe(takeUntil(this.destroy$)).subscribe({
+    this.imageService.uploadImageSkill(skill.id!, this.controls['image'].value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.close(result.data);

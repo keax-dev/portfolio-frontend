@@ -1,21 +1,23 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FrmInstitutionComponent } from '@features/admin/pages/institution/frm-institution/frm-institution.component';
 import { InstitutionService } from '@features/admin/services/institution.service';
-import { Subject, takeUntil } from 'rxjs';
+
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
 import { AlertService } from '@core/services/alert.service';
 import { Institution } from '@shared/models/institution';
 import { Column } from '@shared/components/interfaces/column';
+import { TableComponent } from '../../../../../shared/components/table/table.component';
 
 @Component({
-  selector: 'app-table-institution',
-  templateUrl: './table-institution.component.html',
-  standalone: false
+    selector: 'app-table-institution',
+    templateUrl: './table-institution.component.html',
+    imports: [TableComponent]
 })
 export class TableInstitutionComponent implements OnInit, OnDestroy {
 
-  private destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   private institutionService = inject(InstitutionService);
   private parameter = inject(ParameterService);
@@ -34,14 +36,12 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$?.next();
-    this.destroy$?.complete();
     this.spinner.hide();
   }
 
   getInstitutionListByDeleted(): void {
     this.spinner.show();
-    this.institutionService.getInstitutionListByDeleted().pipe(takeUntil(this.destroy$)).subscribe({
+    this.institutionService.getInstitutionListByDeleted().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => this.records = result.data,
       complete: () => this.spinner.hide(),
       error: error => this.alert.httpError(error)
@@ -50,7 +50,7 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
 
   modalInstitution(institution?: Institution): void {
     const dialogRef = this.parameter.openDialog(FrmInstitutionComponent, institution);
-    dialogRef.onClose.pipe(takeUntil(this.destroy$)).subscribe({
+    dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         if (result) this.getInstitutionListByDeleted();
       }
@@ -63,7 +63,7 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
 
   deleteInstitution(institution: Institution): void {
     this.spinner.show();
-    this.institutionService.deleteInstitution(institution.id!).pipe(takeUntil(this.destroy$)).subscribe({
+    this.institutionService.deleteInstitution(institution.id!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.getInstitutionListByDeleted();

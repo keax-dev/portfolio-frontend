@@ -1,21 +1,23 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, inject, output, input } from '@angular/core';
 import { TranslateService } from '@core/services/translate.service';
 import { SocialNetwork } from '@shared/models/social-network';
 import { MenuItem } from 'primeng/api';
+import { TitleCasePipe } from '@angular/common';
+import { LanguagePipe } from '../../pipe/language.pipe';
 
 @Component({
-  selector: 'app-footer',
-  templateUrl: './footer.component.html',
-  standalone: false
+    selector: 'app-footer',
+    templateUrl: './footer.component.html',
+    imports: [TitleCasePipe, LanguagePipe]
 })
 export class FooterComponent {
 
   protected readonly translate = inject(TranslateService);
 
-  @Output() contact = new EventEmitter<number>();
+  readonly contact = output<void>();
 
-  @Input() socialNetworkList: SocialNetwork[] = [];
-  @Input() navItems: MenuItem[] = [];
+  readonly socialNetworkList = input<SocialNetwork[]>([]);
+  readonly navItems = input<MenuItem[]>([]);
 
   year = new Date().getFullYear();
 

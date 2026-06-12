@@ -23,7 +23,7 @@
             <ul
               class="list-unstyled d-flex justify-content-center align-items-center flex-wrap mb-0"
             >
-              @for (socialNetwork of socialNetworkList; track socialNetwork.id) {
+              @for (socialNetwork of socialNetworkList(); track socialNetwork.id) {
               <li>
                 <a
                   [attr.aria-label]="'Open ' + (socialNetwork.name | titlecase)"
@@ -54,7 +54,7 @@
           <ul
             class="list-unstyled d-flex flex-wrap justify-content-center align-content-center gap-2 mb-0"
           >
-            @for (navItem of navItems; track $index) {
+            @for (navItem of navItems(); track $index) {
             <li>
               @if (navItem.routerLink) {
               <a

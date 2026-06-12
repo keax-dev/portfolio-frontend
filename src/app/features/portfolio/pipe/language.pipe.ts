@@ -1,9 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-  name: 'language',
-  standalone: false
-})
+@Pipe({ name: 'language' })
 export class LanguagePipe implements PipeTransform {
 
   transform(object: unknown, key: string, language: string): string {

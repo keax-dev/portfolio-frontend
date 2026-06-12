@@ -1,10 +1,7 @@
 import { Directive, HostListener, inject } from '@angular/core';
 import { NgControl } from '@angular/forms';
 
-@Directive({
-  selector: '[appUppercase]',
-  standalone: false
-})
+@Directive({ selector: '[appUppercase]' })
 export class UppercaseDirective {
 
   private readonly control = inject(NgControl);

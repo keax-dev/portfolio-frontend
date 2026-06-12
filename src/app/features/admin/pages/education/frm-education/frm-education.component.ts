@@ -1,22 +1,27 @@
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { InstitutionService } from '@features/admin/services/institution.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { EducationService } from '@features/admin/services/education.service';
 import { AlertService } from '@core/services/alert.service';
 import { Institution } from '@shared/models/institution';
 import { Education } from '@shared/models/education';
+import { UppercaseDirective } from '../../../../../shared/components/directive/uppercase.directive';
+import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
+import { ButtonComponent } from '../../../../../shared/components/button/button.component';
 
 @Component({
-  selector: 'app-frm-education',
-  templateUrl: './frm-education.component.html',
-  standalone: false
+    selector: 'app-frm-education',
+    templateUrl: './frm-education.component.html',
+    imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, InputText, Select, ButtonComponent]
 })
 export class FrmEducationComponent implements OnInit, OnDestroy {
 
-  private destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   private institutionService = inject(InstitutionService);
   private educationService = inject(EducationService);
@@ -39,8 +44,6 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$?.next();
-    this.destroy$?.complete();
     this.spinner.hide();
   }
 
@@ -50,7 +53,6 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
       title_es: ['', [Validators.required]],
       institution: [null, [Validators.required]],
       place: ['', [Validators.required]],
-      place_es: ['', [Validators.required]],
       start: [''],
       start_es: [''],
       end: ['', [Validators.required]],
@@ -62,7 +64,7 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
 
     if (this.config.data.education) {
       this.update = true;
-      this.title = 'Update Education';
+      this.title = 'Update Education'; 
       this.educationForm.patchValue(this.config.data.education);
     }
 
@@ -85,7 +87,7 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
 
   createEducation(): void {
     this.spinner.show();
-    this.educationService.createEducation(this.educationForm.value).pipe(takeUntil(this.destroy$)).subscribe({
+    this.educationService.createEducation(this.educationForm.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.close(result.data);
@@ -97,7 +99,7 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
 
   updateEducation(): void {
     this.spinner.show();
-    this.educationService.updateEducation(this.config.data.education.id, this.educationForm.value).pipe(takeUntil(this.destroy$)).subscribe({
+    this.educationService.updateEducation(this.config.data.education.id, this.educationForm.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.close(result.data);
@@ -109,7 +111,7 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
 
   getInstitutionListByDeleted(): void {
     this.spinner.show();
-    this.institutionService.getInstitutionListByDeleted().pipe(takeUntil(this.destroy$)).subscribe({
+    this.institutionService.getInstitutionListByDeleted().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => this.institutionList = result.data,
       complete: () => this.spinner.hide(),
       error: error => this.alert.httpError(error)

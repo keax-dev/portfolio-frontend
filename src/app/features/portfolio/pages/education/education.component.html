@@ -14,11 +14,11 @@
     </header>
 
     <div class="col-md-9 col-12 py-4 shadow-lg bg-white card">
-      @if (educationList.length === 0) {
+      @if (educationList().length === 0) {
       <p class="text-center text-secondary">There are no records</p>
       } @else {
       <ol class="list-unstyled m-0 p-0">
-        @for (education of educationList; track education.id) {
+        @for (education of educationList(); track education.id) {
         <li>
           <app-card-education
             [education]="education"

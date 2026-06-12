@@ -2,9 +2,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Component, inject, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-show-image',
-  templateUrl: './show-image.component.html',
-  standalone: false
+    selector: 'app-show-image',
+    templateUrl: './show-image.component.html'
 })
 export class ShowImageComponent implements OnInit {
 

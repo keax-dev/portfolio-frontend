@@ -13,7 +13,7 @@
   </header>
 
   <p-accordion class="w-100 shadow-lg card bg-white card" [value]="value">
-    @for (technology of technologyList; track technology.id) {
+    @for (technology of technologyList(); track technology.id) {
     <p-accordion-panel [value]="technology.id!">
       <p-accordion-header>
         <span class="text-secondary fw-semibold fs-5">{{

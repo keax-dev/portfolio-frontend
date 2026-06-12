@@ -1,21 +1,23 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FrmTechnologyComponent } from '../frm-technology/frm-technology.component';
-import { Subject, takeUntil } from 'rxjs';
+
 import { TechnologyService } from '@features/admin/services/technology.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
 import { AlertService } from '@core/services/alert.service';
 import { Technology } from '@shared/models/technology';
 import { Column } from '@shared/components/interfaces/column';
+import { TableComponent } from '../../../../../shared/components/table/table.component';
 
 @Component({
-  selector: 'app-table-education',
-  templateUrl: './table-technology.component.html',
-  standalone: false
+    selector: 'app-table-education',
+    templateUrl: './table-technology.component.html',
+    imports: [TableComponent]
 })
 export class TableTechnologyComponent implements OnInit, OnDestroy {
 
-  private destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   private technologyService = inject(TechnologyService);
   private parameter = inject(ParameterService);
@@ -34,14 +36,12 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$?.next();
-    this.destroy$?.complete();
     this.spinner.hide();
   }
 
   getTechnologyListByDeleted(): void {
     this.spinner.show();
-    this.technologyService.getTechnologyListByDeleted().pipe(takeUntil(this.destroy$)).subscribe({
+    this.technologyService.getTechnologyListByDeleted().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => this.records = result.data,
       complete: () => this.spinner.hide(),
       error: error => {
@@ -56,7 +56,7 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
       positions: this.records.length + 5,
       technology: technology
     });
-    dialogRef.onClose.pipe(takeUntil(this.destroy$)).subscribe({
+    dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         if (result) this.getTechnologyListByDeleted();
       }
@@ -69,7 +69,7 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
 
   deleteTechnology(technology: Technology): void {
     this.spinner.show();
-    this.technologyService.deleteTechnology(technology.id!).pipe(takeUntil(this.destroy$)).subscribe({
+    this.technologyService.deleteTechnology(technology.id!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.getTechnologyListByDeleted();

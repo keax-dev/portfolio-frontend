@@ -4,11 +4,12 @@ import { ShowImageComponent } from '../show-image/show-image.component';
 import { ParameterService } from '@core/services/parameter.service';
 import { TranslateService } from '@core/services/translate.service';
 import { Project } from '@shared/models/project';
+import { LanguagePipe } from '../../../pipe/language.pipe';
 
 @Component({
-  selector: 'app-project-details',
-  templateUrl: './project-details.component.html',
-  standalone: false
+    selector: 'app-project-details',
+    templateUrl: './project-details.component.html',
+    imports: [LanguagePipe]
 })
 export class ProjectDetailsComponent implements OnInit {
 

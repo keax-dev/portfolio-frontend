@@ -1,21 +1,23 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FrmEducationComponent } from '../frm-education/frm-education.component';
-import { Subject, takeUntil } from 'rxjs';
+
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
 import { EducationService } from '@features/admin/services/education.service';
 import { AlertService } from '@core/services/alert.service';
 import { Education } from '@shared/models/education';
 import { Column } from '@shared/components/interfaces/column';
+import { TableComponent } from '../../../../../shared/components/table/table.component';
 
 @Component({
-  selector: 'app-table-education',
-  templateUrl: './table-education.component.html',
-  standalone: false
+    selector: 'app-table-education',
+    templateUrl: './table-education.component.html',
+    imports: [TableComponent]
 })
 export class TableEducationComponent implements OnInit, OnDestroy {
 
-  private destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   private educationService = inject(EducationService);
   private parameter = inject(ParameterService);
@@ -39,14 +41,12 @@ export class TableEducationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$?.next();
-    this.destroy$?.complete();
     this.spinner.hide();
   }
 
   getEducationListByDeleted(): void {
     this.spinner.show();
-    this.educationService.getEducationListByDeleted().pipe(takeUntil(this.destroy$)).subscribe({
+    this.educationService.getEducationListByDeleted().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => this.records = result.data,
       complete: () => this.spinner.hide(),
       error: error => {
@@ -61,7 +61,7 @@ export class TableEducationComponent implements OnInit, OnDestroy {
       positions: this.records.length + 5,
       education: education
     });
-    dialogRef.onClose.pipe(takeUntil(this.destroy$)).subscribe({
+    dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         if (result) this.getEducationListByDeleted();
       }
@@ -74,7 +74,7 @@ export class TableEducationComponent implements OnInit, OnDestroy {
 
   deleteEducation(education: Education): void {
     this.spinner.show();
-    this.educationService.deleteEducation(education.id!).pipe(takeUntil(this.destroy$)).subscribe({
+    this.educationService.deleteEducation(education.id!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.getEducationListByDeleted();

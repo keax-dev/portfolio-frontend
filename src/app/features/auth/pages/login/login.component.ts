@@ -1,22 +1,24 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UserInfoService } from '@core/services/user-info.service';
 import { LoginService } from '@features/auth/services/login.service';
 import { AlertService } from '@core/services/alert.service';
 import { Router } from '@angular/router';
 import { Auth } from '@features/auth/interfaces/auth';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
-  standalone: false
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css'],
+    imports: [FormsModule, ReactiveFormsModule, ButtonComponent]
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-  private destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
   private readonly fallbackSessionMs = 14_000_000;
 
   private userInfoService = inject(UserInfoService);
@@ -38,8 +40,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$?.next();
-    this.destroy$?.complete();
     this.spinner.hide();
   }
 
@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     this.spinner.show();
-    this.loginService.login(this.authForm.value).pipe(takeUntil(this.destroy$)).subscribe({
+    this.loginService.login(this.authForm.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.saveUserInfo(result.data);

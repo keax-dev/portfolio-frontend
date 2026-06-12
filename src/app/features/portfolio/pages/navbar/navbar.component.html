@@ -10,9 +10,9 @@
         href="#home"
       >
         <i class="pi pi-desktop mx-2 fs-5"></i>
-        {{ profile.name + " " + profile.last_name | titlecase }} |
+        {{ profile().name + " " + profile().last_name | titlecase }} |
         <small class="mx-1">{{
-          profile | language : "title" : translate.getLang | titlecase
+          profile() | language : "title" : translate.getLang | titlecase
         }}</small>
         |
       </a>
@@ -46,7 +46,7 @@
 
     <div class="collapse navbar-collapse" id="navbarNav" [class.show]="navbarExpanded">
       <ul class="navbar-nav">
-        @for (navItem of navItems; track $index) {
+        @for (navItem of navItems(); track $index) {
         <li class="nav-item text-center">
           @if (navItem.routerLink) {
           <a

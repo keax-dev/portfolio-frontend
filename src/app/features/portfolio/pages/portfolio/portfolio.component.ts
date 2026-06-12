@@ -1,5 +1,6 @@
-import { catchError, forkJoin, map, Observable, of, Subject, takeUntil, tap, throwError } from 'rxjs';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { catchError, forkJoin, map, Observable, of, tap, throwError } from 'rxjs';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PortfolioService } from '@features/portfolio/services/portfolio.service';
@@ -14,15 +15,21 @@ import { MenuItem } from 'primeng/api';
 import { Profile } from '@shared/models/profile';
 import { Router } from '@angular/router';
 import { Skill } from '@shared/models/skill';
+import { HeaderComponent } from '../header/header.component';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { EducationComponent } from '../education/education.component';
+import { SkillComponent } from '../skill/skill.component';
+import { TechnologyComponent } from '../technology/technology.component';
+import { FooterComponent } from '../footer/footer.component';
 
 @Component({
-  selector: 'app-portfolio',
-  templateUrl: './portfolio.component.html',
-  standalone: false
+    selector: 'app-portfolio',
+    templateUrl: './portfolio.component.html',
+    imports: [HeaderComponent, NavbarComponent, EducationComponent, SkillComponent, TechnologyComponent, FooterComponent]
 })
 export class PortfolioComponent implements OnInit, OnDestroy {
 
-  private destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   private portfolioService = inject(PortfolioService);
   private parameter = inject(ParameterService);
@@ -58,8 +65,6 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$?.next();
-    this.destroy$?.complete();
     this.spinner.hide();
   }
 
@@ -71,7 +76,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
       this.uploadEducation(),
       this.uploadProfile(),
       this.uploadSkill()
-    ]).pipe(takeUntil(this.destroy$)).subscribe({
+    ]).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       complete: () => this.spinner.hide(),
       error: error => this.alert.httpError(error)
     });
@@ -80,7 +85,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   uploadProfile(): Observable<null> {
     return this.portfolioService.getProfile().pipe(
       catchError(e => this.infoEmpty<Profile>(e)),
-      takeUntil(this.destroy$),
+      takeUntilDestroyed(this.destroyRef),
       tap(result => {
         if (result.status) this.profile = result.data;
       }),
@@ -91,7 +96,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   uploadEducation(): Observable<null> {
     return this.portfolioService.getEducation().pipe(
       catchError(e => this.infoEmpty<Education[]>(e)),
-      takeUntil(this.destroy$),
+      takeUntilDestroyed(this.destroyRef),
       tap(result => {
         if (result.status) {
           this.educationList = result.data.sort((a, b) => a.position - b.position);
@@ -104,7 +109,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   uploadSkill(): Observable<null> {
     return this.portfolioService.getSkill().pipe(
       catchError(e => this.infoEmpty<Skill[]>(e)),
-      takeUntil(this.destroy$),
+      takeUntilDestroyed(this.destroyRef),
       tap(result => {
         if (result.status) {
           this.skillList = result.data.sort((a, b) => a.position - b.position);
@@ -117,7 +122,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   uploadTechnology(): Observable<null> {
     return this.portfolioService.getTechnology().pipe(
       catchError(e => this.infoEmpty<Technology[]>(e)),
-      takeUntil(this.destroy$),
+      takeUntilDestroyed(this.destroyRef),
       tap(result => {
         if (result.status) {
           this.technologyList = result.data.map(technology => {
@@ -133,7 +138,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   uploadSocialNetwork(): Observable<null> {
     return this.portfolioService.getSocialNetwork().pipe(
       catchError(e => this.infoEmpty<SocialNetwork[]>(e)),
-      takeUntil(this.destroy$),
+      takeUntilDestroyed(this.destroyRef),
       tap(result => {
         if (result.status) {
           this.socialNetworkList = result.data.sort((a, b) => a.position - b.position);
@@ -153,7 +158,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
 
   modalContact(): void {
     const dialogRef = this.parameter.openDialog(ContactComponent, null, '30%', '90%');
-    dialogRef.onClose.pipe(takeUntil(this.destroy$)).subscribe({
+    dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         if (result) void this.router.navigate(['/'], { fragment: 'home' });
       }

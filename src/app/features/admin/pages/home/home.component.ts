@@ -1,12 +1,14 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { SessionService } from '@core/services/session.service';
 import { MenuItem } from 'primeng/api';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
-  standalone: false
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.css'],
+    imports: [RouterLink, RouterLinkActive, RouterOutlet, ConfirmDialog]
 })
 export class HomeComponent implements OnInit, OnDestroy {
 

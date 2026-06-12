@@ -1,10 +1,7 @@
 import { Directive, HostListener, inject } from '@angular/core';
 import { NgControl } from '@angular/forms';
 
-@Directive({
-  selector: '[appLowerCase]',
-  standalone: false
-})
+@Directive({ selector: '[appLowerCase]' })
 export class LowerCaseDirective {
 
   private readonly control = inject(NgControl);

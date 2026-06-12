@@ -1,20 +1,25 @@
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SocialNetworkService } from '@features/admin/services/social-network.service';
-import { Subject, takeUntil } from 'rxjs';
+
 import { NgxSpinnerService } from 'ngx-spinner';
 import { SocialNetwork } from '@shared/models/social-network';
 import { AlertService } from '@core/services/alert.service';
+import { UppercaseDirective } from '../../../../../shared/components/directive/uppercase.directive';
+import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
+import { ButtonComponent } from '../../../../../shared/components/button/button.component';
 
 @Component({
-  selector: 'app-frm-social-network',
-  templateUrl: './frm-social-network.component.html',
-  standalone: false
+    selector: 'app-frm-social-network',
+    templateUrl: './frm-social-network.component.html',
+    imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, InputText, Select, ButtonComponent]
 })
 export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
 
-  private destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   private socialNetworkService = inject(SocialNetworkService);
   private spinner = inject(NgxSpinnerService);
@@ -35,8 +40,6 @@ export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$?.next();
-    this.destroy$?.complete();
     this.spinner.hide();
   }
 
@@ -74,7 +77,7 @@ export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
 
   createSocialNetwork(): void {
     this.spinner.show();
-    this.socialNetworkService.createSocialNetwork(this.socialNetworForm.value).pipe(takeUntil(this.destroy$)).subscribe({
+    this.socialNetworkService.createSocialNetwork(this.socialNetworForm.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.close(result.data);
@@ -86,7 +89,7 @@ export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
 
   updateSocialNetwork(): void {
     this.spinner.show();
-    this.socialNetworkService.updateSocialNetwork(this.config.data.socialNetwork.id, this.socialNetworForm.value).pipe(takeUntil(this.destroy$)).subscribe({
+    this.socialNetworkService.updateSocialNetwork(this.config.data.socialNetwork.id, this.socialNetworForm.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.close(result.data);

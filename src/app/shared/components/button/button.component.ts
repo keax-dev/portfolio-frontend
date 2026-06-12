@@ -1,38 +1,30 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, computed, output, input } from '@angular/core';
 
 @Component({
-  selector: 'app-button',
-  templateUrl: './button.component.html',
-  standalone: false
+    selector: 'app-button',
+    templateUrl: './button.component.html'
 })
-export class ButtonComponent implements OnInit {
+export class ButtonComponent {
 
-  @Input() disabled = false;
-  @Input() cancel = false;
+  readonly disabled = input(false);
+  readonly cancel = input(false);
 
-  @Input() classPadding = 'px-4';
-  @Input() class = 'btn btn-primary';
-  @Input() text = 'Save';
-  @Input() icon = 'pi pi-save';
-  @Input() type = 'submit';
+  readonly classPadding = input('px-4');
+  readonly customClass = input('btn btn-primary');
+  readonly text = input('Save');
+  readonly icon = input('pi pi-save');
+  readonly type = input('submit');
 
-  @Output() action = new EventEmitter();
+  readonly action = output<void>();
 
-  ngOnInit(): void {
-    this.loadCancelButton();
-  }
+  protected readonly buttonClass = computed(() => {
+    const baseClass = this.cancel() ? 'btn btn-secondary' : this.customClass();
+    return `${baseClass} ${this.classPadding()} d-flex justify-content-center align-items-center m-2`;
+  });
 
-  loadCancelButton(): void {
-    if (this.cancel) {
-      this.class = 'btn btn-secondary';
-      this.text = 'Cancel';
-      this.icon = 'pi pi-times';
-      this.type = 'button';
-    }
-    this.classPadding += ' ';
-    this.class += ' ';
-    this.icon += ' mx-2';
-  }
+  protected readonly buttonText = computed(() => this.cancel() ? 'Cancel' : this.text());
+  protected readonly buttonIcon = computed(() => `${this.cancel() ? 'pi pi-times' : this.icon()} mx-2`);
+  protected readonly buttonType = computed(() => this.cancel() ? 'button' : this.type());
 
   clickAction(): void {
     this.action.emit();

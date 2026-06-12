@@ -1,40 +1,42 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, computed, output, input } from '@angular/core';
 import { Column } from '../interfaces/column';
+import { ButtonComponent } from '../button/button.component';
+import { TableModule } from 'primeng/table';
+import { PrimeTemplate } from 'primeng/api';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
-  selector: 'app-tabla',
-  templateUrl: './table.component.html',
-  standalone: false
+    selector: 'app-tabla',
+    templateUrl: './table.component.html',
+    imports: [ButtonComponent, TableModule, PrimeTemplate, IconField, InputIcon, InputText]
 })
-export class TableComponent<T> implements OnInit {
+export class TableComponent<T> {
 
-  @Input() records: T[] = [];
-  @Input() columns: Column[] = [];
+  readonly records = input<T[]>([]);
+  readonly columns = input<Column[]>([]);
 
-  @Input() detailsTxt = "Details";
-  @Input() fileName = "Reporte";
-  @Input() sortName = '';
-  @Input() newTxt = "";
-  @Input() order = 1;
+  readonly detailsTxt = input("Details");
+  readonly fileName = input("Reporte");
+  readonly sortName = input('');
+  readonly newTxt = input("");
+  readonly order = input(1);
 
-  @Input() details = false;
-  @Input() actions = true;
-  @Input() delete = true;
-  @Input() search = true;
-  @Input() excel = true;
-  @Input() new = true;
+  readonly details = input(false);
+  readonly actions = input(true);
+  readonly delete = input(true);
+  readonly search = input(true);
+  readonly excel = input(true);
+  readonly new = input(true);
 
-  @Output() itemDetails = new EventEmitter();
-  @Output() itemDelete = new EventEmitter();
-  @Output() itemEdit = new EventEmitter();
-  @Output() itemNew = new EventEmitter();
+  readonly itemDetails = output<T>();
+  readonly itemDelete = output<T>();
+  readonly itemEdit = output<T>();
+  readonly itemNew = output<void>();
 
-  columnNames: string[] = [];
-
-  ngOnInit(): void {
-    this.columnNames = this.columns.map(c => c.value);
-    if (!this.sortName) this.sortName = this.columnNames[0];
-  }
+  protected readonly columnNames = computed(() => this.columns().map(c => c.value));
+  protected readonly resolvedSortName = computed(() => this.sortName() || this.columnNames()[0]);
 
   valueSearch(event: Event): string {
     const input = event.target as HTMLInputElement;

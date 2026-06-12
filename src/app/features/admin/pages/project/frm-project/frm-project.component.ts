@@ -1,7 +1,8 @@
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { TechnologyService } from '@features/admin/services/technology.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
@@ -10,15 +11,19 @@ import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
 import { Technology } from '@shared/models/technology';
 import { Project } from '@shared/models/project';
+import { UppercaseDirective } from '../../../../../shared/components/directive/uppercase.directive';
+import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
+import { ButtonComponent } from '../../../../../shared/components/button/button.component';
 
 @Component({
-  selector: 'app-frm-project',
-  templateUrl: './frm-project.component.html',
-  standalone: false
+    selector: 'app-frm-project',
+    templateUrl: './frm-project.component.html',
+    imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, InputText, Select, ButtonComponent]
 })
 export class FrmProjectComponent implements OnInit, OnDestroy {
 
-  private destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   private technologyService = inject(TechnologyService);
   private projectService = inject(ProjectService);
@@ -44,8 +49,6 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$?.next();
-    this.destroy$?.complete();
     this.spinner.hide();
   }
 
@@ -108,7 +111,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
 
   getTechnologyListByDeleted(): void {
     this.spinner.show();
-    this.technologyService.getTechnologyListByDeleted().pipe(takeUntil(this.destroy$)).subscribe({
+    this.technologyService.getTechnologyListByDeleted().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => this.technologyList = result.data,
       complete: () => this.spinner.hide(),
       error: error => this.alert.httpError(error)
@@ -131,7 +134,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
 
   createProject(): void {
     this.spinner.show();
-    this.projectService.createProject(this.project).pipe(takeUntil(this.destroy$)).subscribe({
+    this.projectService.createProject(this.project).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.uploadImageInstitution(result.data);
@@ -142,7 +145,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
 
   updateProject(): void {
     this.spinner.show();
-    this.projectService.updateProject(this.config.data.project.id, this.project).pipe(takeUntil(this.destroy$)).subscribe({
+    this.projectService.updateProject(this.config.data.project.id, this.project).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         if (this.controls['image'].value) {
@@ -158,7 +161,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
   }
 
   uploadImageInstitution(project: Project): void {
-    this.imageService.uploadImageProject(project.id!, this.controls['image'].value).pipe(takeUntil(this.destroy$)).subscribe({
+    this.imageService.uploadImageProject(project.id!, this.controls['image'].value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.close(result.data);

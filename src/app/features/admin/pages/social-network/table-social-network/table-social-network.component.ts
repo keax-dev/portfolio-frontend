@@ -1,21 +1,23 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FrmSocialNetworkComponent } from '../frm-social-network/frm-social-network.component';
 import { SocialNetworkService } from '@features/admin/services/social-network.service';
-import { Subject, takeUntil } from 'rxjs';
+
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
 import { SocialNetwork } from '@shared/models/social-network';
 import { AlertService } from '@core/services/alert.service';
 import { Column } from '@shared/components/interfaces/column';
+import { TableComponent } from '../../../../../shared/components/table/table.component';
 
 @Component({
-  selector: 'app-table-social-network',
-  templateUrl: './table-social-network.component.html',
-  standalone: false
+    selector: 'app-table-social-network',
+    templateUrl: './table-social-network.component.html',
+    imports: [TableComponent]
 })
 export class TableSocialNetworkComponent implements OnInit, OnDestroy {
 
-  private destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   private socialNetworkService = inject(SocialNetworkService);
   private parameter = inject(ParameterService);
@@ -37,14 +39,12 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$?.next();
-    this.destroy$?.complete();
     this.spinner.hide();
   }
 
   getSocialNetworkListByDeleted(): void {
     this.spinner.show();
-    this.socialNetworkService.getSocialNetworkListByDeleted().pipe(takeUntil(this.destroy$)).subscribe({
+    this.socialNetworkService.getSocialNetworkListByDeleted().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => this.records = result.data,
       complete: () => this.spinner.hide(),
       error: error => {
@@ -59,7 +59,7 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
       positions: this.records.length + 5,
       socialNetwork: socialNetwork
     });
-    dialogRef.onClose.pipe(takeUntil(this.destroy$)).subscribe({
+    dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         if (result) this.getSocialNetworkListByDeleted();
       }
@@ -72,7 +72,7 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
 
   deleteSocialNetwork(socialNetwork: SocialNetwork): void {
     this.spinner.show();
-    this.socialNetworkService.deleteSocialNetwork(socialNetwork.id!).pipe(takeUntil(this.destroy$)).subscribe({
+    this.socialNetworkService.deleteSocialNetwork(socialNetwork.id!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: result => {
         this.alert.success(result.alert);
         this.getSocialNetworkListByDeleted();

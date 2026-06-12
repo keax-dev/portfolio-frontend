@@ -1,22 +1,24 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, inject, output, input } from '@angular/core';
 import { TranslateService } from '@core/services/translate.service';
 import { MenuItem } from 'primeng/api';
 import { Profile } from '@shared/models/profile';
+import { NgClass, TitleCasePipe } from '@angular/common';
+import { LanguagePipe } from '../../pipe/language.pipe';
 
 @Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css'],
-  standalone: false
+    selector: 'app-navbar',
+    templateUrl: './navbar.component.html',
+    styleUrls: ['./navbar.component.css'],
+    imports: [NgClass, TitleCasePipe, LanguagePipe]
 })
 export class NavbarComponent {
 
   protected translate = inject(TranslateService);
 
-  @Output() contact = new EventEmitter<number>();
+  readonly contact = output<void>();
 
-  @Input() navItems: MenuItem[] = [];
-  @Input() profile!: Profile;
+  readonly navItems = input<MenuItem[]>([]);
+  readonly profile = input.required<Profile>();
 
   navbarExpanded = false;
 

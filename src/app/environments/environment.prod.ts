@@ -1,4 +1,5 @@
 export const environment = {
   url: 'https://www.api.keax.dev/api',
-  cryptoJS: '8uaX651i1Z1mNj8P'
+  visitorGeoUrl: 'https://ip.guide',
+  cryptoJS: '1uaC231i1X1mNj8Q'
 };

@@ -1,15 +1,19 @@
 import { Component, inject, OnChanges, SimpleChanges, OnInit, input } from '@angular/core';
 import { ProjectDetailsComponent } from '../project-details/project-details.component';
 import { ShowImageComponent } from '../show-image/show-image.component';
+import { TranslateService } from '@core/services/translate.service';
 import { ParameterService } from '@core/services/parameter.service';
+import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { Project } from '@shared/models/project';
 
 @Component({
-    selector: 'app-project-carousel',
-    templateUrl: './project-carousel.component.html'
+  selector: 'app-project-carousel',
+  templateUrl: './project-carousel.component.html',
+  imports: [LanguagePipe]
 })
 export class ProjectCarouselComponent implements OnChanges, OnInit {
 
+  protected translate = inject(TranslateService);
   private parameter = inject(ParameterService);
 
   readonly projectList = input<Project[]>([]);

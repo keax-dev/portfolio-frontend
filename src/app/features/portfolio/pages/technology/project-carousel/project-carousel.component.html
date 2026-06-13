@@ -3,6 +3,8 @@
     @for (project of projectList(); track $index) {
     <div class="carousel-item" [class.active]="$index === 0">
       <div class="d-flex justify-content-center align-items-center flex-column">
+        <h3 class="text-primary fw-bold my-3">{{ project | language : "title" : translate.getLang }}</h3>
+
         <button
           (click)="showImage(project)"
           [attr.aria-label]="'Open image of ' + project.title"

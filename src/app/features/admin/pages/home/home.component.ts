@@ -1,8 +1,8 @@
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { SessionService } from '@core/services/session.service';
-import { MenuItem } from 'primeng/api';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import { MenuItem } from 'primeng/api';
 
 @Component({
     selector: 'app-home',
@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private sessionService = inject(SessionService);
 
   menuList: MenuItem[] = [
+    { icon: 'pi pi-chart-bar', label: "Dashboard", routerLink: 'visitor-dashboard' },
     { icon: 'pi pi-warehouse', label: "Institutions", routerLink: 'institution' },
     { icon: 'pi pi-graduation-cap', label: "Education", routerLink: 'education' },
     { icon: 'pi pi-star', label: "Skills", routerLink: 'skill' },

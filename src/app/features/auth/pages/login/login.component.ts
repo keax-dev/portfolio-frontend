@@ -1,14 +1,13 @@
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UserInfoService } from '@core/services/user-info.service';
+import { ButtonComponent } from '@shared/components/button/button.component';
 import { LoginService } from '@features/auth/services/login.service';
 import { AlertService } from '@core/services/alert.service';
 import { Router } from '@angular/router';
 import { Auth } from '@features/auth/interfaces/auth';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
 
 @Component({
     selector: 'app-login',

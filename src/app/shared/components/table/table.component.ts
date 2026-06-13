@@ -1,11 +1,11 @@
 import { Component, computed, output, input } from '@angular/core';
-import { Column } from '../interfaces/column';
-import { ButtonComponent } from '../button/button.component';
-import { TableModule } from 'primeng/table';
+import { ButtonComponent } from '@shared/components/button/button.component';
 import { PrimeTemplate } from 'primeng/api';
+import { TableModule } from 'primeng/table';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
+import { Column } from '@shared/components/interfaces/column';
 
 @Component({
     selector: 'app-tabla',

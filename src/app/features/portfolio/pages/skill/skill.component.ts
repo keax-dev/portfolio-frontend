@@ -1,7 +1,7 @@
 import { Component, inject, input } from '@angular/core';
 import { TranslateService } from '@core/services/translate.service';
-import { Skill } from '@shared/models/skill';
-import { LanguagePipe } from '../../pipe/language.pipe';
+import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
+import { Skill } from '@shared/interfaces/skill';
 
 @Component({
     selector: 'app-skill',

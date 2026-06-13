@@ -1,14 +1,13 @@
 import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
 import { NgxSpinnerService } from 'ngx-spinner';
-import { FrmSkillComponent } from '../frm-skill/frm-skill.component';
+import { FrmSkillComponent } from '@features/admin/pages/skill/frm-skill/frm-skill.component';
 import { ParameterService } from '@core/services/parameter.service';
+import { TableComponent } from '@shared/components/table/table.component';
 import { AlertService } from '@core/services/alert.service';
 import { SkillService } from '@features/admin/services/skill.service';
 import { Column } from '@shared/components/interfaces/column';
-import { Skill } from '@shared/models/skill';
-import { TableComponent } from '../../../../../shared/components/table/table.component';
+import { Skill } from '@shared/interfaces/skill';
 
 @Component({
     selector: 'app-table-skill',

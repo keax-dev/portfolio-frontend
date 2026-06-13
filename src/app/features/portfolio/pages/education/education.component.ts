@@ -1,8 +1,8 @@
 import { Component, inject, input } from '@angular/core';
+import { CardEducationComponent } from '@features/portfolio/pages/education/card-education/card-education.component';
 import { TranslateService } from '@core/services/translate.service';
-import { Education } from '@shared/models/education';
-import { CardEducationComponent } from './card-education/card-education.component';
-import { LanguagePipe } from '../../pipe/language.pipe';
+import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
+import { Education } from '@shared/interfaces/education';
 
 @Component({
     selector: 'app-education',

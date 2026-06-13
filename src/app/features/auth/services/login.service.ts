@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HeaderService } from '@core/services/header.service';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Observable } from 'rxjs';
-import { Auth } from '../interfaces/auth';
+import { Auth } from '@features/auth/interfaces/auth';
 
 @Injectable({
   providedIn: 'root'

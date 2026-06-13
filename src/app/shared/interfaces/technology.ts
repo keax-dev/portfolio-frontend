@@ -1,4 +1,4 @@
-import { Project } from "./project";
+import { Project } from "@shared/interfaces/project";
 
 export interface Technology {
   id?: number;

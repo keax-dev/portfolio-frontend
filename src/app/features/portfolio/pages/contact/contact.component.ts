@@ -1,16 +1,15 @@
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
+import { LowerCaseDirective } from '@shared/components/directive/lowerCase.directive';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PortfolioService } from '@features/portfolio/services/portfolio.service';
 import { TranslateService } from '@core/services/translate.service';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ButtonComponent } from '@shared/components/button/button.component';
 import { AlertService } from '@core/services/alert.service';
-import { UppercaseDirective } from '../../../../shared/components/directive/uppercase.directive';
-import { LowerCaseDirective } from '../../../../shared/components/directive/lowerCase.directive';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
-import { LanguagePipe } from '../../pipe/language.pipe';
+import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 
 @Component({
     selector: 'app-contact',

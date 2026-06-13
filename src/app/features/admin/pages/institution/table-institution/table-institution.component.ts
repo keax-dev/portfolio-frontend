@@ -1,14 +1,13 @@
 import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FrmInstitutionComponent } from '@features/admin/pages/institution/frm-institution/frm-institution.component';
 import { InstitutionService } from '@features/admin/services/institution.service';
-
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
+import { TableComponent } from '@shared/components/table/table.component';
 import { AlertService } from '@core/services/alert.service';
-import { Institution } from '@shared/models/institution';
+import { Institution } from '@shared/interfaces/institution';
 import { Column } from '@shared/components/interfaces/column';
-import { TableComponent } from '../../../../../shared/components/table/table.component';
 
 @Component({
     selector: 'app-table-institution',

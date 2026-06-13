@@ -1,16 +1,15 @@
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
+import { ButtonComponent } from '@shared/components/button/button.component';
 import { ProfileService } from '@features/admin/services/profile.service';
 import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
-import { Profile } from '@shared/models/profile';
-import { UppercaseDirective } from '../../../../../shared/components/directive/uppercase.directive';
 import { InputText } from 'primeng/inputtext';
-import { ButtonComponent } from '../../../../../shared/components/button/button.component';
+import { Profile } from '@shared/interfaces/profile';
 
 @Component({
     selector: 'app-frm-profile',

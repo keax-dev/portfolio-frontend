@@ -1,17 +1,16 @@
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { InstitutionService } from '@features/admin/services/institution.service';
-
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
+import { ButtonComponent } from '@shared/components/button/button.component';
 import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
-import { Institution } from '@shared/models/institution';
-import { UppercaseDirective } from '../../../../../shared/components/directive/uppercase.directive';
+import { Institution } from '@shared/interfaces/institution';
 import { InputText } from 'primeng/inputtext';
-import { ButtonComponent } from '../../../../../shared/components/button/button.component';
 
 @Component({
     selector: 'app-frm-institution',

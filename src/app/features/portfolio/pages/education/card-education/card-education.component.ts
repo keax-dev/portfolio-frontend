@@ -1,8 +1,8 @@
 import { Component, inject, input } from '@angular/core';
-import { TranslateService } from '@core/services/translate.service';
-import { Education } from '@shared/models/education';
 import { NgClass, TitleCasePipe } from '@angular/common';
-import { LanguagePipe } from '../../../pipe/language.pipe';
+import { TranslateService } from '@core/services/translate.service';
+import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
+import { Education } from '@shared/interfaces/education';
 
 @Component({
     selector: 'app-card-education',

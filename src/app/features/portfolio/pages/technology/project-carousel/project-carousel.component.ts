@@ -1,10 +1,10 @@
 import { Component, inject, OnChanges, SimpleChanges, OnInit, input } from '@angular/core';
-import { ProjectDetailsComponent } from '../project-details/project-details.component';
-import { ShowImageComponent } from '../show-image/show-image.component';
+import { ProjectDetailsComponent } from '@features/portfolio/pages/technology/project-details/project-details.component';
+import { ShowImageComponent } from '@features/portfolio/pages/technology/show-image/show-image.component';
 import { TranslateService } from '@core/services/translate.service';
 import { ParameterService } from '@core/services/parameter.service';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
-import { Project } from '@shared/models/project';
+import { Project } from '@shared/interfaces/project';
 
 @Component({
   selector: 'app-project-carousel',

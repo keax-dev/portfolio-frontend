@@ -1,14 +1,13 @@
 import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { FrmProjectComponent } from '@features/admin/pages/project/frm-project/frm-project.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FrmProjectComponent } from '../frm-project/frm-project.component';
-
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
 import { ProjectService } from '@features/admin/services/project.service';
+import { TableComponent } from '@shared/components/table/table.component';
 import { AlertService } from '@core/services/alert.service';
+import { Project } from '@shared/interfaces/project';
 import { Column } from '@shared/components/interfaces/column';
-import { Project } from '@shared/models/project';
-import { TableComponent } from '../../../../../shared/components/table/table.component';
 
 @Component({
     selector: 'app-table-project',

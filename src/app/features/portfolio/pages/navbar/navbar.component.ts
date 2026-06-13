@@ -1,9 +1,9 @@
 import { Component, inject, output, input } from '@angular/core';
-import { TranslateService } from '@core/services/translate.service';
-import { MenuItem } from 'primeng/api';
-import { Profile } from '@shared/models/profile';
 import { NgClass, TitleCasePipe } from '@angular/common';
-import { LanguagePipe } from '../../pipe/language.pipe';
+import { TranslateService } from '@core/services/translate.service';
+import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
+import { MenuItem } from 'primeng/api';
+import { Profile } from '@shared/interfaces/profile';
 
 @Component({
     selector: 'app-navbar',

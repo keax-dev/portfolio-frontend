@@ -1,14 +1,14 @@
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
-import { providePrimeNG } from 'primeng/config';
-import { ConfirmationService } from 'primeng/api';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
-import { provideToastr } from 'ngx-toastr';
-import Aura from '@primeng/themes/aura';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { ConfirmationService } from 'primeng/api';
 import { authInterceptor } from '@core/interceptors/auth.interceptor';
-import { routes } from './routes/app.routes';
+import { providePrimeNG } from 'primeng/config';
+import { provideToastr } from 'ngx-toastr';
+import { routes } from '@src/routes/app.routes';
+import Aura from '@primeng/themes/aura';
 
 export const appConfig: ApplicationConfig = {
   providers: [

@@ -1,16 +1,15 @@
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SocialNetworkService } from '@features/admin/services/social-network.service';
-
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { SocialNetwork } from '@shared/models/social-network';
+import { ButtonComponent } from '@shared/components/button/button.component';
+import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
-import { UppercaseDirective } from '../../../../../shared/components/directive/uppercase.directive';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { ButtonComponent } from '../../../../../shared/components/button/button.component';
 
 @Component({
     selector: 'app-frm-social-network',

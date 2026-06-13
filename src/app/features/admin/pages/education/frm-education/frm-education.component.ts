@@ -1,18 +1,17 @@
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { InstitutionService } from '@features/admin/services/institution.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { EducationService } from '@features/admin/services/education.service';
+import { ButtonComponent } from '@shared/components/button/button.component';
 import { AlertService } from '@core/services/alert.service';
-import { Institution } from '@shared/models/institution';
-import { Education } from '@shared/models/education';
-import { UppercaseDirective } from '../../../../../shared/components/directive/uppercase.directive';
+import { Institution } from '@shared/interfaces/institution';
+import { Education } from '@shared/interfaces/education';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { ButtonComponent } from '../../../../../shared/components/button/button.component';
 
 @Component({
     selector: 'app-frm-education',
@@ -64,7 +63,7 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
 
     if (this.config.data.education) {
       this.update = true;
-      this.title = 'Update Education'; 
+      this.title = 'Update Education';
       this.educationForm.patchValue(this.config.data.education);
     }
 

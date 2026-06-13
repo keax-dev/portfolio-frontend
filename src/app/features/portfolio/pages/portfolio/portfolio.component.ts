@@ -1,37 +1,39 @@
 import { catchError, forkJoin, map, Observable, of, tap, throwError } from 'rxjs';
 import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { TechnologyComponent } from '@features/portfolio/pages/technology/technology.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EducationComponent } from '@features/portfolio/pages/education/education.component';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PortfolioService } from '@features/portfolio/services/portfolio.service';
 import { ParameterService } from '@core/services/parameter.service';
-import { ContactComponent } from '../contact/contact.component';
-import { SocialNetwork } from '@shared/models/social-network';
+import { ContactComponent } from '@features/portfolio/pages/contact/contact.component';
+import { HeaderComponent } from '@features/portfolio/pages/header/header.component';
+import { NavbarComponent } from '@features/portfolio/pages/navbar/navbar.component';
+import { FooterComponent } from '@features/portfolio/pages/footer/footer.component';
+import { SkillComponent } from '@features/portfolio/pages/skill/skill.component';
+import { VisitorService } from '@features/portfolio/services/visitor.service';
+import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
 import { ApiResponse } from '@core/interfaces/apiresponse';
-import { Technology } from '@shared/models/technology';
-import { Education } from '@shared/models/education';
+import { Technology } from '@shared/interfaces/technology';
+import { Education } from '@shared/interfaces/education';
 import { MenuItem } from 'primeng/api';
-import { Profile } from '@shared/models/profile';
+import { Profile } from '@shared/interfaces/profile';
 import { Router } from '@angular/router';
-import { Skill } from '@shared/models/skill';
-import { HeaderComponent } from '../header/header.component';
-import { NavbarComponent } from '../navbar/navbar.component';
-import { EducationComponent } from '../education/education.component';
-import { SkillComponent } from '../skill/skill.component';
-import { TechnologyComponent } from '../technology/technology.component';
-import { FooterComponent } from '../footer/footer.component';
+import { Skill } from '@shared/interfaces/skill';
 
 @Component({
-    selector: 'app-portfolio',
-    templateUrl: './portfolio.component.html',
-    imports: [HeaderComponent, NavbarComponent, EducationComponent, SkillComponent, TechnologyComponent, FooterComponent]
+  selector: 'app-portfolio',
+  templateUrl: './portfolio.component.html',
+  imports: [HeaderComponent, NavbarComponent, EducationComponent, SkillComponent, TechnologyComponent, FooterComponent]
 })
 export class PortfolioComponent implements OnInit, OnDestroy {
 
   private readonly destroyRef = inject(DestroyRef);
 
   private portfolioService = inject(PortfolioService);
+  private visitorService = inject(VisitorService);
   private parameter = inject(ParameterService);
   private spinner = inject(NgxSpinnerService);
   private alert = inject(AlertService);
@@ -62,6 +64,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getInformation();
+    this.registerVisit();
   }
 
   ngOnDestroy(): void {
@@ -79,6 +82,12 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     ]).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       complete: () => this.spinner.hide(),
       error: error => this.alert.httpError(error)
+    });
+  }
+
+  registerVisit(): void {
+    this.visitorService.registerVisit(this.router.url || '/').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      error: () => { }
     });
   }
 

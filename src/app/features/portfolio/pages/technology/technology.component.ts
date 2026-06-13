@@ -1,16 +1,16 @@
-import { Component, inject, OnChanges, SimpleChanges, input } from '@angular/core';
-import { TranslateService } from '@core/services/translate.service';
-import { Technology } from '@shared/models/technology';
 import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
-import { Ripple } from 'primeng/ripple';
-import { ProjectCarouselComponent } from './project-carousel/project-carousel.component';
+import { Component, inject, OnChanges, SimpleChanges, input } from '@angular/core';
+import { ProjectCarouselComponent } from '@features/portfolio/pages/technology/project-carousel/project-carousel.component';
+import { TranslateService } from '@core/services/translate.service';
 import { TitleCasePipe } from '@angular/common';
-import { LanguagePipe } from '../../pipe/language.pipe';
+import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
+import { Technology } from '@shared/interfaces/technology';
+import { Ripple } from 'primeng/ripple';
 
 @Component({
-    selector: 'app-technology',
-    templateUrl: './technology.component.html',
-    imports: [Accordion, AccordionPanel, Ripple, AccordionHeader, AccordionContent, ProjectCarouselComponent, TitleCasePipe, LanguagePipe]
+  selector: 'app-technology',
+  templateUrl: './technology.component.html',
+  imports: [Accordion, AccordionPanel, Ripple, AccordionHeader, AccordionContent, ProjectCarouselComponent, TitleCasePipe, LanguagePipe]
 })
 export class TechnologyComponent implements OnChanges {
 

@@ -1,14 +1,13 @@
 import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FrmSocialNetworkComponent } from '../frm-social-network/frm-social-network.component';
+import { FrmSocialNetworkComponent } from '@features/admin/pages/social-network/frm-social-network/frm-social-network.component';
 import { SocialNetworkService } from '@features/admin/services/social-network.service';
-
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
-import { SocialNetwork } from '@shared/models/social-network';
+import { TableComponent } from '@shared/components/table/table.component';
+import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
 import { Column } from '@shared/components/interfaces/column';
-import { TableComponent } from '../../../../../shared/components/table/table.component';
 
 @Component({
     selector: 'app-table-social-network',

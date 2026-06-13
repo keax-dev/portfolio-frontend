@@ -1,15 +1,15 @@
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Component, inject, OnInit } from '@angular/core';
-import { ShowImageComponent } from '../show-image/show-image.component';
+import { ShowImageComponent } from '@features/portfolio/pages/technology/show-image/show-image.component';
 import { ParameterService } from '@core/services/parameter.service';
 import { TranslateService } from '@core/services/translate.service';
-import { Project } from '@shared/models/project';
-import { LanguagePipe } from '../../../pipe/language.pipe';
+import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
+import { Project } from '@shared/interfaces/project';
 
 @Component({
-    selector: 'app-project-details',
-    templateUrl: './project-details.component.html',
-    imports: [LanguagePipe]
+  selector: 'app-project-details',
+  templateUrl: './project-details.component.html',
+  imports: [LanguagePipe]
 })
 export class ProjectDetailsComponent implements OnInit {
 

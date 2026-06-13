@@ -1,20 +1,19 @@
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { TechnologyService } from '@features/admin/services/technology.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
+import { ButtonComponent } from '@shared/components/button/button.component';
 import { ProjectService } from '@features/admin/services/project.service';
 import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
-import { Technology } from '@shared/models/technology';
-import { Project } from '@shared/models/project';
-import { UppercaseDirective } from '../../../../../shared/components/directive/uppercase.directive';
+import { Technology } from '@shared/interfaces/technology';
+import { Project } from '@shared/interfaces/project';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { ButtonComponent } from '../../../../../shared/components/button/button.component';
 
 @Component({
     selector: 'app-frm-project',

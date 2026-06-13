@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core';
-import { SocialNetwork } from '@shared/models/social-network';
+import { SocialNetwork } from '@shared/interfaces/social-network';
 import { HeaderService } from '@core/services/header.service';
 import { ApiResponse } from '@core/interfaces/apiresponse';
-import { Technology } from '@shared/models/technology';
+import { Technology } from '@shared/interfaces/technology';
 import { Observable } from 'rxjs';
-import { Education } from '@shared/models/education';
-import { Profile } from '@shared/models/profile';
-import { Skill } from '@shared/models/skill';
+import { Education } from '@shared/interfaces/education';
+import { Profile } from '@shared/interfaces/profile';
+import { Skill } from '@shared/interfaces/skill';
 
 @Injectable({
   providedIn: 'root'

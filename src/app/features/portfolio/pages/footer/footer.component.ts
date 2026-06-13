@@ -1,9 +1,9 @@
 import { Component, inject, output, input } from '@angular/core';
 import { TranslateService } from '@core/services/translate.service';
-import { SocialNetwork } from '@shared/models/social-network';
-import { MenuItem } from 'primeng/api';
+import { SocialNetwork } from '@shared/interfaces/social-network';
 import { TitleCasePipe } from '@angular/common';
-import { LanguagePipe } from '../../pipe/language.pipe';
+import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
+import { MenuItem } from 'primeng/api';
 
 @Component({
     selector: 'app-footer',

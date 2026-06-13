@@ -1,18 +1,17 @@
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
+import { ButtonComponent } from '@shared/components/button/button.component';
 import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
 import { SkillService } from '@features/admin/services/skill.service';
-import { Skill } from '@shared/models/skill';
-import { UppercaseDirective } from '../../../../../shared/components/directive/uppercase.directive';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { ButtonComponent } from '../../../../../shared/components/button/button.component';
+import { Skill } from '@shared/interfaces/skill';
 
 @Component({
     selector: 'app-frm-skill',

@@ -1,14 +1,13 @@
 import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { FrmEducationComponent } from '@features/admin/pages/education/frm-education/frm-education.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FrmEducationComponent } from '../frm-education/frm-education.component';
-
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
 import { EducationService } from '@features/admin/services/education.service';
+import { TableComponent } from '@shared/components/table/table.component';
 import { AlertService } from '@core/services/alert.service';
-import { Education } from '@shared/models/education';
+import { Education } from '@shared/interfaces/education';
 import { Column } from '@shared/components/interfaces/column';
-import { TableComponent } from '../../../../../shared/components/table/table.component';
 
 @Component({
     selector: 'app-table-education',

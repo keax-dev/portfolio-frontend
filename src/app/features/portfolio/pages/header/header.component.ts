@@ -1,8 +1,8 @@
 import { Component, inject, input } from '@angular/core';
 import { TranslateService } from '@core/services/translate.service';
-import { Profile } from '@shared/models/profile';
 import { TitleCasePipe } from '@angular/common';
-import { LanguagePipe } from '../../pipe/language.pipe';
+import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
+import { Profile } from '@shared/interfaces/profile';
 
 @Component({
     selector: 'app-header',

@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { SocialNetwork } from '@shared/models/social-network';
+import { SocialNetwork } from '@shared/interfaces/social-network';
 import { HeaderService } from '@core/services/header.service';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Observable } from 'rxjs';

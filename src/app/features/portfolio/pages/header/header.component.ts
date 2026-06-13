@@ -1,6 +1,8 @@
 import { Component, inject, input } from '@angular/core';
 import { TranslateService } from '@core/services/translate.service';
+import { ParameterService } from '@core/services/parameter.service';
 import { TitleCasePipe } from '@angular/common';
+import { CvPreviewComponent } from '@features/portfolio/pages/header/cv-preview/cv-preview.component';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { Profile } from '@shared/interfaces/profile';
 
@@ -13,6 +15,7 @@ import { Profile } from '@shared/interfaces/profile';
 export class HeaderComponent {
 
   protected readonly translate = inject(TranslateService);
+  private readonly parameter = inject(ParameterService);
 
   readonly profile = input.required<Profile>();
 
@@ -27,6 +30,14 @@ export class HeaderComponent {
       default:
         return '';
     }
+  }
+
+  openCvPreview(): void {
+    if (!this.profile().cv) {
+      return;
+    }
+
+    this.parameter.openDialog(CvPreviewComponent, { url: this.profile().cv }, '92%', '98%');
   }
 
 }

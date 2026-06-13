@@ -23,18 +23,17 @@
     </div>
 
     <div class="container mt-3">
-      <a
-        [href]="profile().cv"
-        target="_blank"
+      <button
+        (click)="openCvPreview()"
         class="btn btn-cv btn-primary position-relative overflow-hidden px-4 py-1"
-        rel="noopener noreferrer"
+        type="button"
       >
         <span></span>
         <span></span>
         <span></span>
         <span></span>
         {{ cv | language : "label" : translate.getLang | titlecase }}
-      </a>
+      </button>
     </div>
   </div>
 </header>

@@ -1,0 +1,15 @@
+<section class="container-fluid p-2">
+  <h2 class="text-primary text-center mb-0">Currículum Vitae</h2>
+
+  <hr class="my3" />
+
+  <button
+    (click)="close()"
+    aria-label="Close CV preview"
+    class="btn btn-close position-absolute top-0 end-0 m-2"
+    title="Close"
+    type="button"
+  ></button>
+
+  <iframe [src]="previewUrl" class="cv-frame p-2" title="CV preview"></iframe>
+</section>

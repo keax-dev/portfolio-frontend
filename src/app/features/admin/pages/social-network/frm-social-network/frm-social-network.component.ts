@@ -1,17 +1,3 @@
-import {
-  NonNullableFormBuilder,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-} from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { SocialNetworkService } from '@features/admin/services/social-network.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -21,6 +7,20 @@ import { ButtonComponent } from '@shared/components/button/button.component';
 import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
 import { finalize } from 'rxjs';
+import {
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  FormsModule,
+  Validators,
+} from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnDestroy,
+  inject,
+  OnInit,
+} from '@angular/core';
 
 interface SocialNetworkDialogData {
   readonly positions: number;
@@ -99,7 +99,7 @@ export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.close(result.data);
         },
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 
@@ -116,7 +116,7 @@ export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.close(result.data);
         },
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 

@@ -1,12 +1,3 @@
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-  signal,
-} from '@angular/core';
 import { FrmInstitutionComponent } from '@features/admin/pages/institution/frm-institution/frm-institution.component';
 import { InstitutionService } from '@features/admin/services/institution.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -16,6 +7,15 @@ import { TableComponent } from '@shared/components/table/table.component';
 import { AlertService } from '@core/services/alert.service';
 import { Institution } from '@shared/interfaces/institution';
 import { Column } from '@shared/components/interfaces/column';
+import {
+  ChangeDetectionStrategy,
+  DestroyRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 
 @Component({
   selector: 'app-table-institution',

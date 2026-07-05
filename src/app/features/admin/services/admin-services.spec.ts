@@ -1,25 +1,25 @@
 /**
  * Pruebas unitarias de todos los contratos CRUD y multipart del módulo administrativo.
  */
-import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { API_BASE_URL } from '@core/http/api-base-url.token';
-import { EducationService } from './education.service';
-import { ImageService } from './images.service';
+import { SocialNetworkService } from './social-network.service';
+import { SocialNetworkPayload } from '@shared/interfaces/social-network';
 import { InstitutionService } from './institution.service';
+import { InstitutionPayload } from '@shared/interfaces/institution';
+import { provideHttpClient } from '@angular/common/http';
+import { TechnologyPayload } from '@shared/interfaces/technology';
+import { TechnologyService } from './technology.service';
+import { EducationPayload } from '@shared/interfaces/education';
+import { EducationService } from './education.service';
+import { ProfilePayload } from '@shared/interfaces/profile';
+import { ProjectPayload } from '@shared/interfaces/project';
 import { ProfileService } from './profile.service';
 import { ProjectService } from './project.service';
 import { SkillService } from './skill.service';
-import { SocialNetworkService } from './social-network.service';
-import { TechnologyService } from './technology.service';
-import { EducationPayload } from '@shared/interfaces/education';
-import { InstitutionPayload } from '@shared/interfaces/institution';
-import { ProfilePayload } from '@shared/interfaces/profile';
-import { ProjectPayload } from '@shared/interfaces/project';
+import { ImageService } from './images.service';
 import { SkillPayload } from '@shared/interfaces/skill';
-import { SocialNetworkPayload } from '@shared/interfaces/social-network';
-import { TechnologyPayload } from '@shared/interfaces/technology';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { TestBed } from '@angular/core/testing';
 
 describe('admin HTTP services', () => {
   const baseUrl = 'https://api.test/api';

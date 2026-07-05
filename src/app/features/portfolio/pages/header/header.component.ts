@@ -1,8 +1,8 @@
 import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { CvPreviewComponent } from '@features/portfolio/pages/header/cv-preview/cv-preview.component';
 import { TranslateService } from '@core/services/translate.service';
 import { ParameterService } from '@core/services/parameter.service';
 import { TitleCasePipe } from '@angular/common';
-import { CvPreviewComponent } from '@features/portfolio/pages/header/cv-preview/cv-preview.component';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { Profile } from '@shared/interfaces/profile';
 

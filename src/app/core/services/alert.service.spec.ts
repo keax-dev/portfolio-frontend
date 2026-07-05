@@ -1,13 +1,13 @@
 /**
  * Pruebas unitarias del mapeo de alertas, errores HTTP y confirmaciones destructivas.
  */
-import { Dialog } from '@angular/cdk/dialog';
-import { HttpErrorResponse } from '@angular/common/http';
-import { TestBed } from '@angular/core/testing';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { of } from 'rxjs';
 import { NotificationService } from '@core/notifications/notification.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertService } from './alert.service';
+import { TestBed } from '@angular/core/testing';
+import { Dialog } from '@angular/cdk/dialog';
+import { of } from 'rxjs';
 
 describe('AlertService', () => {
   let service: AlertService;

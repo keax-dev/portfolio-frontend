@@ -1,13 +1,4 @@
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-  signal,
-} from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
@@ -19,8 +10,17 @@ import { ProjectService } from '@features/admin/services/project.service';
 import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
 import { Technology } from '@shared/interfaces/technology';
-import { Project } from '@shared/interfaces/project';
 import { finalize } from 'rxjs';
+import { Project } from '@shared/interfaces/project';
+import {
+  ChangeDetectionStrategy,
+  DestroyRef,
+  OnDestroy,
+  Component,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 
 interface ProjectDialogData {
   readonly project?: Project;
@@ -185,7 +185,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.close(project);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }

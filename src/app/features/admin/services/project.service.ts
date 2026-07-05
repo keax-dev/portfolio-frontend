@@ -1,9 +1,9 @@
+import { Project, ProjectPayload } from '@shared/interfaces/project';
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Observable } from 'rxjs';
-import { Project, ProjectPayload } from '@shared/interfaces/project';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +11,8 @@ import { Project, ProjectPayload } from '@shared/interfaces/project';
 export class ProjectService {
   reference = '/project';
 
-  private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_BASE_URL);
+  private readonly http = inject(HttpClient);
 
   getProjectListByDeleted(deleted = false): Observable<ApiResponse<Project[]>> {
     return this.http.get<ApiResponse<Project[]>>(

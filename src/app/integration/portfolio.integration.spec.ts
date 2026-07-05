@@ -2,16 +2,16 @@
  * Pruebas de integración de PortfolioComponent con PortfolioService y VisitorService reales.
  * Validan la composición de múltiples respuestas HTTP y el registro geográfico de visitas.
  */
-import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { PortfolioComponent } from '@features/portfolio/pages/portfolio/portfolio.component';
+import { provideHttpClient } from '@angular/common/http';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ParameterService } from '@core/services/parameter.service';
 import { AlertService } from '@core/services/alert.service';
 import { API_BASE_URL } from '@core/http/api-base-url.token';
-import { ParameterService } from '@core/services/parameter.service';
-import { PortfolioComponent } from '@features/portfolio/pages/portfolio/portfolio.component';
 import { environment } from '@src/environments/environment';
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 
 describe('Public portfolio integration', () => {
   const baseUrl = 'https://integration.test/api';

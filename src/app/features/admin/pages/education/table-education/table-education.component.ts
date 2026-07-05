@@ -1,12 +1,3 @@
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-  signal,
-} from '@angular/core';
 import { FrmEducationComponent } from '@features/admin/pages/education/frm-education/frm-education.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -16,6 +7,15 @@ import { TableComponent } from '@shared/components/table/table.component';
 import { AlertService } from '@core/services/alert.service';
 import { Education } from '@shared/interfaces/education';
 import { Column } from '@shared/components/interfaces/column';
+import {
+  ChangeDetectionStrategy,
+  DestroyRef,
+  Component,
+  OnDestroy,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 
 @Component({
   selector: 'app-table-education',

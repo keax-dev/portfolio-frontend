@@ -4,13 +4,13 @@
  */
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { AlertService } from '@core/services/alert.service';
 import { authInterceptor } from '@core/interceptors/auth.interceptor';
 import { UserInfoService } from '@core/services/user-info.service';
+import { AlertService } from '@core/services/alert.service';
 import { environment } from '@src/environments/environment';
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 
 describe('Authenticated HTTP integration', () => {
   let http: HttpClient;

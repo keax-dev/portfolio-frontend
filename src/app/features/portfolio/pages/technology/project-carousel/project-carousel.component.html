@@ -8,8 +8,8 @@
           </h3>
 
           <button
-            (click)="showImage(project)"
             [attr.aria-label]="'Open image of ' + project.title"
+            (click)="showImage(project)"
             class="p-0 border-0 bg-transparent"
             type="button"
           >
@@ -19,8 +19,8 @@
           <div class="my-4">
             @if (project.deploy) {
               <a
-                [href]="project.deploy"
                 [attr.aria-label]="'Open deployment for ' + project.title"
+                [href]="project.deploy"
                 target="_blank"
                 class="btn btn-secondary m-1"
                 title="Open deployment"
@@ -32,8 +32,8 @@
 
             @if (project.github) {
               <a
-                [href]="project.github"
                 [attr.aria-label]="'Open GitHub repository for ' + project.title"
+                [href]="project.github"
                 target="_blank"
                 class="btn btn-dark m-1"
                 title="GitHub"
@@ -44,8 +44,8 @@
             }
 
             <button
-              (click)="showProjectDetails(project)"
               [attr.aria-label]="'View details of ' + project.title"
+              (click)="showProjectDetails(project)"
               class="btn btn-primary m-1"
               title="View details"
               type="button"
@@ -60,9 +60,9 @@
 
   <button
     [attr.data-bs-target]="'#' + carouselId"
+    data-bs-slide="prev"
     class="carousel-control-prev bg-primary"
     type="button"
-    data-bs-slide="prev"
   >
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Previous</span>
@@ -70,9 +70,9 @@
 
   <button
     [attr.data-bs-target]="'#' + carouselId"
+    data-bs-slide="next"
     class="carousel-control-next bg-primary"
     type="button"
-    data-bs-slide="next"
   >
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Next</span>

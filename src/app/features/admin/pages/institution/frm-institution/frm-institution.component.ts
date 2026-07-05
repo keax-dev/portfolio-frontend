@@ -1,12 +1,4 @@
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-} from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
@@ -18,6 +10,14 @@ import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
 import { Institution } from '@shared/interfaces/institution';
 import { finalize } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnDestroy,
+  OnInit,
+  inject,
+} from '@angular/core';
 
 @Component({
   selector: 'app-frm-institution',
@@ -136,7 +136,7 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.close(institution);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }

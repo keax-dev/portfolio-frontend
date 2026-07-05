@@ -1,9 +1,9 @@
+import { Skill, SkillPayload } from '@shared/interfaces/skill';
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { ApiResponse } from '@core/interfaces/apiresponse';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Skill, SkillPayload } from '@shared/interfaces/skill';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +11,8 @@ import { Skill, SkillPayload } from '@shared/interfaces/skill';
 export class SkillService {
   reference = '/skill';
 
-  private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_BASE_URL);
+  private readonly http = inject(HttpClient);
 
   getSkillListByDeleted(deleted = false): Observable<ApiResponse<Skill[]>> {
     return this.http.get<ApiResponse<Skill[]>>(

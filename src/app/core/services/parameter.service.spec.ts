@@ -2,10 +2,10 @@
  * Pruebas unitarias de validación de imágenes y configuración responsive de diálogos.
  */
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Dialog } from '@angular/cdk/dialog';
+import { ParameterService } from './parameter.service';
 import { FormControl } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
-import { ParameterService } from './parameter.service';
+import { Dialog } from '@angular/cdk/dialog';
 
 describe('ParameterService', () => {
   let service: ParameterService;

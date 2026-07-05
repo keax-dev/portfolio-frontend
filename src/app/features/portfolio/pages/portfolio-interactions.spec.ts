@@ -1,21 +1,21 @@
 /**
  * Pruebas unitarias de las interacciones visuales del portafolio y el panel administrativo.
  */
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { SimpleChange } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { ParameterService } from '@core/services/parameter.service';
-import { SessionService } from '@core/services/session.service';
-import { TranslateService } from '@core/services/translate.service';
-import { HomeComponent } from '@features/admin/pages/home/home.component';
-import { FooterComponent } from './footer/footer.component';
-import { HeaderComponent } from './header/header.component';
-import { CvPreviewComponent } from './header/cv-preview/cv-preview.component';
-import { NavbarComponent } from './navbar/navbar.component';
 import { ProjectCarouselComponent } from './technology/project-carousel/project-carousel.component';
 import { ProjectDetailsComponent } from './technology/project-details/project-details.component';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { CvPreviewComponent } from './header/cv-preview/cv-preview.component';
 import { ShowImageComponent } from './technology/show-image/show-image.component';
+import { ParameterService } from '@core/services/parameter.service';
+import { TranslateService } from '@core/services/translate.service';
+import { NavbarComponent } from './navbar/navbar.component';
+import { FooterComponent } from './footer/footer.component';
+import { HeaderComponent } from './header/header.component';
+import { SessionService } from '@core/services/session.service';
+import { HomeComponent } from '@features/admin/pages/home/home.component';
+import { provideRouter } from '@angular/router';
+import { SimpleChange } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { Profile } from '@shared/interfaces/profile';
 import { Project } from '@shared/interfaces/project';
 

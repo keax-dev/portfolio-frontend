@@ -1,18 +1,18 @@
+import { ConfirmDialogComponent, ConfirmDialogData } from '@core/dialog/confirm-dialog.component';
+import { NotificationService } from '@core/notifications/notification.service';
 import { inject, Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ApiResponse } from '@core/interfaces/apiresponse';
-import { NotificationService } from '@core/notifications/notification.service';
 import { Dialog } from '@angular/cdk/dialog';
-import { ConfirmDialogComponent, ConfirmDialogData } from '@core/dialog/confirm-dialog.component';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AlertService {
-  private dialog = inject(Dialog);
-  private spinner = inject(NgxSpinnerService);
   private notifications = inject(NotificationService);
+  private spinner = inject(NgxSpinnerService);
+  private dialog = inject(Dialog);
 
   success(sms: string): void {
     this.notifications.show('success', sms, 'Success');
@@ -71,7 +71,7 @@ export class AlertService {
     this.error(response.alert);
   }
 
-  private asApiResponse(error: unknown): ApiResponse<unknown> | null {
+  asApiResponse(error: unknown): ApiResponse<unknown> | null {
     if (!error || typeof error !== 'object') {
       return null;
     }
@@ -86,12 +86,12 @@ export class AlertService {
       status: Boolean(response.status),
       data: response.data as unknown,
       messages: Array.isArray(response.messages)
-        ? response.messages.filter((message): message is string => typeof message === 'string')
+        ? response.messages.filter((message) => typeof message === 'string')
         : undefined,
     };
   }
 
-  private titleByStatus(status: number): string {
+  titleByStatus(status: number): string {
     switch (status) {
       case 400:
         return 'Invalid request';
@@ -112,7 +112,7 @@ export class AlertService {
     }
   }
 
-  private messageByStatus(status: number): string {
+  messageByStatus(status: number): string {
     switch (status) {
       case 400:
         return 'Please review the submitted information';

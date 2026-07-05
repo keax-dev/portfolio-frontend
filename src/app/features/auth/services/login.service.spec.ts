@@ -1,11 +1,11 @@
 /**
  * Pruebas unitarias del contrato HTTP utilizado para autenticar credenciales.
  */
-import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { provideHttpClient } from '@angular/common/http';
 import { LoginService } from './login.service';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { TestBed } from '@angular/core/testing';
 
 describe('LoginService', () => {
   // Caso: posts credentials to the login endpoint.

@@ -1,7 +1,7 @@
 <main class="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
   <form
-    [formGroup]="authForm"
     (ngSubmit)="onSubmit()"
+    [formGroup]="authForm"
     class="card shadow-lg border border-primary p-3 w-100"
   >
     <header>
@@ -42,8 +42,8 @@
             <button
               (click)="hide = !hide"
               [attr.aria-label]="hide ? 'Show password' : 'Hide password'"
-              class="btn border border-primary"
               [title]="hide ? 'Show password' : 'Hide password'"
+              class="btn border border-primary"
               type="button"
             >
               @if (hide) {

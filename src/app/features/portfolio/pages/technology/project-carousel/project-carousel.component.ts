@@ -1,18 +1,18 @@
-import {
-  Component,
-  inject,
-  OnChanges,
-  SimpleChanges,
-  OnInit,
-  input,
-  ChangeDetectionStrategy,
-} from '@angular/core';
 import { ProjectDetailsComponent } from '@features/portfolio/pages/technology/project-details/project-details.component';
 import { ShowImageComponent } from '@features/portfolio/pages/technology/show-image/show-image.component';
 import { TranslateService } from '@core/services/translate.service';
 import { ParameterService } from '@core/services/parameter.service';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { Project } from '@shared/interfaces/project';
+import {
+  ChangeDetectionStrategy,
+  SimpleChanges,
+  Component,
+  OnChanges,
+  inject,
+  OnInit,
+  input,
+} from '@angular/core';
 
 @Component({
   selector: 'app-project-carousel',

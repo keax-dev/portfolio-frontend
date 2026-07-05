@@ -1,13 +1,4 @@
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-  signal,
-} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -18,6 +9,15 @@ import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
 import { Profile } from '@shared/interfaces/profile';
 import { finalize } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  DestroyRef,
+  OnDestroy,
+  Component,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 
 @Component({
   selector: 'app-frm-profile',
@@ -77,7 +77,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
           this.previousProfile.set(result.data);
           this.loadVariablesUpdate(result.data);
         },
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 
@@ -173,7 +173,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.previousProfile.set(profile);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }

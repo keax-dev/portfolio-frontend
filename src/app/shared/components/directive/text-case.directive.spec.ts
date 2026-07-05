@@ -1,11 +1,11 @@
 /**
  * Pruebas unitarias de sincronización entre inputs y controles para las directivas de texto.
  */
-import { Component } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LowerCaseDirective } from './lowerCase.directive';
 import { UppercaseDirective } from './uppercase.directive';
+import { Component } from '@angular/core';
 
 @Component({
   template: `

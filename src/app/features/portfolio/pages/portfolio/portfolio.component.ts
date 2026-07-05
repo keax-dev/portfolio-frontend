@@ -1,13 +1,4 @@
 import { catchError, forkJoin, map, Observable, of, tap, throwError } from 'rxjs';
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-  signal,
-} from '@angular/core';
 import { TechnologyComponent } from '@features/portfolio/pages/technology/technology.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EducationComponent } from '@features/portfolio/pages/education/education.component';
@@ -30,18 +21,27 @@ import { Profile } from '@shared/interfaces/profile';
 import { Router } from '@angular/router';
 import { Skill } from '@shared/interfaces/skill';
 import { NavigationItem } from '@shared/interfaces/navigation-item';
+import {
+  ChangeDetectionStrategy,
+  DestroyRef,
+  OnDestroy,
+  Component,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 
 @Component({
   selector: 'app-portfolio',
   templateUrl: './portfolio.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TechnologyComponent,
+    EducationComponent,
     HeaderComponent,
     NavbarComponent,
-    EducationComponent,
-    SkillComponent,
-    TechnologyComponent,
     FooterComponent,
+    SkillComponent,
   ],
 })
 export class PortfolioComponent implements OnInit, OnDestroy {
@@ -51,8 +51,8 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   private visitorService = inject(VisitorService);
   private parameter = inject(ParameterService);
   private spinner = inject(NgxSpinnerService);
-  private alert = inject(AlertService);
   private router = inject(Router);
+  private alert = inject(AlertService);
 
   readonly profile = signal<Profile>({
     name: 'KEVIN',

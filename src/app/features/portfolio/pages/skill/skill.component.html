@@ -9,11 +9,11 @@
           <li>
             <figure class="card skill-card text-center pointer shadow">
               <img
+                [src]="skill.picture"
                 decoding="async"
                 loading="lazy"
-                [src]="skill.picture"
-                alt=""
                 class="card-img-top p-3"
+                alt=""
               />
               <figcaption>{{ skill.name }}</figcaption>
             </figure>

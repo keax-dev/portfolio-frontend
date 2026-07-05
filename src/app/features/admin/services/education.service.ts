@@ -1,9 +1,9 @@
+import { Education, EducationPayload } from '@shared/interfaces/education';
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Observable } from 'rxjs';
-import { Education, EducationPayload } from '@shared/interfaces/education';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +11,8 @@ import { Education, EducationPayload } from '@shared/interfaces/education';
 export class EducationService {
   reference = '/education';
 
-  private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_BASE_URL);
+  private readonly http = inject(HttpClient);
 
   getEducationListByDeleted(deleted = false): Observable<ApiResponse<Education[]>> {
     return this.http.get<ApiResponse<Education[]>>(

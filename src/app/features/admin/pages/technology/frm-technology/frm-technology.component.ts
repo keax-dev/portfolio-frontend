@@ -1,17 +1,3 @@
-import {
-  NonNullableFormBuilder,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-} from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -21,6 +7,20 @@ import { ButtonComponent } from '@shared/components/button/button.component';
 import { AlertService } from '@core/services/alert.service';
 import { Technology } from '@shared/interfaces/technology';
 import { finalize } from 'rxjs';
+import {
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  FormsModule,
+  Validators,
+} from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  DestroyRef,
+  OnDestroy,
+  Component,
+  OnInit,
+  inject,
+} from '@angular/core';
 
 interface TechnologyDialogData {
   readonly positions: number;
@@ -96,7 +96,7 @@ export class FrmTechnologyComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.close(result.data);
         },
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 
@@ -113,7 +113,7 @@ export class FrmTechnologyComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.close(result.data);
         },
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 

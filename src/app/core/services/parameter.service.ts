@@ -17,8 +17,7 @@ export class ParameterService {
     mobile?: string,
   ): DialogRef<R, T> {
     return this.dialog.open<R, D, T>(component, {
-      width:
-        computer && mobile ? this.getModalWidthByParameters(computer, mobile) : this.getModalWidth,
+      width: this.getModalWidthByParameters(computer, mobile),
       maxWidth: '100vw',
       data,
       autoFocus: 'first-tabbable',
@@ -37,11 +36,13 @@ export class ParameterService {
     return null;
   }
 
-  get getModalWidth(): string {
-    return this.breakpointObserver.isMatched('(max-width: 500px)') ? '90%' : '45%';
+  getModalWidthByParameters(computer?: string, mobile?: string): string {
+    if (!computer || !mobile) return this.getModalWidth;
+
+    return this.breakpointObserver.isMatched('(max-width: 500px)') ? mobile : computer;
   }
 
-  getModalWidthByParameters(computer: string, mobile: string): string {
-    return this.breakpointObserver.isMatched('(max-width: 500px)') ? mobile : computer;
+  get getModalWidth(): string {
+    return this.breakpointObserver.isMatched('(max-width: 500px)') ? '90%' : '45%';
   }
 }

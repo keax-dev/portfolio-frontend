@@ -1,14 +1,14 @@
 /**
  * Pruebas unitarias de validación, envío y cierre del formulario de contacto.
  */
-import { DialogRef } from '@angular/cdk/dialog';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { of, throwError } from 'rxjs';
-import { AlertService } from '@core/services/alert.service';
 import { TranslateService } from '@core/services/translate.service';
 import { PortfolioService } from '@features/portfolio/services/portfolio.service';
 import { ContactComponent } from './contact.component';
+import { of, throwError } from 'rxjs';
+import { AlertService } from '@core/services/alert.service';
+import { DialogRef } from '@angular/cdk/dialog';
 
 describe('ContactComponent', () => {
   let fixture: ComponentFixture<ContactComponent>;

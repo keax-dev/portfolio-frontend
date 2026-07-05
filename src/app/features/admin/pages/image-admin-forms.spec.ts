@@ -2,22 +2,22 @@
  * Pruebas unitarias de formularios administrativos que encadenan guardado y carga de imágenes.
  */
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { TestBed } from '@angular/core/testing';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { of, throwError } from 'rxjs';
-import { AlertService } from '@core/services/alert.service';
-import { ParameterService } from '@core/services/parameter.service';
-import { ImageService } from '@features/admin/services/images.service';
-import { InstitutionService } from '@features/admin/services/institution.service';
-import { ProfileService } from '@features/admin/services/profile.service';
-import { ProjectService } from '@features/admin/services/project.service';
-import { SkillService } from '@features/admin/services/skill.service';
-import { TechnologyService } from '@features/admin/services/technology.service';
 import { FrmInstitutionComponent } from './institution/frm-institution/frm-institution.component';
 import { FrmProfileComponent } from './profile/frm-profile/frm-profile.component';
 import { FrmProjectComponent } from './project/frm-project/frm-project.component';
+import { InstitutionService } from '@features/admin/services/institution.service';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { TechnologyService } from '@features/admin/services/technology.service';
 import { FrmSkillComponent } from './skill/frm-skill/frm-skill.component';
+import { ParameterService } from '@core/services/parameter.service';
+import { of, throwError } from 'rxjs';
+import { ProfileService } from '@features/admin/services/profile.service';
+import { ProjectService } from '@features/admin/services/project.service';
+import { AlertService } from '@core/services/alert.service';
+import { ImageService } from '@features/admin/services/images.service';
+import { SkillService } from '@features/admin/services/skill.service';
 import { Institution } from '@shared/interfaces/institution';
+import { TestBed } from '@angular/core/testing';
 import { Profile } from '@shared/interfaces/profile';
 import { Project } from '@shared/interfaces/project';
 import { Skill } from '@shared/interfaces/skill';

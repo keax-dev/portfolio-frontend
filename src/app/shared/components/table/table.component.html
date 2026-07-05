@@ -1,11 +1,11 @@
 @if (new()) {
   <div class="w-100 d-flex justify-content-end align-items-center mt-3">
     <app-button
+      (action)="newItem()"
       [classPadding]="'px-4 py-2'"
       [icon]="'pi-plus pi'"
       [text]="newTxt()"
       [type]="'button'"
-      (action)="newItem()"
     ></app-button>
   </div>
 }
@@ -20,10 +20,10 @@
         </span>
         <input
           (input)="updateSearch($event)"
-          class="form-control"
-          id="table-search"
           placeholder="Search"
+          class="form-control"
           type="search"
+          id="table-search"
         />
       </div>
     </div>
@@ -36,9 +36,10 @@
           @for (column of columns(); track column.value) {
             <th class="bg-primary text-light" scope="col">
               <button
+                (click)="sortBy(column)"
+                [title]="'Sort by' + column.name"
                 class="btn btn-link text-light text-decoration-none fw-bold p-0"
                 type="button"
-                (click)="sortBy(column)"
               >
                 {{ column.name }}
                 <i class="pi pi-sort-alt ms-1" aria-hidden="true"></i>
@@ -78,7 +79,7 @@
                   (click)="detailsItem(row)"
                   aria-label="View details"
                   class="btn btn-outline-primary m-1"
-                  title="View details"
+                  title="View details" 
                   type="button"
                 >
                   <i class="pi pi-eye" aria-hidden="true"></i>
@@ -92,7 +93,7 @@
                   (click)="modifyItem(row)"
                   aria-label="Edit record"
                   class="btn btn-success m-1"
-                  title="Edit record"
+                  title="Edit record" 
                   type="button"
                 >
                   <i class="pi pi-pencil" aria-hidden="true"></i>
@@ -138,19 +139,21 @@
 
     <div class="d-flex align-items-center gap-2">
       <button
-        class="btn btn-outline-primary btn-sm"
-        type="button"
-        [disabled]="currentPage() === 1"
         (click)="previousPage()"
+        [disabled]="currentPage() === 1"
+        class="btn btn-outline-primary btn-sm"
+        title="Previous page"
+        type="button"
       >
         Previous
       </button>
       <span>Page {{ currentPage() }} of {{ pageCount() }}</span>
       <button
-        class="btn btn-outline-primary btn-sm"
-        type="button"
         [disabled]="currentPage() === pageCount()"
         (click)="nextPage()"
+        class="btn btn-outline-primary btn-sm"
+        title="Next page"
+        type="button"
       >
         Next
       </button>

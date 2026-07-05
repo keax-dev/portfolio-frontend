@@ -1,11 +1,11 @@
 /**
  * Pruebas unitarias de endpoints públicos y envío del formulario de contacto.
  */
-import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { provideHttpClient } from '@angular/common/http';
 import { PortfolioService } from './portfolio.service';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { TestBed } from '@angular/core/testing';
 
 describe('PortfolioService', () => {
   const baseUrl = 'https://api.test';

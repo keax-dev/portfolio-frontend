@@ -1,6 +1,6 @@
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { resolveCvPreviewUrl } from './cv-preview-url';
 
 @Component({
@@ -10,9 +10,9 @@ import { resolveCvPreviewUrl } from './cv-preview-url';
   styleUrls: ['./cv-preview.component.css'],
 })
 export class CvPreviewComponent implements OnInit {
+  private readonly sanitizer = inject(DomSanitizer);
   private readonly data = inject<{ readonly url?: string }>(DIALOG_DATA);
   private readonly ref = inject(DialogRef);
-  private readonly sanitizer = inject(DomSanitizer);
 
   previewUrl: SafeResourceUrl | null = null;
   originalUrl = '';

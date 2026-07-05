@@ -1,4 +1,4 @@
-<form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="m-3">
+<form (ngSubmit)="onSubmit()" [formGroup]="projectForm" class="m-3">
   <header>
     <h4 class="text-primary">{{ title }}</h4>
   </header>
@@ -51,7 +51,7 @@
     <div class="col-md-6">
       <label for="technology" class="form-label fw-bold">Technology: </label>
       <select
-        (change)="loadPositionByTechnology(controls['technology'].value ?? 0)"
+        (change)="loadPositionByTechnology(controls['technology']?.value || 0)"
         formControlName="technology"
         class="form-select"
         id="technology"

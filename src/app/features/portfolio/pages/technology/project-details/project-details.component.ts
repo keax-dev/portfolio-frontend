@@ -1,5 +1,5 @@
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ShowImageComponent } from '@features/portfolio/pages/technology/show-image/show-image.component';
 import { ParameterService } from '@core/services/parameter.service';
 import { TranslateService } from '@core/services/translate.service';

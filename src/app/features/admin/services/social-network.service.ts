@@ -1,8 +1,8 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { SocialNetwork, SocialNetworkPayload } from '@shared/interfaces/social-network';
+import { inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { ApiResponse } from '@core/interfaces/apiresponse';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -11,8 +11,8 @@ import { Observable } from 'rxjs';
 export class SocialNetworkService {
   reference = '/socialNetwork';
 
-  private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_BASE_URL);
+  private readonly http = inject(HttpClient);
 
   getSocialNetworkListByDeleted(deleted = false): Observable<ApiResponse<SocialNetwork[]>> {
     return this.http.get<ApiResponse<SocialNetwork[]>>(

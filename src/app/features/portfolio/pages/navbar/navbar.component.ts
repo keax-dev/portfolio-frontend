@@ -1,9 +1,9 @@
 import { Component, inject, output, input, ChangeDetectionStrategy } from '@angular/core';
 import { NgClass, TitleCasePipe } from '@angular/common';
 import { TranslateService } from '@core/services/translate.service';
+import { NavigationItem } from '@shared/interfaces/navigation-item';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { Profile } from '@shared/interfaces/profile';
-import { NavigationItem } from '@shared/interfaces/navigation-item';
 
 @Component({
   selector: 'app-navbar',

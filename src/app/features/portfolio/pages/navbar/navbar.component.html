@@ -1,6 +1,6 @@
 <nav
-  class="navbar navbar-dark bg-primary shadow-lg sticky-top z-index-navbar"
   aria-label="Primary navigation"
+  class="navbar navbar-dark bg-primary shadow-lg sticky-top z-index-navbar"
   role="navigation"
 >
   <div class="container-fluid px-0">
@@ -19,12 +19,12 @@
 
       @for (lang of languages; track $index) {
         <button
+          (click)="selectLanguage(lang.code)"
           [ngClass]="{
             'text-dark fw-bolder': translate.getLang === lang.code.toLowerCase(),
           }"
           [attr.aria-pressed]="translate.getLang === lang.code.toLowerCase()"
           [title]="lang.language"
-          (click)="selectLanguage(lang.code)"
           class="btn btn-link d-flex align-items-center text-light link-dark text-decoration-none mx-1 p-0 border-0"
           type="button"
         >
@@ -34,12 +34,12 @@
     </div>
 
     <button
+      (click)="toggleNavbar()"
+      [attr.aria-expanded]="navbarExpanded"
+      aria-controls="navbarNav"
+      aria-label="Toggle navigation"
       class="navbar-toggler mx-2 d-flex justify-content-center align-items-center"
       type="button"
-      (click)="toggleNavbar()"
-      aria-controls="navbarNav"
-      [attr.aria-expanded]="navbarExpanded"
-      aria-label="Toggle navigation"
     >
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -50,8 +50,8 @@
           <li class="nav-item text-center">
             @if (navItem.routerLink) {
               <a
-                [href]="navItem.routerLink"
                 (click)="closeNavbar()"
+                [href]="navItem.routerLink"
                 class="nav-link text-light link-dark"
                 >{{ navItem | language: 'label' : translate.getLang }}</a
               >

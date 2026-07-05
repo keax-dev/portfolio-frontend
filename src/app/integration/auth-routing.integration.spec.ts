@@ -2,13 +2,13 @@
  * Pruebas de integración del Router con los guards y el almacenamiento real de sesión.
  * Verifican redirecciones completas sin sustituir SessionService ni UserInfoService.
  */
+import { RouterTestingHarness } from '@angular/router/testing';
+import { guestMatchGuard } from '@core/guards/guest.guard';
+import { authMatchGuard } from '@core/guards/auth.guard';
+import { provideRouter } from '@angular/router';
+import { AlertService } from '@core/services/alert.service';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { RouterTestingHarness } from '@angular/router/testing';
-import { AlertService } from '@core/services/alert.service';
-import { authMatchGuard } from '@core/guards/auth.guard';
-import { guestMatchGuard } from '@core/guards/guest.guard';
 
 @Component({ template: '<h1>Login page</h1>' })
 class LoginStubComponent {}

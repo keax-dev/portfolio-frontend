@@ -2,14 +2,14 @@
  * Prueba de integración del formulario LoginComponent con LoginService, HttpClient y localStorage.
  * Recorre el flujo desde eventos DOM hasta persistencia de sesión y navegación.
  */
-import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { LoginComponent } from '@features/auth/pages/login/login.component';
 import { AlertService } from '@core/services/alert.service';
 import { API_BASE_URL } from '@core/http/api-base-url.token';
-import { LoginComponent } from '@features/auth/pages/login/login.component';
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 
 describe('Login flow integration', () => {
   const baseUrl = 'https://integration.test/api';

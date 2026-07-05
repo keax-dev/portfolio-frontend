@@ -9,8 +9,8 @@ import { Column } from '@shared/components/interfaces/column';
   imports: [ButtonComponent],
 })
 export class TableComponent<T extends object> {
-  readonly records = input<readonly T[]>([]);
-  readonly columns = input<readonly Column[]>([]);
+  readonly records = input.required<readonly T[]>();
+  readonly columns = input.required<readonly Column[]>();
 
   readonly detailsTxt = input('Details');
   readonly sortName = input('');
@@ -75,18 +75,18 @@ export class TableComponent<T extends object> {
     return this.sortedRecords().slice(start, start + this.pageSize());
   });
 
-  protected updateSearch(event: Event): void {
+  updateSearch(event: Event): void {
     this.searchTerm.set((event.target as HTMLInputElement).value);
     this.page.set(1);
   }
 
-  protected updatePageSize(event: Event): void {
+  updatePageSize(event: Event): void {
     const value = Number((event.target as HTMLSelectElement).value);
     this.pageSize.set(Number.isFinite(value) ? value : 10);
     this.page.set(1);
   }
 
-  protected sortBy(column: Column): void {
+  sortBy(column: Column): void {
     if (this.sortKey() === column.value) {
       this.sortDirection.update((direction) => (direction === 1 ? -1 : 1));
       return;
@@ -96,24 +96,24 @@ export class TableComponent<T extends object> {
     this.sortDirection.set(1);
   }
 
-  protected previousPage(): void {
+  previousPage(): void {
     this.page.update((page) => Math.max(1, page - 1));
   }
 
-  protected nextPage(): void {
+  nextPage(): void {
     this.page.update((page) => Math.min(this.pageCount(), page + 1));
   }
 
-  protected cellValue(record: T, column: Column): unknown {
+  cellValue(record: T, column: Column): unknown {
     return this.readValue(record, column.value);
   }
 
-  protected imageUrl(record: T, column: Column): string {
+  imageUrl(record: T, column: Column): string {
     const value = this.readValue(record, column.value);
     return typeof value === 'string' ? value : '';
   }
 
-  protected imageAlt(record: T): string {
+  imageAlt(record: T): string {
     for (const key of ['name', 'title', 'institution_name']) {
       const value = this.readValue(record, key);
       if (typeof value === 'string' && value) {
@@ -140,11 +140,11 @@ export class TableComponent<T extends object> {
     this.itemDetails.emit(item);
   }
 
-  private readValue(record: T, key: string): unknown {
+  readValue(record: T, key: string): unknown {
     return (record as Record<string, unknown>)[key];
   }
 
-  private compare(left: unknown, right: unknown): number {
+  compare(left: unknown, right: unknown): number {
     if (typeof left === 'number' && typeof right === 'number') {
       return left - right;
     }

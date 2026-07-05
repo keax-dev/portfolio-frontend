@@ -1,12 +1,12 @@
 /**
  * Pruebas unitarias de geolocalización, registro y filtros temporales de visitantes.
  */
-import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { VisitorService } from './visitor.service';
 import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { environment } from '@src/environments/environment';
-import { VisitorService } from './visitor.service';
+import { TestBed } from '@angular/core/testing';
 
 describe('VisitorService', () => {
   const baseUrl = 'https://api.test';

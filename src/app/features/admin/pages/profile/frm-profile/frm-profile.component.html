@@ -5,7 +5,7 @@
 
   <hr />
 
-  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="m-0">
+  <form (ngSubmit)="onSubmit()" [formGroup]="profileForm" class="m-0">
     @if (update()) {
       <div class="w-100 d-flex justify-content-center align-items-center">
         <img [src]="urlPicture()" alt="Current profile picture" />

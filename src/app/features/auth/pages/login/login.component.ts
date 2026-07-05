@@ -1,14 +1,14 @@
-import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Component, inject, DestroyRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UserInfoService } from '@core/services/user-info.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { LoginResponse } from '@features/auth/interfaces/auth';
 import { LoginService } from '@features/auth/services/login.service';
 import { AlertService } from '@core/services/alert.service';
-import { Router } from '@angular/router';
-import { LoginResponse } from '@features/auth/interfaces/auth';
 import { finalize } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -18,8 +18,8 @@ import { finalize } from 'rxjs';
   imports: [ReactiveFormsModule, ButtonComponent],
 })
 export class LoginComponent implements OnDestroy {
-  private readonly destroyRef = inject(DestroyRef);
   private readonly fallbackSessionMs = 14_000_000;
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly userInfoService = inject(UserInfoService);
   private readonly loginService = inject(LoginService);
@@ -57,16 +57,20 @@ export class LoginComponent implements OnDestroy {
           this.alert.success(result.alert);
           this.saveUserInfo(result.data);
         },
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 
   saveUserInfo(data: LoginResponse): void {
     this.userInfoService.setToken = data.token;
-    this.userInfoService.setTimeExpiration =
-      this.userInfoService.resolveTokenExpiration(data.token) ??
-      Date.now() + this.fallbackSessionMs;
+    this.userInfoService.setTimeExpiration = this.getRemainingSessionTime(data.token);
     void this.router.navigateByUrl('/home');
+  }
+
+  getRemainingSessionTime(token: string): number {
+    return (
+      this.userInfoService.resolveTokenExpiration(token) ?? Date.now() + this.fallbackSessionMs
+    );
   }
 
   get controls(): typeof this.authForm.controls {

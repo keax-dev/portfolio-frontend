@@ -22,20 +22,20 @@ import { NotificationService } from './notification.service';
     <div aria-atomic="true" aria-live="polite">
       @for (notification of notificationService.notifications(); track notification.id) {
         <div
-          class="alert alert-dismissible shadow"
           [class.alert-success]="notification.kind === 'success'"
-          [class.alert-info]="notification.kind === 'info'"
           [class.alert-warning]="notification.kind === 'warning'"
           [class.alert-danger]="notification.kind === 'error'"
+          [class.alert-info]="notification.kind === 'info'"
+          class="alert alert-dismissible shadow"
           role="status"
         >
           <strong>{{ notification.title }}</strong>
           <div>{{ notification.message }}</div>
           <button
+            (click)="notificationService.dismiss(notification.id)"
+            aria-label="Close notification"
             class="btn-close"
             type="button"
-            aria-label="Close notification"
-            (click)="notificationService.dismiss(notification.id)"
           ></button>
         </div>
       }

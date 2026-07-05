@@ -1,11 +1,11 @@
 /**
  * Pruebas unitarias de autorización, expiración, temporizadores y logout de SessionService.
  */
-import { TestBed } from '@angular/core/testing';
 import { Router, UrlTree } from '@angular/router';
-import { AlertService } from './alert.service';
-import { SessionService } from './session.service';
 import { UserInfoService } from './user-info.service';
+import { SessionService } from './session.service';
+import { AlertService } from './alert.service';
+import { TestBed } from '@angular/core/testing';
 
 describe('SessionService', () => {
   let service: SessionService;

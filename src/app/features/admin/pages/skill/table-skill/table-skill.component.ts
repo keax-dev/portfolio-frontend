@@ -1,12 +1,3 @@
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-  signal,
-} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { FrmSkillComponent } from '@features/admin/pages/skill/frm-skill/frm-skill.component';
@@ -16,6 +7,15 @@ import { AlertService } from '@core/services/alert.service';
 import { SkillService } from '@features/admin/services/skill.service';
 import { Column } from '@shared/components/interfaces/column';
 import { Skill } from '@shared/interfaces/skill';
+import {
+  ChangeDetectionStrategy,
+  DestroyRef,
+  OnDestroy,
+  Component,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 
 @Component({
   selector: 'app-table-skill',

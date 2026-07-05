@@ -1,9 +1,9 @@
 import { Component, inject, output, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@core/services/translate.service';
+import { NavigationItem } from '@shared/interfaces/navigation-item';
 import { SocialNetwork } from '@shared/interfaces/social-network';
 import { TitleCasePipe } from '@angular/common';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
-import { NavigationItem } from '@shared/interfaces/navigation-item';
 
 @Component({
   selector: 'app-footer',

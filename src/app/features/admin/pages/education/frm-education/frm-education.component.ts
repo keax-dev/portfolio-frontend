@@ -1,18 +1,3 @@
-import {
-  NonNullableFormBuilder,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-  signal,
-} from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -24,6 +9,21 @@ import { AlertService } from '@core/services/alert.service';
 import { Institution } from '@shared/interfaces/institution';
 import { Education } from '@shared/interfaces/education';
 import { finalize } from 'rxjs';
+import {
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  FormsModule,
+  Validators,
+} from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  DestroyRef,
+  Component,
+  OnDestroy,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 
 interface EducationDialogData {
   readonly positions: number;
@@ -110,7 +110,7 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.close(result.data);
         },
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 
@@ -127,7 +127,7 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.close(result.data);
         },
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 
@@ -141,7 +141,7 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (result) => this.institutionList.set(result.data),
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 

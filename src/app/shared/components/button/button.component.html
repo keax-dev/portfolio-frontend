@@ -1,8 +1,8 @@
 <button
+  (click)="clickAction()"
   [disabled]="disabled()"
   [class]="buttonClass()"
   [type]="buttonType()"
-  (click)="clickAction()"
 >
   @if (buttonIcon()) {
     <i [class]="buttonIcon()" aria-hidden="true"></i>

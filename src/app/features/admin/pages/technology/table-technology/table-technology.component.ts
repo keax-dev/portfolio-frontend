@@ -1,12 +1,3 @@
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-  signal,
-} from '@angular/core';
 import { FrmTechnologyComponent } from '@features/admin/pages/technology/frm-technology/frm-technology.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TechnologyService } from '@features/admin/services/technology.service';
@@ -16,6 +7,15 @@ import { TableComponent } from '@shared/components/table/table.component';
 import { AlertService } from '@core/services/alert.service';
 import { Technology } from '@shared/interfaces/technology';
 import { Column } from '@shared/components/interfaces/column';
+import {
+  ChangeDetectionStrategy,
+  DestroyRef,
+  OnDestroy,
+  Component,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 
 @Component({
   selector: 'app-table-education',

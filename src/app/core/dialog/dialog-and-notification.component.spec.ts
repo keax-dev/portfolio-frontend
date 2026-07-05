@@ -1,11 +1,11 @@
 /**
  * Pruebas unitarias de interacción DOM para el diálogo de confirmación y las notificaciones.
  */
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { TestBed } from '@angular/core/testing';
-import { ConfirmDialogComponent } from './confirm-dialog.component';
 import { NotificationOutletComponent } from '@core/notifications/notification-outlet.component';
+import { ConfirmDialogComponent } from './confirm-dialog.component';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { NotificationService } from '@core/notifications/notification.service';
+import { TestBed } from '@angular/core/testing';
 
 describe('dialog and notification components', () => {
   // Caso: closes the confirmation dialog with true or false.

@@ -1,22 +1,22 @@
 /**
  * Pruebas unitarias de carga, ordenamiento y recuperación de errores del portafolio.
  */
-import { DialogRef } from '@angular/cdk/dialog';
-import { HttpErrorResponse } from '@angular/common/http';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { firstValueFrom, of, throwError } from 'rxjs';
-import { AlertService } from '@core/services/alert.service';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { PortfolioComponent } from './portfolio.component';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ParameterService } from '@core/services/parameter.service';
 import { PortfolioService } from '@features/portfolio/services/portfolio.service';
 import { VisitorService } from '@features/portfolio/services/visitor.service';
-import { PortfolioComponent } from './portfolio.component';
-import { Education } from '@shared/interfaces/education';
-import { Project } from '@shared/interfaces/project';
-import { Skill } from '@shared/interfaces/skill';
 import { SocialNetwork } from '@shared/interfaces/social-network';
+import { AlertService } from '@core/services/alert.service';
+import { Education } from '@shared/interfaces/education';
 import { Technology } from '@shared/interfaces/technology';
+import { DialogRef } from '@angular/cdk/dialog';
+import { Project } from '@shared/interfaces/project';
+import { Router } from '@angular/router';
+import { Skill } from '@shared/interfaces/skill';
 
 describe('PortfolioComponent', () => {
   let fixture: ComponentFixture<PortfolioComponent>;

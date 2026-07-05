@@ -3,12 +3,12 @@
  */
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { authInterceptor } from './auth.interceptor';
-import { SessionService } from '@core/services/session.service';
 import { UserInfoService } from '@core/services/user-info.service';
+import { SessionService } from '@core/services/session.service';
 import { environment } from '@src/environments/environment';
+import { TestBed } from '@angular/core/testing';
 
 describe('authInterceptor', () => {
   let http: HttpClient;

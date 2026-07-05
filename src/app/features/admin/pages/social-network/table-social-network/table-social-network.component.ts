@@ -1,12 +1,3 @@
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-  signal,
-} from '@angular/core';
 import { FrmSocialNetworkComponent } from '@features/admin/pages/social-network/frm-social-network/frm-social-network.component';
 import { SocialNetworkService } from '@features/admin/services/social-network.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -16,6 +7,15 @@ import { TableComponent } from '@shared/components/table/table.component';
 import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
 import { Column } from '@shared/components/interfaces/column';
+import {
+  ChangeDetectionStrategy,
+  DestroyRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  signal,
+  inject,
+} from '@angular/core';
 
 @Component({
   selector: 'app-table-social-network',

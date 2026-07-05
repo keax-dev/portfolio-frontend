@@ -1,5 +1,5 @@
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 interface ImageDialogData {
   readonly url?: string;

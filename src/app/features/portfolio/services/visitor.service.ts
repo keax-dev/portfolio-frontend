@@ -1,15 +1,15 @@
-import {
-  Visitor,
-  VisitorDashboard,
-  VisitorLocationResponse,
-  VisitorRegisterPayload,
-} from '@features/portfolio/interfaces/visitor';
 import { catchError, map, Observable, of, switchMap } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { environment } from '@src/environments/environment';
+import {
+  VisitorLocationResponse,
+  VisitorRegisterPayload,
+  VisitorDashboard,
+  Visitor,
+} from '@features/portfolio/interfaces/visitor';
 
 @Injectable({
   providedIn: 'root',
@@ -17,8 +17,8 @@ import { environment } from '@src/environments/environment';
 export class VisitorService {
   private readonly reference = '/visitor';
 
-  private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_BASE_URL);
+  private readonly http = inject(HttpClient);
 
   registerVisit(path: string): Observable<ApiResponse<Visitor | null>> {
     return this.resolveLocation().pipe(

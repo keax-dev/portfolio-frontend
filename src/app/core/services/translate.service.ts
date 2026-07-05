@@ -21,6 +21,10 @@ export class TranslateService {
     }
   }
 
+  isSupportedLanguage(language: string | null): language is SupportedLanguage {
+    return language === 'en' || language === 'es';
+  }
+
   set setLang(lang: string) {
     if (!this.isSupportedLanguage(lang)) {
       return;
@@ -32,9 +36,5 @@ export class TranslateService {
 
   get getLang(): SupportedLanguage {
     return this.languageState();
-  }
-
-  private isSupportedLanguage(language: string | null): language is SupportedLanguage {
-    return language === 'en' || language === 'es';
   }
 }

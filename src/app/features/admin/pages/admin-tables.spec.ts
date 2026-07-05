@@ -1,24 +1,24 @@
 /**
  * Pruebas unitarias parametrizadas de carga, edición y eliminación en tablas administrativas.
  */
-import { Type } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { of } from 'rxjs';
-import { AlertService } from '@core/services/alert.service';
-import { ParameterService } from '@core/services/parameter.service';
-import { EducationService } from '@features/admin/services/education.service';
-import { InstitutionService } from '@features/admin/services/institution.service';
-import { ProjectService } from '@features/admin/services/project.service';
-import { SkillService } from '@features/admin/services/skill.service';
-import { SocialNetworkService } from '@features/admin/services/social-network.service';
-import { TechnologyService } from '@features/admin/services/technology.service';
-import { TableEducationComponent } from './education/table-education/table-education.component';
-import { TableInstitutionComponent } from './institution/table-institution/table-institution.component';
-import { TableProjectComponent } from './project/table-project/table-project.component';
-import { TableSkillComponent } from './skill/table-skill/table-skill.component';
 import { TableSocialNetworkComponent } from './social-network/table-social-network/table-social-network.component';
 import { TableTechnologyComponent } from './technology/table-technology/table-technology.component';
+import { TableInstitutionComponent } from './institution/table-institution/table-institution.component';
+import { TableEducationComponent } from './education/table-education/table-education.component';
+import { TableProjectComponent } from './project/table-project/table-project.component';
+import { SocialNetworkService } from '@features/admin/services/social-network.service';
+import { TableSkillComponent } from './skill/table-skill/table-skill.component';
+import { InstitutionService } from '@features/admin/services/institution.service';
+import { TechnologyService } from '@features/admin/services/technology.service';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ParameterService } from '@core/services/parameter.service';
+import { EducationService } from '@features/admin/services/education.service';
+import { ProjectService } from '@features/admin/services/project.service';
+import { SkillService } from '@features/admin/services/skill.service';
+import { AlertService } from '@core/services/alert.service';
+import { TestBed } from '@angular/core/testing';
+import { Type } from '@angular/core';
+import { of } from 'rxjs';
 
 interface TableCase {
   readonly name: string;

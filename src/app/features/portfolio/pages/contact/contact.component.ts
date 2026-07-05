@@ -1,5 +1,5 @@
-import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Component, inject, DestroyRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { LowerCaseDirective } from '@shared/components/directive/lowerCase.directive';
@@ -84,7 +84,7 @@ export class ContactComponent implements OnDestroy {
           this.alert.success(result.alert);
           this.close(true);
         },
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 

@@ -1,12 +1,3 @@
-import {
-  Component,
-  DestroyRef,
-  inject,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-  signal,
-} from '@angular/core';
 import { Visitor, VisitorDashboard } from '@features/portfolio/interfaces/visitor';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize, forkJoin } from 'rxjs';
@@ -15,6 +6,15 @@ import { VisitorService } from '@features/portfolio/services/visitor.service';
 import { AlertService } from '@core/services/alert.service';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  DestroyRef,
+  Component,
+  OnDestroy,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 
 @Component({
   selector: 'app-visitor-dashboard',
@@ -74,7 +74,7 @@ export class VisitorDashboardComponent implements OnInit, OnDestroy {
           this.dashboard.set(result.dashboard.data);
           this.records.set(result.visitors.data);
         },
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 
@@ -82,7 +82,7 @@ export class VisitorDashboardComponent implements OnInit, OnDestroy {
     return value || 'Unknown';
   }
 
-  private setDefaultDateRange(): void {
+  setDefaultDateRange(): void {
     const endDate = new Date();
     const startDate = new Date();
     startDate.setDate(endDate.getDate() - 15);
@@ -91,7 +91,7 @@ export class VisitorDashboardComponent implements OnInit, OnDestroy {
     this.endDate = this.toDateInputValue(endDate);
   }
 
-  private isValidDateRange(): boolean {
+  isValidDateRange(): boolean {
     if (!this.startDate || !this.endDate) {
       return true;
     }
@@ -99,7 +99,7 @@ export class VisitorDashboardComponent implements OnInit, OnDestroy {
     return this.localDate(this.startDate).getTime() <= this.localDate(this.endDate).getTime();
   }
 
-  private toStartOfDayIso(value: string): string | undefined {
+  toStartOfDayIso(value: string): string | undefined {
     if (!value) {
       return undefined;
     }
@@ -109,7 +109,7 @@ export class VisitorDashboardComponent implements OnInit, OnDestroy {
     return date.toISOString();
   }
 
-  private toEndOfDayIso(value: string): string | undefined {
+  toEndOfDayIso(value: string): string | undefined {
     if (!value) {
       return undefined;
     }
@@ -119,7 +119,7 @@ export class VisitorDashboardComponent implements OnInit, OnDestroy {
     return date.toISOString();
   }
 
-  private toDateInputValue(date: Date): string {
+  toDateInputValue(date: Date): string {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
@@ -127,7 +127,7 @@ export class VisitorDashboardComponent implements OnInit, OnDestroy {
     return `${year}-${month}-${day}`;
   }
 
-  private localDate(value: string): Date {
+  localDate(value: string): Date {
     const [year, month, day] = value.split('-').map(Number);
     return new Date(year, month - 1, day);
   }

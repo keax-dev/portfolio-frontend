@@ -1,12 +1,4 @@
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-} from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
@@ -16,8 +8,16 @@ import { ButtonComponent } from '@shared/components/button/button.component';
 import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
 import { SkillService } from '@features/admin/services/skill.service';
-import { Skill } from '@shared/interfaces/skill';
 import { finalize } from 'rxjs';
+import { Skill } from '@shared/interfaces/skill';
+import {
+  ChangeDetectionStrategy,
+  DestroyRef,
+  Component,
+  OnDestroy,
+  inject,
+  OnInit,
+} from '@angular/core';
 
 interface SkillDialogData {
   readonly positions: number;
@@ -143,7 +143,7 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.close(skill);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }

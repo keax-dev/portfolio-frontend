@@ -1,9 +1,9 @@
+import { Technology, TechnologyPayload } from '@shared/interfaces/technology';
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Observable } from 'rxjs';
-import { Technology, TechnologyPayload } from '@shared/interfaces/technology';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +11,8 @@ import { Technology, TechnologyPayload } from '@shared/interfaces/technology';
 export class TechnologyService {
   reference = '/technology';
 
-  private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_BASE_URL);
+  private readonly http = inject(HttpClient);
 
   getTechnologyListByDeleted(deleted = false): Observable<ApiResponse<Technology[]>> {
     return this.http.get<ApiResponse<Technology[]>>(

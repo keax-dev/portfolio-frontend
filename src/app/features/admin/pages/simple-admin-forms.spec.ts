@@ -1,21 +1,21 @@
 /**
  * Pruebas unitarias de creación, actualización y validación en formularios administrativos simples.
  */
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { TestBed } from '@angular/core/testing';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { of, throwError } from 'rxjs';
-import { AlertService } from '@core/services/alert.service';
-import { EducationService } from '@features/admin/services/education.service';
-import { InstitutionService } from '@features/admin/services/institution.service';
-import { SocialNetworkService } from '@features/admin/services/social-network.service';
-import { TechnologyService } from '@features/admin/services/technology.service';
-import { FrmEducationComponent } from './education/frm-education/frm-education.component';
 import { FrmSocialNetworkComponent } from './social-network/frm-social-network/frm-social-network.component';
+import { FrmEducationComponent } from './education/frm-education/frm-education.component';
 import { FrmTechnologyComponent } from './technology/frm-technology/frm-technology.component';
-import { Education } from '@shared/interfaces/education';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { SocialNetworkService } from '@features/admin/services/social-network.service';
+import { InstitutionService } from '@features/admin/services/institution.service';
+import { TechnologyService } from '@features/admin/services/technology.service';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { EducationService } from '@features/admin/services/education.service';
+import { of, throwError } from 'rxjs';
 import { SocialNetwork } from '@shared/interfaces/social-network';
+import { AlertService } from '@core/services/alert.service';
+import { Education } from '@shared/interfaces/education';
 import { Technology } from '@shared/interfaces/technology';
+import { TestBed } from '@angular/core/testing';
 
 describe('simple admin forms', () => {
   const spinner = () => ({ show: vi.fn(), hide: vi.fn() });

@@ -6,7 +6,7 @@
   <app-technology [technologyList]="technologyList()"></app-technology>
 </main>
 <app-footer
+  (contact)="modalContact()"
   [socialNetworkList]="socialNetworkList()"
   [navItems]="navItems"
-  (contact)="modalContact()"
 ></app-footer>

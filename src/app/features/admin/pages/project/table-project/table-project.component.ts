@@ -1,13 +1,3 @@
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy,
-  computed,
-  signal,
-} from '@angular/core';
 import { FrmProjectComponent } from '@features/admin/pages/project/frm-project/frm-project.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -17,6 +7,16 @@ import { TableComponent } from '@shared/components/table/table.component';
 import { AlertService } from '@core/services/alert.service';
 import { Project } from '@shared/interfaces/project';
 import { Column } from '@shared/components/interfaces/column';
+import {
+  ChangeDetectionStrategy,
+  DestroyRef,
+  Component,
+  OnDestroy,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 
 @Component({
   selector: 'app-table-project',

@@ -1,5 +1,5 @@
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { SessionService } from '@core/services/session.service';
 import { NavigationItem } from '@shared/interfaces/navigation-item';
 

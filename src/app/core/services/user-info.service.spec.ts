@@ -1,8 +1,8 @@
 /**
  * Pruebas unitarias de persistencia, vigencia y decodificación JWT de UserInfoService.
  */
-import { TestBed } from '@angular/core/testing';
 import { UserInfoService } from './user-info.service';
+import { TestBed } from '@angular/core/testing';
 
 describe('UserInfoService', () => {
   let service: UserInfoService;

@@ -1,4 +1,12 @@
-import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  DestroyRef,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { FrmSkillComponent } from '@features/admin/pages/skill/frm-skill/frm-skill.component';
@@ -10,12 +18,12 @@ import { Column } from '@shared/components/interfaces/column';
 import { Skill } from '@shared/interfaces/skill';
 
 @Component({
-    selector: 'app-table-skill',
-    templateUrl: './table-skill.component.html',
-    imports: [TableComponent]
+  selector: 'app-table-skill',
+  templateUrl: './table-skill.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TableComponent],
 })
 export class TableSkillComponent implements OnInit, OnDestroy {
-
   private readonly destroyRef = inject(DestroyRef);
 
   private skillService = inject(SkillService);
@@ -23,12 +31,12 @@ export class TableSkillComponent implements OnInit, OnDestroy {
   private spinner = inject(NgxSpinnerService);
   private alert = inject(AlertService);
 
-  records: Skill[] = [];
+  readonly records = signal<readonly Skill[]>([]);
 
   columns: Column[] = [
-    { name: "Position", value: "position" },
-    { name: "Skill", value: "name" },
-    { name: "Picture", value: "picture", image: true }
+    { name: 'Position', value: 'position' },
+    { name: 'Skill', value: 'name' },
+    { name: 'Picture', value: 'picture', image: true },
   ];
 
   ngOnInit(): void {
@@ -41,25 +49,28 @@ export class TableSkillComponent implements OnInit, OnDestroy {
 
   getSkillListByDeleted(): void {
     this.spinner.show();
-    this.skillService.getSkillListByDeleted().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => this.records = result.data,
-      complete: () => this.spinner.hide(),
-      error: error => {
-        this.records = [];
-        this.alert.httpError(error);
-      }
-    });
+    this.skillService
+      .getSkillListByDeleted()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => this.records.set(result.data),
+        complete: () => this.spinner.hide(),
+        error: (error) => {
+          this.records.set([]);
+          this.alert.httpError(error);
+        },
+      });
   }
 
   modalSkill(skill?: Skill): void {
     const dialogRef = this.parameter.openDialog(FrmSkillComponent, {
-      positions: this.records.length + 5,
-      skill: skill
+      positions: this.records().length + 5,
+      skill: skill,
     });
-    dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
+    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (result) => {
         if (result) this.getSkillListByDeleted();
-      }
+      },
     });
   }
 
@@ -69,14 +80,16 @@ export class TableSkillComponent implements OnInit, OnDestroy {
 
   deleteSkill(skill: Skill): void {
     this.spinner.show();
-    this.skillService.deleteSkill(skill.id!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
-        this.alert.success(result.alert);
-        this.getSkillListByDeleted();
-      },
-      complete: () => this.spinner.hide(),
-      error: error => this.alert.httpError(error)
-    });
+    this.skillService
+      .deleteSkill(skill.id!)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          this.alert.success(result.alert);
+          this.getSkillListByDeleted();
+        },
+        complete: () => this.spinner.hide(),
+        error: (error) => this.alert.httpError(error),
+      });
   }
-
 }

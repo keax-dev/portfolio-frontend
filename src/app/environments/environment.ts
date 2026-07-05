@@ -2,5 +2,4 @@
 export const environment = {
   url: 'http://localhost:9090/api',
   visitorGeoUrl: 'https://ip.guide',
-  cryptoJS: '8unx651i1Z1Q5mN7'
 };

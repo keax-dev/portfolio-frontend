@@ -4,3 +4,5 @@ export interface Institution {
   name_es: string;
   url?: string;
 }
+
+export type InstitutionPayload = Pick<Institution, 'name' | 'name_es'>;

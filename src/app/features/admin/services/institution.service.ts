@@ -1,36 +1,42 @@
 import { inject, Injectable } from '@angular/core';
-import { HeaderService } from '@core/services/header.service';
-import { Institution } from '@shared/interfaces/institution';
+import { HttpClient } from '@angular/common/http';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { Institution, InstitutionPayload } from '@shared/interfaces/institution';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class InstitutionService {
+  reference = '/institution';
 
-  reference = "/institution";
-
-  private header = inject(HeaderService);
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(API_BASE_URL);
 
   getInstitutionListByDeleted(deleted = false): Observable<ApiResponse<Institution[]>> {
-    return this.header.http.get<ApiResponse<Institution[]>>(this.header.url + this.reference + `/by-deleted/${deleted}`);
+    return this.http.get<ApiResponse<Institution[]>>(
+      `${this.baseUrl}${this.reference}/by-deleted/${deleted}`,
+    );
   }
 
-  createInstitution(institution: Institution): Observable<ApiResponse<Institution>> {
-    const payload = { ...institution };
-    delete payload.id;
-    return this.header.http.post<ApiResponse<Institution>>(this.header.url + this.reference, payload);
+  createInstitution(payload: InstitutionPayload): Observable<ApiResponse<Institution>> {
+    return this.http.post<ApiResponse<Institution>>(this.baseUrl + this.reference, payload);
   }
 
-  updateInstitution(institutionId: number, institution: Institution): Observable<ApiResponse<Institution>> {
-    const payload = { ...institution };
-    delete payload.id;
-    return this.header.http.put<ApiResponse<Institution>>(this.header.url + this.reference + `/${institutionId}`, payload);
+  updateInstitution(
+    institutionId: number,
+    payload: InstitutionPayload,
+  ): Observable<ApiResponse<Institution>> {
+    return this.http.put<ApiResponse<Institution>>(
+      `${this.baseUrl}${this.reference}/${institutionId}`,
+      payload,
+    );
   }
 
   deleteInstitution(institutionId: number): Observable<ApiResponse<Institution[]>> {
-    return this.header.http.delete<ApiResponse<Institution[]>>(this.header.url + this.reference + `/${institutionId}`);
+    return this.http.delete<ApiResponse<Institution[]>>(
+      `${this.baseUrl}${this.reference}/${institutionId}`,
+    );
   }
-
 }

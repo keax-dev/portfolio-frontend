@@ -1,28 +1,28 @@
 import { inject, Injectable } from '@angular/core';
-import { HeaderService } from '@core/services/header.service';
+import { HttpClient } from '@angular/common/http';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Observable } from 'rxjs';
-import { Profile } from '@shared/interfaces/profile';
+import { Profile, ProfilePayload } from '@shared/interfaces/profile';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProfileService {
+  reference = '/profile';
 
-  reference = "/profile";
-
-  private header = inject(HeaderService);
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(API_BASE_URL);
 
   getProfile(): Observable<ApiResponse<Profile>> {
-    return this.header.http.get<ApiResponse<Profile>>(this.header.url + this.reference);
+    return this.http.get<ApiResponse<Profile>>(this.baseUrl + this.reference);
   }
 
-  createProfile(profile: Profile): Observable<ApiResponse<Profile>> {
-    return this.header.http.post<ApiResponse<Profile>>(this.header.url + this.reference, profile);
+  createProfile(profile: ProfilePayload): Observable<ApiResponse<Profile>> {
+    return this.http.post<ApiResponse<Profile>>(this.baseUrl + this.reference, profile);
   }
 
-  updateProfile(profile: Profile): Observable<ApiResponse<Profile>> {
-    return this.header.http.put<ApiResponse<Profile>>(this.header.url + this.reference, profile);
+  updateProfile(profile: ProfilePayload): Observable<ApiResponse<Profile>> {
+    return this.http.put<ApiResponse<Profile>>(this.baseUrl + this.reference, profile);
   }
-
 }

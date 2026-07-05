@@ -1,4 +1,12 @@
-import { Component, inject, OnChanges, SimpleChanges, OnInit, input } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnChanges,
+  SimpleChanges,
+  OnInit,
+  input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ProjectDetailsComponent } from '@features/portfolio/pages/technology/project-details/project-details.component';
 import { ShowImageComponent } from '@features/portfolio/pages/technology/show-image/show-image.component';
 import { TranslateService } from '@core/services/translate.service';
@@ -9,14 +17,14 @@ import { Project } from '@shared/interfaces/project';
 @Component({
   selector: 'app-project-carousel',
   templateUrl: './project-carousel.component.html',
-  imports: [LanguagePipe]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [LanguagePipe],
 })
 export class ProjectCarouselComponent implements OnChanges, OnInit {
-
   protected translate = inject(TranslateService);
   private parameter = inject(ParameterService);
 
-  readonly projectList = input<Project[]>([]);
+  readonly projectList = input<readonly Project[]>([]);
   readonly technology = input(0);
 
   carouselId!: string;
@@ -41,5 +49,4 @@ export class ProjectCarouselComponent implements OnChanges, OnInit {
     const info = { url: project.picture, alt: project.title };
     this.parameter.openDialog(ShowImageComponent, info, '95%', '97.5%');
   }
-
 }

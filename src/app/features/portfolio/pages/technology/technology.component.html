@@ -1,34 +1,28 @@
-<section
-  aria-labelledby="portfolio-title"
-  class="mb-5 pt-md-5"
-  id="portfolio"
->
+<section aria-labelledby="portfolio-title" class="mb-5 pt-md-5" id="portfolio">
   <header>
     <h2
       id="portfolio-title"
       class="text-center text-primary py-4 mb-md-3 mb-0 pt-md-0 lead display-5"
     >
-      {{ title | language : "label" : translate.getLang }}
+      {{ title | language: 'label' : translate.getLang }}
     </h2>
   </header>
 
-  <p-accordion class="w-100 shadow-lg card bg-white card" [value]="value">
+  <div class="accordion w-100 shadow-lg card bg-white">
     @for (technology of technologyList(); track technology.id) {
-    <p-accordion-panel [value]="technology.id!">
-      <p-accordion-header>
-        <span class="text-secondary fw-semibold fs-5">{{
-          technology.name | titlecase
-        }}</span>
-      </p-accordion-header>
-      <p-accordion-content>
-        <app-project-carousel
-          [projectList]="technology.projects"
-          [technology]="technology.id!"
-        ></app-project-carousel>
-      </p-accordion-content>
-      </p-accordion-panel>
-    }@empty {
-    <p class="text-center text-secondary py-3">There are no records</p>
+      <details class="accordion-item" [open]="$first">
+        <summary class="accordion-header p-3 pointer">
+          <span class="text-secondary fw-semibold fs-5">{{ technology.name | titlecase }}</span>
+        </summary>
+        <div class="accordion-body">
+          <app-project-carousel
+            [projectList]="technology.projects"
+            [technology]="technology.id!"
+          ></app-project-carousel>
+        </div>
+      </details>
+    } @empty {
+      <p class="text-center text-secondary py-3">There are no records</p>
     }
-  </p-accordion>
+  </div>
 </section>

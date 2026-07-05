@@ -11,5 +11,9 @@
     type="button"
   ></button>
 
-  <iframe [src]="previewUrl" class="cv-frame p-2" title="CV preview"></iframe>
+  @if (previewUrl) {
+    <iframe [src]="previewUrl" class="cv-frame p-2" title="CV preview"></iframe>
+  } @else {
+    <p class="alert alert-warning" role="alert">The CV URL is not valid.</p>
+  }
 </section>

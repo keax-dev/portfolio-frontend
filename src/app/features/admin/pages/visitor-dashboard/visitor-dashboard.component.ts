@@ -1,4 +1,12 @@
-import { Component, DestroyRef, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+  signal,
+} from '@angular/core';
 import { Visitor, VisitorDashboard } from '@features/portfolio/interfaces/visitor';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize, forkJoin } from 'rxjs';
@@ -12,25 +20,25 @@ import { DatePipe } from '@angular/common';
   selector: 'app-visitor-dashboard',
   templateUrl: './visitor-dashboard.component.html',
   styleUrls: ['./visitor-dashboard.component.css'],
-  imports: [DatePipe, FormsModule]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [DatePipe, FormsModule],
 })
 export class VisitorDashboardComponent implements OnInit, OnDestroy {
-
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly visitorService = inject(VisitorService);
   private readonly spinner = inject(NgxSpinnerService);
   private readonly alert = inject(AlertService);
 
-  dashboard: VisitorDashboard = {
+  readonly dashboard = signal<VisitorDashboard>({
     totalVisits: 0,
     uniqueVisitors: 0,
     visitsLast24Hours: 0,
     countries: [],
-    cities: []
-  };
+    cities: [],
+  });
 
-  records: Visitor[] = [];
+  readonly records = signal<readonly Visitor[]>([]);
   startDate = '';
   endDate = '';
 
@@ -55,17 +63,19 @@ export class VisitorDashboardComponent implements OnInit, OnDestroy {
     this.spinner.show();
     forkJoin({
       dashboard: this.visitorService.getDashboard(startAt, endAt),
-      visitors: this.visitorService.getVisitorList(startAt, endAt)
-    }).pipe(
-      finalize(() => this.spinner.hide()),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next: result => {
-        this.dashboard = result.dashboard.data;
-        this.records = result.visitors.data;
-      },
-      error: error => this.alert.httpError(error, undefined, false)
-    });
+      visitors: this.visitorService.getVisitorList(startAt, endAt),
+    })
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (result) => {
+          this.dashboard.set(result.dashboard.data);
+          this.records.set(result.visitors.data);
+        },
+        error: (error) => this.alert.httpError(error, undefined, false),
+      });
   }
 
   unknown(value?: string | null): string {
@@ -121,5 +131,4 @@ export class VisitorDashboardComponent implements OnInit, OnDestroy {
     const [year, month, day] = value.split('-').map(Number);
     return new Date(year, month - 1, day);
   }
-
 }

@@ -1,5 +1,13 @@
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  inject,
+  DestroyRef,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -8,32 +16,41 @@ import { ButtonComponent } from '@shared/components/button/button.component';
 import { ProfileService } from '@features/admin/services/profile.service';
 import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
-import { InputText } from 'primeng/inputtext';
 import { Profile } from '@shared/interfaces/profile';
+import { finalize } from 'rxjs';
 
 @Component({
-    selector: 'app-frm-profile',
-    templateUrl: './frm-profile.component.html',
-    imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, InputText, ButtonComponent]
+  selector: 'app-frm-profile',
+  templateUrl: './frm-profile.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, ButtonComponent],
 })
 export class FrmProfileComponent implements OnInit, OnDestroy {
-
   private readonly destroyRef = inject(DestroyRef);
 
-  private profileService = inject(ProfileService);
-  private imageService = inject(ImageService);
-  private parameter = inject(ParameterService);
-  private spinner = inject(NgxSpinnerService);
-  private alert = inject(AlertService);
-  private fb = inject(FormBuilder);
+  private readonly profileService = inject(ProfileService);
+  private readonly imageService = inject(ImageService);
+  private readonly parameter = inject(ParameterService);
+  private readonly spinner = inject(NgxSpinnerService);
+  private readonly alert = inject(AlertService);
+  private readonly fb = inject(FormBuilder);
 
-  profileForm!: FormGroup;
+  readonly profileForm = this.fb.group({
+    name: this.fb.nonNullable.control('', Validators.required),
+    last_name: this.fb.nonNullable.control('', Validators.required),
+    title: this.fb.nonNullable.control('', Validators.required),
+    title_es: this.fb.nonNullable.control('', Validators.required),
+    cv: this.fb.nonNullable.control('', [Validators.required, Validators.pattern(/^https?:\/\//i)]),
+    image: this.fb.control<File | null>(null, [
+      Validators.required,
+      this.parameter.imageFileValidator,
+    ]),
+  });
 
-  previousProfile!: Profile;
-  urlPicture!: string;
-  title = 'New Profile';
-
-  update = false;
+  readonly previousProfile = signal<Profile | null>(null);
+  readonly urlPicture = signal('');
+  readonly title = signal('New Profile');
+  readonly update = signal(false);
 
   ngOnInit(): void {
     this.loadVariables();
@@ -44,49 +61,39 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
   }
 
   loadVariables(): void {
-    this.profileForm = this.fb.group({
-      name: ['', [Validators.required]],
-      last_name: ['', [Validators.required]],
-      title: ['', [Validators.required]],
-      title_es: ['', [Validators.required]],
-      cv: ['', [Validators.required]],
-      image: [null, [Validators.required, this.parameter.imageFileValidator]]
-    });
-
-    this.previousProfile = {
-      name: '',
-      last_name: '',
-      title: '',
-      title_es: '',
-      cv: '',
-      image: null
-    };
-
     this.getProfile();
   }
 
   getProfile(): void {
     this.spinner.show();
-    this.profileService.getProfile().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
-        this.previousProfile = result.data;
-        this.loadVariablesUpdate(result.data);
-      },
-      complete: () => this.spinner.hide(),
-      error: error => this.alert.httpError(error)
-    });
+    this.profileService
+      .getProfile()
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (result) => {
+          this.previousProfile.set(result.data);
+          this.loadVariablesUpdate(result.data);
+        },
+        error: (error) => this.alert.httpError(error, undefined, false),
+      });
   }
 
   loadVariablesUpdate(data: Profile): void {
-    this.title = 'Update Profile';
-    this.update = true;
-    this.urlPicture = data.image!;
-    delete data.image;
-    this.profileForm.patchValue(data);
-    const imageControl = this.profileForm.get('image');
-    imageControl?.clearValidators();
-    imageControl?.setValidators([this.parameter.imageFileValidator]);
-    imageControl?.updateValueAndValidity();
+    this.title.set('Update Profile');
+    this.update.set(true);
+    this.urlPicture.set(data.image ?? '');
+    this.profileForm.patchValue({
+      name: data.name,
+      last_name: data.last_name,
+      title: data.title,
+      title_es: data.title_es,
+      cv: data.cv,
+    });
+    this.controls.image.setValidators([this.parameter.imageFileValidator]);
+    this.controls.image.updateValueAndValidity();
   }
 
   onSubmit(): void {
@@ -95,7 +102,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.update) {
+    if (this.update()) {
       this.updateProfile();
       return;
     }
@@ -104,78 +111,99 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
   }
 
   updateProfile(): void {
-    this.profileService.updateProfile(this.profile).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
-        this.alert.success(result.alert);
-        if (this.controls['image'].value) {
-          this.uploadImageProfile(result.data);
-          return;
-        }
+    this.spinner.show();
+    this.profileService
+      .updateProfile(this.profile)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          this.alert.success(result.alert);
+          if (this.controls['image'].value) {
+            this.uploadImageProfile(result.data);
+            return;
+          }
 
-        this.previousProfile = result.data;
-        this.spinner.hide();
-      },
-      error: error => this.alert.httpError(error)
-    });
+          this.previousProfile.set(result.data);
+          this.spinner.hide();
+        },
+        error: (error) => this.alert.httpError(error),
+      });
   }
 
   createProfile(): void {
     this.spinner.show();
-    this.profileService.createProfile(this.profile).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
-        this.alert.success(result.alert);
-        if (this.controls['image'].value) {
-          this.uploadImageProfile(result.data, true);
-          return;
-        }
+    this.profileService
+      .createProfile(this.profile)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          this.alert.success(result.alert);
+          if (this.controls['image'].value) {
+            this.uploadImageProfile(result.data, true);
+            return;
+          }
 
-        this.previousProfile = result.data;
-        this.spinner.hide();
-      },
-      error: error => this.alert.httpError(error)
-    });
+          this.previousProfile.set(result.data);
+          this.spinner.hide();
+        },
+        error: (error) => this.alert.httpError(error),
+      });
   }
 
   uploadImageProfile(profile: Profile, create?: boolean): void {
     this.spinner.show();
-    this.imageService.uploadImageProfile(this.controls['image'].value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
-        this.alert.success(result.alert);
-        this.previousProfile = result.data;
-        this.urlPicture = result.data.image!;
-        if (create) this.loadVariablesUpdate(result.data);
-      },
-      complete: () => this.spinner.hide(),
-      error: error => {
-        this.previousProfile = profile;
-        this.alert.httpError(error);
-      }
-    });
+    const image = this.controls.image.value;
+    if (!image) {
+      this.spinner.hide();
+      return;
+    }
+
+    this.imageService
+      .uploadImageProfile(image)
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (result) => {
+          this.alert.success(result.alert);
+          this.previousProfile.set(result.data);
+          this.urlPicture.set(result.data.image ?? '');
+          if (create) this.loadVariablesUpdate(result.data);
+        },
+        error: (error) => {
+          this.previousProfile.set(profile);
+          this.alert.httpError(error, undefined, false);
+        },
+      });
   }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input?.files && input.files.length > 0) {
-      this.profileForm.get('image')?.setValue(input.files[0]);
+      this.controls.image.setValue(input.files[0]);
     }
   }
 
   cancel(): void {
-    this.profileForm.patchValue({ ...this.previousProfile, image: null });
-  }
-
-  get profile() {
-    return {
-      name: this.controls['name'].value,
-      last_name: this.controls['last_name'].value,
-      title: this.controls['title'].value,
-      title_es: this.controls['title_es'].value,
-      cv: this.controls['cv'].value
+    const previousProfile = this.previousProfile();
+    if (previousProfile) {
+      this.profileForm.patchValue({ ...previousProfile, image: null });
     }
   }
 
-  get controls() {
-    return this.profileForm.controls;
+  get profile() {
+    const value = this.profileForm.getRawValue();
+    return {
+      name: value.name,
+      last_name: value.last_name,
+      title: value.title,
+      title_es: value.title_es,
+      cv: value.cv,
+    };
   }
 
+  get controls(): typeof this.profileForm.controls {
+    return this.profileForm.controls;
+  }
 }

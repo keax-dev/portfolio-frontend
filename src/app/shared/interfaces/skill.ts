@@ -4,3 +4,5 @@ export interface Skill {
   position: number;
   picture?: string;
 }
+
+export type SkillPayload = Pick<Skill, 'name' | 'position'>;

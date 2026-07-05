@@ -1,6 +1,18 @@
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import {
+  NonNullableFormBuilder,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import {
+  Component,
+  inject,
+  DestroyRef,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TechnologyService } from '@features/admin/services/technology.service';
@@ -8,31 +20,38 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { AlertService } from '@core/services/alert.service';
 import { Technology } from '@shared/interfaces/technology';
-import { InputText } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
+import { finalize } from 'rxjs';
+
+interface TechnologyDialogData {
+  readonly positions: number;
+  readonly technology?: Technology;
+}
 
 @Component({
-    selector: 'app-frm-technology',
-    templateUrl: './frm-technology.component.html',
-    imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, InputText, Select, ButtonComponent]
+  selector: 'app-frm-technology',
+  templateUrl: './frm-technology.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, ButtonComponent],
 })
 export class FrmTechnologyComponent implements OnInit, OnDestroy {
-
   private readonly destroyRef = inject(DestroyRef);
 
-  private technologyService = inject(TechnologyService);
-  private spinner = inject(NgxSpinnerService);
-  private config = inject(DynamicDialogConfig);
-  private alert = inject(AlertService);
-  private ref = inject(DynamicDialogRef);
-  private fb = inject(FormBuilder);
+  private readonly technologyService = inject(TechnologyService);
+  private readonly spinner = inject(NgxSpinnerService);
+  private readonly data = inject<TechnologyDialogData>(DIALOG_DATA);
+  private readonly alert = inject(AlertService);
+  private readonly ref = inject<DialogRef<Technology>>(DialogRef);
+  private readonly fb = inject(NonNullableFormBuilder);
 
-  technologyForm!: FormGroup;
+  readonly technologyForm = this.fb.group({
+    name: ['', Validators.required],
+    position: [0, [Validators.required, Validators.min(1)]],
+  });
 
-  positionList: number[] = [];
+  readonly positionList = Array.from({ length: this.data.positions }, (_, i) => i + 1);
   title = 'New Technology';
 
-  update!: boolean;
+  update = false;
 
   ngOnInit(): void {
     this.loadVariables();
@@ -43,17 +62,10 @@ export class FrmTechnologyComponent implements OnInit, OnDestroy {
   }
 
   loadVariables(): void {
-    this.technologyForm = this.fb.group({
-      name: ['', [Validators.required]],
-      position: [null, [Validators.required]]
-    });
-
-    this.positionList = Array.from({ length: this.config.data.positions }, (_, i) => i + 1);
-
-    if (this.config.data.technology) {
+    if (this.data.technology) {
       this.update = true;
       this.title = 'Update Technology';
-      this.technologyForm.patchValue(this.config.data.technology);
+      this.technologyForm.patchValue(this.data.technology);
     }
   }
 
@@ -73,34 +85,43 @@ export class FrmTechnologyComponent implements OnInit, OnDestroy {
 
   createTechnology(): void {
     this.spinner.show();
-    this.technologyService.createTechnology(this.technologyForm.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
-        this.alert.success(result.alert);
-        this.close(result.data);
-      },
-      complete: () => this.spinner.hide(),
-      error: error => this.alert.httpError(error)
-    });
+    this.technologyService
+      .createTechnology(this.technologyForm.getRawValue())
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (result) => {
+          this.alert.success(result.alert);
+          this.close(result.data);
+        },
+        error: (error) => this.alert.httpError(error, undefined, false),
+      });
   }
 
   updateTechnology(): void {
     this.spinner.show();
-    this.technologyService.updateTechnology(this.config.data.technology.id, this.technologyForm.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
-        this.alert.success(result.alert);
-        this.close(result.data);
-      },
-      complete: () => this.spinner.hide(),
-      error: error => this.alert.httpError(error)
-    });
+    this.technologyService
+      .updateTechnology(this.data.technology!.id!, this.technologyForm.getRawValue())
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (result) => {
+          this.alert.success(result.alert);
+          this.close(result.data);
+        },
+        error: (error) => this.alert.httpError(error, undefined, false),
+      });
   }
 
   close(technology?: Technology): void {
     this.ref.close(technology);
   }
 
-  get controls() {
+  get controls(): typeof this.technologyForm.controls {
     return this.technologyForm.controls;
   }
-
 }

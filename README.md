@@ -38,10 +38,35 @@ This will compile your project and store the build artifacts in the `dist/` dire
 
 ## Running unit tests
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Unit tests run with [Vitest](https://vitest.dev/):
 
 ```bash
-ng test
+npm test
+```
+
+For watch mode or a coverage report:
+
+```bash
+npm run test:watch
+npm run test:coverage
+```
+
+## Quality checks
+
+Run the same static checks used by CI:
+
+```bash
+npm run format:check
+npm run lint
+npm run typecheck
+```
+
+The test suites can also be executed independently:
+
+```bash
+npm run test:unit
+npm run test:integration
+npm run test:e2e
 ```
 
 ## Running end-to-end tests
@@ -57,4 +82,5 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
 # portfolio-frontend

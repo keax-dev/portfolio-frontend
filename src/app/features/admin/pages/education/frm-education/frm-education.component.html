@@ -8,125 +8,77 @@
   <div class="row g-3">
     <div class="col-12 col-md-6">
       <label for="title" class="form-label fw-bold">Title (English): </label>
-      <input
-        formControlName="title"
-        class="form-control"
-        id="title"
-        appUppercase
-        pInputText
-      />
+      <input formControlName="title" class="form-control" id="title" appUppercase />
       @if (controls['title'].touched && controls['title'].invalid) {
-      <small class="text-danger appear">The title is required</small>
+        <small class="text-danger appear">The title is required</small>
       }
     </div>
 
     <div class="col-12 col-md-6">
       <label for="title_es" class="form-label fw-bold">Title (Spanish): </label>
-      <input
-        formControlName="title_es"
-        class="form-control"
-        id="title_es"
-        appUppercase
-        pInputText
-      />
+      <input formControlName="title_es" class="form-control" id="title_es" appUppercase />
       @if (controls['title_es'].touched && controls['title_es'].invalid) {
-      <small class="text-danger appear">The Spanish title is required</small>
+        <small class="text-danger appear">The Spanish title is required</small>
       }
     </div>
 
     <div class="col-12 col-md-6">
       <label for="institution" class="form-label fw-bold">Institution: </label>
-      <p-select
-        [options]="institutionList"
-        [filter]="true"
-        formControlName="institution"
-        optionLabel="name"
-        optionValue="id"
-        appendTo="body"
-        class="w-100"
-        id="institution"
-      />
+      <select formControlName="institution" class="form-select" id="institution">
+        <option [ngValue]="0" disabled>Select an institution</option>
+        @for (institution of institutionList(); track institution.id) {
+          <option [ngValue]="institution.id">{{ institution.name }}</option>
+        }
+      </select>
       @if (controls['institution'].touched && controls['institution'].invalid) {
-      <small class="text-danger appear">The institution is required</small>
+        <small class="text-danger appear">The institution is required</small>
       }
     </div>
 
     <div class="col-12 col-md-6">
       <label for="place" class="form-label fw-bold">Place (English): </label>
-      <input
-        formControlName="place"
-        class="form-control"
-        id="place"
-        appUppercase
-        pInputText
-      />
+      <input formControlName="place" class="form-control" id="place" appUppercase />
       @if (controls['place'].touched && controls['place'].invalid) {
-      <small class="text-danger appear">The place is required</small>
+        <small class="text-danger appear">The place is required</small>
       }
     </div>
 
     <div class="col-12 col-md-6">
       <label for="start" class="form-label fw-bold">Start (English): </label>
-      <input
-        formControlName="start"
-        class="form-control"
-        id="start"
-        appUppercase
-        pInputText
-      />
+      <input formControlName="start" class="form-control" id="start" appUppercase />
     </div>
 
     <div class="col-12 col-md-6">
       <label for="start_es" class="form-label fw-bold">Start (Spanish): </label>
-      <input
-        formControlName="start_es"
-        class="form-control"
-        id="start_es"
-        appUppercase
-        pInputText
-      />
+      <input formControlName="start_es" class="form-control" id="start_es" appUppercase />
     </div>
 
     <div class="col-12 col-md-6">
       <label for="end" class="form-label fw-bold">End (English): </label>
-      <input
-        formControlName="end"
-        class="form-control"
-        id="end"
-        appUppercase
-        pInputText
-      />
+      <input formControlName="end" class="form-control" id="end" appUppercase />
       @if (controls['end'].touched && controls['end'].invalid) {
-      <small class="text-danger appear">The end is required</small>
+        <small class="text-danger appear">The end is required</small>
       }
     </div>
 
     <div class="col-12 col-md-6">
       <label for="end_es" class="form-label fw-bold">End (Spanish): </label>
-      <input
-        formControlName="end_es"
-        class="form-control"
-        id="end_es"
-        appUppercase
-        pInputText
-      />
+      <input formControlName="end_es" class="form-control" id="end_es" appUppercase />
       @if (controls['end_es'].touched && controls['end_es'].invalid) {
-      <small class="text-danger appear">The Spanish end is required</small>
+        <small class="text-danger appear">The Spanish end is required</small>
       }
     </div>
 
     <div class="col-12 col-md-6">
       <label for="position" class="form-label fw-bold">Position: </label>
-      <p-select
-        [options]="positionList"
-        [filter]="true"
-        formControlName="position"
-        appendTo="body"
-        class="w-100"
-        id="position"
-      />
+      <select formControlName="position" class="form-select" id="position">
+        <option [ngValue]="0" disabled>Select a position</option>
+        @for (position of positionList; track position) {
+          <option [ngValue]="position">{{ position }}</option>
+        }
+      </select>
       @if (controls['position'].touched && controls['position'].invalid) {
-      <small class="text-danger appear">The position is required</small>
+        <small class="text-danger appear">The position is required</small>
       }
     </div>
   </div>

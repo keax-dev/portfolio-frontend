@@ -1,36 +1,37 @@
 import { inject, Injectable } from '@angular/core';
-import { HeaderService } from '@core/services/header.service';
+import { HttpClient } from '@angular/common/http';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Observable } from 'rxjs';
-import { Skill } from '@shared/interfaces/skill';
+import { Skill, SkillPayload } from '@shared/interfaces/skill';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SkillService {
+  reference = '/skill';
 
-  reference = "/skill";
-
-  private header = inject(HeaderService);
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(API_BASE_URL);
 
   getSkillListByDeleted(deleted = false): Observable<ApiResponse<Skill[]>> {
-    return this.header.http.get<ApiResponse<Skill[]>>(this.header.url + this.reference + `/by-deleted/${deleted}`);
+    return this.http.get<ApiResponse<Skill[]>>(
+      `${this.baseUrl}${this.reference}/by-deleted/${deleted}`,
+    );
   }
 
-  createSkill(skill: Skill): Observable<ApiResponse<Skill>> {
-    const payload = { ...skill };
-    delete payload.id;
-    return this.header.http.post<ApiResponse<Skill>>(this.header.url + this.reference, payload);
+  createSkill(payload: SkillPayload): Observable<ApiResponse<Skill>> {
+    return this.http.post<ApiResponse<Skill>>(this.baseUrl + this.reference, payload);
   }
 
-  updateSkill(skillId: number, skill: Skill): Observable<ApiResponse<Skill>> {
-    const payload = { ...skill };
-    delete payload.id;
-    return this.header.http.put<ApiResponse<Skill>>(this.header.url + this.reference + `/${skillId}`, payload);
+  updateSkill(skillId: number, payload: SkillPayload): Observable<ApiResponse<Skill>> {
+    return this.http.put<ApiResponse<Skill>>(
+      `${this.baseUrl}${this.reference}/${skillId}`,
+      payload,
+    );
   }
 
   deleteSkill(skillId: number): Observable<ApiResponse<Skill[]>> {
-    return this.header.http.delete<ApiResponse<Skill[]>>(this.header.url + this.reference + `/${skillId}`);
+    return this.http.delete<ApiResponse<Skill[]>>(`${this.baseUrl}${this.reference}/${skillId}`);
   }
-
 }

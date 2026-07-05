@@ -1,8 +1,10 @@
-import { Project } from "@shared/interfaces/project";
+import { Project } from '@shared/interfaces/project';
 
 export interface Technology {
   id?: number;
   name: string;
   position: number;
-  projects: Project[]
+  projects: Project[];
 }
+
+export type TechnologyPayload = Pick<Technology, 'name' | 'position'>;

@@ -1,35 +1,26 @@
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { ConfirmationService } from 'primeng/api';
 import { authInterceptor } from '@core/interceptors/auth.interceptor';
-import { providePrimeNG } from 'primeng/config';
-import { provideToastr } from 'ngx-toastr';
-import { routes } from '@src/routes/app.routes';
-import Aura from '@primeng/themes/aura';
+import { DialogModule } from '@angular/cdk/dialog';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { environment } from '@src/environments/environment';
+import { routes } from '@src/app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes, withInMemoryScrolling({
-      anchorScrolling: 'enabled',
-      scrollPositionRestoration: 'enabled'
-    })),
+    provideRouter(
+      routes,
+      withInMemoryScrolling({
+        anchorScrolling: 'enabled',
+        scrollPositionRestoration: 'enabled',
+      }),
+    ),
     provideAnimationsAsync(),
-    provideHttpClient(withInterceptors([authInterceptor])),
-    providePrimeNG({
-      theme: {
-        preset: Aura,
-        options: {
-          darkModeSelector: false
-        }
-      }
-    }),
-    provideToastr(),
-    importProvidersFrom(DynamicDialogModule),
-    ConfirmationService,
-    DialogService
-  ]
+    provideHttpClient(withXhr(), withInterceptors([authInterceptor])),
+    { provide: API_BASE_URL, useValue: environment.url },
+    importProvidersFrom(DialogModule),
+  ],
 };

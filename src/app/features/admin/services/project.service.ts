@@ -1,36 +1,39 @@
 import { inject, Injectable } from '@angular/core';
-import { HeaderService } from '@core/services/header.service';
+import { HttpClient } from '@angular/common/http';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Observable } from 'rxjs';
-import { Project } from '@shared/interfaces/project';
+import { Project, ProjectPayload } from '@shared/interfaces/project';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProjectService {
+  reference = '/project';
 
-  reference = "/project";
-
-  private header = inject(HeaderService);
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(API_BASE_URL);
 
   getProjectListByDeleted(deleted = false): Observable<ApiResponse<Project[]>> {
-    return this.header.http.get<ApiResponse<Project[]>>(this.header.url + this.reference + `/by-deleted/${deleted}`);
+    return this.http.get<ApiResponse<Project[]>>(
+      `${this.baseUrl}${this.reference}/by-deleted/${deleted}`,
+    );
   }
 
-  createProject(project: Project): Observable<ApiResponse<Project>> {
-    const payload = { ...project };
-    delete payload.id;
-    return this.header.http.post<ApiResponse<Project>>(this.header.url + this.reference, payload);
+  createProject(payload: ProjectPayload): Observable<ApiResponse<Project>> {
+    return this.http.post<ApiResponse<Project>>(this.baseUrl + this.reference, payload);
   }
 
-  updateProject(projectId: number, project: Project): Observable<ApiResponse<Project>> {
-    const payload = { ...project };
-    delete payload.id;
-    return this.header.http.put<ApiResponse<Project>>(this.header.url + this.reference + `/${projectId}`, payload);
+  updateProject(projectId: number, payload: ProjectPayload): Observable<ApiResponse<Project>> {
+    return this.http.put<ApiResponse<Project>>(
+      `${this.baseUrl}${this.reference}/${projectId}`,
+      payload,
+    );
   }
 
   deleteProject(projectId: number): Observable<ApiResponse<Project[]>> {
-    return this.header.http.delete<ApiResponse<Project[]>>(this.header.url + this.reference + `/${projectId}`);
+    return this.http.delete<ApiResponse<Project[]>>(
+      `${this.baseUrl}${this.reference}/${projectId}`,
+    );
   }
-
 }

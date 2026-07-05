@@ -1,4 +1,12 @@
-import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  DestroyRef,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+  signal,
+} from '@angular/core';
 import { FrmSocialNetworkComponent } from '@features/admin/pages/social-network/frm-social-network/frm-social-network.component';
 import { SocialNetworkService } from '@features/admin/services/social-network.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -10,12 +18,12 @@ import { AlertService } from '@core/services/alert.service';
 import { Column } from '@shared/components/interfaces/column';
 
 @Component({
-    selector: 'app-table-social-network',
-    templateUrl: './table-social-network.component.html',
-    imports: [TableComponent]
+  selector: 'app-table-social-network',
+  templateUrl: './table-social-network.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TableComponent],
 })
 export class TableSocialNetworkComponent implements OnInit, OnDestroy {
-
   private readonly destroyRef = inject(DestroyRef);
 
   private socialNetworkService = inject(SocialNetworkService);
@@ -23,14 +31,14 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
   private spinner = inject(NgxSpinnerService);
   private alert = inject(AlertService);
 
-  records: SocialNetwork[] = [];
+  readonly records = signal<readonly SocialNetwork[]>([]);
 
   columns: Column[] = [
-    { name: "Position", value: "position" },
-    { name: "Name", value: "name" },
-    { name: "Icon", value: "icon" },
-    { name: "Color", value: "color" },
-    { name: "Url", value: "url" }
+    { name: 'Position', value: 'position' },
+    { name: 'Name', value: 'name' },
+    { name: 'Icon', value: 'icon' },
+    { name: 'Color', value: 'color' },
+    { name: 'Url', value: 'url' },
   ];
 
   ngOnInit(): void {
@@ -43,25 +51,28 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
 
   getSocialNetworkListByDeleted(): void {
     this.spinner.show();
-    this.socialNetworkService.getSocialNetworkListByDeleted().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => this.records = result.data,
-      complete: () => this.spinner.hide(),
-      error: error => {
-        this.records = [];
-        this.alert.httpError(error);
-      }
-    });
+    this.socialNetworkService
+      .getSocialNetworkListByDeleted()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => this.records.set(result.data),
+        complete: () => this.spinner.hide(),
+        error: (error) => {
+          this.records.set([]);
+          this.alert.httpError(error);
+        },
+      });
   }
 
   modalSocialNetwork(socialNetwork?: SocialNetwork): void {
     const dialogRef = this.parameter.openDialog(FrmSocialNetworkComponent, {
-      positions: this.records.length + 5,
-      socialNetwork: socialNetwork
+      positions: this.records().length + 5,
+      socialNetwork: socialNetwork,
     });
-    dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
+    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (result) => {
         if (result) this.getSocialNetworkListByDeleted();
-      }
+      },
     });
   }
 
@@ -71,14 +82,16 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
 
   deleteSocialNetwork(socialNetwork: SocialNetwork): void {
     this.spinner.show();
-    this.socialNetworkService.deleteSocialNetwork(socialNetwork.id!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
-        this.alert.success(result.alert);
-        this.getSocialNetworkListByDeleted();
-      },
-      complete: () => this.spinner.hide(),
-      error: error => this.alert.httpError(error)
-    });
+    this.socialNetworkService
+      .deleteSocialNetwork(socialNetwork.id!)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          this.alert.success(result.alert);
+          this.getSocialNetworkListByDeleted();
+        },
+        complete: () => this.spinner.hide(),
+        error: (error) => this.alert.httpError(error),
+      });
   }
-
 }

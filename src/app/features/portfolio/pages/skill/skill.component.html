@@ -1,31 +1,23 @@
-<section
-  aria-labelledby="skills-title"
-  class="container pt-0 pt-md-5"
-  id="skills"
->
+<section aria-labelledby="skills-title" class="container pt-0 pt-md-5" id="skills">
   <div class="row">
-    <div
-      class="col-md-9 col-12 py-4 shadow-lg order-2 order-md-1 bg-white card"
-    >
+    <div class="col-md-9 col-12 py-4 shadow-lg order-2 order-md-1 bg-white card">
       @if (skillList().length === 0) {
-      <p class="text-center text-secondary">There are no records</p>
+        <p class="text-center text-secondary">There are no records</p>
       }
-      <ul
-        class="d-flex flex-wrap gap-4 justify-content-center list-unstyled p-4"
-      >
+      <ul class="d-flex flex-wrap gap-4 justify-content-center list-unstyled p-4">
         @for (skill of skillList(); track skill.id) {
-        <li>
-          <figure class="card skill-card text-center pointer shadow">
-            <img
-              decoding="async"
-              loading="lazy"
-              [src]="skill.picture"
-              alt=""
-              class="card-img-top p-3"
-            />
-            <figcaption>{{ skill.name }}</figcaption>
-          </figure>
-        </li>
+          <li>
+            <figure class="card skill-card text-center pointer shadow">
+              <img
+                decoding="async"
+                loading="lazy"
+                [src]="skill.picture"
+                alt=""
+                class="card-img-top p-3"
+              />
+              <figcaption>{{ skill.name }}</figcaption>
+            </figure>
+          </li>
         }
       </ul>
     </div>
@@ -35,7 +27,7 @@
         id="skills-title"
         class="text-center text-primary py-4 mt-0 mt-md-5 pt-md-5 lead display-5 sticky-top"
       >
-        {{ title | language : "label" : translate.getLang }}
+        {{ title | language: 'label' : translate.getLang }}
       </h2>
     </header>
   </div>

@@ -4,10 +4,9 @@ import { UserInfoService } from '@core/services/user-info.service';
 import { AlertService } from '@core/services/alert.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SessionService {
-
   private userInfoService = inject(UserInfoService);
   private alertService = inject(AlertService);
   private router = inject(Router);
@@ -107,5 +106,4 @@ export class SessionService {
 
     return true;
   }
-
 }

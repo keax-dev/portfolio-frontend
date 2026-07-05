@@ -1,5 +1,4 @@
 <header class="text-center text-white" id="home">
-
   <div class="py-4">
     <div class="container">
       <img
@@ -12,12 +11,12 @@
     <div class="container d-flex justify-content-center flex-column">
       <h1 class="border-bottom border-primary border-2 pb-2">
         <span class="machine-1 machine-text">{{
-          profile().name + " " + profile().last_name | titlecase
+          profile().name + ' ' + profile().last_name | titlecase
         }}</span>
       </h1>
       <p class="my-2 machine-text fs-3">
         <span class="text-wrap">{{
-          profile() | language : "title" : translate.getLang | titlecase
+          profile() | language: 'title' : translate.getLang | titlecase
         }}</span>
       </p>
     </div>
@@ -32,7 +31,7 @@
         <span></span>
         <span></span>
         <span></span>
-        {{ cv | language : "label" : translate.getLang | titlecase }}
+        {{ cv | language: 'label' : translate.getLang | titlecase }}
       </button>
     </div>
   </div>

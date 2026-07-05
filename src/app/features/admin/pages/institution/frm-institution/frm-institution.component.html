@@ -1,8 +1,4 @@
-<form
-  [formGroup]="institutionForm"
-  (ngSubmit)="onSubmit()"
-  class="container-fluid p-3"
->
+<form [formGroup]="institutionForm" (ngSubmit)="onSubmit()" class="container-fluid p-3">
   <header>
     <h4 class="text-primary">{{ title }}</h4>
   </header>
@@ -12,53 +8,29 @@
   <div class="row g-3">
     <div class="col-md-6">
       <label for="name" class="form-label fw-bold">Name (English):</label>
-      <input
-        formControlName="name"
-        class="form-control"
-        id="name"
-        appUppercase
-        pInputText
-      />
-      @if (controls["name"].touched && controls["name"].invalid) {
+      <input formControlName="name" class="form-control" id="name" appUppercase />
+      @if (controls['name'].touched && controls['name'].invalid) {
         <small class="text-danger appear">The name is required</small>
       }
     </div>
 
     <div class="col-md-6">
       <label for="name_es" class="form-label fw-bold">Name (Spanish):</label>
-      <input
-        formControlName="name_es"
-        class="form-control"
-        id="name_es"
-        appUppercase
-        pInputText
-      />
-      @if (controls["name_es"].touched && controls["name_es"].invalid) {
+      <input formControlName="name_es" class="form-control" id="name_es" appUppercase />
+      @if (controls['name_es'].touched && controls['name_es'].invalid) {
         <small class="text-danger appear">The Spanish name is required</small>
       }
     </div>
 
     <div class="col-md-6">
       <label for="image" class="form-label fw-bold">Image:</label>
-      <input
-        (change)="onFileSelected($event)"
-        class="form-control"
-        type="file"
-        id="image"
-      />
-      @if (
-        controls["image"].touched && controls["image"].errors?.["required"]
-      ) {
+      <input (change)="onFileSelected($event)" class="form-control" type="file" id="image" />
+      @if (controls['image'].touched && controls['image'].errors?.['required']) {
         <small class="text-danger appear">The image is required</small>
       }
 
-      @if (
-        controls["image"].touched &&
-        controls["image"].errors?.["invalidFileType"]
-      ) {
-        <small class="text-danger appear"
-          >Only image files (png, jpg, jpeg, gif) are allowed</small
-        >
+      @if (controls['image'].touched && controls['image'].errors?.['invalidFileType']) {
+        <small class="text-danger appear">Only image files (png, jpg, jpeg, gif) are allowed</small>
       }
     </div>
 
@@ -67,11 +39,7 @@
         <p class="fw-bolder text-center mb-2">Previous Image:</p>
 
         <div class="text-center">
-          <img
-            [src]="urlImage"
-            class="img-max"
-            alt="Previous institution image"
-          />
+          <img [src]="urlImage" class="img-max" alt="Previous institution image" />
         </div>
       </div>
     }

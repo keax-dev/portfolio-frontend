@@ -1,0 +1,1391 @@
+Actúa como arquitecto de software frontend y desarrollador senior especializado en Angular 22, TypeScript, RxJS, Signals, diseño de sistemas empresariales, rendimiento, seguridad, accesibilidad y testing.
+
+Debes realizar una revisión integral de este proyecto Angular y aplicar las mejoras necesarias para que tenga una arquitectura, calidad de código, mantenibilidad, escalabilidad y nivel técnico propios de un equipo Angular senior.
+
+Este proyecto esta en Angular 19 y es necesario migrarlo a la version mas reciente, es decir la 22.
+
+Antes de realizar modificaciones, revisa la versión exacta instalada de:
+
+* Angular.
+* Angular CLI.
+* Angular CDK.
+* Angular Material, si existe.
+* TypeScript.
+* RxJS.
+* Node.js requerido por el proyecto.
+* Librerías principales.
+* Herramientas de testing.
+* ESLint.
+* Prettier.
+* Dependencias de desarrollo.
+
+Utiliza únicamente APIs estables y compatibles con las versiones nuevas que instales.
+
+No utilices APIs experimentales, developer preview o librerías externas sin justificar claramente su necesidad.
+
+# Objetivo general
+
+Analiza el proyecto completo y refactorízalo progresivamente para conseguir:
+
+* Arquitectura coherente.
+* Separación clara de responsabilidades.
+* Bajo acoplamiento.
+* Alta cohesión.
+* Tipado estricto.
+* Componentes pequeños y mantenibles.
+* Estado correctamente distribuido.
+* Flujos asíncronos controlados.
+* Acceso a datos organizado.
+* Formularios tipados.
+* Buen rendimiento.
+* Seguridad frontend.
+* Accesibilidad.
+* Código fácil de probar.
+* Menor deuda técnica.
+* Facilidad para agregar nuevas funcionalidades.
+
+Debes conservar el comportamiento funcional y visual actual.
+
+No cambies contratos con el backend salvo que exista un error evidente y documentado.
+
+No realices una reescritura completa del proyecto si no es estrictamente necesaria.
+
+Prioriza cambios progresivos, verificables y con bajo riesgo de regresión.
+
+# Principios obligatorios
+
+Aplica los siguientes principios durante toda la revisión:
+
+1. Organiza el proyecto por funcionalidades o dominios de negocio, preferiblemente con arquitectura feature-first.
+
+2. Utiliza componentes standalone, ya que el proyecto está construido con Angular 22.
+
+3. Utiliza lazy loading para funcionalidades, páginas y secciones que no necesitan cargarse inicialmente.
+
+4. Utiliza Signals para estado síncrono, local, compartido o derivado cuando sea apropiado.
+
+5. Utiliza `computed()` para información derivada y evita almacenar datos que puedan calcularse a partir de otra fuente.
+
+6. Utiliza `effect()` solamente para efectos secundarios reales. No utilices `effect()` para sincronizar estado que pueda resolverse mediante `computed()`, eventos o un diseño más claro.
+
+7. Utiliza RxJS para flujos asíncronos, cancelación, debounce, solicitudes dependientes, combinación de observables, eventos en el tiempo, WebSockets o concurrencia.
+
+8. No reemplaces indiscriminadamente RxJS con Signals.
+
+9. Utiliza `input()`, `output()` y `model()` cuando aporten claridad y sean adecuados para el componente.
+
+10. Utiliza `inject()` para la inyección de dependencias cuando mejore la legibilidad.
+
+11. Utiliza el control flow nativo de Angular:
+
+* `@if`
+* `@for`
+* `@switch`
+* `@empty`
+
+12. Utiliza `@defer` solamente para contenido pesado, secundario o no crítico.
+
+13. Utiliza interceptores funcionales.
+
+14. Utiliza guards funcionales cuando correspondan.
+
+15. Utiliza `takeUntilDestroyed()` para suscripciones imperativas legítimas.
+
+16. Utiliza `httpResource()` o Resource API solamente cuando sean estables, compatibles y representen una mejora real frente a HttpClient y RxJS.
+
+17. No migres formularios existentes únicamente por modernización estética.
+
+18. No introduzcas NgRx, Akita, Elf u otra librería de estado salvo que la complejidad real del proyecto lo justifique claramente.
+
+19. No introduzcas patrones, capas o abstracciones que solo aumenten la cantidad de archivos.
+
+20. Toda modificación debe mejorar de forma verificable al menos uno de estos aspectos:
+
+* Mantenibilidad.
+* Tipado.
+* Rendimiento.
+* Testabilidad.
+* Seguridad.
+* Claridad.
+* Escalabilidad.
+* Reducción de duplicación.
+* Reducción de acoplamiento.
+
+# Fase 1: inspección técnica del proyecto
+
+Antes de modificar archivos, inspecciona como mínimo:
+
+* `package.json`
+* `package-lock.json`
+* `angular.json`
+* `tsconfig.json`
+* `tsconfig.app.json`
+* `tsconfig.spec.json`
+* configuración de ESLint
+* configuración de Prettier
+* configuración de testing
+* estructura completa de `src/app`
+* rutas
+* providers
+* interceptores
+* guards
+* resolvers
+* servicios
+* componentes
+* formularios
+* modelos
+* DTO
+* utilidades
+* pipes
+* directivas
+* estilos globales
+* configuración de entornos
+* manejo de autenticación
+* manejo de permisos
+* manejo de errores
+* pruebas existentes
+* scripts de compilación y despliegue
+
+Revisa también el historial y estado actual de Git para evitar modificar archivos generados, temporales o no relacionados con el proyecto.
+
+No sobrescribas cambios existentes del desarrollador.
+
+# Fase 2: auditoría inicial
+
+Antes de realizar cambios, genera una auditoría técnica del proyecto.
+
+Clasifica cada hallazgo como:
+
+* Crítico.
+* Alto.
+* Medio.
+* Bajo.
+
+Para cada hallazgo indica:
+
+* Problema encontrado.
+* Ubicación.
+* Impacto.
+* Riesgo.
+* Solución recomendada.
+* Prioridad.
+* Archivos probablemente afectados.
+
+Identifica también:
+
+* Código correcto que no necesita modificación.
+* Decisiones actuales que deben mantenerse.
+* Riesgos de regresión.
+* Deuda técnica.
+* Posibles simplificaciones.
+* Dependencias innecesarias.
+* Patrones obsoletos.
+* Patrones modernos que podrían incorporarse.
+* Mejoras que no vale la pena realizar.
+
+# Arquitectura
+
+Analiza la organización actual del proyecto.
+
+Revisa especialmente:
+
+* Organización por tipo de archivo frente a organización por dominio.
+* Acoplamiento entre funcionalidades.
+* Dependencias cruzadas.
+* Dependencias circulares.
+* Servicios globales con demasiadas responsabilidades.
+* Componentes que conocen demasiadas capas.
+* Código duplicado entre funcionalidades.
+* Uso excesivo de carpetas como `shared`, `common`, `helpers` o `utils`.
+* Elementos de dominio ubicados incorrectamente en `shared`.
+* Lógica de negocio mezclada con infraestructura.
+* Funcionalidades que podrían aislarse mediante providers de ruta.
+
+Cuando sea conveniente, utiliza una estructura similar a:
+
+```text
+src/app/
+├── core/
+│   ├── auth/
+│   ├── config/
+│   ├── error-handling/
+│   ├── http/
+│   └── layout/
+├── shared/
+│   ├── ui/
+│   ├── directives/
+│   ├── pipes/
+│   └── utils/
+├── features/
+│   └── nombre-feature/
+│       ├── pages/
+│       ├── ui/
+│       ├── data-access/
+│       ├── domain/
+│       ├── nombre-feature.routes.ts
+│       └── nombre-feature.providers.ts
+├── app.config.ts
+└── app.routes.ts
+```
+
+Esta estructura es una referencia, no una obligación.
+
+Adáptala al tamaño y complejidad real del proyecto.
+
+No muevas archivos únicamente para aparentar una arquitectura más avanzada.
+
+Cada movimiento debe reducir acoplamiento, mejorar navegación o aclarar responsabilidades.
+
+# Core
+
+La carpeta `core` debe contener únicamente elementos globales y de una sola instancia, por ejemplo:
+
+* Autenticación.
+* Configuración de aplicación.
+* Layout principal.
+* Interceptores globales.
+* Manejo global de errores.
+* Servicios globales reales.
+* Inicialización de la aplicación.
+
+No coloques en `core` elementos específicos de una funcionalidad.
+
+# Shared
+
+La carpeta `shared` debe contener únicamente elementos:
+
+* Genéricos.
+* Reutilizables.
+* Independientes de un dominio.
+* Sin lógica específica del negocio.
+
+No conviertas `shared` en un contenedor general para cualquier archivo utilizado más de una vez.
+
+Un componente utilizado por dos pantallas del mismo dominio puede permanecer dentro de su propia feature.
+
+# Features
+
+Cada funcionalidad debería contener solamente los elementos relacionados con su dominio:
+
+* Páginas.
+* Componentes visuales.
+* Estado.
+* Servicios de acceso a datos.
+* Modelos de dominio.
+* DTO.
+* Mappers.
+* Formularios.
+* Rutas.
+* Providers.
+* Validadores específicos.
+* Reglas de negocio.
+
+Evita que una feature importe internamente archivos privados de otra feature.
+
+Cuando dos features necesiten compartir información, utiliza contratos explícitos o mueve únicamente la abstracción verdaderamente compartida.
+
+# Componentes
+
+Revisa todos los componentes y detecta:
+
+* Componentes demasiado grandes.
+* Componentes con múltiples responsabilidades.
+* Lógica de negocio dentro del template.
+* Lógica de negocio dentro de componentes visuales.
+* Acceso directo a HttpClient desde componentes.
+* Acceso directo a localStorage o sessionStorage sin una abstracción apropiada.
+* Manipulación directa del DOM.
+* Exceso de inputs y outputs.
+* Métodos complejos ejecutados desde el template.
+* Suscripciones manuales innecesarias.
+* Uso incorrecto de Signals.
+* Uso incorrecto de `effect()`.
+* Duplicación de lógica.
+* Componentes que mezclan tabla, formulario, modal, negocio y acceso HTTP.
+* Componentes visuales que navegan o llaman servicios sin necesidad.
+* Componentes contenedores que contienen demasiados detalles visuales.
+
+Separa cuando tenga sentido:
+
+* Page components.
+* Container components.
+* Presentational components.
+* Form components.
+* Table components.
+* Dialog components.
+* Feature state.
+
+No dividas componentes únicamente por cantidad de líneas.
+
+Divide solamente cuando existan responsabilidades claramente separables.
+
+Los componentes visuales deberían preferentemente:
+
+* Recibir datos mediante `input()`.
+* Emitir eventos mediante `output()`.
+* No conocer endpoints.
+* No conocer detalles del backend.
+* No administrar estado global.
+* No contener reglas complejas del negocio.
+
+# Estado
+
+Analiza cuidadosamente dónde debe vivir cada dato.
+
+Clasifica el estado como:
+
+* Estado local del componente.
+* Estado derivado.
+* Estado de formulario.
+* Estado compartido dentro de una feature.
+* Estado global.
+* Estado persistido.
+* Estado representado en la URL.
+* Estado remoto proveniente del backend.
+
+Aplica las siguientes reglas:
+
+* El estado visual simple debe permanecer local.
+* El estado derivado debe implementarse con `computed()`.
+* El estado compartido por una feature puede gestionarse mediante un servicio con Signals.
+* El estado global debe reservarse para información verdaderamente global.
+* Los filtros, paginación, ordenamiento o selección que deban poder compartirse o restaurarse pueden representarse en query params.
+* No dupliques una misma fuente de verdad.
+* No almacenes globalmente información utilizada por una sola pantalla.
+* No crees stores gigantes.
+* No combines estados de dominios no relacionados.
+* No almacenes manualmente datos que puedan derivarse.
+
+Cuando sea apropiado, proporciona un store de feature en el nivel de ruta o componente para que su ciclo de vida quede limitado a esa funcionalidad.
+
+Ejemplo conceptual:
+
+```ts
+@Injectable()
+export class ExampleStore {
+  private readonly api = inject(ExampleApi);
+
+  private readonly itemsState = signal<Example[]>([]);
+  private readonly loadingState = signal(false);
+  private readonly errorState = signal<string | null>(null);
+
+  readonly items = this.itemsState.asReadonly();
+  readonly loading = this.loadingState.asReadonly();
+  readonly error = this.errorState.asReadonly();
+
+  readonly activeItems = computed(() =>
+    this.items().filter(item => item.active),
+  );
+}
+```
+
+No copies este patrón de forma automática. Adáptalo según las necesidades reales.
+
+# Signals
+
+Utiliza Signals para:
+
+* Estado local.
+* Estado síncrono.
+* Estado derivado.
+* Selección actual.
+* Estado visual.
+* Información compartida de una feature.
+* Datos consumidos frecuentemente desde templates.
+
+Evita:
+
+* Mutaciones directas.
+* Duplicación de estado.
+* Signals públicos modificables cuando deberían ser de solo lectura.
+* `effect()` utilizado para copiar un Signal a otro.
+* Crear Signals innecesarios para valores constantes.
+* Convertir todos los Observables a Signals sin una razón.
+* Crear `toSignal()` repetidamente dentro de getters o métodos.
+* Usar Signals como sustitución forzada de RxJS.
+
+# RxJS
+
+Revisa:
+
+* `subscribe()` anidados.
+* Memory leaks.
+* Observables que nunca se completan.
+* Suscripciones duplicadas.
+* Solicitudes HTTP repetidas.
+* Falta de cancelación.
+* Ausencia de debounce.
+* Manejo incorrecto de errores.
+* Uso incorrecto de operadores de concurrencia.
+* `subscribe()` utilizado solamente para copiar valores.
+* Uso innecesario de Subjects.
+* Subjects expuestos públicamente.
+* Conversión innecesaria entre Signals y Observables.
+
+Selecciona correctamente:
+
+* `switchMap` para cancelar solicitudes anteriores.
+* `concatMap` para respetar orden secuencial.
+* `mergeMap` para concurrencia.
+* `exhaustMap` para ignorar nuevas emisiones mientras una operación está activa.
+* `forkJoin` para operaciones que deben completarse juntas.
+* `combineLatest` para combinar fuentes activas.
+* `debounceTime` y `distinctUntilChanged` para búsquedas.
+* `shareReplay` únicamente cuando exista una necesidad clara de compartir resultados.
+
+No utilices `shareReplay(1)` indiscriminadamente.
+
+Cuando exista una suscripción imperativa legítima, utiliza:
+
+```ts
+takeUntilDestroyed()
+```
+
+No agregues un `Subject<void>` manual para destruir suscripciones cuando Angular 22 ya proporciona una solución adecuada.
+
+# Acceso a datos
+
+Revisa todo el acceso al backend.
+
+Detecta:
+
+* Endpoints escritos directamente en componentes.
+* Servicios sin tipado.
+* Respuestas HTTP con `any`.
+* DTO utilizados directamente en toda la aplicación.
+* Transformaciones duplicadas.
+* URLs construidas de forma insegura.
+* Parámetros sin encoding.
+* Payloads inconsistentes.
+* Errores HTTP ignorados.
+* Servicios que combinan acceso HTTP, estado, navegación y notificaciones.
+* Servicios genéricos con demasiadas responsabilidades.
+
+Separa, cuando aporte valor:
+
+* API service.
+* Repository.
+* Feature store.
+* Mapper.
+* DTO.
+* Modelo de dominio.
+* Modelo del formulario.
+* Payload de creación.
+* Payload de actualización.
+* Parámetros de consulta.
+
+Ejemplo conceptual:
+
+```text
+EmployeeDto
+Employee
+EmployeeFormValue
+CreateEmployeePayload
+UpdateEmployeePayload
+EmployeeQueryParams
+```
+
+No crees todos estos tipos si son idénticos y no aportan una separación real.
+
+Crea tipos diferentes solamente cuando las responsabilidades o estructuras sean distintas.
+
+# Modelos y DTO
+
+Diferencia claramente:
+
+* Contrato recibido desde el backend.
+* Modelo utilizado por la aplicación.
+* Estructura del formulario.
+* Payload enviado al backend.
+
+Utiliza mappers cuando:
+
+* Los nombres del backend no coinciden con el frontend.
+* Existen campos numéricos que representan booleanos.
+* Existen fechas que deben transformarse.
+* Existen estructuras anidadas.
+* El frontend necesita un modelo simplificado.
+* El contrato backend puede cambiar.
+* Hay transformaciones repetidas.
+
+Mantén los mappers como funciones puras siempre que sea posible.
+
+# Routing
+
+Revisa la configuración de rutas.
+
+Comprueba:
+
+* Lazy loading.
+* `loadComponent`.
+* `loadChildren`.
+* Providers por ruta.
+* Guards.
+* Resolvers.
+* Redirecciones.
+* Rutas hijas.
+* Parámetros.
+* Query params.
+* Datos estáticos de ruta.
+* Rutas duplicadas.
+* Rutas inaccesibles.
+* Imports que aumentan el bundle inicial.
+
+Cada feature importante debería cargarse de forma diferida cuando sea razonable.
+
+Ejemplo:
+
+```ts
+export const routes: Routes = [
+  {
+    path: 'employees',
+    loadChildren: () =>
+      import('./features/employees/employees.routes')
+        .then(module => module.EMPLOYEE_ROUTES),
+  },
+];
+```
+
+Dentro de una feature:
+
+```ts
+export const EMPLOYEE_ROUTES: Routes = [
+  {
+    path: '',
+    providers: [EmployeeStore],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/employee-list-page')
+            .then(component => component.EmployeeListPage),
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import('./pages/employee-detail-page')
+            .then(component => component.EmployeeDetailPage),
+      },
+    ],
+  },
+];
+```
+
+No conviertas todas las rutas automáticamente.
+
+Analiza primero si el cambio mejora realmente la carga inicial y la separación de la feature.
+
+# Guards y permisos
+
+Revisa los guards existentes.
+
+Los guards pueden:
+
+* Mejorar la navegación.
+* Evitar acceso accidental.
+* Resolver flujos de sesión.
+* Redirigir usuarios.
+
+Los guards no deben considerarse seguridad real.
+
+La autorización definitiva debe validarse en el backend.
+
+No confíes únicamente en:
+
+* Ocultar botones.
+* Deshabilitar controles.
+* Validar roles en el navegador.
+* Bloquear rutas mediante guards.
+
+Revisa que los permisos sean coherentes entre:
+
+* Menú.
+* Rutas.
+* Componentes.
+* Acciones.
+* Backend.
+
+# Interceptores
+
+Utiliza interceptores funcionales y separa responsabilidades.
+
+Posibles interceptores:
+
+* Autenticación.
+* Correlation ID.
+* Normalización técnica de errores.
+* Logging controlado.
+* Indicador global de carga.
+* Idioma o headers comunes.
+
+Cada interceptor debe tener una responsabilidad clara.
+
+Evita un interceptor gigante que realice simultáneamente:
+
+* Autenticación.
+* Navegación.
+* Notificaciones.
+* Logging.
+* Transformación de respuestas.
+* Manejo de errores de negocio.
+* Loading global.
+* Renovación de tokens.
+
+No muestres todos los errores HTTP globalmente.
+
+Los errores de negocio específicos deben manejarse cerca de la feature o acción que los genera.
+
+# Formularios
+
+Revisa todos los formularios.
+
+Detecta:
+
+* `FormGroup<any>`.
+* Formularios sin tipado.
+* Validaciones duplicadas.
+* Validaciones inconsistentes.
+* Uso excesivo de `patchValue`.
+* Campos no inicializados.
+* Conversión incorrecta de números y booleanos.
+* Formularios que usan directamente DTO completos.
+* Formularios demasiado grandes.
+* Lógica de negocio dentro de validadores visuales.
+* Errores del backend que no se muestran.
+* Envíos múltiples.
+* Botones que permanecen activos durante una solicitud.
+* Formularios que no marcan correctamente campos tocados.
+* Mensajes de validación repetidos.
+* Controles sin labels.
+* Errores inaccesibles para lectores de pantalla.
+
+Mantén separados cuando corresponda:
+
+* Modelo del formulario.
+* Modelo de dominio.
+* Payload del backend.
+
+Crea validadores reutilizables para reglas repetidas.
+
+Evita un servicio global de validadores que contenga reglas de dominios no relacionados.
+
+No migres formularios existentes a otra API solamente por modernización.
+
+Realiza cambios cuando aporten:
+
+* Mejor tipado.
+* Menor duplicación.
+* Mejor validación.
+* Mejor manejo de errores.
+* Mayor mantenibilidad.
+
+# Templates
+
+Revisa los templates y detecta:
+
+* Expresiones complejas.
+* Operaciones de filtrado o ordenamiento dentro del HTML.
+* Métodos pesados llamados repetidamente.
+* Condiciones difíciles de leer.
+* Falta de `track` en `@for`.
+* Uso incorrecto de índices como identidad.
+* HTML no semántico.
+* Elementos `div` utilizados como botones.
+* Inputs sin labels.
+* Imágenes sin `alt`.
+* Tablas no accesibles.
+* Modales sin manejo de foco.
+* Falta de estado de carga.
+* Falta de estado vacío.
+* Falta de manejo de errores.
+* Textos hardcodeados repetidos.
+* Clases condicionales innecesariamente complejas.
+
+Traslada cálculos derivados a `computed()` o funciones puras fuera del template.
+
+Utiliza correctamente:
+
+```html
+@if (loading()) {
+  <app-loading />
+} @else if (error()) {
+  <app-error-state />
+} @else {
+  @for (item of items(); track item.id) {
+    <app-item-card [item]="item" />
+  } @empty {
+    <app-empty-state />
+  }
+}
+```
+
+No copies este patrón automáticamente si la pantalla requiere otro comportamiento.
+
+# TypeScript
+
+Revisa la configuración y el código TypeScript.
+
+Prioriza:
+
+* `strict: true`
+* `strictTemplates: true`
+* `noImplicitOverride`
+* `noFallthroughCasesInSwitch`
+* `noUncheckedIndexedAccess`, si puede activarse progresivamente
+* Tipos explícitos donde mejoren la comprensión
+* Inferencia cuando el tipo sea evidente
+* Funciones puras
+* Inmutabilidad razonable
+* Tipos discriminados
+* Type guards
+* Valores de solo lectura
+
+Detecta y corrige:
+
+* `any`.
+* Casts inseguros.
+* `as unknown as`.
+* Non-null assertions innecesarios.
+* Propiedades opcionales mal utilizadas.
+* Tipos excesivamente amplios.
+* Interfaces duplicadas.
+* Enums innecesarios.
+* Strings mágicos.
+* Funciones con múltiples responsabilidades.
+* Parámetros booleanos ambiguos.
+* Retornos inconsistentes.
+* Comparaciones débiles.
+* Valores potencialmente nulos no controlados.
+
+Cuando un dato externo sea desconocido, utiliza `unknown` y valida su estructura.
+
+No utilices `any` como solución rápida.
+
+No ocultes errores del compilador mediante casts.
+
+# Manejo de errores
+
+Diseña una estrategia coherente para:
+
+* Errores HTTP.
+* Errores de validación.
+* Errores de negocio.
+* Errores inesperados.
+* Errores de autenticación.
+* Errores de autorización.
+* Errores de red.
+* Timeouts.
+* Errores parciales.
+
+Evita:
+
+* `catchError(() => EMPTY)` sin justificación.
+* Ignorar errores.
+* Mostrar mensajes técnicos al usuario.
+* Navegar automáticamente ante cualquier error.
+* Notificaciones duplicadas.
+* Manejo global de errores específicos de una pantalla.
+
+Los mensajes al usuario deben ser:
+
+* Claros.
+* Accionables.
+* No técnicos.
+* Consistentes.
+
+El detalle técnico puede registrarse separadamente.
+
+# Seguridad
+
+Revisa:
+
+* `innerHTML`.
+* `bypassSecurityTrustHtml`.
+* `bypassSecurityTrustUrl`.
+* `bypassSecurityTrustResourceUrl`.
+* Manipulación directa del DOM.
+* Uso de `document`.
+* Uso de `window`.
+* URLs dinámicas.
+* Redirecciones.
+* Iframes.
+* Contenido generado por usuarios.
+* LocalStorage.
+* SessionStorage.
+* Tokens.
+* Datos sensibles.
+* Archivos de entorno.
+* Claves API.
+* Secretos incluidos en el bundle.
+* Dependencias vulnerables.
+* Validaciones realizadas únicamente en frontend.
+* Permisos basados únicamente en visibilidad.
+
+No guardes secretos en el frontend.
+
+Todo contenido enviado al navegador puede ser inspeccionado.
+
+No utilices métodos `bypassSecurityTrust...` salvo que exista una razón documentada y el origen del contenido sea confiable.
+
+No modifiques dependencias mediante:
+
+```bash
+npm audit fix --force
+```
+
+Analiza primero cada vulnerabilidad:
+
+* Dependencia afectada.
+* Si se utiliza en producción o desarrollo.
+* Ruta de dependencia.
+* Severidad.
+* Explotabilidad real.
+* Versión corregida.
+* Riesgo de actualizar.
+* Posibles breaking changes.
+
+No actualices dependencias mayores sin necesidad.
+
+# Rendimiento
+
+Analiza el rendimiento de forma razonada.
+
+Revisa:
+
+* Bundle inicial.
+* Lazy loading.
+* Dependencias pesadas.
+* Imports completos de librerías.
+* Carga de iconos.
+* Carga de estilos.
+* Componentes grandes.
+* Listas extensas.
+* Renderizados repetidos.
+* Solicitudes duplicadas.
+* Suscripciones duplicadas.
+* Imágenes.
+* Fuentes.
+* Modales y componentes cargados anticipadamente.
+* Cálculos dentro del template.
+* Datos derivados recalculados.
+* Uso de `@defer`.
+* Virtual scrolling.
+* Paginación.
+* Caché.
+* SSR, SSG o hydration, solamente si el tipo de aplicación lo necesita.
+
+No realices optimizaciones especulativas.
+
+Prioriza mejoras con impacto medible.
+
+Para una aplicación empresarial autenticada, no agregues SSR sin una necesidad concreta de SEO, renderizado inicial o estrategia de despliegue.
+
+# Accesibilidad
+
+Revisa:
+
+* HTML semántico.
+* Navegación por teclado.
+* Orden de tabulación.
+* Focus visible.
+* Manejo de foco en modales.
+* Labels.
+* Descripciones.
+* Roles.
+* Estados dinámicos.
+* Contraste.
+* Encabezados.
+* Tablas.
+* Formularios.
+* Mensajes de error.
+* Botones.
+* Enlaces.
+* Texto alternativo.
+* Uso correcto de ARIA.
+
+Utiliza elementos HTML nativos antes de agregar roles ARIA.
+
+Un elemento interactivo debe ser realmente interactivo.
+
+Ejemplo:
+
+```html
+<button type="button" (click)="openDetail()">
+  Ver detalle
+</button>
+```
+
+Evita:
+
+```html
+<div (click)="openDetail()">
+  Ver detalle
+</div>
+```
+
+# Estilos
+
+Revisa:
+
+* Estilos globales innecesarios.
+* Selectores demasiado específicos.
+* `!important`.
+* Duplicación.
+* Valores mágicos.
+* Estilos inline.
+* Clases ambiguas.
+* Dependencias entre estilos de features.
+* Responsividad.
+* Consistencia visual.
+* Variables o tokens de diseño.
+
+No cambies el diseño actual salvo que sea necesario para:
+
+* Corregir un error.
+* Mejorar accesibilidad.
+* Solucionar responsividad.
+* Eliminar inconsistencias evidentes.
+
+No reemplaces toda la estrategia CSS sin una necesidad real.
+
+# Testing
+
+Revisa la configuración actual de testing.
+
+Utiliza la herramienta ya configurada en el proyecto.
+
+Si el proyecto utiliza Vitest, continúa con Vitest.
+
+Si utiliza Jasmine y Karma, no migres automáticamente sin evaluar costo, beneficio y riesgo.
+
+Agrega pruebas útiles para:
+
+* Reglas de negocio.
+* Mappers.
+* Validadores.
+* Stores.
+* Servicios críticos.
+* Interceptores.
+* Guards.
+* Componentes con interacción.
+* Formularios.
+* Flujos críticos.
+
+No escribas pruebas que solamente verifiquen:
+
+```ts
+expect(component).toBeTruthy();
+```
+
+Prioriza pruebas de comportamiento.
+
+Ejemplos:
+
+* Dado un DTO, el mapper genera correctamente el modelo.
+* Dado un filtro, el store devuelve los registros esperados.
+* Dado un error del backend, el formulario muestra el mensaje correcto.
+* Al hacer clic, el componente emite el evento esperado.
+* Una solicitud previa se cancela al cambiar la búsqueda.
+* Un usuario sin permiso no puede ejecutar una acción.
+* Un formulario inválido no envía información.
+
+No busques aumentar cobertura con pruebas sin valor.
+
+# Logging y depuración
+
+Revisa:
+
+* `console.log`.
+* `console.error`.
+* Logs sensibles.
+* Logs duplicados.
+* Información de tokens.
+* Información personal.
+* Logs activos en producción.
+
+Elimina logs temporales.
+
+Mantén logging técnico solamente cuando exista una estrategia definida y no exponga información sensible.
+
+# Dependencias
+
+Revisa:
+
+* Dependencias no utilizadas.
+* Dependencias duplicadas.
+* Librerías pesadas.
+* Paquetes obsoletos.
+* Paquetes con vulnerabilidades.
+* Paquetes que Angular ya reemplaza.
+* Imports incorrectos.
+* Dependencias instaladas como producción que deberían ser de desarrollo.
+* Dependencias de desarrollo incluidas en runtime.
+
+No elimines una dependencia hasta confirmar que no se utiliza.
+
+No introduzcas una nueva librería cuando Angular, TypeScript o el navegador ya resuelvan el problema adecuadamente.
+
+# Calidad y consistencia
+
+Revisa:
+
+* Convenciones de nombres.
+* Nombres de componentes.
+* Nombres de selectors.
+* Nombres de rutas.
+* Nombres de servicios.
+* Nombres de modelos.
+* Nombres de métodos.
+* Nombres de variables.
+* Organización de imports.
+* Alias de paths.
+* Archivos excesivamente genéricos.
+* Código duplicado.
+* Funciones extensas.
+* Comentarios desactualizados.
+* Código comentado.
+* TODO sin contexto.
+* Magic numbers.
+* Magic strings.
+
+Los nombres deben expresar intención y dominio.
+
+Evita nombres como:
+
+* `data`
+* `info`
+* `item`
+* `obj`
+* `temp`
+* `generalService`
+* `commonService`
+* `helperService`
+
+cuando exista un nombre de negocio más preciso.
+
+# Reglas para evitar sobreingeniería
+
+No debes:
+
+* Aplicar Clean Architecture completa a cada CRUD.
+* Crear interfaces para todas las clases sin necesidad.
+* Crear repositories que solo deleguen una llamada sin aportar aislamiento.
+* Crear facades que solo reexporten métodos.
+* Crear use cases de una línea.
+* Crear stores globales innecesarios.
+* Crear librerías internas para código usado una sola vez.
+* Dividir un componente pequeño en muchos archivos.
+* Introducir patrones únicamente para aparentar seniority.
+* Crear abstracciones antes de que exista duplicación o variación real.
+* Generalizar componentes de dominios diferentes solo porque visualmente se parecen.
+* Agregar NgRx sin justificación.
+* Reemplazar RxJS con Signals de manera indiscriminada.
+* Migrar APIs funcionales que ya son correctas únicamente por moda.
+* Renombrar masivamente archivos sin beneficio.
+* Cambiar el diseño visual.
+* Cambiar contratos del backend.
+* Alterar reglas de negocio sin evidencia.
+* Silenciar errores de compilación.
+* Desactivar reglas de lint para evitar corregir problemas.
+* Utilizar `skipLibCheck` como solución rápida.
+* Utilizar `any`.
+* Utilizar `npm audit fix --force`.
+
+# Fase 3: plan de refactorización
+
+Después de la auditoría, crea un plan ordenado de cambios.
+
+Para cada cambio indica:
+
+* Nombre del cambio.
+* Problema que resuelve.
+* Archivos afectados.
+* Prioridad.
+* Riesgo.
+* Beneficio.
+* Dependencias con otros cambios.
+* Forma de validación.
+* Posible impacto funcional.
+
+Ordena el plan según:
+
+1. Errores críticos.
+2. Problemas de compilación.
+3. Problemas de seguridad.
+4. Riesgos de pérdida de datos.
+5. Errores funcionales.
+6. Tipado.
+7. Arquitectura.
+8. Estado.
+9. RxJS.
+10. Formularios.
+11. Rendimiento.
+12. Accesibilidad.
+13. Testing.
+14. Limpieza y consistencia.
+
+Prioriza cambios de alto impacto y bajo riesgo.
+
+# Fase 4: implementación
+
+Después de presentar la auditoría y el plan, comienza a implementar los cambios directamente.
+
+No te detengas a pedir confirmación salvo que un cambio implique:
+
+* Pérdida de información.
+* Eliminación de una funcionalidad.
+* Cambio incompatible con el backend.
+* Cambio irreversible.
+* Modificación de credenciales.
+* Modificación del despliegue productivo.
+* Decisión de negocio que no pueda deducirse del código.
+
+Para el resto de cambios, utiliza tu criterio técnico y continúa.
+
+Durante la implementación:
+
+* Trabaja en grupos pequeños de cambios.
+* Mantén el proyecto compilable.
+* No mezcles múltiples refactorizaciones sin relación en un mismo cambio.
+* Mantén el comportamiento actual.
+* Evita cambios visuales.
+* Evita cambios masivos de nombres.
+* Evita modificaciones innecesarias.
+* Conserva compatibilidad con el backend.
+* Añade pruebas cuando modifiques lógica crítica.
+* Actualiza imports.
+* Elimina código muerto.
+* Elimina código comentado.
+* Documenta únicamente decisiones no evidentes.
+* No agregues comentarios que repitan lo que ya expresa el código.
+
+# Validación continua
+
+Después de cada grupo importante de cambios, ejecuta los scripts disponibles en `package.json`.
+
+Como mínimo, intenta ejecutar:
+
+```bash
+npm ci
+npm run build
+npm run lint
+npm test
+```
+
+Si `npm ci` no es aplicable, utiliza el comando apropiado sin modificar innecesariamente el lockfile.
+
+Si existen scripts adicionales, ejecuta también:
+
+```bash
+npm run test:coverage
+npm run test:e2e
+npm run format:check
+npm run typecheck
+```
+
+Adapta los comandos a la configuración real del proyecto.
+
+No inventes scripts que no existen.
+
+También revisa:
+
+```bash
+git status
+git diff
+```
+
+Confirma que solo se hayan modificado archivos relacionados con la refactorización.
+
+# Reglas de validación
+
+No consideres finalizado el trabajo mientras existan errores provocados por tus cambios en:
+
+* Compilación.
+* TypeScript.
+* Templates.
+* ESLint.
+* Tests.
+* Dependencias.
+* Imports.
+* Routing.
+* Formularios.
+
+Si encuentras errores previos que no están relacionados con tus cambios, documenta:
+
+* Error.
+* Archivo.
+* Comando que falla.
+* Si existía previamente.
+* Causa probable.
+* Recomendación.
+* Motivo por el que no se corrigió.
+
+No ocultes errores previos.
+
+# Commits
+
+Organiza los cambios de forma lógica.
+
+Sugiere mensajes de commit en español utilizando Conventional Commits, por ejemplo:
+
+```text
+refactor(architecture): reorganiza funcionalidades por dominio
+refactor(state): migra estado local a signals
+fix(forms): corrige validación y tipado del formulario
+perf(routing): aplica lazy loading en rutas secundarias
+test(employees): agrega pruebas del flujo de creación
+chore(lint): ajusta reglas de calidad de código
+```
+
+No realices un solo commit gigante si los cambios pueden separarse claramente.
+
+# Resultado final esperado
+
+Al finalizar, entrega un informe técnico que incluya:
+
+## 1. Resumen ejecutivo
+
+Describe el estado inicial, el alcance de los cambios y el resultado final.
+
+## 2. Hallazgos principales
+
+Lista los problemas más importantes encontrados.
+
+## 3. Cambios realizados
+
+Describe cada cambio relevante.
+
+## 4. Arquitectura final
+
+Explica la estructura resultante y sus responsabilidades.
+
+## 5. Estado
+
+Explica cómo se distribuyó el estado:
+
+* Local.
+* Derivado.
+* Feature.
+* Global.
+* URL.
+* Remoto.
+
+## 6. Signals y RxJS
+
+Explica dónde se utilizó cada uno y por qué.
+
+## 7. Acceso a datos
+
+Explica la separación entre:
+
+* API.
+* DTO.
+* Modelos.
+* Mappers.
+* Payloads.
+* Estado.
+
+## 8. Formularios
+
+Resume mejoras de tipado, validación y manejo de errores.
+
+## 9. Rendimiento
+
+Indica mejoras aplicadas y su impacto esperado.
+
+## 10. Seguridad
+
+Indica riesgos encontrados y correcciones aplicadas.
+
+## 11. Accesibilidad
+
+Indica mejoras realizadas.
+
+## 12. Testing
+
+Indica:
+
+* Pruebas agregadas.
+* Pruebas modificadas.
+* Pruebas ejecutadas.
+* Resultado.
+* Cobertura, si está disponible.
+
+## 13. Validaciones
+
+Muestra el resultado de:
+
+* Build.
+* Lint.
+* Tests.
+* E2E.
+* Typecheck.
+* Formato.
+
+## 14. Archivos principales modificados
+
+Lista los archivos más relevantes y el motivo de su modificación.
+
+## 15. Riesgos pendientes
+
+Documenta problemas que requieran decisiones externas o cambios de backend.
+
+## 16. Recomendaciones futuras
+
+Propón únicamente mejoras relevantes que no hayan podido aplicarse en esta iteración.
+
+## 17. Commits sugeridos
+
+Proporciona mensajes de commit claros y separados por área.
+
+# Criterios de aceptación
+
+El trabajo se considerará correcto cuando el proyecto:
+
+* Compile correctamente.
+* Mantenga su funcionalidad.
+* Mantenga su diseño visual.
+* Sea compatible con Angular 22.
+* Utilice APIs estables.
+* Presente una arquitectura coherente.
+* Organice el código según el negocio.
+* Tenga responsabilidades claras.
+* Reduzca acoplamiento.
+* Reduzca duplicación.
+* Evite múltiples fuentes de verdad.
+* Utilice Signals con criterio.
+* Utilice RxJS con criterio.
+* Tenga acceso a datos tipado.
+* Diferencie DTO, modelos y formularios cuando aporte valor.
+* Tenga formularios estrictamente tipados.
+* Maneje correctamente loading, error, vacío y éxito.
+* Evite `any`.
+* Evite memory leaks.
+* Utilice lazy loading cuando corresponda.
+* Sea más fácil de probar.
+* Sea más fácil de extender.
+* No tenga sobreingeniería.
+* No introduzca librerías innecesarias.
+* No cambie contratos del backend sin justificación.
+* No oculte errores.
+* No disminuya la seguridad.
+* No degrade el rendimiento.
+* Parezca construido y mantenido por desarrolladores Angular senior.
+
+# Instrucción final
+
+Comienza inspeccionando el proyecto completo.
+
+Primero presenta:
+
+1. Resumen del estado actual.
+2. Auditoría clasificada por prioridad.
+3. Riesgos detectados.
+4. Plan de refactorización.
+5. Orden de implementación.
+
+Después continúa directamente con la implementación.
+
+No te limites a entregar recomendaciones teóricas.
+
+Realiza cambios reales en el código, valida cada grupo de cambios y entrega al final un informe completo con los resultados obtenidos.

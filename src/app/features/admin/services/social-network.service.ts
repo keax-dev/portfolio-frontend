@@ -1,36 +1,42 @@
 import { inject, Injectable } from '@angular/core';
-import { SocialNetwork } from '@shared/interfaces/social-network';
-import { HeaderService } from '@core/services/header.service';
+import { HttpClient } from '@angular/common/http';
+import { SocialNetwork, SocialNetworkPayload } from '@shared/interfaces/social-network';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SocialNetworkService {
+  reference = '/socialNetwork';
 
-  reference = "/socialNetwork";
-
-  private header = inject(HeaderService);
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(API_BASE_URL);
 
   getSocialNetworkListByDeleted(deleted = false): Observable<ApiResponse<SocialNetwork[]>> {
-    return this.header.http.get<ApiResponse<SocialNetwork[]>>(this.header.url + this.reference + `/by-deleted/${deleted}`);
+    return this.http.get<ApiResponse<SocialNetwork[]>>(
+      `${this.baseUrl}${this.reference}/by-deleted/${deleted}`,
+    );
   }
 
-  createSocialNetwork(socialNetwork: SocialNetwork): Observable<ApiResponse<SocialNetwork>> {
-    const payload = { ...socialNetwork };
-    delete payload.id;
-    return this.header.http.post<ApiResponse<SocialNetwork>>(this.header.url + this.reference, payload);
+  createSocialNetwork(payload: SocialNetworkPayload): Observable<ApiResponse<SocialNetwork>> {
+    return this.http.post<ApiResponse<SocialNetwork>>(this.baseUrl + this.reference, payload);
   }
 
-  updateSocialNetwork(socialNetworkId: number, socialNetwork: SocialNetwork): Observable<ApiResponse<SocialNetwork>> {
-    const payload = { ...socialNetwork };
-    delete payload.id;
-    return this.header.http.put<ApiResponse<SocialNetwork>>(this.header.url + this.reference + `/${socialNetworkId}`, payload);
+  updateSocialNetwork(
+    socialNetworkId: number,
+    payload: SocialNetworkPayload,
+  ): Observable<ApiResponse<SocialNetwork>> {
+    return this.http.put<ApiResponse<SocialNetwork>>(
+      `${this.baseUrl}${this.reference}/${socialNetworkId}`,
+      payload,
+    );
   }
 
   deleteSocialNetwork(socialNetworkId: number): Observable<ApiResponse<SocialNetwork[]>> {
-    return this.header.http.delete<ApiResponse<SocialNetwork[]>>(this.header.url + this.reference + `/${socialNetworkId}`);
+    return this.http.delete<ApiResponse<SocialNetwork[]>>(
+      `${this.baseUrl}${this.reference}/${socialNetworkId}`,
+    );
   }
-
 }

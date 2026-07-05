@@ -1,20 +1,23 @@
 import { inject, Injectable } from '@angular/core';
-import { HeaderService } from '@core/services/header.service';
+import { HttpClient } from '@angular/common/http';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Observable } from 'rxjs';
-import { Auth } from '@features/auth/interfaces/auth';
+import { LoginCredentials, LoginResponse } from '@features/auth/interfaces/auth';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoginService {
+  private readonly reference = '/auth';
 
-  reference = "/auth";
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(API_BASE_URL);
 
-  private header = inject(HeaderService);
-
-  login(auth: Auth): Observable<ApiResponse<Auth>> {
-    return this.header.http.post<ApiResponse<Auth>>(this.header.url + this.reference + "/login", auth);
+  login(credentials: LoginCredentials): Observable<ApiResponse<LoginResponse>> {
+    return this.http.post<ApiResponse<LoginResponse>>(
+      `${this.baseUrl}${this.reference}/login`,
+      credentials,
+    );
   }
-
 }

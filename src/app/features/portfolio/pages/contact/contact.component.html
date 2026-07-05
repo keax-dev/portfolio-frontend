@@ -1,12 +1,7 @@
-<form
-  [formGroup]="contactForm"
-  (ngSubmit)="onSubmit()"
-  aria-labelledby="contact-title"
-  class="m-3"
->
+<form [formGroup]="contactForm" (ngSubmit)="onSubmit()" aria-labelledby="contact-title" class="m-3">
   <header>
     <h2 id="contact-title" class="h4 text-primary">
-      {{ labels.title | language : "label" : translate.getLang }}
+      {{ labels.title | language: 'label' : translate.getLang }}
     </h2>
   </header>
 
@@ -15,7 +10,7 @@
   <div class="container-fluid">
     <div class="col my-2">
       <label for="name" class="form-label fw-bold"
-        >{{ labels.name | language : "label" : translate.getLang }}
+        >{{ labels.name | language: 'label' : translate.getLang }}
       </label>
       <input
         [maxLength]="100"
@@ -29,18 +24,17 @@
         id="name"
         required
         appUppercase
-        pInputText
       />
       @if (controls['name'].touched && controls['name'].invalid) {
-      <small class="text-danger appear" id="name-error" role="alert">{{
-        labels.name | language : "required" : translate.getLang
-      }}</small>
+        <small class="text-danger appear" id="name-error" role="alert">{{
+          labels.name | language: 'required' : translate.getLang
+        }}</small>
       }
     </div>
 
     <div class="col my-2">
       <label for="email" class="form-label fw-bold"
-        >{{ labels.email | language : "label" : translate.getLang }}
+        >{{ labels.email | language: 'label' : translate.getLang }}
       </label>
       <input
         [maxLength]="254"
@@ -54,18 +48,17 @@
         required
         type="email"
         appLowerCase
-        pInputText
       />
       @if (controls['email'].touched && controls['email'].invalid) {
-      <small class="text-danger appear" id="email-error" role="alert">{{
-        labels.email | language : "required" : translate.getLang
-      }}</small>
+        <small class="text-danger appear" id="email-error" role="alert">{{
+          labels.email | language: 'required' : translate.getLang
+        }}</small>
       }
     </div>
 
     <div class="col my-2">
       <label for="message" class="form-label fw-bold">{{
-        labels.message | language : "label" : translate.getLang
+        labels.message | language: 'label' : translate.getLang
       }}</label>
       <textarea
         [maxLength]="500"
@@ -74,7 +67,6 @@
           controls['message'].touched && controls['message'].invalid ? 'message-error' : null
         "
         [attr.aria-invalid]="controls['message'].touched && controls['message'].invalid"
-        pInputText
         formControlName="message"
         class="form-control"
         id="message"
@@ -83,9 +75,9 @@
       >
       </textarea>
       @if (controls['message'].touched && controls['message'].invalid) {
-      <small class="text-danger appear" id="message-error" role="alert">{{
-        labels.message | language : "required" : translate.getLang
-      }}</small>
+        <small class="text-danger appear" id="message-error" role="alert">{{
+          labels.message | language: 'required' : translate.getLang
+        }}</small>
       }
     </div>
   </div>

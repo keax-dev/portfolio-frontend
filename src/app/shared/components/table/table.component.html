@@ -1,141 +1,159 @@
-<div class="w-100 d-flex justify-content-end align-items-center mt-3">
-  <app-button
-    [classPadding]="'px-4 py-2'"
-    [icon]="'pi-plus pi'"
-    [text]="newTxt()"
-    [type]="'button'"
-    (click)="newItem()"
-  ></app-button>
-</div>
+@if (new()) {
+  <div class="w-100 d-flex justify-content-end align-items-center mt-3">
+    <app-button
+      [classPadding]="'px-4 py-2'"
+      [icon]="'pi-plus pi'"
+      [text]="newTxt()"
+      [type]="'button'"
+      (action)="newItem()"
+    ></app-button>
+  </div>
+}
 
-<p-table
-  #dt
-  [paginatorDropdownAppendTo]="'body'"
-  [globalFilterFields]="columnNames()"
-  [rowsPerPageOptions]="[5, 10, 20, 50]"
-  [paginator]="true"
-  [sortField]="resolvedSortName()"
-  [sortOrder]="order()"
-  [value]="records()"
-  [rows]="10"
-  stripedRows
->
-  <ng-template pTemplate="caption" class="m-0 p-0">
-    <div
-      class="w-100 d-flex justify-content-between align-items-center flex-wrap"
-    >
-      @if(search()){
-      <p-iconfield iconPosition="left" class="ml-auto my-1">
-        <p-inputicon>
+<section class="card shadow-sm">
+  @if (search()) {
+    <div class="card-header bg-white">
+      <label class="visually-hidden" for="table-search">Search records</label>
+      <div class="input-group">
+        <span class="input-group-text">
           <i class="pi pi-search" aria-hidden="true"></i>
-        </p-inputicon>
+        </span>
         <input
-          (input)="dt.filterGlobal(valueSearch($event), 'contains')"
-          aria-label="Search records"
-          placeholder="Buscar"
+          (input)="updateSearch($event)"
+          class="form-control"
+          id="table-search"
+          placeholder="Search"
           type="search"
-          pInputText
         />
-      </p-iconfield>
-      }
+      </div>
     </div>
-  </ng-template>
+  }
 
-  <ng-template pTemplate="header">
-      <tr>
-      @for (column of columns(); track $index) {
-      <th
-        [pSortableColumn]="column.value"
-        class="bg-primary text-light"
-        scope="col"
-      >
-        {{ column.name }}
-        <p-sortIcon [field]="column.value"></p-sortIcon>
-      </th>
-      }
-
-      @if (details()) {
-      <th scope="col" class="bg-primary text-light">{{ detailsTxt() }}</th>
-      }
-
-      @if (actions()) {
-      <th scope="col" class="bg-primary text-light">Actions</th>
-      }
-    </tr>
-  </ng-template>
-
-  <ng-template pTemplate="body" let-row>
-    <tr>
-      @for (column of columns(); track $index) {
-        @if (column.image){
-        <td>
-          @if (row[column.value]) {
-          <img
-            [src]="row[column.value]"
-            class="img-max"
-            [alt]="$any(row)['name'] || $any(row)['title'] || $any(row)['institution_name'] || 'Record image'"
-          />
-          }@else {
-          <p>No image</p>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          @for (column of columns(); track column.value) {
+            <th class="bg-primary text-light" scope="col">
+              <button
+                class="btn btn-link text-light text-decoration-none fw-bold p-0"
+                type="button"
+                (click)="sortBy(column)"
+              >
+                {{ column.name }}
+                <i class="pi pi-sort-alt ms-1" aria-hidden="true"></i>
+              </button>
+            </th>
           }
-        </td>
-      }@else{
-        <td>
-          {{ row[column.value] }}
-        </td>
+
+          @if (details()) {
+            <th scope="col" class="bg-primary text-light">{{ detailsTxt() }}</th>
+          }
+
+          @if (actions()) {
+            <th scope="col" class="bg-primary text-light">Actions</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of visibleRecords(); track row) {
+          <tr>
+            @for (column of columns(); track column.value) {
+              <td>
+                @if (column.image) {
+                  @if (imageUrl(row, column); as image) {
+                    <img [src]="image" class="img-max" [alt]="imageAlt(row)" />
+                  } @else {
+                    <span>No image</span>
+                  }
+                } @else {
+                  {{ cellValue(row, column) }}
+                }
+              </td>
+            }
+
+            @if (details()) {
+              <td>
+                <button
+                  (click)="detailsItem(row)"
+                  aria-label="View details"
+                  class="btn btn-outline-primary m-1"
+                  title="View details"
+                  type="button"
+                >
+                  <i class="pi pi-eye" aria-hidden="true"></i>
+                </button>
+              </td>
+            }
+
+            @if (actions()) {
+              <td>
+                <button
+                  (click)="modifyItem(row)"
+                  aria-label="Edit record"
+                  class="btn btn-success m-1"
+                  title="Edit record"
+                  type="button"
+                >
+                  <i class="pi pi-pencil" aria-hidden="true"></i>
+                </button>
+
+                @if (delete()) {
+                  <button
+                    (click)="deleteItem(row)"
+                    aria-label="Delete record"
+                    class="btn btn-danger m-1"
+                    title="Delete record"
+                    type="button"
+                  >
+                    <i class="pi pi-eraser" aria-hidden="true"></i>
+                  </button>
+                }
+              </td>
+            }
+          </tr>
+        } @empty {
+          <tr>
+            <td
+              [attr.colspan]="columns().length + (actions() ? 1 : 0) + (details() ? 1 : 0)"
+              class="text-center py-3"
+            >
+              There are no records.
+            </td>
+          </tr>
         }
-      }
+      </tbody>
+    </table>
+  </div>
 
-      @if (details()) {
-      <td>
-        <button
-          (click)="detailsItem(row)"
-          aria-label="View details"
-          class="btn-icon"
-          title="View details"
-          type="button"
-        >
-          <i class="pi pi-eye" aria-hidden="true"></i>
-        </button>
-      </td>
-      }
-
-      @if (actions()) {
-      <td>
-        <button
-          (click)="modifyItem(row)"
-          aria-label="Edit record"
-          class="btn btn-success m-1"
-          title="Edit record"
-          type="button"
-        >
-          <i class="pi pi-pencil" aria-hidden="true"></i>
-        </button>
-
-        @if (delete()) {
-        <button
-          (click)="deleteItem(row)"
-          aria-label="Delete record"
-          class="btn btn-danger m-1"
-          title="Delete record"
-          type="button"
-        >
-          <i class="pi pi-eraser" aria-hidden="true"></i>
-        </button>
+  <footer class="card-footer d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <label class="d-flex align-items-center gap-2">
+      Rows
+      <select class="form-select form-select-sm" (change)="updatePageSize($event)">
+        @for (size of [5, 10, 20, 50]; track size) {
+          <option [value]="size" [selected]="size === pageSize()">{{ size }}</option>
         }
-      </td>
-      }
-    </tr>
-  </ng-template>
+      </select>
+    </label>
 
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td
-        [attr.colspan]="columns().length + (actions() ? 1 : 0) + (details() ? 1 : 0)"
-        class="text-center py-3"
+    <div class="d-flex align-items-center gap-2">
+      <button
+        class="btn btn-outline-primary btn-sm"
+        type="button"
+        [disabled]="currentPage() === 1"
+        (click)="previousPage()"
       >
-        There are no records.
-      </td>
-    </tr>
-  </ng-template>
-</p-table>
+        Previous
+      </button>
+      <span>Page {{ currentPage() }} of {{ pageCount() }}</span>
+      <button
+        class="btn btn-outline-primary btn-sm"
+        type="button"
+        [disabled]="currentPage() === pageCount()"
+        (click)="nextPage()"
+      >
+        Next
+      </button>
+    </div>
+  </footer>
+</section>

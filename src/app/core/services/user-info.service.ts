@@ -1,17 +1,14 @@
-import { inject, Injectable } from '@angular/core';
-import { CryptoJSService } from '@core/services/cryptoJS.service';
+import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserInfoService {
-
-  private crypto = inject(CryptoJSService);
   private readonly expirationStorageKey = 'expiration';
   private readonly tokenStorageKey = 'token';
 
   private timeExpiration = 0;
-  private token = "";
+  private token = '';
 
   constructor() {
     this.timeExpiration = this.loadTimeExpiration();
@@ -20,7 +17,7 @@ export class UserInfoService {
 
   clearInfo(): void {
     this.timeExpiration = 0;
-    this.token = "";
+    this.token = '';
     localStorage.removeItem(this.expirationStorageKey);
     localStorage.removeItem(this.tokenStorageKey);
   }
@@ -31,12 +28,12 @@ export class UserInfoService {
 
   set setToken(token: string) {
     this.token = token;
-    localStorage.setItem(this.tokenStorageKey, this.crypto.encrypt(token));
+    localStorage.setItem(this.tokenStorageKey, token);
   }
 
   set setTimeExpiration(timeExpiration: number) {
     this.timeExpiration = timeExpiration;
-    localStorage.setItem(this.expirationStorageKey, this.crypto.encrypt(timeExpiration.toString()));
+    localStorage.setItem(this.expirationStorageKey, timeExpiration.toString());
   }
 
   get getToken(): string {
@@ -67,11 +64,11 @@ export class UserInfoService {
 
   private loadTimeExpiration(): number {
     try {
-      const encryptedExpiration = localStorage.getItem(this.expirationStorageKey);
-      if (!encryptedExpiration) return 0;
+      const storedExpiration = localStorage.getItem(this.expirationStorageKey);
+      if (!storedExpiration) return 0;
 
-      const decryptedExpiration = Number(this.crypto.decrypt(encryptedExpiration));
-      return Number.isFinite(decryptedExpiration) ? decryptedExpiration : 0;
+      const expiration = Number(storedExpiration);
+      return Number.isFinite(expiration) ? expiration : 0;
     } catch {
       return 0;
     }
@@ -79,10 +76,9 @@ export class UserInfoService {
 
   private loadToken(): string {
     try {
-      const encryptedToken = localStorage.getItem(this.tokenStorageKey);
-      return encryptedToken ? this.crypto.decrypt(encryptedToken) : "";
+      return localStorage.getItem(this.tokenStorageKey) ?? '';
     } catch {
-      return "";
+      return '';
     }
   }
 
@@ -94,12 +90,11 @@ export class UserInfoService {
       const normalizedPayload = payload
         .replace(/-/g, '+')
         .replace(/_/g, '/')
-        .padEnd(payload.length + (4 - payload.length % 4) % 4, '=');
+        .padEnd(payload.length + ((4 - (payload.length % 4)) % 4), '=');
 
       return JSON.parse(atob(normalizedPayload)) as { exp?: number };
     } catch {
       return null;
     }
   }
-
 }

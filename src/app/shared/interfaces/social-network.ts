@@ -6,3 +6,5 @@ export interface SocialNetwork {
   position: number;
   url: string;
 }
+
+export type SocialNetworkPayload = Omit<SocialNetwork, 'id'>;

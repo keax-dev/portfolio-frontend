@@ -6,3 +6,5 @@ export interface Profile {
   cv: string;
   image?: string | null;
 }
+
+export type ProfilePayload = Pick<Profile, 'name' | 'last_name' | 'title' | 'title_es' | 'cv'>;

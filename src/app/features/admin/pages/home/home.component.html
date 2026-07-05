@@ -14,11 +14,7 @@
             <span class="navbar-toggler-icon"></span>
           </button>
 
-          <a
-            routerLink="/home"
-            class="text-light mx-3 fs-4 text-decoration-none"
-            >Home</a
-          >
+          <a routerLink="/home" class="text-light mx-3 fs-4 text-decoration-none">Home</a>
         </div>
 
         <button
@@ -54,17 +50,17 @@
         <div class="offcanvas-body">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             @for (menu of menuList; track $index) {
-            <li class="nav-item">
-              <a
-                [routerLink]="menu.routerLink"
-                routerLinkActive="fw-bold text-light"
-                class="nav-link fs-5"
-                data-bs-dismiss="offcanvas"
-              >
-                <i [class]="menu.icon + ' mx-1'"></i>
-                {{ menu.label }}
-              </a>
-            </li>
+              <li class="nav-item">
+                <a
+                  [routerLink]="menu.routerLink"
+                  routerLinkActive="fw-bold text-light"
+                  class="nav-link fs-5"
+                  data-bs-dismiss="offcanvas"
+                >
+                  <i [class]="menu.icon + ' mx-1'"></i>
+                  {{ menu.label }}
+                </a>
+              </li>
             }
           </ul>
         </div>
@@ -75,5 +71,4 @@
 
 <main>
   <router-outlet></router-outlet>
-  <p-confirmDialog></p-confirmDialog>
 </main>

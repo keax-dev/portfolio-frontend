@@ -14,17 +14,13 @@
         <div class="col-9">
           <p class="card-text mb-1 text-muted">
             {{ education().place | titlecase }},
-            {{ education() | language : "end" : translate.getLang | titlecase }}
+            {{ education() | language: 'end' : translate.getLang | titlecase }}
           </p>
           <h3 class="card-title h6 mb-1 fw-bold text-dark">
-            {{
-              education()
-                | language : "institution_name" : translate.getLang
-                | titlecase
-            }}
+            {{ education() | language: 'institution_name' : translate.getLang | titlecase }}
           </h3>
           <p class="card-text mb-0 text-secondary">
-            {{ education() | language : "title" : translate.getLang | titlecase }}
+            {{ education() | language: 'title' : translate.getLang | titlecase }}
           </p>
         </div>
       </div>

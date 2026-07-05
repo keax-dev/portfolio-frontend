@@ -1,58 +1,29 @@
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Component, inject, OnInit } from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { resolveCvPreviewUrl } from './cv-preview-url';
 
 @Component({
   selector: 'app-cv-preview',
   templateUrl: './cv-preview.component.html',
-  styleUrls: ['./cv-preview.component.css']
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./cv-preview.component.css'],
 })
 export class CvPreviewComponent implements OnInit {
-
-  private readonly config = inject(DynamicDialogConfig);
-  private readonly ref = inject(DynamicDialogRef);
+  private readonly data = inject<{ readonly url?: string }>(DIALOG_DATA);
+  private readonly ref = inject(DialogRef);
   private readonly sanitizer = inject(DomSanitizer);
 
-  previewUrl!: SafeResourceUrl;
+  previewUrl: SafeResourceUrl | null = null;
   originalUrl = '';
 
   ngOnInit(): void {
-    this.originalUrl = this.config.data?.url || '';
-    this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-      this.resolvePreviewUrl(this.originalUrl)
-    );
+    this.originalUrl = this.data.url || '';
+    const previewUrl = resolveCvPreviewUrl(this.originalUrl);
+    this.previewUrl = previewUrl ? this.sanitizer.bypassSecurityTrustResourceUrl(previewUrl) : null;
   }
 
   close(): void {
     this.ref.close();
   }
-
-  private resolvePreviewUrl(url: string): string {
-    const googleDriveId = this.extractGoogleDriveFileId(url);
-
-    if (googleDriveId) {
-      return `https://drive.google.com/file/d/${googleDriveId}/preview`;
-    }
-
-    return `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(url)}`;
-  }
-
-  private extractGoogleDriveFileId(url: string): string | null {
-    if (!url) {
-      return null;
-    }
-
-    const filePathMatch = url.match(/\/file\/d\/([^/]+)/);
-    if (filePathMatch?.[1]) {
-      return filePathMatch[1];
-    }
-
-    try {
-      const parsedUrl = new URL(url);
-      return parsedUrl.searchParams.get('id');
-    } catch {
-      return null;
-    }
-  }
-
 }

@@ -11,3 +11,15 @@ export interface Project {
   technology: number;
   technology_name?: string;
 }
+
+export type ProjectPayload = Pick<
+  Project,
+  | 'title'
+  | 'title_es'
+  | 'description'
+  | 'description_es'
+  | 'deploy'
+  | 'github'
+  | 'position'
+  | 'technology'
+>;

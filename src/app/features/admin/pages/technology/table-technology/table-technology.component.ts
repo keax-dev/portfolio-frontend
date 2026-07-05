@@ -1,4 +1,12 @@
-import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  DestroyRef,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+  signal,
+} from '@angular/core';
 import { FrmTechnologyComponent } from '@features/admin/pages/technology/frm-technology/frm-technology.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TechnologyService } from '@features/admin/services/technology.service';
@@ -10,12 +18,12 @@ import { Technology } from '@shared/interfaces/technology';
 import { Column } from '@shared/components/interfaces/column';
 
 @Component({
-    selector: 'app-table-education',
-    templateUrl: './table-technology.component.html',
-    imports: [TableComponent]
+  selector: 'app-table-education',
+  templateUrl: './table-technology.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TableComponent],
 })
 export class TableTechnologyComponent implements OnInit, OnDestroy {
-
   private readonly destroyRef = inject(DestroyRef);
 
   private technologyService = inject(TechnologyService);
@@ -23,11 +31,11 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
   private spinner = inject(NgxSpinnerService);
   private alert = inject(AlertService);
 
-  records: Technology[] = [];
+  readonly records = signal<readonly Technology[]>([]);
 
   columns: Column[] = [
-    { name: "Position", value: "position" },
-    { name: "Name", value: "name" }
+    { name: 'Position', value: 'position' },
+    { name: 'Name', value: 'name' },
   ];
 
   ngOnInit(): void {
@@ -40,25 +48,28 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
 
   getTechnologyListByDeleted(): void {
     this.spinner.show();
-    this.technologyService.getTechnologyListByDeleted().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => this.records = result.data,
-      complete: () => this.spinner.hide(),
-      error: error => {
-        this.records = [];
-        this.alert.httpError(error);
-      }
-    });
+    this.technologyService
+      .getTechnologyListByDeleted()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => this.records.set(result.data),
+        complete: () => this.spinner.hide(),
+        error: (error) => {
+          this.records.set([]);
+          this.alert.httpError(error);
+        },
+      });
   }
 
   modalTechnology(technology?: Technology): void {
     const dialogRef = this.parameter.openDialog(FrmTechnologyComponent, {
-      positions: this.records.length + 5,
-      technology: technology
+      positions: this.records().length + 5,
+      technology: technology,
     });
-    dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
+    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (result) => {
         if (result) this.getTechnologyListByDeleted();
-      }
+      },
     });
   }
 
@@ -68,14 +79,16 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
 
   deleteTechnology(technology: Technology): void {
     this.spinner.show();
-    this.technologyService.deleteTechnology(technology.id!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
-        this.alert.success(result.alert);
-        this.getTechnologyListByDeleted();
-      },
-      complete: () => this.spinner.hide(),
-      error: error => this.alert.httpError(error)
-    });
+    this.technologyService
+      .deleteTechnology(technology.id!)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          this.alert.success(result.alert);
+          this.getTechnologyListByDeleted();
+        },
+        complete: () => this.spinner.hide(),
+        error: (error) => this.alert.httpError(error),
+      });
   }
-
 }

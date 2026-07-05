@@ -3,12 +3,10 @@ import { NgControl } from '@angular/forms';
 
 @Directive({ selector: '[appLowerCase]' })
 export class LowerCaseDirective {
-
   private readonly control = inject(NgControl);
 
   @HostListener('input', ['$event'])
   onInputChange(event: Event): void {
-
     const input = event.target as HTMLInputElement;
     const uppercased = input.value.toLowerCase();
 
@@ -16,5 +14,4 @@ export class LowerCaseDirective {
 
     this.control.control?.setValue(uppercased, { emitEvent: false });
   }
-
 }

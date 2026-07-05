@@ -1,17 +1,12 @@
-<app-header [profile]="profile"></app-header>
-<app-navbar
-  [navItems]="navItems"
-  [profile]="profile"
-  [title]="profile.title"
-  (contact)="modalContact()"
-></app-navbar>
+<app-header [profile]="profile()"></app-header>
+<app-navbar [navItems]="navItems" [profile]="profile()" (contact)="modalContact()"></app-navbar>
 <main>
-  <app-education [educationList]="educationList"></app-education>
-  <app-skill [skillList]="skillList"></app-skill>
-  <app-technology [technologyList]="technologyList"></app-technology>
+  <app-education [educationList]="educationList()"></app-education>
+  <app-skill [skillList]="skillList()"></app-skill>
+  <app-technology [technologyList]="technologyList()"></app-technology>
 </main>
 <app-footer
-  [socialNetworkList]="socialNetworkList"
+  [socialNetworkList]="socialNetworkList()"
   [navItems]="navItems"
   (contact)="modalContact()"
 ></app-footer>

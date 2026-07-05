@@ -1,25 +1,29 @@
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Component, inject, OnInit } from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+
+interface ImageDialogData {
+  readonly url?: string;
+  readonly alt?: string;
+}
 
 @Component({
-    selector: 'app-show-image',
-    templateUrl: './show-image.component.html'
+  selector: 'app-show-image',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './show-image.component.html',
 })
 export class ShowImageComponent implements OnInit {
-
-  private config = inject(DynamicDialogConfig);
-  private ref = inject(DynamicDialogRef);
+  private readonly data = inject<ImageDialogData>(DIALOG_DATA);
+  private readonly ref = inject(DialogRef);
 
   urlImg = '';
   altImg = '';
 
   ngOnInit(): void {
-    this.urlImg = this.config.data.url;
-    this.altImg = this.config.data.alt;
+    this.urlImg = this.data.url ?? '';
+    this.altImg = this.data.alt ?? '';
   }
 
   close(): void {
     this.ref.close();
   }
-
 }

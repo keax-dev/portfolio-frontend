@@ -15,3 +15,16 @@ export interface Education {
   institution_name_es: string;
   institution_url: string;
 }
+
+export type EducationPayload = Pick<
+  Education,
+  | 'title'
+  | 'title_es'
+  | 'institution'
+  | 'place'
+  | 'start'
+  | 'start_es'
+  | 'end'
+  | 'end_es'
+  | 'position'
+>;

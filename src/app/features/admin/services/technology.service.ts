@@ -1,36 +1,42 @@
 import { inject, Injectable } from '@angular/core';
-import { HeaderService } from '@core/services/header.service';
+import { HttpClient } from '@angular/common/http';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Observable } from 'rxjs';
-import { Technology } from '@shared/interfaces/technology';
+import { Technology, TechnologyPayload } from '@shared/interfaces/technology';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TechnologyService {
+  reference = '/technology';
 
-  reference = "/technology";
-
-  private header = inject(HeaderService);
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(API_BASE_URL);
 
   getTechnologyListByDeleted(deleted = false): Observable<ApiResponse<Technology[]>> {
-    return this.header.http.get<ApiResponse<Technology[]>>(this.header.url + this.reference + `/by-deleted/${deleted}`);
+    return this.http.get<ApiResponse<Technology[]>>(
+      `${this.baseUrl}${this.reference}/by-deleted/${deleted}`,
+    );
   }
 
-  createTechnology(technology: Technology): Observable<ApiResponse<Technology>> {
-    const payload = { ...technology };
-    delete payload.id;
-    return this.header.http.post<ApiResponse<Technology>>(this.header.url + this.reference, payload);
+  createTechnology(payload: TechnologyPayload): Observable<ApiResponse<Technology>> {
+    return this.http.post<ApiResponse<Technology>>(this.baseUrl + this.reference, payload);
   }
 
-  updateTechnology(technologyId: number, technology: Technology): Observable<ApiResponse<Technology>> {
-    const payload = { ...technology };
-    delete payload.id;
-    return this.header.http.put<ApiResponse<Technology>>(this.header.url + this.reference + `/${technologyId}`, payload);
+  updateTechnology(
+    technologyId: number,
+    payload: TechnologyPayload,
+  ): Observable<ApiResponse<Technology>> {
+    return this.http.put<ApiResponse<Technology>>(
+      `${this.baseUrl}${this.reference}/${technologyId}`,
+      payload,
+    );
   }
 
   deleteTechnology(technologyId: number): Observable<ApiResponse<Technology[]>> {
-    return this.header.http.delete<ApiResponse<Technology[]>>(this.header.url + this.reference + `/${technologyId}`);
+    return this.http.delete<ApiResponse<Technology[]>>(
+      `${this.baseUrl}${this.reference}/${technologyId}`,
+    );
   }
-
 }

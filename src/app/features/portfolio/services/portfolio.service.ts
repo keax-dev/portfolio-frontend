@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { SocialNetwork } from '@shared/interfaces/social-network';
-import { HeaderService } from '@core/services/header.service';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Technology } from '@shared/interfaces/technology';
 import { Observable } from 'rxjs';
@@ -9,36 +10,37 @@ import { Profile } from '@shared/interfaces/profile';
 import { Skill } from '@shared/interfaces/skill';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PortfolioService {
+  reference = '/portfolio';
 
-  reference = "/portfolio";
-
-  private header = inject(HeaderService);
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(API_BASE_URL);
 
   getProfile(): Observable<ApiResponse<Profile>> {
-    return this.header.http.get<ApiResponse<Profile>>(this.header.url + this.reference + `/profile`);
+    return this.http.get<ApiResponse<Profile>>(`${this.baseUrl}${this.reference}/profile`);
   }
 
   getEducation(): Observable<ApiResponse<Education[]>> {
-    return this.header.http.get<ApiResponse<Education[]>>(this.header.url + this.reference + `/education`);
+    return this.http.get<ApiResponse<Education[]>>(`${this.baseUrl}${this.reference}/education`);
   }
 
   getSkill(): Observable<ApiResponse<Skill[]>> {
-    return this.header.http.get<ApiResponse<Skill[]>>(this.header.url + this.reference + `/skill`);
+    return this.http.get<ApiResponse<Skill[]>>(`${this.baseUrl}${this.reference}/skill`);
   }
 
   getTechnology(): Observable<ApiResponse<Technology[]>> {
-    return this.header.http.get<ApiResponse<Technology[]>>(this.header.url + this.reference + `/technology`);
+    return this.http.get<ApiResponse<Technology[]>>(`${this.baseUrl}${this.reference}/technology`);
   }
 
   getSocialNetwork(): Observable<ApiResponse<SocialNetwork[]>> {
-    return this.header.http.get<ApiResponse<SocialNetwork[]>>(this.header.url + this.reference + `/socialNetwork`);
+    return this.http.get<ApiResponse<SocialNetwork[]>>(
+      `${this.baseUrl}${this.reference}/socialNetwork`,
+    );
   }
 
   sendEmail(info: { name: string; email: string; message: string }): Observable<ApiResponse<null>> {
-    return this.header.http.post<ApiResponse<null>>(this.header.url + this.reference + `/contact`, info);
+    return this.http.post<ApiResponse<null>>(`${this.baseUrl}${this.reference}/contact`, info);
   }
-
 }

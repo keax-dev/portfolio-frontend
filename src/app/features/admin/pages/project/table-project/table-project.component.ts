@@ -1,4 +1,13 @@
-import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  DestroyRef,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+  computed,
+  signal,
+} from '@angular/core';
 import { FrmProjectComponent } from '@features/admin/pages/project/frm-project/frm-project.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -10,12 +19,12 @@ import { Project } from '@shared/interfaces/project';
 import { Column } from '@shared/components/interfaces/column';
 
 @Component({
-    selector: 'app-table-project',
-    templateUrl: './table-project.component.html',
-    imports: [TableComponent]
+  selector: 'app-table-project',
+  templateUrl: './table-project.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TableComponent],
 })
 export class TableProjectComponent implements OnInit, OnDestroy {
-
   private readonly destroyRef = inject(DestroyRef);
 
   private projectService = inject(ProjectService);
@@ -23,17 +32,22 @@ export class TableProjectComponent implements OnInit, OnDestroy {
   private spinner = inject(NgxSpinnerService);
   private alert = inject(AlertService);
 
-  positionsInfo!: Record<number, number>;
-  records: Project[] = [];
+  readonly records = signal<readonly Project[]>([]);
+  readonly positionsInfo = computed(() =>
+    this.records().reduce<Record<number, number>>((positions, project) => {
+      positions[project.technology] = (positions[project.technology] ?? 0) + 1;
+      return positions;
+    }, {}),
+  );
 
   columns: Column[] = [
-    { name: "Position", value: "position" },
-    { name: "Technology", value: "technology_name" },
-    { name: "Title", value: "title" },
-    { name: "Description", value: "description" },
-    { name: "Picture", value: "picture", image: true },
-    { name: "Deploy", value: "deploy" },
-    { name: "Github", value: "github" }
+    { name: 'Position', value: 'position' },
+    { name: 'Technology', value: 'technology_name' },
+    { name: 'Title', value: 'title' },
+    { name: 'Description', value: 'description' },
+    { name: 'Picture', value: 'picture', image: true },
+    { name: 'Deploy', value: 'deploy' },
+    { name: 'Github', value: 'github' },
   ];
 
   ngOnInit(): void {
@@ -46,33 +60,30 @@ export class TableProjectComponent implements OnInit, OnDestroy {
 
   getProjectListByDeleted(): void {
     this.spinner.show();
-    this.projectService.getProjectListByDeleted().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
-        this.records = result.data;
-        this.positionsInfo = this.records.reduce((acc, project) => {
-          const techName = project.technology;
-          acc[techName] = (acc[techName] || 0) + 1;
-          return acc;
-        }, {} as Record<number, number>);
-      },
-      complete: () => this.spinner.hide(),
-      error: error => {
-        this.records = [];
-        this.positionsInfo = {};
-        this.alert.httpError(error);
-      }
-    });
+    this.projectService
+      .getProjectListByDeleted()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          this.records.set(result.data);
+        },
+        complete: () => this.spinner.hide(),
+        error: (error) => {
+          this.records.set([]);
+          this.alert.httpError(error);
+        },
+      });
   }
 
   modalProject(project?: Project): void {
     const dialogRef = this.parameter.openDialog(FrmProjectComponent, {
-      positionsInfo: this.positionsInfo,
-      project: project
+      positionsInfo: this.positionsInfo(),
+      project: project,
     });
-    dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
+    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (result) => {
         if (result) this.getProjectListByDeleted();
-      }
+      },
     });
   }
 
@@ -82,14 +93,16 @@ export class TableProjectComponent implements OnInit, OnDestroy {
 
   deleteProject(project: Project): void {
     this.spinner.show();
-    this.projectService.deleteProject(project.id!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
-        this.alert.success(result.alert);
-        this.getProjectListByDeleted();
-      },
-      complete: () => this.spinner.hide(),
-      error: error => this.alert.httpError(error)
-    });
+    this.projectService
+      .deleteProject(project.id!)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          this.alert.success(result.alert);
+          this.getProjectListByDeleted();
+        },
+        complete: () => this.spinner.hide(),
+        error: (error) => this.alert.httpError(error),
+      });
   }
-
 }

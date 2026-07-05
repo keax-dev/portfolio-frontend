@@ -1,5 +1,5 @@
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Component, inject, OnInit } from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ShowImageComponent } from '@features/portfolio/pages/technology/show-image/show-image.component';
 import { ParameterService } from '@core/services/parameter.service';
 import { TranslateService } from '@core/services/translate.service';
@@ -9,19 +9,19 @@ import { Project } from '@shared/interfaces/project';
 @Component({
   selector: 'app-project-details',
   templateUrl: './project-details.component.html',
-  imports: [LanguagePipe]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [LanguagePipe],
 })
 export class ProjectDetailsComponent implements OnInit {
-
   protected translate = inject(TranslateService);
   private parameter = inject(ParameterService);
-  private config = inject(DynamicDialogConfig);
-  private ref = inject(DynamicDialogRef);
+  private readonly data = inject<Project>(DIALOG_DATA);
+  private readonly ref = inject(DialogRef);
 
   project!: Project;
 
   ngOnInit(): void {
-    this.project = this.config.data;
+    this.project = this.data;
   }
 
   close(): void {
@@ -32,5 +32,4 @@ export class ProjectDetailsComponent implements OnInit {
     const info = { url: this.project.picture, alt: this.project.title };
     this.parameter.openDialog(ShowImageComponent, info, '95%', '97.5%');
   }
-
 }

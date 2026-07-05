@@ -1,28 +1,40 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
+
+export type SupportedLanguage = 'en' | 'es';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TranslateService {
+  private readonly languageState = signal<SupportedLanguage>('es');
 
-  private lang = 'es';
+  readonly language = this.languageState.asReadonly();
 
   constructor() {
     this.loadLanguage();
   }
 
-  loadLanguage() {
+  loadLanguage(): void {
     const language = localStorage.getItem('language');
-    if (language) this.lang = language;
+    if (this.isSupportedLanguage(language)) {
+      this.languageState.set(language);
+    }
   }
 
   set setLang(lang: string) {
+    if (!this.isSupportedLanguage(lang)) {
+      return;
+    }
+
     localStorage.setItem('language', lang);
-    this.lang = lang;
+    this.languageState.set(lang);
   }
 
-  get getLang() {
-    return this.lang;
+  get getLang(): SupportedLanguage {
+    return this.languageState();
   }
 
+  private isSupportedLanguage(language: string | null): language is SupportedLanguage {
+    return language === 'en' || language === 'es';
+  }
 }

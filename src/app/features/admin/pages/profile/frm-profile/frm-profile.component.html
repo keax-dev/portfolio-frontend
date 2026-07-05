@@ -1,106 +1,70 @@
 <section class="container-fluid p-4">
   <header>
-    <h1 class="text-center text-primary">{{ title }}</h1>
+    <h1 class="text-center text-primary">{{ title() }}</h1>
   </header>
 
   <hr />
 
   <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="m-0">
-    @if (update) {
-    <div class="w-100 d-flex justify-content-center align-items-center">
-      <img [src]="urlPicture" alt="Current profile picture" />
-    </div>
-    <hr />
+    @if (update()) {
+      <div class="w-100 d-flex justify-content-center align-items-center">
+        <img [src]="urlPicture()" alt="Current profile picture" />
+      </div>
+      <hr />
     }
 
     <div class="row g-3">
       <div class="col-md-6">
         <label for="name" class="form-label fw-bold">Name:</label>
-        <input
-          formControlName="name"
-          class="form-control"
-          id="name"
-          appUppercase
-          pInputText
-        />
-        @if (controls['name'].touched && controls['name'].errors?.['required']){
-        <small class="text-danger appear">The name is required</small>
+        <input formControlName="name" class="form-control" id="name" appUppercase />
+        @if (controls['name'].touched && controls['name'].errors?.['required']) {
+          <small class="text-danger appear">The name is required</small>
         }
       </div>
 
       <div class="col-md-6">
         <label for="last_name" class="form-label fw-bold">Last Name:</label>
-        <input
-          formControlName="last_name"
-          class="form-control"
-          id="last_name"
-          appUppercase
-          pInputText
-        />
-        @if (controls['last_name'].touched &&
-        controls['last_name'].errors?.['required']){
-        <small class="text-danger appear">The last name is required</small>
+        <input formControlName="last_name" class="form-control" id="last_name" appUppercase />
+        @if (controls['last_name'].touched && controls['last_name'].errors?.['required']) {
+          <small class="text-danger appear">The last name is required</small>
         }
       </div>
 
       <div class="col-md-6">
         <label for="title" class="form-label fw-bold">Title (English):</label>
-        <input
-          formControlName="title"
-          class="form-control"
-          id="title"
-          appUppercase
-          pInputText
-        />
-        @if (controls['title'].touched && controls['title'].errors?.['required']){
-        <small class="text-danger appear">The title is required</small>
+        <input formControlName="title" class="form-control" id="title" appUppercase />
+        @if (controls['title'].touched && controls['title'].errors?.['required']) {
+          <small class="text-danger appear">The title is required</small>
         }
       </div>
 
       <div class="col-md-6">
         <label for="title_es" class="form-label fw-bold">Title (Spanish):</label>
-        <input
-          formControlName="title_es"
-          class="form-control"
-          id="title_es"
-          appUppercase
-          pInputText
-        />
-        @if (controls['title_es'].touched && controls['title_es'].errors?.['required']){
-        <small class="text-danger appear">The Spanish title is required</small>
+        <input formControlName="title_es" class="form-control" id="title_es" appUppercase />
+        @if (controls['title_es'].touched && controls['title_es'].errors?.['required']) {
+          <small class="text-danger appear">The Spanish title is required</small>
         }
       </div>
 
       <div class="col-md-6">
         <label for="cv" class="form-label fw-bold">CV:</label>
-        <input
-          formControlName="cv"
-          class="form-control"
-          type="url"
-          id="cv"
-          pInputText
-        />
-        @if (controls['cv'].touched && controls['cv'].errors?.['required']){
-        <small class="text-danger appear">The cv is required</small>
+        <input formControlName="cv" class="form-control" type="url" id="cv" />
+        @if (controls['cv'].touched && controls['cv'].errors?.['required']) {
+          <small class="text-danger appear">The cv is required</small>
         }
       </div>
 
       <div class="col-md-6">
         <label for="image" class="form-label fw-bold">Image:</label>
-        <input
-          (change)="onFileSelected($event)"
-          class="form-control"
-          type="file"
-          id="image"
-        />
-        @if (controls['image'].touched && controls['image'].errors?.['required']){
-        <small class="text-danger appear">The image required</small>
+        <input (change)="onFileSelected($event)" class="form-control" type="file" id="image" />
+        @if (controls['image'].touched && controls['image'].errors?.['required']) {
+          <small class="text-danger appear">The image required</small>
         }
 
         @if (controls['image'].touched && controls['image'].errors?.['invalidFileType']) {
-        <small class="text-danger appear"
-          >Only image files (png, jpg, jpeg, gif) are allowed</small
-        >
+          <small class="text-danger appear"
+            >Only image files (png, jpg, jpeg, gif) are allowed</small
+          >
         }
       </div>
     </div>

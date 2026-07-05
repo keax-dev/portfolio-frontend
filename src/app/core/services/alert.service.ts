@@ -1,38 +1,38 @@
-import { ConfirmationService } from 'primeng/api';
 import { inject, Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ToastrService } from 'ngx-toastr';
 import { ApiResponse } from '@core/interfaces/apiresponse';
+import { NotificationService } from '@core/notifications/notification.service';
+import { Dialog } from '@angular/cdk/dialog';
+import { ConfirmDialogComponent, ConfirmDialogData } from '@core/dialog/confirm-dialog.component';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AlertService {
-
-  private confirmation = inject(ConfirmationService);
+  private dialog = inject(Dialog);
   private spinner = inject(NgxSpinnerService);
-  private toastr = inject(ToastrService);
+  private notifications = inject(NotificationService);
 
   success(sms: string): void {
-    this.toastr.success(sms, 'Success');
+    this.notifications.show('success', sms, 'Success');
   }
 
   info(sms: string): void {
-    this.toastr.info(sms, 'Message');
+    this.notifications.show('info', sms, 'Message');
   }
 
   warning(sms: string): void {
-    this.toastr.warning(sms, 'Warning');
+    this.notifications.show('warning', sms, 'Warning');
   }
 
   error(sms: string, title?: string): void {
-    this.toastr.error(sms, title || 'An error occurred');
+    this.notifications.show('error', sms, title || 'An error occurred');
   }
 
   applicationError(sms?: string, title?: string): void {
     this.spinner.hide();
-    this.toastr.error(sms || "Please contact support", title || 'An error occurred');
+    this.error(sms || 'Please contact support', title);
   }
 
   httpError(error: unknown, fallbackMessage?: string, hideSpinner = true): void {
@@ -52,16 +52,22 @@ export class AlertService {
 
     const response = this.asApiResponse(error.error);
     if (response) {
-      response.messages?.forEach(message => this.warning(message));
-      this.error(response.alert || fallbackMessage || this.messageByStatus(error.status), this.titleByStatus(error.status));
+      response.messages?.forEach((message) => this.warning(message));
+      this.error(
+        response.alert || fallbackMessage || this.messageByStatus(error.status),
+        this.titleByStatus(error.status),
+      );
       return;
     }
 
-    this.error(fallbackMessage || this.messageByStatus(error.status), this.titleByStatus(error.status));
+    this.error(
+      fallbackMessage || this.messageByStatus(error.status),
+      this.titleByStatus(error.status),
+    );
   }
 
   resultWarnings<T>(response: ApiResponse<T>): void {
-    response.messages?.forEach(message => this.warning(message));
+    response.messages?.forEach((message) => this.warning(message));
     this.error(response.alert);
   }
 
@@ -81,7 +87,7 @@ export class AlertService {
       data: response.data as unknown,
       messages: Array.isArray(response.messages)
         ? response.messages.filter((message): message is string => typeof message === 'string')
-        : undefined
+        : undefined,
     };
   }
 
@@ -127,25 +133,25 @@ export class AlertService {
     }
   }
 
-  confirmDelete(function_: () => void) {
-    this.confirmation.confirm({
-      message: "You won't be able to undo this!",
-      header: "You're sure?",
-      closable: true,
-      closeOnEscape: true,
-      icon: 'pi pi-exclamation-triangle',
-      rejectButtonProps: {
-        label: 'Cancel',
-        icon: 'pi pi-times',
-        severity: 'contrast'
+  confirmDelete(action: () => void): void {
+    const dialogRef = this.dialog.open<boolean, ConfirmDialogData>(ConfirmDialogComponent, {
+      data: {
+        title: 'Are you sure?',
+        message: "You won't be able to undo this!",
+        confirmLabel: 'Confirm',
+        cancelLabel: 'Cancel',
       },
-      acceptButtonProps: {
-        label: 'Confirm',
-        icon: 'pi pi-check',
-        severity: 'danger',
-      },
-      accept: () => function_()
+      width: 'min(90vw, 28rem)',
+      autoFocus: 'first-tabbable',
+      restoreFocus: true,
+      panelClass: 'app-dialog-panel',
+      backdropClass: 'app-dialog-backdrop',
+    });
+
+    dialogRef.closed.subscribe((confirmed) => {
+      if (confirmed) {
+        action();
+      }
     });
   }
-
 }

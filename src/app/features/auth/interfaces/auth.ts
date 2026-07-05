@@ -1,5 +1,8 @@
-export interface Auth {
-  username: string;
-  password: string;
-  token: string;
+export interface LoginCredentials {
+  readonly username: string;
+  readonly password: string;
+}
+
+export interface LoginResponse {
+  readonly token: string;
 }

@@ -1,4 +1,12 @@
-import { Component, inject, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  DestroyRef,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+  signal,
+} from '@angular/core';
 import { FrmInstitutionComponent } from '@features/admin/pages/institution/frm-institution/frm-institution.component';
 import { InstitutionService } from '@features/admin/services/institution.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -10,12 +18,12 @@ import { Institution } from '@shared/interfaces/institution';
 import { Column } from '@shared/components/interfaces/column';
 
 @Component({
-    selector: 'app-table-institution',
-    templateUrl: './table-institution.component.html',
-    imports: [TableComponent]
+  selector: 'app-table-institution',
+  templateUrl: './table-institution.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TableComponent],
 })
 export class TableInstitutionComponent implements OnInit, OnDestroy {
-
   private readonly destroyRef = inject(DestroyRef);
 
   private institutionService = inject(InstitutionService);
@@ -23,11 +31,11 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
   private spinner = inject(NgxSpinnerService);
   private alert = inject(AlertService);
 
-  records: Institution[] = [];
+  readonly records = signal<readonly Institution[]>([]);
 
   columns: Column[] = [
-    { name: "Institution", value: "name" },
-    { name: "Picture", value: "url", image: true }
+    { name: 'Institution', value: 'name' },
+    { name: 'Picture', value: 'url', image: true },
   ];
 
   ngOnInit(): void {
@@ -40,19 +48,22 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
 
   getInstitutionListByDeleted(): void {
     this.spinner.show();
-    this.institutionService.getInstitutionListByDeleted().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => this.records = result.data,
-      complete: () => this.spinner.hide(),
-      error: error => this.alert.httpError(error)
-    });
+    this.institutionService
+      .getInstitutionListByDeleted()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => this.records.set(result.data),
+        complete: () => this.spinner.hide(),
+        error: (error) => this.alert.httpError(error),
+      });
   }
 
   modalInstitution(institution?: Institution): void {
     const dialogRef = this.parameter.openDialog(FrmInstitutionComponent, institution);
-    dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
+    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (result) => {
         if (result) this.getInstitutionListByDeleted();
-      }
+      },
     });
   }
 
@@ -62,14 +73,16 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
 
   deleteInstitution(institution: Institution): void {
     this.spinner.show();
-    this.institutionService.deleteInstitution(institution.id!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => {
-        this.alert.success(result.alert);
-        this.getInstitutionListByDeleted();
-      },
-      complete: () => this.spinner.hide(),
-      error: error => this.alert.httpError(error)
-    });
+    this.institutionService
+      .deleteInstitution(institution.id!)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          this.alert.success(result.alert);
+          this.getInstitutionListByDeleted();
+        },
+        complete: () => this.spinner.hide(),
+        error: (error) => this.alert.httpError(error),
+      });
   }
-
 }

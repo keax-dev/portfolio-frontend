@@ -2,7 +2,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'language' })
 export class LanguagePipe implements PipeTransform {
-
   transform(object: unknown, key: string, language: string): string {
     if (!object || typeof object !== 'object') return '';
 
@@ -12,5 +11,4 @@ export class LanguagePipe implements PipeTransform {
 
     return typeof value === 'string' ? value : '';
   }
-
 }

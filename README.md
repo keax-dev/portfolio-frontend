@@ -1,86 +1,197 @@
-# Frontend
+<p align="right">
+  <a href="./README.md">
+    <img src="https://img.shields.io/badge/README-Espa%C3%B1ol-1f6feb?style=for-the-badge" alt="README en Español" />
+  </a>
+  <a href="./README.en.md">
+    <img src="https://img.shields.io/badge/README-English-0e8a16?style=for-the-badge" alt="README in English" />
+  </a>
+</p>
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.17.
+# Portfolio Frontend
 
-## Development server
+Aplicación frontend del portafolio y panel administrativo construida con Angular 22, componentes standalone, Signals, Vitest y Playwright.
 
-To start a local development server, run:
+## Resumen
+
+Este proyecto expone dos experiencias principales:
+
+- Portafolio público con perfil, educación, habilidades, tecnologías, proyectos, redes sociales y formulario de contacto.
+- Panel administrativo protegido para gestionar el contenido del portafolio y consultar el dashboard de visitantes.
+
+## Stack técnico
+
+- Angular 22
+- TypeScript 6
+- Angular Router
+- Angular CDK Dialog
+- RxJS
+- Bootstrap 5
+- `ngx-spinner`
+- Vitest para pruebas unitarias e integración
+- Playwright para pruebas E2E
+- ESLint + Prettier para calidad estática
+
+## Arquitectura
+
+La aplicación está organizada por capas y features:
+
+- `src/app/core`: servicios transversales, guards, interceptor, notificaciones y utilidades de sesión.
+- `src/app/shared`: componentes reutilizables, directivas e interfaces compartidas.
+- `src/app/features/auth`: flujo de autenticación.
+- `src/app/features/portfolio`: experiencia pública del portafolio.
+- `src/app/features/admin`: formularios, tablas y dashboard administrativo.
+- `src/app/integration`: pruebas de integración con `HttpClient`, Router y servicios reales.
+- `e2e`: flujos end-to-end con Playwright.
+
+Rutas principales:
+
+- `/`: portafolio público.
+- `/login`: acceso autenticado.
+- `/home`: panel administrativo protegido por guard.
+
+## Comportamiento de sesión
+
+- El token se adjunta automáticamente a las solicitudes API mediante el interceptor de autenticación.
+- Las rutas protegidas usan guards para redirigir usuarios no autenticados.
+- Las sesiones expiradas se limpian y redirigen a `/login`.
+- El panel administrativo inicia un watcher para cerrar sesión cuando vence el token.
+
+## Integración con backend
+
+Ambientes configurados:
+
+- Desarrollo: `http://localhost:9090/api`
+- Producción: `https://www.api.keax.dev/api`
+
+Servicio externo usado por el registro de visitas:
+
+- Geolocalización: `https://ip.guide`
+
+## Requisitos
+
+- Node.js `^22.22.3 || ^24.15.0 || ^26.0.0`
+- npm compatible con la versión de Node instalada
+
+## Instalación
 
 ```bash
-ng serve
+npm install
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Ejecución local
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Levanta el servidor de desarrollo:
 
 ```bash
-ng generate component component-name
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+La aplicación queda disponible en:
 
-```bash
-ng generate --help
+```text
+http://localhost:4200
 ```
 
-## Building
+## Scripts disponibles
 
-To build the project run:
+### Desarrollo
 
 ```bash
-ng build
+npm start
+npm run build
+npm run watch
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-Unit tests run with [Vitest](https://vitest.dev/):
+### Calidad
 
 ```bash
-npm test
-```
-
-For watch mode or a coverage report:
-
-```bash
-npm run test:watch
-npm run test:coverage
-```
-
-## Quality checks
-
-Run the same static checks used by CI:
-
-```bash
+npm run format
 npm run format:check
 npm run lint
 npm run typecheck
 ```
 
-The test suites can also be executed independently:
+### Pruebas
 
 ```bash
+npm test
 npm run test:unit
 npm run test:integration
+npm run test:coverage
 npm run test:e2e
+npm run test:e2e:ui
 ```
 
-## Running end-to-end tests
+## Estrategia de pruebas
 
-For end-to-end (e2e) testing, run:
+El proyecto separa las pruebas en tres niveles:
+
+- Unitarias: validan componentes, servicios, guards, pipes, directivas e interceptor de forma aislada.
+- Integración: validan colaboración real entre `HttpClient`, Router, guards, servicios y componentes clave.
+- E2E: validan flujos completos en navegador con Playwright.
+
+Cobertura mínima configurada:
+
+- Statements: `80%`
+- Branches: `80%`
+- Functions: `80%`
+- Lines: `80%`
+
+Notas importantes:
+
+- Las pruebas E2E son deterministas y mockean la API para no depender del backend externo.
+- Las pruebas de integración usan `HttpTestingController` y piezas reales del framework cuando aporta valor.
+
+## Build de producción
 
 ```bash
-ng e2e
+npm run build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Salida generada:
 
-## Additional Resources
+```text
+dist/frontend
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+La build de producción incluye:
 
-# portfolio-frontend
+- reemplazo de `environment.ts` por `environment.prod.ts`
+- `outputHashing`
+- budgets de bundle y estilos
+
+## Convenciones del proyecto
+
+- Se usan componentes standalone por defecto.
+- El estado de UI simple se maneja con Signals.
+- La navegación y protección de rutas están centralizadas en `core`.
+- Los contratos HTTP usan un envelope `ApiResponse<T>`.
+- La calidad del código se valida con Prettier, ESLint y typecheck.
+
+## Estructura rápida
+
+```text
+src/
+  app/
+    core/
+    shared/
+    features/
+      auth/
+      portfolio/
+      admin/
+    integration/
+e2e/
+public/
+```
+
+## Recomendaciones para desarrollo
+
+- Ejecuta `npm run format:check`, `npm run lint` y `npm run typecheck` antes de subir cambios.
+- Usa `npm run test:unit` para cambios locales rápidos.
+- Usa `npm run test:integration` cuando toques autenticación, routing o servicios HTTP.
+- Usa `npm run test:e2e` para validar flujos críticos antes de cerrar una entrega.
+
+## Observaciones
+
+- GitHub no tiene un selector de idioma nativo para README. La solución más práctica y estándar es mantener dos archivos y enlazarlos con badges como los de la parte superior.
+- Si más adelante quieres, también se puede agregar una tabla de contenidos o badges adicionales de estado de cobertura, lint y versión.

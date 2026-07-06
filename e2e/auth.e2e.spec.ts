@@ -6,7 +6,7 @@ import { expect, test } from '@playwright/test';
 import { api, json, mockPublicPortfolio } from './support/api-mocks';
 
 test.describe('Authentication lifecycle', () => {
-  // Caso: redirects anonymous users away from the admin area.
+  // Caso: redirige a los usuarios anónimos fuera del área administrativa.
   test('redirects anonymous users away from the admin area', async ({ page }) => {
     // Solicita directamente una URL protegida sin preparar localStorage.
     await page.goto('/home');
@@ -17,7 +17,7 @@ test.describe('Authentication lifecycle', () => {
     await expect(page.getByText('Unauthorized')).toBeVisible();
   });
 
-  // Caso: logs in, sends the bearer token and logs out.
+  // Caso: inicia sesión, envía el token bearer y cierra sesión.
   test('logs in, sends the bearer token and logs out', async ({ page }) => {
     let authorizationHeader: string | undefined;
 
@@ -71,7 +71,7 @@ test.describe('Authentication lifecycle', () => {
     expect(await page.evaluate(() => localStorage.getItem('token'))).toBeNull();
   });
 
-  // Caso: clears an expired session and returns to login.
+  // Caso: limpia una sesión expirada y vuelve al login.
   test('clears an expired session and returns to login', async ({ page }) => {
     // Inserta credenciales expiradas antes del bootstrap Angular.
     await page.addInitScript(() => {

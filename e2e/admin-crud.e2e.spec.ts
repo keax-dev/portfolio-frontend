@@ -5,7 +5,7 @@
 import { expect, test } from '@playwright/test';
 import { api, installValidSession, json } from './support/api-mocks';
 
-// Caso: creates and deletes an institution through the admin UI.
+// Caso: crea y elimina una institución desde la interfaz administrativa.
 test('creates and deletes an institution through the admin UI', async ({ page }) => {
   // Mantiene un pequeño estado en memoria para imitar la persistencia del backend.
   const institutions: Array<{

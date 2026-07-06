@@ -6,7 +6,7 @@ import { TranslateService } from './translate.service';
 describe('TranslateService', () => {
   beforeEach(() => localStorage.clear());
 
-  // Caso: restores a supported language and exposes it as a signal.
+  // Caso: restaura un idioma soportado y lo expone como señal.
   it('restores a supported language and exposes it as a signal', () => {
     localStorage.setItem('language', 'en');
 
@@ -15,7 +15,7 @@ describe('TranslateService', () => {
     expect(service.language()).toBe('en');
   });
 
-  // Caso: ignores unsupported language values.
+  // Caso: ignora valores de idioma no soportados.
   it('ignores unsupported language values', () => {
     const service = new TranslateService();
 
@@ -25,7 +25,7 @@ describe('TranslateService', () => {
     expect(localStorage.getItem('language')).toBeNull();
   });
 
-  // Caso: persists a supported language.
+  // Caso: persiste un idioma soportado.
   it('persists a supported language', () => {
     const service = new TranslateService();
 

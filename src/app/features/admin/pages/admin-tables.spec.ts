@@ -174,7 +174,7 @@ describe('admin table components', () => {
     expect(spinner.hide).toHaveBeenCalled();
   });
 
-  // Caso: counts project positions per technology for the project dialog.
+  // Caso: cuenta posiciones de proyectos por tecnología para el diálogo de proyecto.
   it('counts project positions per technology for the project dialog', async () => {
     const records = [
       { id: 1, technology: 2, position: 1 },

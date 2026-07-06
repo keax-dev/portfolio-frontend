@@ -28,7 +28,7 @@ describe('text case directives', () => {
     fixture.detectChanges();
   });
 
-  // Caso: uppercases both the input and form control value.
+  // Caso: convierte a mayúsculas tanto el input como el valor del control.
   it('uppercases both the input and form control value', () => {
     const input = fixture.nativeElement.querySelector('#upper') as HTMLInputElement;
     input.value = 'Kevin galarza';
@@ -37,7 +37,7 @@ describe('text case directives', () => {
     expect(fixture.componentInstance.upper.value).toBe('KEVIN GALARZA');
   });
 
-  // Caso: lowercases both the input and form control value.
+  // Caso: convierte a minúsculas tanto el input como el valor del control.
   it('lowercases both the input and form control value', () => {
     const input = fixture.nativeElement.querySelector('#lower') as HTMLInputElement;
     input.value = 'USER@EXAMPLE.COM';

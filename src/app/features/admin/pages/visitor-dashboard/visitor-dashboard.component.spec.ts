@@ -67,7 +67,7 @@ describe('VisitorDashboardComponent', () => {
     component = fixture.componentInstance;
   });
 
-  // Caso: initializes a fifteen-day range and loads dashboard data.
+  // Caso: inicializa un rango de quince días y carga los datos del dashboard.
   it('initializes a fifteen-day range and loads dashboard data', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(2026, 6, 5, 12));
@@ -81,7 +81,7 @@ describe('VisitorDashboardComponent', () => {
     expect(spinner.hide).toHaveBeenCalled();
   });
 
-  // Caso: rejects an inverted date range without calling the API.
+  // Caso: rechaza un rango de fechas invertido sin llamar a la API.
   it('rejects an inverted date range without calling the API', () => {
     component.startDate = '2026-02-02';
     component.endDate = '2026-02-01';
@@ -93,7 +93,7 @@ describe('VisitorDashboardComponent', () => {
     expect(visitor.getDashboard).not.toHaveBeenCalled();
   });
 
-  // Caso: converts local date bounds to complete ISO-day ranges.
+  // Caso: convierte límites de fecha locales en rangos ISO completos del día.
   it('converts local date bounds to complete ISO-day ranges', () => {
     component.startDate = '2026-01-10';
     component.endDate = '2026-01-11';
@@ -105,7 +105,7 @@ describe('VisitorDashboardComponent', () => {
     expect(new Date(endAt).getMilliseconds()).toBe(999);
   });
 
-  // Caso: allows an empty date range.
+  // Caso: permite un rango de fechas vacío.
   it('allows an empty date range', () => {
     component.startDate = '';
     component.endDate = '';
@@ -113,16 +113,16 @@ describe('VisitorDashboardComponent', () => {
     expect(visitor.getDashboard).toHaveBeenCalledWith(undefined, undefined);
   });
 
-  // Caso: reports loading errors and hides the spinner.
+  // Caso: reporta errores de carga y oculta el spinner.
   it('reports loading errors and hides the spinner', () => {
     const failure = new Error('offline');
     visitor.getDashboard.mockReturnValue(throwError(() => failure));
     component.loadDashboard();
-    expect(alert.httpError).toHaveBeenCalledWith(failure, undefined, false);
+    expect(alert.httpError).toHaveBeenCalledWith(failur);
     expect(spinner.hide).toHaveBeenCalled();
   });
 
-  // Caso: normalizes missing geographical values.
+  // Caso: normaliza valores geográficos faltantes.
   it('normalizes missing geographical values', () => {
     expect(component.unknown('Quito')).toBe('Quito');
     expect(component.unknown('')).toBe('Unknown');

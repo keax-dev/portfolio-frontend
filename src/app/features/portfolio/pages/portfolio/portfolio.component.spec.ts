@@ -93,7 +93,7 @@ describe('PortfolioComponent', () => {
     component = fixture.componentInstance;
   });
 
-  // Caso: loads every public resource and hides the spinner on completion.
+  // Caso: carga cada recurso público y oculta el spinner al completar.
   it('loads every public resource and hides the spinner on completion', () => {
     component.getInformation();
 
@@ -106,7 +106,7 @@ describe('PortfolioComponent', () => {
     expect(spinner.hide).toHaveBeenCalledOnce();
   });
 
-  // Caso: sorts education, skills and social networks without mutating API arrays.
+  // Caso: ordena educación, habilidades y redes sociales sin mutar los arreglos de la API.
   it('sorts education, skills and social networks without mutating API arrays', () => {
     const education = [educationItem(2), educationItem(1)];
     const skills: Skill[] = [
@@ -131,7 +131,7 @@ describe('PortfolioComponent', () => {
     expect(education.map((item) => item.position)).toEqual([2, 1]);
   });
 
-  // Caso: sorts technologies and each nested project list.
+  // Caso: ordena tecnologías y cada lista anidada de proyectos.
   it('sorts technologies and each nested project list', () => {
     const technologies: Technology[] = [
       { id: 2, name: 'Backend', position: 2, projects: [projectItem(2), projectItem(1)] },
@@ -145,27 +145,27 @@ describe('PortfolioComponent', () => {
     expect(component.technologyList()[0].projects.map((item) => item.position)).toEqual([1, 3]);
   });
 
-  // Caso: keeps existing state when an API response status is false.
+  // Caso: mantiene el estado existente cuando el estado de la respuesta API es false.
   it('keeps existing state when an API response status is false', () => {
     portfolio.getSkill.mockReturnValue(of(api([{ name: 'Ignored', position: 1 }], false)));
     component.uploadSkill().subscribe();
     expect(component.skillList()).toEqual([]);
   });
 
-  // Caso: converts backend 400 empty responses into regular values.
+  // Caso: convierte respuestas vacías 400 del backend en valores regulares.
   it('converts backend 400 empty responses into regular values', async () => {
     const response = api<Skill[]>([], false);
     const error = new HttpErrorResponse({ status: 400, error: response });
     await expect(firstValueFrom(component.infoEmpty<Skill[]>(error))).resolves.toEqual(response);
   });
 
-  // Caso: rethrows non-400 errors.
+  // Caso: relanza errores distintos de 400.
   it('rethrows non-400 errors', async () => {
     const error = new HttpErrorResponse({ status: 500 });
     await expect(firstValueFrom(component.infoEmpty(error))).rejects.toBe(error);
   });
 
-  // Caso: reports a public-information failure.
+  // Caso: reporta un fallo al cargar información pública.
   it('reports a public-information failure', () => {
     const failure = new HttpErrorResponse({ status: 500 });
     portfolio.getProfile.mockReturnValue(throwError(() => failure));
@@ -173,14 +173,14 @@ describe('PortfolioComponent', () => {
     expect(alert.httpError).toHaveBeenCalledWith(failure);
   });
 
-  // Caso: registers the current route and ignores analytics failures.
+  // Caso: registra la ruta actual e ignora fallos de analítica.
   it('registers the current route and ignores analytics failures', () => {
     visitor.registerVisit.mockReturnValue(throwError(() => new Error('blocked')));
     expect(() => component.registerVisit()).not.toThrow();
     expect(visitor.registerVisit).toHaveBeenCalledWith('/projects');
   });
 
-  // Caso: returns home after a completed contact dialog.
+  // Caso: vuelve al home después de completar el diálogo de contacto.
   it('returns home after a completed contact dialog', () => {
     parameter.openDialog.mockReturnValue({ closed: of(true) });
     component.modalContact();

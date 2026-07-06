@@ -46,7 +46,7 @@ describe('ContactComponent', () => {
 
   afterEach(() => localStorage.clear());
 
-  // Caso: validates name, email and message constraints.
+  // Caso: valida las restricciones de nombre, correo y mensaje.
   it('validates name, email and message constraints', () => {
     component.contactForm.setValue({
       name: 'A',
@@ -59,14 +59,14 @@ describe('ContactComponent', () => {
     expect(component.controls.message.hasError('minlength')).toBe(true);
   });
 
-  // Caso: does not submit an invalid form.
+  // Caso: no envía un formulario inválido.
   it('does not submit an invalid form', () => {
     component.onSubmit();
     expect(component.controls.name.touched).toBe(true);
     expect(portfolio.sendEmail).not.toHaveBeenCalled();
   });
 
-  // Caso: sends a valid form, notifies success and closes as completed.
+  // Caso: envía un formulario válido, notifica éxito y cierra como completado.
   it('sends a valid form, notifies success and closes as completed', () => {
     const form = {
       name: 'Ada Lovelace',
@@ -91,7 +91,7 @@ describe('ContactComponent', () => {
     expect(dialogRef.close).toHaveBeenCalledWith(true);
   });
 
-  // Caso: reports submission errors without closing the dialog.
+  // Caso: reporta errores de envío sin cerrar el diálogo.
   it('reports submission errors without closing the dialog', () => {
     const failure = new Error('offline');
     component.contactForm.setValue({
@@ -103,12 +103,12 @@ describe('ContactComponent', () => {
 
     component.onSubmit();
 
-    expect(alert.httpError).toHaveBeenCalledWith(failure, undefined, false);
+    expect(alert.httpError).toHaveBeenCalledWith(failure);
     expect(spinner.hide).toHaveBeenCalledOnce();
     expect(dialogRef.close).not.toHaveBeenCalled();
   });
 
-  // Caso: closes with the supplied completion state.
+  // Caso: cierra con el estado de finalización proporcionado.
   it('closes with the supplied completion state', () => {
     component.close(false);
     expect(dialogRef.close).toHaveBeenCalledWith(false);

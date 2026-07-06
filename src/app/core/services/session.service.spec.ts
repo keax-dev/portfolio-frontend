@@ -54,14 +54,14 @@ describe('SessionService', () => {
     vi.useRealTimers();
   });
 
-  // Caso: allows access to protected routes with a valid session.
+  // Caso: permite el acceso a rutas protegidas con una sesión válida.
   it('allows access to protected routes with a valid session', () => {
     userInfo.hasValidSession = true;
     expect(service.resolveProtectedMatch()).toBe(true);
     expect(alert.warning).not.toHaveBeenCalled();
   });
 
-  // Caso: clears and redirects an expired stored session.
+  // Caso: limpia y redirige una sesión almacenada expirada.
   it('clears and redirects an expired stored session', () => {
     userInfo.hasStoredSession = true;
 
@@ -70,13 +70,13 @@ describe('SessionService', () => {
     expect(alert.warning).toHaveBeenCalledWith('Session expired');
   });
 
-  // Caso: warns when protected access has no session.
+  // Caso: advierte cuando el acceso protegido no tiene sesión.
   it('warns when protected access has no session', () => {
     expect(service.resolveProtectedMatch()).toBe(loginTree);
     expect(alert.warning).toHaveBeenCalledWith('Unauthorized');
   });
 
-  // Caso: redirects a valid session away from guest routes.
+  // Caso: redirige una sesión válida fuera de las rutas de invitado.
   it('redirects a valid session away from guest routes', () => {
     userInfo.hasValidSession = true;
     const homeTree = { route: '/home' } as unknown as UrlTree;
@@ -86,14 +86,14 @@ describe('SessionService', () => {
     expect(router.createUrlTree).toHaveBeenCalledWith(['/home']);
   });
 
-  // Caso: allows guest routes and cleans an expired stored session.
+  // Caso: permite rutas de invitado y limpia una sesión almacenada expirada.
   it('allows guest routes and cleans an expired stored session', () => {
     userInfo.hasStoredSession = true;
     expect(service.resolveGuestMatch()).toBe(true);
     expect(userInfo.clearInfo).toHaveBeenCalledOnce();
   });
 
-  // Caso: ensures a valid protected session and starts its watcher.
+  // Caso: asegura una sesión protegida válida e inicia su temporizador.
   it('ensures a valid protected session and starts its watcher', () => {
     userInfo.hasValidSession = true;
     const watcher = vi.spyOn(service, 'startExpirationWatcher');
@@ -102,13 +102,13 @@ describe('SessionService', () => {
     expect(watcher).toHaveBeenCalledOnce();
   });
 
-  // Caso: navigates to the resolved URL when ensuring an invalid session.
+  // Caso: navega a la URL resuelta al asegurar una sesión inválida.
   it('navigates to the resolved URL when ensuring an invalid session', () => {
     expect(service.ensureProtectedSession()).toBe(false);
     expect(router.navigateByUrl).toHaveBeenCalledWith(loginTree);
   });
 
-  // Caso: expires the session when the watcher elapses.
+  // Caso: expira la sesión cuando vence el temporizador.
   it('expires the session when the watcher elapses', () => {
     vi.useFakeTimers();
     userInfo.hasValidSession = true;
@@ -122,7 +122,7 @@ describe('SessionService', () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith('/login');
   });
 
-  // Caso: does not start a watcher without a valid session.
+  // Caso: no inicia un temporizador sin una sesión válida.
   it('does not start a watcher without a valid session', () => {
     vi.useFakeTimers();
     service.startExpirationWatcher();
@@ -130,7 +130,7 @@ describe('SessionService', () => {
     expect(userInfo.clearInfo).not.toHaveBeenCalled();
   });
 
-  // Caso: logs out, clears the session and returns to the portfolio.
+  // Caso: cierra sesión, limpia el estado y vuelve al portafolio.
   it('logs out, clears the session and returns to the portfolio', () => {
     service.logOut();
     expect(userInfo.clearInfo).toHaveBeenCalledOnce();
@@ -138,7 +138,7 @@ describe('SessionService', () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith('/');
   });
 
-  // Caso: normalizes an expired stored session without showing a notification.
+  // Caso: normaliza una sesión almacenada expirada sin mostrar notificación.
   it('normalizes an expired stored session without showing a notification', () => {
     userInfo.hasStoredSession = true;
     service.normalizeStoredSession();

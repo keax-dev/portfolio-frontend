@@ -8,7 +8,7 @@ import { TestBed } from '@angular/core/testing';
 import { UrlTree } from '@angular/router';
 
 describe('route guards', () => {
-  // Caso: delegates protected access to SessionService.
+  // Caso: delega el acceso protegido en SessionService.
   it('delegates protected access to SessionService', () => {
     const session = { resolveProtectedMatch: vi.fn().mockReturnValue(true) };
     TestBed.configureTestingModule({
@@ -23,7 +23,7 @@ describe('route guards', () => {
     expect(session.resolveProtectedMatch).toHaveBeenCalledOnce();
   });
 
-  // Caso: returns the guest redirect from SessionService.
+  // Caso: devuelve la redirección de invitado desde SessionService.
   it('returns the guest redirect from SessionService', () => {
     const redirect = {} as UrlTree;
     const session = { resolveGuestMatch: vi.fn().mockReturnValue(redirect) };

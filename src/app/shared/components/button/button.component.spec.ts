@@ -5,7 +5,7 @@ import { TestBed } from '@angular/core/testing';
 import { ButtonComponent } from './button.component';
 
 describe('ButtonComponent', () => {
-  // Caso: renders configured text, type and disabled state.
+  // Caso: renderiza el texto, el tipo y el estado deshabilitado configurados.
   it('renders configured text, type and disabled state', async () => {
     await TestBed.configureTestingModule({ imports: [ButtonComponent] }).compileComponents();
     const fixture = TestBed.createComponent(ButtonComponent);
@@ -20,7 +20,7 @@ describe('ButtonComponent', () => {
     expect(button.disabled).toBe(true);
   });
 
-  // Caso: uses cancel presentation and emits actions.
+  // Caso: usa la presentación de cancelación y emite acciones.
   it('uses cancel presentation and emits actions', async () => {
     await TestBed.configureTestingModule({ imports: [ButtonComponent] }).compileComponents();
     const fixture = TestBed.createComponent(ButtonComponent);

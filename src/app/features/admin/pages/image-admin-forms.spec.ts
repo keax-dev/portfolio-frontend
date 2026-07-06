@@ -33,7 +33,7 @@ describe('image admin forms', () => {
     data,
   });
 
-  // Caso: requires an image when creating an institution and uploads it after creation.
+  // Caso: requiere una imagen al crear una institución y la sube después de crearla.
   it('requires an image when creating an institution and uploads it after creation', async () => {
     const created: Institution = { id: 1, name: 'ESPOL', name_es: 'ESPOL' };
     const withImage: Institution = { ...created, url: 'institution.png' };
@@ -75,7 +75,7 @@ describe('image admin forms', () => {
     expect(ref.close).toHaveBeenCalledWith(withImage);
   });
 
-  // Caso: updates an institution without requiring a replacement image.
+  // Caso: actualiza una institución sin requerir una imagen de reemplazo.
   it('updates an institution without requiring a replacement image', async () => {
     const existing: Institution = {
       id: 2,
@@ -114,7 +114,7 @@ describe('image admin forms', () => {
     expect(ref.close).toHaveBeenCalledWith(existing);
   });
 
-  // Caso: creates a skill and uploads its image.
+  // Caso: crea una habilidad y sube su imagen.
   it('creates a skill and uploads its image', async () => {
     const created: Skill = { id: 3, name: 'Angular', position: 1 };
     const withImage: Skill = { ...created, picture: 'angular.png' };
@@ -150,7 +150,7 @@ describe('image admin forms', () => {
     expect(ref.close).toHaveBeenCalledWith(withImage);
   });
 
-  // Caso: closes with the saved skill when its image upload fails.
+  // Caso: cierra con la habilidad guardada cuando falla la subida de su imagen.
   it('closes with the saved skill when its image upload fails', async () => {
     const saved: Skill = { id: 3, name: 'Angular', position: 1 };
     const failure = new Error('upload failed');
@@ -177,10 +177,10 @@ describe('image admin forms', () => {
     component.uploadImageInstitution(saved);
 
     expect(ref.close).toHaveBeenCalledWith(saved);
-    expect(messages.httpError).toHaveBeenCalledWith(failure, undefined, false);
+    expect(messages.httpError).toHaveBeenCalledWith(failure);
   });
 
-  // Caso: creates a project, strips the image from its payload and then uploads it.
+  // Caso: crea un proyecto, quita la imagen del payload y luego la sube.
   it('creates a project, strips the image from its payload and then uploads it', async () => {
     const created = project(4);
     const withImage = { ...created, picture: 'project.png' };
@@ -242,7 +242,7 @@ describe('image admin forms', () => {
     expect(ref.close).toHaveBeenCalledWith(withImage);
   });
 
-  // Caso: creates a profile with an image and transitions to update mode.
+  // Caso: crea un perfil con imagen y pasa al modo de actualización.
   it('creates a profile with an image and transitions to update mode', async () => {
     const created: Profile = {
       name: 'Kevin',

@@ -48,7 +48,7 @@ describe('Authenticated HTTP integration', () => {
     localStorage.clear();
   });
 
-  // Caso: reads the real session and attaches its token to API requests.
+  // Caso: lee la sesión real y adjunta su token a las solicitudes API.
   it('reads the real session and attaches its token to API requests', () => {
     // Guarda una sesión mediante la API pública de UserInfoService.
     userInfo.setToken = 'integration-token';
@@ -64,7 +64,7 @@ describe('Authenticated HTTP integration', () => {
     request.flush({});
   });
 
-  // Caso: clears and redirects a real session after a protected 401.
+  // Caso: limpia y redirige una sesión real después de un 401 protegido.
   it('clears and redirects a real session after a protected 401', () => {
     // Prepara una sesión inicialmente válida.
     userInfo.setToken = 'revoked-token';
@@ -85,7 +85,7 @@ describe('Authenticated HTTP integration', () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith('/login');
   });
 
-  // Caso: keeps login 401 errors available to the login component.
+  // Caso: mantiene disponibles los errores 401 del login para el componente de acceso.
   it('keeps login 401 errors available to the login component', () => {
     // Suscribe un manejador para comprobar que el error no sea absorbido.
     const error = vi.fn();

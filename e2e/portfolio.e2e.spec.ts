@@ -11,7 +11,7 @@ test.describe('Public portfolio', () => {
     await mockPublicPortfolio(page);
   });
 
-  // Caso: renders API content and changes the active language.
+  // Caso: renderiza el contenido de la API y cambia el idioma activo.
   test('renders API content and changes the active language', async ({ page }) => {
     // Navega por la aplicación real y espera el perfil devuelto por la API simulada.
     await page.goto('/');
@@ -30,7 +30,7 @@ test.describe('Public portfolio', () => {
     await expect(page.getByTitle('English')).toHaveAttribute('aria-pressed', 'true');
   });
 
-  // Caso: validates and submits the contact dialog end to end.
+  // Caso: valida y envía el diálogo de contacto de punta a punta.
   test('validates and submits the contact dialog end to end', async ({ page }) => {
     // Abre el menú y luego el diálogo CDK de contacto.
     await page.goto('/');

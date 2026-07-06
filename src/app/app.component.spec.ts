@@ -13,7 +13,7 @@ describe('AppComponent', () => {
     }).compileComponents();
   });
 
-  // Caso: creates the app.
+  // Caso: crea la aplicación.
   it('creates the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
     expect(fixture.componentInstance).toBeTruthy();

@@ -31,33 +31,33 @@ describe('ParameterService', () => {
     expect(service.imageFileValidator(control)).toBeNull();
   });
 
-  // Caso: rejects unsupported file types.
+  // Caso: rechaza tipos de archivo no soportados.
   it('rejects unsupported file types', () => {
     const control = new FormControl(new File(['text'], 'file.txt', { type: 'text/plain' }));
     expect(service.imageFileValidator(control)).toEqual({ invalidFileType: true });
   });
 
-  // Caso: ignores empty and non-file values.
+  // Caso: ignora valores vacíos y valores que no son archivos.
   it('ignores empty and non-file values', () => {
     expect(service.imageFileValidator(new FormControl(null))).toBeNull();
     expect(service.imageFileValidator(new FormControl('image.png'))).toBeNull();
   });
 
-  // Caso: uses responsive default widths.
+  // Caso: usa anchos responsivos por defecto.
   it('uses responsive default widths', () => {
     expect(service.getModalWidth).toBe('45%');
     breakpoint.isMatched.mockReturnValue(true);
     expect(service.getModalWidth).toBe('90%');
   });
 
-  // Caso: uses the supplied desktop and mobile widths.
+  // Caso: usa los anchos de escritorio y móvil proporcionados.
   it('uses the supplied desktop and mobile widths', () => {
     expect(service.getModalWidthByParameters('30%', '95%')).toBe('30%');
     breakpoint.isMatched.mockReturnValue(true);
     expect(service.getModalWidthByParameters('30%', '95%')).toBe('95%');
   });
 
-  // Caso: opens a dialog with data, sizing and accessibility options.
+  // Caso: abre un diálogo con datos, tamaños y opciones de accesibilidad.
   it('opens a dialog with data, sizing and accessibility options', () => {
     class DialogContent {}
     const data = { id: 1 };

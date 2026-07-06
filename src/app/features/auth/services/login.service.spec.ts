@@ -8,7 +8,7 @@ import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { TestBed } from '@angular/core/testing';
 
 describe('LoginService', () => {
-  // Caso: posts credentials to the login endpoint.
+  // Caso: envía credenciales al endpoint de login.
   it('posts credentials to the login endpoint', () => {
     TestBed.configureTestingModule({
       providers: [

@@ -8,7 +8,7 @@ import { NotificationService } from '@core/notifications/notification.service';
 import { TestBed } from '@angular/core/testing';
 
 describe('dialog and notification components', () => {
-  // Caso: closes the confirmation dialog with true or false.
+  // Caso: cierra el diálogo de confirmación con true o false.
   it('closes the confirmation dialog with true or false', async () => {
     const ref = { close: vi.fn() };
     await TestBed.configureTestingModule({
@@ -39,7 +39,7 @@ describe('dialog and notification components', () => {
     expect(ref.close).toHaveBeenNthCalledWith(2, true);
   });
 
-  // Caso: renders and dismisses application notifications.
+  // Caso: renderiza y descarta las notificaciones de la aplicación.
   it('renders and dismisses application notifications', async () => {
     vi.useFakeTimers();
     await TestBed.configureTestingModule({

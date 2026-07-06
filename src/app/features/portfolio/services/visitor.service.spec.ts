@@ -27,7 +27,7 @@ describe('VisitorService', () => {
 
   afterEach(() => http.verify());
 
-  // Caso: resolves, trims and registers visitor location.
+  // Caso: resuelve, limpia y registra la ubicación del visitante.
   it('resolves, trims and registers visitor location', () => {
     service.registerVisit('/projects').subscribe();
     http.expectOne(environment.visitorGeoUrl).flush({
@@ -44,7 +44,7 @@ describe('VisitorService', () => {
     request.flush({ status: true, alert: 'ok', data: null });
   });
 
-  // Caso: still registers a visit when geolocation fails.
+  // Caso: sigue registrando una visita cuando falla la geolocalización.
   it('still registers a visit when geolocation fails', () => {
     service.registerVisit('/').subscribe();
     http.expectOne(environment.visitorGeoUrl).flush({}, { status: 503, statusText: 'Unavailable' });
@@ -58,7 +58,7 @@ describe('VisitorService', () => {
     request.flush({ status: true, alert: 'ok', data: null });
   });
 
-  // Caso: omits blank location values.
+  // Caso: omite valores de ubicación en blanco.
   it('omits blank location values', () => {
     service.registerVisit('/').subscribe();
     http.expectOne(environment.visitorGeoUrl).flush({
@@ -70,7 +70,7 @@ describe('VisitorService', () => {
     request.flush({ status: true, alert: 'ok', data: null });
   });
 
-  // Caso: adds optional ranges to visitor-list requests.
+  // Caso: agrega rangos opcionales a las solicitudes del listado de visitantes.
   it('adds optional ranges to visitor-list requests', () => {
     service.getVisitorList('2026-01-01', '2026-01-31').subscribe();
     const request = http.expectOne(
@@ -83,7 +83,7 @@ describe('VisitorService', () => {
     request.flush({ status: true, alert: 'ok', data: [] });
   });
 
-  // Caso: gets dashboard data without empty query parameters.
+  // Caso: obtiene datos del dashboard sin parámetros vacíos en la query.
   it('gets dashboard data without empty query parameters', () => {
     service.getDashboard().subscribe();
     const request = http.expectOne(`${baseUrl}/visitor/dashboard`);

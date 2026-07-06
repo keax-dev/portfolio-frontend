@@ -45,7 +45,7 @@ describe('PortfolioService', () => {
     },
   );
 
-  // Caso: posts the contact form.
+  // Caso: envía el formulario de contacto.
   it('posts the contact form', () => {
     const form = { name: 'Ada', email: 'ada@example.com', message: 'Hello!' };
     service.sendEmail(form).subscribe();

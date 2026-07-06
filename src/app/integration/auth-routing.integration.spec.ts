@@ -48,7 +48,7 @@ describe('Auth routing integration', () => {
 
   afterEach(() => localStorage.clear());
 
-  // Caso: redirects anonymous protected navigation to login.
+  // Caso: redirige la navegación protegida anónima al login.
   it('redirects anonymous protected navigation to login', async () => {
     // Ejecuta una navegación completa sin credenciales guardadas.
     const harness = await RouterTestingHarness.create();
@@ -59,7 +59,7 @@ describe('Auth routing integration', () => {
     expect(alert.warning).toHaveBeenCalledWith('Unauthorized');
   });
 
-  // Caso: allows a valid stored session to reach the protected home.
+  // Caso: permite que una sesión válida almacenada llegue al home protegido.
   it('allows a valid stored session to reach the protected home', async () => {
     // Prepara la misma información que existiría después de un login exitoso.
     localStorage.setItem('token', 'valid-token');
@@ -74,7 +74,7 @@ describe('Auth routing integration', () => {
     expect(alert.warning).not.toHaveBeenCalled();
   });
 
-  // Caso: redirects authenticated users away from the guest login route.
+  // Caso: redirige a los usuarios autenticados fuera de la ruta de login para invitados.
   it('redirects authenticated users away from the guest login route', async () => {
     // Simula una sesión vigente antes de solicitar la página pública de login.
     localStorage.setItem('token', 'valid-token');
@@ -87,7 +87,7 @@ describe('Auth routing integration', () => {
     expect(harness.routeNativeElement?.textContent).toContain('Protected home');
   });
 
-  // Caso: clears an expired stored session while redirecting to login.
+  // Caso: limpia una sesión almacenada expirada mientras redirige al login.
   it('clears an expired stored session while redirecting to login', async () => {
     // Conserva un token con una expiración pasada para probar la normalización.
     localStorage.setItem('token', 'expired-token');

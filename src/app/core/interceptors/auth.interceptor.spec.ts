@@ -51,7 +51,7 @@ describe('authInterceptor', () => {
 
   afterEach(() => controller.verify());
 
-  // Caso: normalizes the session and adds API headers for a valid token.
+  // Caso: normaliza la sesión y agrega headers API para un token válido.
   it('normalizes the session and adds API headers for a valid token', () => {
     http.get(`${environment.url}/profile`).subscribe();
 
@@ -62,7 +62,7 @@ describe('authInterceptor', () => {
     request.flush({});
   });
 
-  // Caso: adds Accept but not Authorization without a valid session.
+  // Caso: agrega Accept pero no Authorization cuando no hay una sesión válida.
   it('adds Accept but not Authorization without a valid session', () => {
     userInfo.hasValidSession = false;
     http.get(`${environment.url}/portfolio`).subscribe();
@@ -73,7 +73,7 @@ describe('authInterceptor', () => {
     request.flush({});
   });
 
-  // Caso: does not modify external requests.
+  // Caso: no modifica solicitudes externas.
   it('does not modify external requests', () => {
     http.get('https://ip.guide').subscribe();
     const request = controller.expectOne('https://ip.guide');
@@ -82,7 +82,7 @@ describe('authInterceptor', () => {
     request.flush({});
   });
 
-  // Caso: ends an active session after a protected 401 response.
+  // Caso: finaliza una sesión activa después de una respuesta 401 protegida.
   it('ends an active session after a protected 401 response', () => {
     const next = vi.fn();
     const error = vi.fn();
@@ -99,7 +99,7 @@ describe('authInterceptor', () => {
     expect(complete).toHaveBeenCalledOnce();
   });
 
-  // Caso: propagates login 401 responses without expiring the session.
+  // Caso: propaga respuestas 401 del login sin expirar la sesión.
   it('propagates login 401 responses without expiring the session', () => {
     const error = vi.fn();
     http.post(`${environment.url}/auth/login`, {}).subscribe({ error });
@@ -112,7 +112,7 @@ describe('authInterceptor', () => {
     expect(error).toHaveBeenCalledOnce();
   });
 
-  // Caso: propagates non-401 errors.
+  // Caso: propaga errores distintos de 401.
   it('propagates non-401 errors', () => {
     const error = vi.fn();
     http.get(`${environment.url}/profile`).subscribe({ error });

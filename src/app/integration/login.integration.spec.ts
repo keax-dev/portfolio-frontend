@@ -17,7 +17,7 @@ describe('Login flow integration', () => {
   beforeEach(() => localStorage.clear());
   afterEach(() => localStorage.clear());
 
-  // Caso: submits DOM credentials, persists the returned JWT and navigates home.
+  // Caso: envía credenciales desde el DOM, persiste el JWT recibido y navega al home.
   it('submits DOM credentials, persists the returned JWT and navigates home', async () => {
     // Configura servicios HTTP reales y sustituye únicamente dependencias visuales.
     const router = { navigateByUrl: vi.fn().mockResolvedValue(true) };

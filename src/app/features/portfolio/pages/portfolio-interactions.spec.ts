@@ -38,7 +38,7 @@ describe('portfolio interaction components', () => {
     technology: 2,
   };
 
-  // Caso: toggles the navbar, changes language and emits contact.
+  // Caso: alterna la barra de navegación, cambia el idioma y emite contacto.
   it('toggles the navbar, changes language and emits contact', async () => {
     const translate = { setLang: '', getLang: 'es' };
     await TestBed.configureTestingModule({
@@ -63,7 +63,7 @@ describe('portfolio interaction components', () => {
     expect(component.navbarExpanded).toBe(false);
   });
 
-  // Caso: derives the header class and opens only configured CVs.
+  // Caso: deriva la clase del encabezado y abre solo CVs configurados.
   it('derives the header class and opens only configured CVs', async () => {
     const translate = { getLang: 'es' };
     const parameter = { openDialog: vi.fn() };
@@ -92,7 +92,7 @@ describe('portfolio interaction components', () => {
     expect(parameter.openDialog).toHaveBeenCalledTimes(1);
   });
 
-  // Caso: emits footer contact actions.
+  // Caso: emite acciones de contacto desde el footer.
   it('emits footer contact actions', async () => {
     await TestBed.configureTestingModule({
       imports: [FooterComponent],
@@ -106,7 +106,7 @@ describe('portfolio interaction components', () => {
     expect(component.year).toBe(new Date().getFullYear());
   });
 
-  // Caso: builds carousel identifiers and opens project dialogs.
+  // Caso: construye identificadores del carrusel y abre diálogos de proyectos.
   it('builds carousel identifiers and opens project dialogs', async () => {
     const parameter = { openDialog: vi.fn() };
     await TestBed.configureTestingModule({
@@ -144,7 +144,7 @@ describe('portfolio interaction components', () => {
     );
   });
 
-  // Caso: initializes project details, opens its image and closes.
+  // Caso: inicializa los detalles del proyecto, abre su imagen y cierra.
   it('initializes project details, opens its image and closes', async () => {
     const parameter = { openDialog: vi.fn() };
     const ref = { close: vi.fn() };
@@ -171,7 +171,7 @@ describe('portfolio interaction components', () => {
     expect(ref.close).toHaveBeenCalledOnce();
   });
 
-  // Caso: initializes and closes an image dialog.
+  // Caso: inicializa y cierra un diálogo de imagen.
   it('initializes and closes an image dialog', async () => {
     const ref = { close: vi.fn() };
     await TestBed.configureTestingModule({
@@ -189,7 +189,7 @@ describe('portfolio interaction components', () => {
     expect(ref.close).toHaveBeenCalledOnce();
   });
 
-  // Caso: sanitizes valid CV previews and closes their dialog.
+  // Caso: sanea previsualizaciones válidas de CV y cierra su diálogo.
   it('sanitizes valid CV previews and closes their dialog', async () => {
     const ref = { close: vi.fn() };
     await TestBed.configureTestingModule({
@@ -207,7 +207,7 @@ describe('portfolio interaction components', () => {
     expect(ref.close).toHaveBeenCalledOnce();
   });
 
-  // Caso: delegates admin lifecycle and logout behavior to SessionService.
+  // Caso: delega el ciclo de vida administrativo y el logout en SessionService.
   it('delegates admin lifecycle and logout behavior to SessionService', async () => {
     const session = {
       ensureProtectedSession: vi.fn(),

@@ -23,7 +23,7 @@ describe('simple admin forms', () => {
   const dialogRef = () => ({ close: vi.fn() });
   const response = <T>(data: T) => ({ status: true, alert: 'Saved', data });
 
-  // Caso: creates a technology from a valid form.
+  // Caso: crea una tecnología desde un formulario válido.
   it('creates a technology from a valid form', async () => {
     const service = {
       createTechnology: vi.fn(),
@@ -56,7 +56,7 @@ describe('simple admin forms', () => {
     expect(loading.hide).toHaveBeenCalled();
   });
 
-  // Caso: loads and updates an existing technology.
+  // Caso: carga y actualiza una tecnología existente.
   it('loads and updates an existing technology', async () => {
     const existing: Technology = {
       id: 3,
@@ -94,7 +94,7 @@ describe('simple admin forms', () => {
     expect(ref.close).toHaveBeenCalledWith(existing);
   });
 
-  // Caso: validates the social-network URL and creates a valid network.
+  // Caso: valida la URL de la red social y crea un registro válido.
   it('validates the social-network URL and creates a valid network', async () => {
     const saved: SocialNetwork = {
       id: 1,
@@ -137,7 +137,7 @@ describe('simple admin forms', () => {
     expect(ref.close).toHaveBeenCalledWith(saved);
   });
 
-  // Caso: updates an existing social network.
+  // Caso: actualiza una red social existente.
   it('updates an existing social network', async () => {
     const existing: SocialNetwork = {
       id: 5,
@@ -172,7 +172,7 @@ describe('simple admin forms', () => {
     );
   });
 
-  // Caso: loads institutions and creates an education record.
+  // Caso: carga instituciones y crea un registro de educación.
   it('loads institutions and creates an education record', async () => {
     const saved = education(1);
     const educationService = {
@@ -217,7 +217,7 @@ describe('simple admin forms', () => {
     expect(ref.close).toHaveBeenCalledWith(saved);
   });
 
-  // Caso: reports institution loading errors in the education form.
+  // Caso: reporta errores al cargar instituciones en el formulario de educación.
   it('reports institution loading errors in the education form', async () => {
     const failure = new Error('offline');
     const messages = alert();
@@ -240,7 +240,7 @@ describe('simple admin forms', () => {
     }).compileComponents();
     const component = TestBed.createComponent(FrmEducationComponent).componentInstance;
     component.getInstitutionListByDeleted();
-    expect(messages.httpError).toHaveBeenCalledWith(failure, undefined, false);
+    expect(messages.httpError).toHaveBeenCalledWith(failure);
   });
 
   function education(position: number): Education {

@@ -2,13 +2,13 @@
  * Pruebas unitarias de validación, autenticación y persistencia desde LoginComponent.
  */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { of, throwError } from 'rxjs';
-import { AlertService } from '@core/services/alert.service';
 import { UserInfoService } from '@core/services/user-info.service';
-import { LoginService } from '@features/auth/services/login.service';
 import { LoginComponent } from './login.component';
+import { LoginService } from '@features/auth/services/login.service';
+import { AlertService } from '@core/services/alert.service';
+import { Router } from '@angular/router';
 
 describe('LoginComponent', () => {
   let fixture: ComponentFixture<LoginComponent>;
@@ -56,7 +56,7 @@ describe('LoginComponent', () => {
 
   afterEach(() => vi.restoreAllMocks());
 
-  // Caso: defines the expected credential validation rules.
+  // Caso: define las reglas esperadas de validación de credenciales.
   it('defines the expected credential validation rules', () => {
     component.authForm.setValue({ username: '', password: 'abc' });
     expect(component.controls.username.hasError('required')).toBe(true);
@@ -70,7 +70,7 @@ describe('LoginComponent', () => {
     expect(component.controls.password.hasError('maxlength')).toBe(true);
   });
 
-  // Caso: marks an invalid form and does not call the API.
+  // Caso: marca un formulario inválido y no llama a la API.
   it('marks an invalid form and does not call the API', () => {
     component.onSubmit();
     expect(component.controls.username.touched).toBe(true);
@@ -78,7 +78,7 @@ describe('LoginComponent', () => {
     expect(loginService.login).not.toHaveBeenCalled();
   });
 
-  // Caso: logs in, stores the session and navigates home.
+  // Caso: inicia sesión, guarda el estado y navega al home.
   it('logs in, stores the session and navigates home', () => {
     component.authForm.setValue({ username: 'admin', password: 'secret' });
     loginService.login.mockReturnValue(
@@ -104,7 +104,7 @@ describe('LoginComponent', () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith('/home');
   });
 
-  // Caso: uses a fallback expiration when the token has no exp claim.
+  // Caso: usa una expiración alternativa cuando el token no tiene claim exp.
   it('uses a fallback expiration when the token has no exp claim', () => {
     vi.spyOn(Date, 'now').mockReturnValue(1_000);
     userInfo.resolveTokenExpiration.mockReturnValue(null);
@@ -114,7 +114,7 @@ describe('LoginComponent', () => {
     expect(userInfo.setTimeExpiration).toBe(14_001_000);
   });
 
-  // Caso: reports login errors and always hides the spinner.
+  // Caso: reporta errores de login y siempre oculta el spinner.
   it('reports login errors and always hides the spinner', () => {
     const failure = new Error('invalid credentials');
     component.authForm.setValue({ username: 'admin', password: 'wrong' });
@@ -122,12 +122,12 @@ describe('LoginComponent', () => {
 
     component.onSubmit();
 
-    expect(alert.httpError).toHaveBeenCalledWith(failure, undefined, false);
+    expect(alert.httpError).toHaveBeenCalledWith(failure);
     expect(spinner.hide).toHaveBeenCalledOnce();
     expect(router.navigateByUrl).not.toHaveBeenCalled();
   });
 
-  // Caso: hides the spinner on destruction.
+  // Caso: oculta el spinner al destruirse.
   it('hides the spinner on destruction', () => {
     component.ngOnDestroy();
     expect(spinner.hide).toHaveBeenCalledOnce();

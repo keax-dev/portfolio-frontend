@@ -44,7 +44,7 @@ describe('Public portfolio integration', () => {
 
   afterEach(() => controller.verify());
 
-  // Caso: combines and orders all public API resources.
+  // Caso: combina y ordena todos los recursos públicos de la API.
   it('combines and orders all public API resources', () => {
     // Inicia el forkJoin del componente para producir las cinco solicitudes.
     component.getInformation();
@@ -111,7 +111,7 @@ describe('Public portfolio integration', () => {
     expect(component.socialNetworkList().map((item) => item.position)).toEqual([1, 2]);
   });
 
-  // Caso: resolves geolocation before posting the visit.
+  // Caso: resuelve la geolocalización antes de registrar la visita.
   it('resolves geolocation before posting the visit', () => {
     // Inicia el registro mediante VisitorService real.
     component.registerVisit();

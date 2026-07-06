@@ -30,7 +30,7 @@ describe('AlertService', () => {
     service = TestBed.inject(AlertService);
   });
 
-  // Caso: delegates typed notifications with their default titles.
+  // Caso: delega las notificaciones tipadas con sus títulos por defecto.
   it('delegates typed notifications with their default titles', () => {
     service.success('Saved');
     service.info('Hello');
@@ -43,7 +43,7 @@ describe('AlertService', () => {
     expect(notifications.show).toHaveBeenNthCalledWith(4, 'error', 'Failed', 'An error occurred');
   });
 
-  // Caso: uses custom application error text and hides the spinner.
+  // Caso: usa un texto personalizado para errores de aplicación y oculta el spinner.
   it('uses custom application error text and hides the spinner', () => {
     service.applicationError('Custom failure', 'Custom title');
     expect(spinner.hide).toHaveBeenCalled();
@@ -65,7 +65,7 @@ describe('AlertService', () => {
     expect(notifications.show).toHaveBeenCalledWith('error', message, title);
   });
 
-  // Caso: shows backend warnings and alert text from a valid API response.
+  // Caso: muestra advertencias del backend y el texto de alerta desde una respuesta API válida.
   it('shows backend warnings and alert text from a valid API response', () => {
     const error = new HttpErrorResponse({
       status: 400,
@@ -86,7 +86,7 @@ describe('AlertService', () => {
     );
   });
 
-  // Caso: uses a fallback for non-HTTP errors.
+  // Caso: usa un mensaje alternativo para errores que no son HTTP.
   it('uses a fallback for non-HTTP errors', () => {
     service.httpError(new Error('boom'), 'Operation failed', false);
     expect(spinner.hide).not.toHaveBeenCalled();
@@ -97,7 +97,7 @@ describe('AlertService', () => {
     );
   });
 
-  // Caso: executes a delete action only after confirmation.
+  // Caso: ejecuta una acción de eliminación solo después de confirmar.
   it('executes a delete action only after confirmation', () => {
     const action = vi.fn();
     dialog.open.mockReturnValue({ closed: of(true) });
@@ -113,7 +113,7 @@ describe('AlertService', () => {
     );
   });
 
-  // Caso: does not execute a delete action when confirmation is cancelled.
+  // Caso: no ejecuta una acción de eliminación cuando se cancela la confirmación.
   it('does not execute a delete action when confirmation is cancelled', () => {
     const action = vi.fn();
     dialog.open.mockReturnValue({ closed: of(false) });

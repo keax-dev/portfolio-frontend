@@ -30,12 +30,12 @@ describe('TableComponent', () => {
     fixture.detectChanges();
   });
 
-  // Caso: sorts records by the first column by default.
+  // Caso: ordena los registros por la primera columna por defecto.
   it('sorts records by the first column by default', () => {
     expect(renderedColumn(1)).toEqual(['Beta', 'Zulu', 'Alpha']);
   });
 
-  // Caso: filters rows case-insensitively and resets the page.
+  // Caso: filtra filas sin distinguir mayúsculas y reinicia la página.
   it('filters rows case-insensitively and resets the page', () => {
     const search = fixture.nativeElement.querySelector('#table-search') as HTMLInputElement;
     search.value = 'ALP';
@@ -44,7 +44,7 @@ describe('TableComponent', () => {
     expect(renderedColumn(1)).toEqual(['Alpha']);
   });
 
-  // Caso: sorts a selected text column and toggles its direction.
+  // Caso: ordena una columna de texto seleccionada y alterna su dirección.
   it('sorts a selected text column and toggles its direction', () => {
     const nameHeader = fixture.nativeElement.querySelectorAll(
       'thead button',
@@ -58,7 +58,7 @@ describe('TableComponent', () => {
     expect(renderedColumn(1)).toEqual(['Zulu', 'Beta', 'Alpha']);
   });
 
-  // Caso: paginates and changes page size.
+  // Caso: pagina y cambia el tamaño de página.
   it('paginates and changes page size', () => {
     fixture.componentRef.setInput(
       'records',
@@ -85,7 +85,7 @@ describe('TableComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Page 1 of 3');
   });
 
-  // Caso: emits edit and delete actions with the selected record.
+  // Caso: emite acciones de edición y eliminación con el registro seleccionado.
   it('emits edit and delete actions with the selected record', () => {
     const edit = vi.fn();
     const remove = vi.fn();
@@ -103,14 +103,14 @@ describe('TableComponent', () => {
     expect(remove).toHaveBeenCalledWith({ name: 'Beta', position: 1 });
   });
 
-  // Caso: renders an empty state.
+  // Caso: renderiza un estado vacío.
   it('renders an empty state', () => {
     fixture.componentRef.setInput('records', []);
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('There are no records.');
   });
 
-  // Caso: renders image values and accessible fallback text.
+  // Caso: renderiza valores de imagen y un texto alternativo accesible.
   it('renders image values and accessible fallback text', () => {
     fixture.componentRef.setInput('columns', [{ name: 'Picture', value: 'picture', image: true }]);
     fixture.componentRef.setInput('records', [

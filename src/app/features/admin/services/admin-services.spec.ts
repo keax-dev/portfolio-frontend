@@ -38,7 +38,7 @@ describe('admin HTTP services', () => {
 
   afterEach(() => http.verify());
 
-  // Caso: uses the education CRUD contract.
+  // Caso: usa el contrato CRUD de educación.
   it('uses the education CRUD contract', () => {
     const service = TestBed.inject(EducationService);
     const payload: EducationPayload = {
@@ -63,7 +63,7 @@ describe('admin HTTP services', () => {
     expectRequest('DELETE', `${baseUrl}/education/7`);
   });
 
-  // Caso: uses the institution CRUD contract.
+  // Caso: usa el contrato CRUD de instituciones.
   it('uses the institution CRUD contract', () => {
     const service = TestBed.inject(InstitutionService);
     const payload: InstitutionPayload = { name: 'University', name_es: 'Universidad' };
@@ -78,7 +78,7 @@ describe('admin HTTP services', () => {
     expectRequest('DELETE', `${baseUrl}/institution/4`);
   });
 
-  // Caso: uses the project CRUD contract.
+  // Caso: usa el contrato CRUD de proyectos.
   it('uses the project CRUD contract', () => {
     const service = TestBed.inject(ProjectService);
     const payload: ProjectPayload = {
@@ -102,7 +102,7 @@ describe('admin HTTP services', () => {
     expectRequest('DELETE', `${baseUrl}/project/9`);
   });
 
-  // Caso: uses the skill CRUD contract.
+  // Caso: usa el contrato CRUD de habilidades.
   it('uses the skill CRUD contract', () => {
     const service = TestBed.inject(SkillService);
     const payload: SkillPayload = { name: 'Angular', position: 2 };
@@ -117,7 +117,7 @@ describe('admin HTTP services', () => {
     expectRequest('DELETE', `${baseUrl}/skill/3`);
   });
 
-  // Caso: uses the technology CRUD contract.
+  // Caso: usa el contrato CRUD de tecnologías.
   it('uses the technology CRUD contract', () => {
     const service = TestBed.inject(TechnologyService);
     const payload: TechnologyPayload = { name: 'Angular', position: 1 };
@@ -132,7 +132,7 @@ describe('admin HTTP services', () => {
     expectRequest('DELETE', `${baseUrl}/technology/5`);
   });
 
-  // Caso: uses the social-network CRUD contract.
+  // Caso: usa el contrato CRUD de redes sociales.
   it('uses the social-network CRUD contract', () => {
     const service = TestBed.inject(SocialNetworkService);
     const payload: SocialNetworkPayload = {
@@ -153,7 +153,7 @@ describe('admin HTTP services', () => {
     expectRequest('DELETE', `${baseUrl}/socialNetwork/8`);
   });
 
-  // Caso: uses the profile API contract.
+  // Caso: usa el contrato API de perfil.
   it('uses the profile API contract', () => {
     const service = TestBed.inject(ProfileService);
     const payload: ProfilePayload = {
@@ -192,7 +192,7 @@ describe('admin HTTP services', () => {
     request.flush({ status: true, alert: 'ok', data: {} });
   });
 
-  // Caso: uploads the profile image without an identifier.
+  // Caso: sube la imagen de perfil sin requerir identificador.
   it('uploads the profile image without an identifier', () => {
     const service = TestBed.inject(ImageService);
     const file = new File(['image'], 'profile.jpg', { type: 'image/jpeg' });

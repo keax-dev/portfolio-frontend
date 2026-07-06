@@ -8,13 +8,13 @@ import { provideHttpClient } from '@angular/common/http';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
 import { AlertService } from '@core/services/alert.service';
-import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { environment } from '@src/environments/environment';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 describe('Public portfolio integration', () => {
-  const baseUrl = 'https://integration.test/api';
+  const baseUrl = environment.url;
+  const visitorGeoUrl = environment.visitorGeoUrl;
   let controller: HttpTestingController;
   let component: PortfolioComponent;
 
@@ -25,7 +25,6 @@ describe('Public portfolio integration', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: API_BASE_URL, useValue: baseUrl },
         {
           provide: NgxSpinnerService,
           useValue: { show: vi.fn(), hide: vi.fn() },
@@ -115,7 +114,7 @@ describe('Public portfolio integration', () => {
   it('resolves geolocation before posting the visit', () => {
     // Inicia el registro mediante VisitorService real.
     component.registerVisit();
-    controller.expectOne(environment.visitorGeoUrl).flush({
+    controller.expectOne(visitorGeoUrl).flush({
       location: { country: 'Ecuador', city: 'Guayaquil' },
     });
 

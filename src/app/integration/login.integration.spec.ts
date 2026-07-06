@@ -7,12 +7,12 @@ import { provideHttpClient } from '@angular/common/http';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { LoginComponent } from '@features/auth/pages/login/login.component';
 import { AlertService } from '@core/services/alert.service';
-import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { environment } from '@src/environments/environment';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 describe('Login flow integration', () => {
-  const baseUrl = 'https://integration.test/api';
+  const baseUrl = environment.url;
 
   beforeEach(() => localStorage.clear());
   afterEach(() => localStorage.clear());
@@ -28,7 +28,6 @@ describe('Login flow integration', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: API_BASE_URL, useValue: baseUrl },
         { provide: Router, useValue: router },
         { provide: NgxSpinnerService, useValue: spinner },
         { provide: AlertService, useValue: alert },

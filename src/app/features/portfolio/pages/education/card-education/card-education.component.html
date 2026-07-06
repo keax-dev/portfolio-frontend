@@ -5,10 +5,12 @@
         <div class="col-3">
           <img
             [src]="education().institution_url"
+            [attr.alt]="
+              (education() | language: 'institution_name' : translate.getLang | titlecase) + ' logo'
+            "
             decoding="async"
             loading="lazy"
             class="w-100"
-            alt=""
           />
         </div>
         <div class="col-9">

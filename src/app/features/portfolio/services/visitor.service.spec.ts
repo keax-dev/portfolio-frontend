@@ -4,22 +4,18 @@
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { VisitorService } from './visitor.service';
-import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { environment } from '@src/environments/environment';
 import { TestBed } from '@angular/core/testing';
 
 describe('VisitorService', () => {
-  const baseUrl = 'https://api.test';
+  const baseUrl = environment.url;
+  const visitorGeoUrl = environment.visitorGeoUrl;
   let service: VisitorService;
   let http: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: API_BASE_URL, useValue: baseUrl },
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(VisitorService);
     http = TestBed.inject(HttpTestingController);
@@ -30,7 +26,7 @@ describe('VisitorService', () => {
   // Caso: resuelve, limpia y registra la ubicación del visitante.
   it('resolves, trims and registers visitor location', () => {
     service.registerVisit('/projects').subscribe();
-    http.expectOne(environment.visitorGeoUrl).flush({
+    http.expectOne(visitorGeoUrl).flush({
       location: { country: ' Ecuador ', city: ' Guayaquil ' },
     });
 
@@ -47,7 +43,7 @@ describe('VisitorService', () => {
   // Caso: sigue registrando una visita cuando falla la geolocalización.
   it('still registers a visit when geolocation fails', () => {
     service.registerVisit('/').subscribe();
-    http.expectOne(environment.visitorGeoUrl).flush({}, { status: 503, statusText: 'Unavailable' });
+    http.expectOne(visitorGeoUrl).flush({}, { status: 503, statusText: 'Unavailable' });
 
     const request = http.expectOne(`${baseUrl}/visitor`);
     expect(request.request.body).toEqual({
@@ -61,7 +57,7 @@ describe('VisitorService', () => {
   // Caso: omite valores de ubicación en blanco.
   it('omits blank location values', () => {
     service.registerVisit('/').subscribe();
-    http.expectOne(environment.visitorGeoUrl).flush({
+    http.expectOne(visitorGeoUrl).flush({
       location: { country: ' ', city: '' },
     });
     const request = http.expectOne(`${baseUrl}/visitor`);

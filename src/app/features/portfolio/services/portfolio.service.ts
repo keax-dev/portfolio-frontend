@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { SocialNetwork } from '@shared/interfaces/social-network';
-import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { environment } from '@src/environments/environment';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { HttpClient } from '@angular/common/http';
 import { Technology } from '@shared/interfaces/technology';
@@ -15,7 +15,7 @@ import { Skill } from '@shared/interfaces/skill';
 export class PortfolioService {
   reference = '/portfolio';
 
-  private readonly baseUrl = inject(API_BASE_URL);
+  private readonly baseUrl = environment.url;
   private readonly http = inject(HttpClient);
 
   getProfile(): Observable<ApiResponse<Profile>> {

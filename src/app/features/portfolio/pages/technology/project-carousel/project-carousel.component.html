@@ -13,7 +13,13 @@
             class="p-0 border-0 bg-transparent"
             type="button"
           >
-            <img [src]="project.picture" [alt]="project.title" class="img-project img-hover" />
+            <img
+              [attr.loading]="$index === 0 ? 'eager' : 'lazy'"
+              [src]="project.picture"
+              [alt]="project.title"
+              decoding="async"
+              class="img-project img-hover"
+            />
           </button>
 
           <div class="my-4">

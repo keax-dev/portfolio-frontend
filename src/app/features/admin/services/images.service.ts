@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { Institution } from '@shared/interfaces/institution';
+import { environment } from '@src/environments/environment';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -14,7 +14,7 @@ import { Skill } from '@shared/interfaces/skill';
 export class ImageService {
   reference = '/image';
 
-  private readonly baseUrl = inject(API_BASE_URL);
+  private readonly baseUrl = environment.url;
   private readonly http = inject(HttpClient);
 
   uploadImageInstitution(institutionId: number, image: File): Observable<ApiResponse<Institution>> {

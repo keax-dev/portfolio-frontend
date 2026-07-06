@@ -18,20 +18,16 @@ import { ProjectService } from './project.service';
 import { SkillService } from './skill.service';
 import { ImageService } from './images.service';
 import { SkillPayload } from '@shared/interfaces/skill';
-import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { environment } from '@src/environments/environment';
 import { TestBed } from '@angular/core/testing';
 
 describe('admin HTTP services', () => {
-  const baseUrl = 'https://api.test/api';
+  const baseUrl = environment.url;
   let http: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: API_BASE_URL, useValue: baseUrl },
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     });
     http = TestBed.inject(HttpTestingController);
   });

@@ -120,6 +120,7 @@ npm run test:integration
 npm run test:coverage
 npm run test:e2e
 npm run test:e2e:ui
+npm run test:e2e:live
 ```
 
 ## Estrategia de pruebas
@@ -140,6 +141,7 @@ Cobertura mínima configurada:
 Notas importantes:
 
 - Las pruebas E2E son deterministas y mockean la API para no depender del backend externo.
+- `npm run test:e2e:live` ejecuta un smoke separado contra el backend real y no forma parte del flujo E2E determinista por defecto.
 - Las pruebas de integración usan `HttpTestingController` y piezas reales del framework cuando aporta valor.
 
 ## Build de producción

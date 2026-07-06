@@ -1,7 +1,7 @@
 import { Institution, InstitutionPayload } from '@shared/interfaces/institution';
 import { inject, Injectable } from '@angular/core';
-import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { ApiResponse } from '@core/interfaces/apiresponse';
+import { environment } from '@src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 export class InstitutionService {
   reference = '/institution';
 
-  private readonly baseUrl = inject(API_BASE_URL);
+  private readonly baseUrl = environment.url;
   private readonly http = inject(HttpClient);
 
   getInstitutionListByDeleted(deleted = false): Observable<ApiResponse<Institution[]>> {

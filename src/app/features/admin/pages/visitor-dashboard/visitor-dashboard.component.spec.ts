@@ -2,11 +2,11 @@
  * Pruebas unitarias de rangos de fecha, métricas y errores del dashboard de visitantes.
  */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { VisitorDashboardComponent } from './visitor-dashboard.component';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { of, throwError } from 'rxjs';
-import { AlertService } from '@core/services/alert.service';
 import { VisitorService } from '@features/portfolio/services/visitor.service';
-import { VisitorDashboardComponent } from './visitor-dashboard.component';
+import { AlertService } from '@core/services/alert.service';
 
 describe('VisitorDashboardComponent', () => {
   let fixture: ComponentFixture<VisitorDashboardComponent>;
@@ -118,7 +118,7 @@ describe('VisitorDashboardComponent', () => {
     const failure = new Error('offline');
     visitor.getDashboard.mockReturnValue(throwError(() => failure));
     component.loadDashboard();
-    expect(alert.httpError).toHaveBeenCalledWith(failur);
+    expect(alert.httpError).toHaveBeenCalledWith(failure);
     expect(spinner.hide).toHaveBeenCalled();
   });
 

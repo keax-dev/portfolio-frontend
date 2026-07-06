@@ -11,6 +11,7 @@ import { environment } from '@src/environments/environment';
 import { TestBed } from '@angular/core/testing';
 
 describe('authInterceptor', () => {
+  const baseUrl = environment.url;
   let http: HttpClient;
   let controller: HttpTestingController;
   let session: {
@@ -53,9 +54,9 @@ describe('authInterceptor', () => {
 
   // Caso: normaliza la sesión y agrega headers API para un token válido.
   it('normalizes the session and adds API headers for a valid token', () => {
-    http.get(`${environment.url}/profile`).subscribe();
+    http.get(`${baseUrl}/profile`).subscribe();
 
-    const request = controller.expectOne(`${environment.url}/profile`);
+    const request = controller.expectOne(`${baseUrl}/profile`);
     expect(session.normalizeStoredSession).toHaveBeenCalledOnce();
     expect(request.request.headers.get('Accept')).toBe('application/json');
     expect(request.request.headers.get('Authorization')).toBe('Bearer access-token');
@@ -65,9 +66,9 @@ describe('authInterceptor', () => {
   // Caso: agrega Accept pero no Authorization cuando no hay una sesión válida.
   it('adds Accept but not Authorization without a valid session', () => {
     userInfo.hasValidSession = false;
-    http.get(`${environment.url}/portfolio`).subscribe();
+    http.get(`${baseUrl}/portfolio`).subscribe();
 
-    const request = controller.expectOne(`${environment.url}/portfolio`);
+    const request = controller.expectOne(`${baseUrl}/portfolio`);
     expect(request.request.headers.get('Accept')).toBe('application/json');
     expect(request.request.headers.has('Authorization')).toBe(false);
     request.flush({});
@@ -87,10 +88,10 @@ describe('authInterceptor', () => {
     const next = vi.fn();
     const error = vi.fn();
     const complete = vi.fn();
-    http.get(`${environment.url}/profile`).subscribe({ next, error, complete });
+    http.get(`${baseUrl}/profile`).subscribe({ next, error, complete });
 
     controller
-      .expectOne(`${environment.url}/profile`)
+      .expectOne(`${baseUrl}/profile`)
       .flush({}, { status: 401, statusText: 'Unauthorized' });
 
     expect(spinner.hide).toHaveBeenCalledOnce();
@@ -102,10 +103,10 @@ describe('authInterceptor', () => {
   // Caso: propaga respuestas 401 del login sin expirar la sesión.
   it('propagates login 401 responses without expiring the session', () => {
     const error = vi.fn();
-    http.post(`${environment.url}/auth/login`, {}).subscribe({ error });
+    http.post(`${baseUrl}/auth/login`, {}).subscribe({ error });
 
     controller
-      .expectOne(`${environment.url}/auth/login`)
+      .expectOne(`${baseUrl}/auth/login`)
       .flush({}, { status: 401, statusText: 'Unauthorized' });
 
     expect(session.handleExpiredSessionRedirect).not.toHaveBeenCalled();
@@ -115,10 +116,10 @@ describe('authInterceptor', () => {
   // Caso: propaga errores distintos de 401.
   it('propagates non-401 errors', () => {
     const error = vi.fn();
-    http.get(`${environment.url}/profile`).subscribe({ error });
+    http.get(`${baseUrl}/profile`).subscribe({ error });
 
     controller
-      .expectOne(`${environment.url}/profile`)
+      .expectOne(`${baseUrl}/profile`)
       .flush({}, { status: 500, statusText: 'Server Error' });
 
     expect(session.handleExpiredSessionRedirect).not.toHaveBeenCalled();

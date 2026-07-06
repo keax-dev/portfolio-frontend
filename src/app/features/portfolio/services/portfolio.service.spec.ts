@@ -4,21 +4,17 @@
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { PortfolioService } from './portfolio.service';
-import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { environment } from '@src/environments/environment';
 import { TestBed } from '@angular/core/testing';
 
 describe('PortfolioService', () => {
-  const baseUrl = 'https://api.test';
+  const baseUrl = environment.url;
   let service: PortfolioService;
   let http: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: API_BASE_URL, useValue: baseUrl },
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(PortfolioService);
     http = TestBed.inject(HttpTestingController);

@@ -24,7 +24,13 @@
       class="p-0 border-0 bg-transparent"
       type="button"
     >
-      <img [src]="project.picture" [alt]="project.title" class="w-75 img-hover" />
+      <img
+        [src]="project.picture"
+        [alt]="project.title"
+        decoding="async"
+        loading="lazy"
+        class="w-75 img-hover"
+      />
     </button>
 
     <figcaption class="visually-hidden">

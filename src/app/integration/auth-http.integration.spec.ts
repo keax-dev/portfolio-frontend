@@ -13,6 +13,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 describe('Authenticated HTTP integration', () => {
+  const baseUrl = environment.url;
   let http: HttpClient;
   let controller: HttpTestingController;
   let userInfo: UserInfoService;
@@ -55,8 +56,8 @@ describe('Authenticated HTTP integration', () => {
     userInfo.setTimeExpiration = Date.now() + 60_000;
 
     // Dispara HttpClient para atravesar la cadena real de interceptores.
-    http.get(`${environment.url}/profile`).subscribe();
-    const request = controller.expectOne(`${environment.url}/profile`);
+    http.get(`${baseUrl}/profile`).subscribe();
+    const request = controller.expectOne(`${baseUrl}/profile`);
 
     // Valida los headers finales recibidos por el backend simulado.
     expect(request.request.headers.get('Authorization')).toBe('Bearer integration-token');
@@ -72,9 +73,9 @@ describe('Authenticated HTTP integration', () => {
     const completed = vi.fn();
 
     // Responde 401 desde un recurso protegido.
-    http.get(`${environment.url}/profile`).subscribe({ complete: completed });
+    http.get(`${baseUrl}/profile`).subscribe({ complete: completed });
     controller
-      .expectOne(`${environment.url}/profile`)
+      .expectOne(`${baseUrl}/profile`)
       .flush({}, { status: 401, statusText: 'Unauthorized' });
 
     // El interceptor y SessionService deben completar silenciosamente y limpiar el estado.
@@ -89,10 +90,10 @@ describe('Authenticated HTTP integration', () => {
   it('keeps login 401 errors available to the login component', () => {
     // Suscribe un manejador para comprobar que el error no sea absorbido.
     const error = vi.fn();
-    http.post(`${environment.url}/auth/login`, {}).subscribe({ error });
+    http.post(`${baseUrl}/auth/login`, {}).subscribe({ error });
 
     controller
-      .expectOne(`${environment.url}/auth/login`)
+      .expectOne(`${baseUrl}/auth/login`)
       .flush({}, { status: 401, statusText: 'Unauthorized' });
 
     // El flujo de login debe recibir su propio error sin redirección automática.

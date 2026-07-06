@@ -5,6 +5,8 @@
         [attr.alt]="'Foto de ' + profile().name"
         [src]="profile().image"
         class="img-fluid rounded-circle border border-primary border-2 mb-3"
+        decoding="async"
+        fetchpriority="high"
       />
     </div>
 

@@ -6,12 +6,17 @@ import { Component, computed, output, input, ChangeDetectionStrategy } from '@an
   templateUrl: './button.component.html',
 })
 export class ButtonComponent {
+  readonly loadingText = input('');
+  readonly loadingIcon = input('pi pi-spin pi-spinner');
+  readonly ariaLabel = input('');
   readonly disabled = input(false);
+  readonly loading = input(false);
   readonly cancel = input(false);
+  readonly cancelText = input('');
 
   readonly classPadding = input('px-4');
   readonly customClass = input('btn btn-primary');
-  readonly text = input('Save');
+  readonly text = input('');
   readonly icon = input('pi pi-save');
   readonly type = input('submit');
 
@@ -22,11 +27,24 @@ export class ButtonComponent {
     return `${baseClass} ${this.classPadding()} d-flex justify-content-center align-items-center m-2`;
   });
 
-  protected readonly buttonText = computed(() => (this.cancel() ? 'Cancel' : this.text()));
-  protected readonly buttonIcon = computed(
-    () => `${this.cancel() ? 'pi pi-times' : this.icon()} mx-2`,
-  );
+  protected readonly isDisabled = computed(() => this.disabled() || this.loading());
+  protected readonly buttonText = computed(() => {
+    if (this.cancel()) {
+      return this.cancelText() || 'Cancel';
+    }
+
+    if (this.loading()) {
+      return this.loadingText() || 'Saving...';
+    }
+
+    return this.text() || 'Save';
+  });
+  protected readonly buttonIcon = computed(() => {
+    const icon = this.cancel() ? 'pi pi-times' : this.loading() ? this.loadingIcon() : this.icon();
+    return icon ? `${icon} mx-2` : '';
+  });
   protected readonly buttonType = computed(() => (this.cancel() ? 'button' : this.type()));
+  protected readonly buttonAriaLabel = computed(() => this.ariaLabel() || this.buttonText());
 
   clickAction(): void {
     this.action.emit();

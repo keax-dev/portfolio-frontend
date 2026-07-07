@@ -68,8 +68,9 @@ describe('ParameterService', () => {
       expect.objectContaining({
         data,
         width: '40%',
-        maxWidth: '100vw',
-        restoreFocus: true,
+        maxWidth: '95vw',
+        maxHeight: '95vh',
+        height: 'auto',
       }),
     );
   });

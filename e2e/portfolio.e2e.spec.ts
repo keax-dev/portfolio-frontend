@@ -36,20 +36,20 @@ test.describe('Public portfolio', () => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Toggle navigation' }).click();
     await page.getByLabel('Primary navigation').getByRole('button', { name: 'Contacto' }).click();
-    await expect(page.getByRole('heading', { name: 'Contactame' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Contáctame' })).toBeVisible();
 
     // Intenta enviar vacío para comprobar validación y accesibilidad del formulario.
-    await page.getByRole('button', { name: 'Send' }).click();
+    await page.getByRole('button', { name: 'Enviar' }).click();
     await expect(page.getByRole('alert')).toHaveCount(3);
 
     // Completa los controles y envía el contrato al servicio real.
     await page.getByLabel('Nombre:').fill('Ada Lovelace');
-    await page.getByLabel('Email:').fill('ADA@EXAMPLE.COM');
+    await page.getByLabel('Correo electrónico:').fill('ADA@EXAMPLE.COM');
     await page.getByLabel('Mensaje:').fill('Hello from Playwright');
-    await page.getByRole('button', { name: 'Send' }).click();
+    await page.getByRole('button', { name: 'Enviar' }).click();
 
     // La respuesta debe cerrar el diálogo y mostrar la notificación global.
     await expect(page.getByText('Message sent')).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Contactame' })).toBeHidden();
+    await expect(page.getByRole('heading', { name: 'Contáctame' })).toBeHidden();
   });
 });

@@ -6,6 +6,7 @@ import { ParameterService } from '@core/services/parameter.service';
 import { TableComponent } from '@shared/components/table/table.component';
 import { AlertService } from '@core/services/alert.service';
 import { Technology } from '@shared/interfaces/technology';
+import { finalize } from 'rxjs';
 import { Column } from '@shared/components/interfaces/column';
 import {
   ChangeDetectionStrategy,
@@ -50,10 +51,12 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.technologyService
       .getTechnologyListByDeleted()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (result) => this.records.set(result.data),
-        complete: () => this.spinner.hide(),
         error: (error) => {
           this.records.set([]);
           this.alert.httpError(error);
@@ -84,13 +87,15 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.technologyService
       .deleteTechnology(technology.id!)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (result) => {
           this.alert.success(result.alert);
           this.getTechnologyListByDeleted();
         },
-        complete: () => this.spinner.hide(),
         error: (error) => this.alert.httpError(error),
       });
   }

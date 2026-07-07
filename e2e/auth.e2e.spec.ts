@@ -14,7 +14,7 @@ test.describe('Authentication lifecycle', () => {
     // El guard debe terminar en login y comunicar por qué ocurrió.
     await expect(page).toHaveURL(/\/login$/);
     await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
-    await expect(page.getByText('Unauthorized')).toBeVisible();
+    await expect(page.getByText('You must sign in to continue')).toBeVisible();
   });
 
   // Caso: inicia sesión, envía el token bearer y cierra sesión.

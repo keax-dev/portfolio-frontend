@@ -1,6 +1,9 @@
 <button
   (click)="clickAction()"
-  [disabled]="disabled()"
+  [attr.aria-disabled]="isDisabled()"
+  [attr.aria-label]="buttonAriaLabel()"
+  [attr.aria-busy]="loading()"
+  [disabled]="isDisabled()"
   [class]="buttonClass()"
   [type]="buttonType()"
 >

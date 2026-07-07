@@ -3,7 +3,6 @@
  */
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { authInterceptor } from './auth.interceptor';
 import { UserInfoService } from '@core/services/user-info.service';
 import { SessionService } from '@core/services/session.service';
@@ -23,7 +22,6 @@ describe('authInterceptor', () => {
     hasStoredSession: boolean;
     getToken: string;
   };
-  let spinner: { hide: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     session = {
@@ -35,7 +33,6 @@ describe('authInterceptor', () => {
       hasStoredSession: true,
       getToken: 'access-token',
     };
-    spinner = { hide: vi.fn() };
 
     TestBed.configureTestingModule({
       providers: [
@@ -43,7 +40,6 @@ describe('authInterceptor', () => {
         provideHttpClientTesting(),
         { provide: SessionService, useValue: session },
         { provide: UserInfoService, useValue: userInfo },
-        { provide: NgxSpinnerService, useValue: spinner },
       ],
     });
     http = TestBed.inject(HttpClient);
@@ -94,7 +90,6 @@ describe('authInterceptor', () => {
       .expectOne(`${baseUrl}/profile`)
       .flush({}, { status: 401, statusText: 'Unauthorized' });
 
-    expect(spinner.hide).toHaveBeenCalledOnce();
     expect(session.handleExpiredSessionRedirect).toHaveBeenCalledOnce();
     expect(error).not.toHaveBeenCalled();
     expect(complete).toHaveBeenCalledOnce();

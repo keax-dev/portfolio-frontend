@@ -22,7 +22,7 @@ export class SessionService {
       return this.router.createUrlTree(['/login']);
     }
 
-    this.alertService.warning('Unauthorized');
+    this.alertService.warning('You must sign in to continue');
     return this.router.createUrlTree(['/login']);
   }
 
@@ -81,7 +81,7 @@ export class SessionService {
   logOut(): void {
     this.stopExpirationWatcher();
     this.userInfoService.clearInfo();
-    this.alertService.success('Log out');
+    this.alertService.success('Logged out');
     void this.router.navigateByUrl('/');
   }
 

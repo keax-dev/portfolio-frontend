@@ -1,4 +1,10 @@
-<form (ngSubmit)="onSubmit()" [formGroup]="contactForm" aria-labelledby="contact-title" class="m-3">
+<form
+  (ngSubmit)="onSubmit()"
+  [formGroup]="contactForm"
+  [attr.aria-busy]="isSaving()"
+  aria-labelledby="contact-title"
+  class="m-3"
+>
   <header>
     <h2 id="contact-title" class="h4 text-primary">
       {{ labels.title | language: 'label' : translate.getLang }}
@@ -18,6 +24,7 @@
           [attr.aria-invalid]="controls['name'].touched && controls['name'].invalid"
           [maxLength]="100"
           [minlength]="2"
+          autocomplete="name"
           formControlName="name"
           id="name"
           appUppercase
@@ -25,9 +32,7 @@
           required
         />
         @if (controls['name'].touched && controls['name'].invalid) {
-          <mat-error id="name-error">{{
-            labels.name | language: 'required' : translate.getLang
-          }}</mat-error>
+          <mat-error id="name-error" role="alert">{{ errorMessage('name') }}</mat-error>
         }
       </mat-form-field>
     </div>
@@ -41,6 +46,7 @@
           "
           [attr.aria-invalid]="controls['email'].touched && controls['email'].invalid"
           [maxLength]="254"
+          autocomplete="email"
           formControlName="email"
           id="email"
           type="email"
@@ -49,9 +55,7 @@
           required
         />
         @if (controls['email'].touched && controls['email'].invalid) {
-          <mat-error id="email-error">{{
-            labels.email | language: 'required' : translate.getLang
-          }}</mat-error>
+          <mat-error id="email-error" role="alert">{{ errorMessage('email') }}</mat-error>
         }
       </mat-form-field>
     </div>
@@ -74,21 +78,20 @@
           rows="5"
         ></textarea>
         @if (controls['message'].touched && controls['message'].invalid) {
-          <mat-error id="message-error">{{
-            labels.message | language: 'required' : translate.getLang
-          }}</mat-error>
+          <mat-error id="message-error" role="alert">{{ errorMessage('message') }}</mat-error>
         }
       </mat-form-field>
     </div>
   </div>
 
   <footer class="w-100 d-flex justify-content-center align-items-center mt-3">
-    <app-button [cancel]="true" (action)="close()"></app-button>
+    <app-button [cancel]="true" [cancelText]="cancelActionLabel()" (action)="close()"></app-button>
 
     <app-button
-      [disabled]="isSaving()"
-      [icon]="isSaving() ? 'pi pi-spin pi-spinner' : 'pi pi-send'"
-      [text]="isSaving() ? 'Saving...' : 'Send'"
+      [loading]="isSaving()"
+      [loadingText]="sendingActionLabel()"
+      [text]="sendActionLabel()"
+      [icon]="'pi pi-send'"
     ></app-button>
   </footer>
 </form>

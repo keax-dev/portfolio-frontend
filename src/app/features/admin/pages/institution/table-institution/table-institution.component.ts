@@ -6,6 +6,7 @@ import { ParameterService } from '@core/services/parameter.service';
 import { TableComponent } from '@shared/components/table/table.component';
 import { AlertService } from '@core/services/alert.service';
 import { Institution } from '@shared/interfaces/institution';
+import { finalize } from 'rxjs';
 import { Column } from '@shared/components/interfaces/column';
 import {
   ChangeDetectionStrategy,
@@ -50,10 +51,12 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.institutionService
       .getInstitutionListByDeleted()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (result) => this.records.set(result.data),
-        complete: () => this.spinner.hide(),
         error: (error) => this.alert.httpError(error),
       });
   }
@@ -78,13 +81,15 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.institutionService
       .deleteInstitution(institution.id!)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (result) => {
           this.alert.success(result.alert);
           this.getInstitutionListByDeleted();
         },
-        complete: () => this.spinner.hide(),
         error: (error) => this.alert.httpError(error),
       });
   }

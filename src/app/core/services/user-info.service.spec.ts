@@ -38,10 +38,9 @@ describe('UserInfoService', () => {
     expect(restored.hasStoredSession).toBe(true);
   });
 
-  // Caso: persiste el token y la expiración mediante los setters.
-  it('persists token and expiration through the setters', () => {
-    service.setToken = 'new-token';
-    service.setTimeExpiration = 1_800_000_000_000;
+  // Caso: persiste el token y la expiración mediante el método de sesión.
+  it('persists token and expiration through setSession', () => {
+    service.setSession('new-token', 1_800_000_000_000);
 
     expect(localStorage.getItem('token')).toBe('new-token');
     expect(localStorage.getItem('expiration')).toBe('1800000000000');
@@ -74,13 +73,9 @@ describe('UserInfoService', () => {
     expect(localStorage.getItem('expiration')).toBeNull();
   });
 
-  // Caso: trata setInfo como un reinicio de sesión.
-  it('treats setInfo as a session reset', () => {
-    service.setToken = 'token';
-    service.setTimeExpiration = 2_000;
-
-    service.setInfo();
-
+  // Caso: ignora metadata de sesión inválida y limpia el estado.
+  it('ignores invalid session metadata and clears the state', () => {
+    service.setSession('', Number.NaN);
     expect(service.hasStoredSession).toBe(false);
   });
 

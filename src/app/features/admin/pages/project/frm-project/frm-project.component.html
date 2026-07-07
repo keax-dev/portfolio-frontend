@@ -120,10 +120,6 @@
   <footer class="w-100 d-flex justify-content-center align-items-center mt-3">
     <app-button [cancel]="true" (action)="close()"></app-button>
 
-    <app-button
-      [disabled]="isSaving()"
-      [icon]="isSaving() ? 'pi pi-spin pi-spinner' : 'pi pi-save'"
-      [text]="isSaving() ? 'Saving...' : 'Save'"
-    ></app-button>
+    <app-button [loading]="isSaving()"></app-button>
   </footer>
 </form>

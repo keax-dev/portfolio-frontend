@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { LocalizedText } from '@core/i18n/ui-text';
 
 export type SupportedLanguage = 'en' | 'es';
 
@@ -6,6 +7,7 @@ export type SupportedLanguage = 'en' | 'es';
   providedIn: 'root',
 })
 export class TranslateService {
+  private readonly languageStorageKey = 'language';
   private readonly languageState = signal<SupportedLanguage>('es');
 
   readonly language = this.languageState.asReadonly();
@@ -15,7 +17,7 @@ export class TranslateService {
   }
 
   loadLanguage(): void {
-    const language = localStorage.getItem('language');
+    const language = this.readStoredLanguage();
     if (this.isSupportedLanguage(language)) {
       this.languageState.set(language);
     }
@@ -30,11 +32,31 @@ export class TranslateService {
       return;
     }
 
-    localStorage.setItem('language', lang);
+    this.persistLanguage(lang);
     this.languageState.set(lang);
   }
 
   get getLang(): SupportedLanguage {
     return this.languageState();
+  }
+
+  text(value: LocalizedText): string {
+    return value[this.getLang];
+  }
+
+  private readStoredLanguage(): string | null {
+    try {
+      return localStorage.getItem(this.languageStorageKey);
+    } catch {
+      return null;
+    }
+  }
+
+  private persistLanguage(language: SupportedLanguage): void {
+    try {
+      localStorage.setItem(this.languageStorageKey, language);
+    } catch {
+      // Ignora fallos de almacenamiento y conserva el estado solo en memoria.
+    }
   }
 }

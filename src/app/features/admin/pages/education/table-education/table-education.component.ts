@@ -6,6 +6,7 @@ import { EducationService } from '@features/admin/services/education.service';
 import { TableComponent } from '@shared/components/table/table.component';
 import { AlertService } from '@core/services/alert.service';
 import { Education } from '@shared/interfaces/education';
+import { finalize } from 'rxjs';
 import { Column } from '@shared/components/interfaces/column';
 import {
   ChangeDetectionStrategy,
@@ -55,10 +56,12 @@ export class TableEducationComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.educationService
       .getEducationListByDeleted()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (result) => this.records.set(result.data),
-        complete: () => this.spinner.hide(),
         error: (error) => {
           this.records.set([]);
           this.alert.httpError(error);
@@ -89,13 +92,15 @@ export class TableEducationComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.educationService
       .deleteEducation(education.id!)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (result) => {
           this.alert.success(result.alert);
           this.getEducationListByDeleted();
         },
-        complete: () => this.spinner.hide(),
         error: (error) => this.alert.httpError(error),
       });
   }

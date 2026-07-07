@@ -1,4 +1,4 @@
-import { catchError, forkJoin, map, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, finalize, forkJoin, map, Observable, of, tap, throwError } from 'rxjs';
 import { TechnologyComponent } from '@features/portfolio/pages/technology/technology.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EducationComponent } from '@features/portfolio/pages/education/education.component';
@@ -95,9 +95,11 @@ export class PortfolioComponent implements OnInit, OnDestroy {
       this.uploadProfile(),
       this.uploadSkill(),
     ])
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
-        complete: () => this.spinner.hide(),
         error: (error) => this.alert.httpError(error),
       });
   }

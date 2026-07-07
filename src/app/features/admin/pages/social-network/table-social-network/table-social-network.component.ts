@@ -6,6 +6,7 @@ import { ParameterService } from '@core/services/parameter.service';
 import { TableComponent } from '@shared/components/table/table.component';
 import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
+import { finalize } from 'rxjs';
 import { Column } from '@shared/components/interfaces/column';
 import {
   ChangeDetectionStrategy,
@@ -53,10 +54,12 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.socialNetworkService
       .getSocialNetworkListByDeleted()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (result) => this.records.set(result.data),
-        complete: () => this.spinner.hide(),
         error: (error) => {
           this.records.set([]);
           this.alert.httpError(error);
@@ -87,13 +90,15 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.socialNetworkService
       .deleteSocialNetwork(socialNetwork.id!)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (result) => {
           this.alert.success(result.alert);
           this.getSocialNetworkListByDeleted();
         },
-        complete: () => this.spinner.hide(),
         error: (error) => this.alert.httpError(error),
       });
   }

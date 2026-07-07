@@ -113,7 +113,7 @@ export class FrmTechnologyComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.close(result.data);
         },
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 
@@ -130,7 +130,7 @@ export class FrmTechnologyComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.close(result.data);
         },
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 

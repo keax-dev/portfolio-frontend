@@ -142,7 +142,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isSaving.set(false);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }
@@ -165,7 +165,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isSaving.set(false);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }
@@ -192,7 +192,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.previousProfile.set(profile);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }

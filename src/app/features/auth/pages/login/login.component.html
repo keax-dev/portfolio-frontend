@@ -2,47 +2,68 @@
   <form
     (ngSubmit)="onSubmit()"
     [formGroup]="authForm"
+    [attr.aria-busy]="isSubmitting()"
     class="card shadow-lg border border-primary p-3 w-100"
   >
     <header>
-      <h1 class="text-primary text-center">Login</h1>
+      <h1 class="text-primary text-center">
+        {{ authTitle() }}
+      </h1>
     </header>
 
     <hr />
 
     <div class="container-fluid px-0">
       <div class="mb-3">
-        <label for="username" class="form-label fw-bold">Username: </label>
+        <label for="username" class="form-label fw-bold"> {{ usernameLabel() }}: </label>
         <input
+          [attr.aria-describedby]="
+            controls['username'].touched && controls['username'].invalid ? 'username-error' : null
+          "
+          [attr.aria-invalid]="controls['username'].touched && controls['username'].invalid"
           [maxLength]="25"
           [minlength]="1"
+          autocomplete="username"
+          autocapitalize="none"
           formControlName="username"
           class="form-control border-primary"
           id="username"
+          required
+          spellcheck="false"
         />
         @if (controls['username'].touched && controls['username'].invalid) {
-          <small class="text-danger appear">The username is required</small>
+          <small id="username-error" class="text-danger appear" role="alert">
+            {{ usernameErrorMessage() }}
+          </small>
         }
       </div>
 
       <div>
-        <label for="password" class="form-label fw-bold">Password: </label>
+        <label for="password" class="form-label fw-bold"> {{ passwordLabel() }}: </label>
         <div class="row p-0 m-0">
           <div class="col p-0">
             <input
+              [attr.aria-describedby]="
+                controls['password'].touched && controls['password'].invalid
+                  ? 'password-error'
+                  : null
+              "
+              [attr.aria-invalid]="controls['password'].touched && controls['password'].invalid"
               [maxLength]="25"
               [minlength]="4"
               [type]="hide ? 'password' : 'text'"
+              autocomplete="current-password"
               formControlName="password"
               class="form-control border-primary"
               id="password"
+              required
             />
           </div>
           <div class="col-auto p-0">
             <button
               (click)="hide = !hide"
-              [attr.aria-label]="hide ? 'Show password' : 'Hide password'"
-              [title]="hide ? 'Show password' : 'Hide password'"
+              [attr.aria-label]="passwordVisibilityLabel()"
+              [title]="passwordVisibilityLabel()"
               class="btn border border-primary"
               type="button"
             >
@@ -55,13 +76,20 @@
           </div>
         </div>
         @if (controls['password'].touched && controls['password'].invalid) {
-          <small class="text-danger appear">The password is required</small>
+          <small id="password-error" class="text-danger appear" role="alert">
+            {{ passwordErrorMessage() }}
+          </small>
         }
       </div>
     </div>
 
     <footer class="w-100 d-flex justify-content-center align-items-center mt-3">
-      <app-button [text]="'Login'" [icon]="'pi pi-sign-in'"></app-button>
+      <app-button
+        [loading]="isSubmitting()"
+        [loadingText]="loggingInLabel()"
+        [text]="loginActionLabel()"
+        [icon]="'pi pi-sign-in'"
+      ></app-button>
     </footer>
   </form>
 </main>

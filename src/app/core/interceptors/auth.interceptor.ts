@@ -1,6 +1,5 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { EMPTY, catchError, throwError } from 'rxjs';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { UserInfoService } from '@core/services/user-info.service';
 import { SessionService } from '@core/services/session.service';
 import { environment } from '@src/environments/environment';
@@ -9,7 +8,6 @@ import { inject } from '@angular/core';
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const userInfoService = inject(UserInfoService);
   const sessionService = inject(SessionService);
-  const spinner = inject(NgxSpinnerService);
 
   sessionService.normalizeStoredSession();
 
@@ -29,7 +27,6 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
   return next(requestWithHeaders).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401 && !isLoginRequest && userInfoService.hasStoredSession) {
-        spinner.hide();
         sessionService.handleExpiredSessionRedirect();
         return EMPTY;
       }

@@ -4,7 +4,6 @@
  */
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { LoginComponent } from '@features/auth/pages/login/login.component';
 import { AlertService } from '@core/services/alert.service';
 import { environment } from '@src/environments/environment';
@@ -21,15 +20,13 @@ describe('Login flow integration', () => {
   it('submits DOM credentials, persists the returned JWT and navigates home', async () => {
     // Configura servicios HTTP reales y sustituye únicamente dependencias visuales.
     const router = { navigateByUrl: vi.fn().mockResolvedValue(true) };
-    const spinner = { show: vi.fn(), hide: vi.fn() };
-    const alert = { success: vi.fn(), httpError: vi.fn() };
+    const alert = { success: vi.fn(), error: vi.fn(), httpError: vi.fn() };
     await TestBed.configureTestingModule({
       imports: [LoginComponent],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: Router, useValue: router },
-        { provide: NgxSpinnerService, useValue: spinner },
         { provide: AlertService, useValue: alert },
       ],
     }).compileComponents();
@@ -65,7 +62,6 @@ describe('Login flow integration', () => {
     expect(localStorage.getItem('token')).toBe(token);
     expect(localStorage.getItem('expiration')).toBe(String(expirationSeconds * 1000));
     expect(alert.success).toHaveBeenCalledWith('Welcome');
-    expect(spinner.hide).toHaveBeenCalled();
     expect(router.navigateByUrl).toHaveBeenCalledWith('/home');
     controller.verify();
   });

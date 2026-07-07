@@ -118,7 +118,7 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isSaving.set(false);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }
@@ -141,7 +141,7 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isSaving.set(false);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }
@@ -166,7 +166,7 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.close(skill);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }

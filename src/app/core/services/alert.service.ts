@@ -2,7 +2,6 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '@core/dialog/confirm-
 import { NotificationService } from '@core/notifications/notification.service';
 import { inject, Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -11,7 +10,6 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class AlertService {
   private notifications = inject(NotificationService);
-  private spinner = inject(NgxSpinnerService);
   private dialog = inject(MatDialog);
 
   success(sms: string): void {
@@ -19,7 +17,7 @@ export class AlertService {
   }
 
   info(sms: string): void {
-    this.notifications.show('info', sms, 'Message');
+    this.notifications.show('info', sms, 'Information');
   }
 
   warning(sms: string): void {
@@ -31,22 +29,12 @@ export class AlertService {
   }
 
   applicationError(sms?: string, title?: string): void {
-    this.spinner.hide();
-    this.error(sms || 'Please contact support', title);
+    this.error(sms || 'Contact support', title);
   }
 
-  httpError(error: unknown, fallbackMessage?: string, hideSpinner = true): void {
-    if (hideSpinner) {
-      this.spinner.hide();
-    }
-
+  httpError(error: unknown, fallbackMessage?: string): void {
     if (!(error instanceof HttpErrorResponse)) {
-      if (hideSpinner) {
-        this.applicationError(fallbackMessage);
-        return;
-      }
-
-      this.error(fallbackMessage || 'Please contact support');
+      this.applicationError(fallbackMessage);
       return;
     }
 
@@ -115,21 +103,21 @@ export class AlertService {
   messageByStatus(status: number): string {
     switch (status) {
       case 400:
-        return 'Please review the submitted information';
+        return 'Review the submitted information';
       case 401:
         return 'Your session is not valid';
       case 403:
         return 'You do not have permission to perform this action';
       case 404:
-        return 'The requested resource could not be found';
+        return 'The requested resource was not found';
       case 409:
         return 'The operation conflicts with existing data';
       case 500:
         return 'Please try again later';
       case 0:
-        return 'Unable to connect to the server';
+        return 'Could not connect to the server';
       default:
-        return 'Please contact support';
+        return 'Contact support';
     }
   }
 
@@ -139,7 +127,7 @@ export class AlertService {
       {
         data: {
           title: 'Are you sure?',
-          message: "You won't be able to undo this!",
+          message: 'This action cannot be undone.',
           confirmLabel: 'Confirm',
           cancelLabel: 'Cancel',
         },

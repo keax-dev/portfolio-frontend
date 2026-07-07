@@ -4,7 +4,6 @@
  */
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { authInterceptor } from '@core/interceptors/auth.interceptor';
 import { UserInfoService } from '@core/services/user-info.service';
 import { AlertService } from '@core/services/alert.service';
@@ -22,21 +21,18 @@ describe('Authenticated HTTP integration', () => {
     warning: ReturnType<typeof vi.fn>;
     success: ReturnType<typeof vi.fn>;
   };
-  let spinner: { hide: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     // Inicializa una sesión real y sustituye únicamente efectos externos de UI/navegación.
     localStorage.clear();
     router = { navigateByUrl: vi.fn().mockResolvedValue(true) };
     alert = { warning: vi.fn(), success: vi.fn() };
-    spinner = { hide: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(withInterceptors([authInterceptor])),
         provideHttpClientTesting(),
         { provide: Router, useValue: router },
         { provide: AlertService, useValue: alert },
-        { provide: NgxSpinnerService, useValue: spinner },
       ],
     });
     http = TestBed.inject(HttpClient);
@@ -81,7 +77,6 @@ describe('Authenticated HTTP integration', () => {
     // El interceptor y SessionService deben completar silenciosamente y limpiar el estado.
     expect(completed).toHaveBeenCalledOnce();
     expect(userInfo.hasStoredSession).toBe(false);
-    expect(spinner.hide).toHaveBeenCalledOnce();
     expect(alert.warning).toHaveBeenCalledWith('Session expired');
     expect(router.navigateByUrl).toHaveBeenCalledWith('/login');
   });

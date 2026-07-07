@@ -55,11 +55,7 @@
     </div>
 
     <div class="col-auto">
-      <app-button
-        [disabled]="isSaving()"
-        [icon]="isSaving() ? 'pi pi-spin pi-spinner' : 'pi pi-save'"
-        [text]="isSaving() ? 'Saving...' : 'Save'"
-      ></app-button>
+      <app-button [loading]="isSaving()"></app-button>
     </div>
   </footer>
 </form>

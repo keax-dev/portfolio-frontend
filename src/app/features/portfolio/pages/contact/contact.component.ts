@@ -1,11 +1,3 @@
-import {
-  Component,
-  inject,
-  DestroyRef,
-  OnDestroy,
-  ChangeDetectionStrategy,
-  signal,
-} from '@angular/core';
 import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
@@ -19,6 +11,15 @@ import { AlertService } from '@core/services/alert.service';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { MatDialogRef } from '@angular/material/dialog';
 import { finalize } from 'rxjs';
+import { uiText } from '@core/i18n/ui-text';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnDestroy,
+  inject,
+  signal,
+} from '@angular/core';
 
 @Component({
   selector: 'app-contact',
@@ -52,7 +53,7 @@ export class ContactComponent implements OnDestroy {
   readonly isSaving = signal(false);
 
   labels = {
-    title: { label: 'Contact me', label_es: 'Contactame' },
+    title: { label: 'Contact me', label_es: 'Contáctame' },
     name: {
       label: 'Name: ',
       label_es: 'Nombre: ',
@@ -61,9 +62,11 @@ export class ContactComponent implements OnDestroy {
     },
     email: {
       label: 'Email: ',
-      label_es: 'Email: ',
+      label_es: 'Correo electrónico: ',
       required: 'The email is required',
-      required_es: 'El email es requerido',
+      required_es: 'El correo es requerido',
+      invalid: 'Enter a valid email',
+      invalid_es: 'Ingresa un correo válido',
     },
     message: {
       label: 'Message: ',
@@ -78,6 +81,10 @@ export class ContactComponent implements OnDestroy {
   }
 
   onSubmit(): void {
+    if (this.isSaving()) {
+      return;
+    }
+
     if (this.contactForm.invalid) {
       this.contactForm.markAllAsTouched();
       return;
@@ -105,5 +112,42 @@ export class ContactComponent implements OnDestroy {
 
   get controls(): typeof this.contactForm.controls {
     return this.contactForm.controls;
+  }
+
+  errorMessage(controlName: keyof typeof this.contactForm.controls): string {
+    const control = this.controls[controlName];
+    if (controlName === 'email' && control.hasError('email')) {
+      return this.translate.getLang === 'es'
+        ? this.labels.email.invalid_es
+        : this.labels.email.invalid;
+    }
+
+    if (controlName === 'name') {
+      return this.translate.getLang === 'es'
+        ? this.labels.name.required_es
+        : this.labels.name.required;
+    }
+
+    if (controlName === 'email') {
+      return this.translate.getLang === 'es'
+        ? this.labels.email.required_es
+        : this.labels.email.required;
+    }
+
+    return this.translate.getLang === 'es'
+      ? this.labels.message.required_es
+      : this.labels.message.required;
+  }
+
+  sendActionLabel(): string {
+    return this.translate.text(uiText.actions.send);
+  }
+
+  sendingActionLabel(): string {
+    return this.translate.text(uiText.actions.sending);
+  }
+
+  cancelActionLabel(): string {
+    return this.translate.text(uiText.actions.cancel);
   }
 }

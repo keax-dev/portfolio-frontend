@@ -73,7 +73,7 @@ describe('SessionService', () => {
   // Caso: advierte cuando el acceso protegido no tiene sesión.
   it('warns when protected access has no session', () => {
     expect(service.resolveProtectedMatch()).toBe(loginTree);
-    expect(alert.warning).toHaveBeenCalledWith('Unauthorized');
+    expect(alert.warning).toHaveBeenCalledWith('You must sign in to continue');
   });
 
   // Caso: redirige una sesión válida fuera de las rutas de invitado.
@@ -134,7 +134,7 @@ describe('SessionService', () => {
   it('logs out, clears the session and returns to the portfolio', () => {
     service.logOut();
     expect(userInfo.clearInfo).toHaveBeenCalledOnce();
-    expect(alert.success).toHaveBeenCalledWith('Log out');
+    expect(alert.success).toHaveBeenCalledWith('Logged out');
     expect(router.navigateByUrl).toHaveBeenCalledWith('/');
   });
 

@@ -56,7 +56,7 @@ describe('Auth routing integration', () => {
 
     // Confirma tanto la vista final como la advertencia producida por SessionService.
     expect(harness.routeNativeElement?.textContent).toContain('Login page');
-    expect(alert.warning).toHaveBeenCalledWith('Unauthorized');
+    expect(alert.warning).toHaveBeenCalledWith('You must sign in to continue');
   });
 
   // Caso: permite que una sesión válida almacenada llegue al home protegido.

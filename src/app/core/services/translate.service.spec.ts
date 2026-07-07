@@ -34,4 +34,14 @@ describe('TranslateService', () => {
     expect(service.language()).toBe('en');
     expect(localStorage.getItem('language')).toBe('en');
   });
+
+  // Caso: traduce textos localizados según el idioma activo.
+  it('translates localized text using the active language', () => {
+    const service = new TranslateService();
+
+    expect(service.text({ en: 'Save', es: 'Guardar' })).toBe('Guardar');
+
+    service.setLang = 'en';
+    expect(service.text({ en: 'Save', es: 'Guardar' })).toBe('Save');
+  });
 });

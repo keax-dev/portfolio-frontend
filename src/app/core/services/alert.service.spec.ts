@@ -3,7 +3,6 @@
  */
 import { NotificationService } from '@core/notifications/notification.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertService } from './alert.service';
 import { MatDialog } from '@angular/material/dialog';
 import { TestBed } from '@angular/core/testing';
@@ -11,18 +10,16 @@ import { of } from 'rxjs';
 
 describe('AlertService', () => {
   let service: AlertService;
-  let spinner: { hide: ReturnType<typeof vi.fn> };
   let notifications: { show: ReturnType<typeof vi.fn> };
   let dialog: { open: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
-    spinner = { hide: vi.fn() };
+    localStorage.clear();
     notifications = { show: vi.fn() };
     dialog = { open: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
         AlertService,
-        { provide: NgxSpinnerService, useValue: spinner },
         { provide: NotificationService, useValue: notifications },
         { provide: MatDialog, useValue: dialog },
       ],
@@ -38,28 +35,27 @@ describe('AlertService', () => {
     service.error('Failed');
 
     expect(notifications.show).toHaveBeenNthCalledWith(1, 'success', 'Saved', 'Success');
-    expect(notifications.show).toHaveBeenNthCalledWith(2, 'info', 'Hello', 'Message');
+    expect(notifications.show).toHaveBeenNthCalledWith(2, 'info', 'Hello', 'Information');
     expect(notifications.show).toHaveBeenNthCalledWith(3, 'warning', 'Careful', 'Warning');
     expect(notifications.show).toHaveBeenNthCalledWith(4, 'error', 'Failed', 'An error occurred');
   });
 
-  // Caso: usa un texto personalizado para errores de aplicación y oculta el spinner.
-  it('uses custom application error text and hides the spinner', () => {
+  // Caso: usa un texto personalizado para errores de aplicación.
+  it('uses custom application error text', () => {
     service.applicationError('Custom failure', 'Custom title');
-    expect(spinner.hide).toHaveBeenCalled();
     expect(notifications.show).toHaveBeenCalledWith('error', 'Custom failure', 'Custom title');
   });
 
   // Casos parametrizados: aplica el mismo contrato a cada entrada definida.
   it.each([
-    [400, 'Please review the submitted information', 'Invalid request'],
+    [400, 'Review the submitted information', 'Invalid request'],
     [401, 'Your session is not valid', 'Unauthorized'],
     [403, 'You do not have permission to perform this action', 'Forbidden'],
-    [404, 'The requested resource could not be found', 'Not found'],
+    [404, 'The requested resource was not found', 'Not found'],
     [409, 'The operation conflicts with existing data', 'Conflict'],
     [500, 'Please try again later', 'Server error'],
-    [0, 'Unable to connect to the server', 'Connection error'],
-    [418, 'Please contact support', 'An error occurred'],
+    [0, 'Could not connect to the server', 'Connection error'],
+    [418, 'Contact support', 'An error occurred'],
   ])('maps HTTP status %s to a useful notification', (status, message, title) => {
     service.httpError(new HttpErrorResponse({ status }));
     expect(notifications.show).toHaveBeenCalledWith('error', message, title);
@@ -88,8 +84,7 @@ describe('AlertService', () => {
 
   // Caso: usa un mensaje alternativo para errores que no son HTTP.
   it('uses a fallback for non-HTTP errors', () => {
-    service.httpError(new Error('boom'), 'Operation failed', false);
-    expect(spinner.hide).not.toHaveBeenCalled();
+    service.httpError(new Error('boom'), 'Operation failed');
     expect(notifications.show).toHaveBeenCalledWith(
       'error',
       'Operation failed',

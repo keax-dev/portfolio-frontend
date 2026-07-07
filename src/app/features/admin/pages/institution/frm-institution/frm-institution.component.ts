@@ -109,7 +109,7 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isSaving.set(false);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }
@@ -132,7 +132,7 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isSaving.set(false);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }
@@ -157,7 +157,7 @@ export class FrmInstitutionComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.close(institution);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }

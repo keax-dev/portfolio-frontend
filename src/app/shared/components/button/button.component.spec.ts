@@ -20,7 +20,7 @@ describe('ButtonComponent', () => {
     expect(button.disabled).toBe(true);
   });
 
-  // Caso: usa la presentación de cancelación y emite acciones.
+  // Caso: usa la presentación de cancelación con su texto por defecto y emite acciones.
   it('uses cancel presentation and emits actions', async () => {
     await TestBed.configureTestingModule({ imports: [ButtonComponent] }).compileComponents();
     const fixture = TestBed.createComponent(ButtonComponent);
@@ -35,5 +35,31 @@ describe('ButtonComponent', () => {
     expect(button.type).toBe('button');
     expect(button.className).toContain('btn-secondary');
     expect(action).toHaveBeenCalledOnce();
+  });
+
+  // Caso: usa el estado de carga para deshabilitar el botón y cambiar su texto.
+  it('uses the loading state to disable the button and change its label', async () => {
+    await TestBed.configureTestingModule({ imports: [ButtonComponent] }).compileComponents();
+    const fixture = TestBed.createComponent(ButtonComponent);
+    fixture.componentRef.setInput('loading', true);
+    fixture.componentRef.setInput('loadingText', 'Sending...');
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    expect(button.textContent).toContain('Sending...');
+    expect(button.getAttribute('aria-busy')).toBe('true');
+  });
+
+  // Caso: permite sobrescribir el texto de cancelación para el portfolio público bilingüe.
+  it('allows overriding the cancel label when needed', async () => {
+    await TestBed.configureTestingModule({ imports: [ButtonComponent] }).compileComponents();
+    const fixture = TestBed.createComponent(ButtonComponent);
+    fixture.componentRef.setInput('cancel', true);
+    fixture.componentRef.setInput('cancelText', 'Cancelar');
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
+    expect(button.textContent).toContain('Cancelar');
   });
 });

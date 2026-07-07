@@ -5,6 +5,7 @@ import { ParameterService } from '@core/services/parameter.service';
 import { TableComponent } from '@shared/components/table/table.component';
 import { AlertService } from '@core/services/alert.service';
 import { SkillService } from '@features/admin/services/skill.service';
+import { finalize } from 'rxjs';
 import { Column } from '@shared/components/interfaces/column';
 import { Skill } from '@shared/interfaces/skill';
 import {
@@ -51,10 +52,12 @@ export class TableSkillComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.skillService
       .getSkillListByDeleted()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (result) => this.records.set(result.data),
-        complete: () => this.spinner.hide(),
         error: (error) => {
           this.records.set([]);
           this.alert.httpError(error);
@@ -85,13 +88,15 @@ export class TableSkillComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.skillService
       .deleteSkill(skill.id!)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (result) => {
           this.alert.success(result.alert);
           this.getSkillListByDeleted();
         },
-        complete: () => this.spinner.hide(),
         error: (error) => this.alert.httpError(error),
       });
   }

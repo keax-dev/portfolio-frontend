@@ -126,7 +126,7 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.close(result.data);
         },
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 
@@ -143,7 +143,7 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.close(result.data);
         },
-        error: (error) => this.alert.httpError(error, undefined, false),
+        error: (error) => this.alert.httpError(error),
       });
   }
 

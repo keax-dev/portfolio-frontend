@@ -2,7 +2,6 @@
  * Pruebas unitarias de validación, autenticación y persistencia desde LoginComponent.
  */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { of, throwError } from 'rxjs';
 import { UserInfoService } from '@core/services/user-info.service';
 import { LoginComponent } from './login.component';
@@ -14,29 +13,25 @@ describe('LoginComponent', () => {
   let fixture: ComponentFixture<LoginComponent>;
   let component: LoginComponent;
   let loginService: { login: ReturnType<typeof vi.fn> };
-  let spinner: {
-    show: ReturnType<typeof vi.fn>;
-    hide: ReturnType<typeof vi.fn>;
-  };
   let alert: {
     success: ReturnType<typeof vi.fn>;
+    error: ReturnType<typeof vi.fn>;
     httpError: ReturnType<typeof vi.fn>;
   };
   let router: { navigateByUrl: ReturnType<typeof vi.fn> };
   let userInfo: {
-    setToken: string;
-    setTimeExpiration: number;
+    setSession: ReturnType<typeof vi.fn>;
+    clearInfo: ReturnType<typeof vi.fn>;
     resolveTokenExpiration: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(async () => {
     loginService = { login: vi.fn() };
-    spinner = { show: vi.fn(), hide: vi.fn() };
-    alert = { success: vi.fn(), httpError: vi.fn() };
+    alert = { success: vi.fn(), error: vi.fn(), httpError: vi.fn() };
     router = { navigateByUrl: vi.fn().mockResolvedValue(true) };
     userInfo = {
-      setToken: '',
-      setTimeExpiration: 0,
+      setSession: vi.fn(),
+      clearInfo: vi.fn(),
       resolveTokenExpiration: vi.fn(),
     };
 
@@ -44,7 +39,6 @@ describe('LoginComponent', () => {
       imports: [LoginComponent],
       providers: [
         { provide: LoginService, useValue: loginService },
-        { provide: NgxSpinnerService, useValue: spinner },
         { provide: AlertService, useValue: alert },
         { provide: Router, useValue: router },
         { provide: UserInfoService, useValue: userInfo },
@@ -80,6 +74,7 @@ describe('LoginComponent', () => {
 
   // Caso: inicia sesión, guarda el estado y navega al home.
   it('logs in, stores the session and navigates home', () => {
+    vi.spyOn(Date, 'now').mockReturnValue(1_000);
     component.authForm.setValue({ username: 'admin', password: 'secret' });
     loginService.login.mockReturnValue(
       of({
@@ -92,30 +87,29 @@ describe('LoginComponent', () => {
 
     component.onSubmit();
 
-    expect(spinner.show).toHaveBeenCalledOnce();
-    expect(spinner.hide).toHaveBeenCalledOnce();
+    expect(component.isSubmitting()).toBe(false);
     expect(loginService.login).toHaveBeenCalledWith({
       username: 'admin',
       password: 'secret',
     });
     expect(alert.success).toHaveBeenCalledWith('Welcome');
-    expect(userInfo.setToken).toBe('jwt-token');
-    expect(userInfo.setTimeExpiration).toBe(2_000_000);
+    expect(userInfo.setSession).toHaveBeenCalledWith('jwt-token', 2_000_000);
     expect(router.navigateByUrl).toHaveBeenCalledWith('/home');
   });
 
-  // Caso: usa una expiración alternativa cuando el token no tiene claim exp.
-  it('uses a fallback expiration when the token has no exp claim', () => {
-    vi.spyOn(Date, 'now').mockReturnValue(1_000);
+  // Caso: rechaza tokens sin expiración válida y evita persistir una sesión insegura.
+  it('rejects tokens without a valid expiration and avoids storing the session', () => {
     userInfo.resolveTokenExpiration.mockReturnValue(null);
 
     component.saveUserInfo({ token: 'opaque-token' });
 
-    expect(userInfo.setTimeExpiration).toBe(14_001_000);
+    expect(userInfo.clearInfo).toHaveBeenCalledOnce();
+    expect(alert.error).toHaveBeenCalledOnce();
+    expect(router.navigateByUrl).not.toHaveBeenCalled();
   });
 
-  // Caso: reporta errores de login y siempre oculta el spinner.
-  it('reports login errors and always hides the spinner', () => {
+  // Caso: reporta errores de login y siempre restablece el estado de envío.
+  it('reports login errors and always resets the submit state', () => {
     const failure = new Error('invalid credentials');
     component.authForm.setValue({ username: 'admin', password: 'wrong' });
     loginService.login.mockReturnValue(throwError(() => failure));
@@ -123,13 +117,14 @@ describe('LoginComponent', () => {
     component.onSubmit();
 
     expect(alert.httpError).toHaveBeenCalledWith(failure);
-    expect(spinner.hide).toHaveBeenCalledOnce();
+    expect(component.isSubmitting()).toBe(false);
     expect(router.navigateByUrl).not.toHaveBeenCalled();
   });
 
-  // Caso: oculta el spinner al destruirse.
-  it('hides the spinner on destruction', () => {
+  // Caso: limpia el estado de envío al destruirse.
+  it('clears the submit state on destruction', () => {
+    component.isSubmitting.set(true);
     component.ngOnDestroy();
-    expect(spinner.hide).toHaveBeenCalledOnce();
+    expect(component.isSubmitting()).toBe(false);
   });
 });

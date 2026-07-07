@@ -2,9 +2,9 @@ import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angu
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { TechnologyService } from '@features/admin/services/technology.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { ParameterService } from '@core/services/parameter.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { MatSelectModule } from '@angular/material/select';
@@ -121,10 +121,12 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.technologyService
       .getTechnologyListByDeleted()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (result) => this.technologyList.set(result.data),
-        complete: () => this.spinner.hide(),
         error: (error) => this.alert.httpError(error),
       });
   }
@@ -159,7 +161,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isSaving.set(false);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }
@@ -182,7 +184,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isSaving.set(false);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }
@@ -207,7 +209,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.close(project);
-          this.alert.httpError(error, undefined, false);
+          this.alert.httpError(error);
         },
       });
   }

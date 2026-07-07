@@ -40,17 +40,17 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-    this.getTechnologyListByDeleted();
+    this.getTechnologyList();
   }
 
   ngOnDestroy(): void {
     this.spinner.hide();
   }
 
-  getTechnologyListByDeleted(): void {
+  getTechnologyList(): void {
     this.spinner.show();
     this.technologyService
-      .getTechnologyListByDeleted()
+      .getTechnologyList()
       .pipe(
         finalize(() => this.spinner.hide()),
         takeUntilDestroyed(this.destroyRef),
@@ -74,7 +74,7 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
-          if (result) this.getTechnologyListByDeleted();
+          if (result) this.getTechnologyList();
         },
       });
   }
@@ -94,7 +94,7 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (result) => {
           this.alert.success(result.alert);
-          this.getTechnologyListByDeleted();
+          this.getTechnologyList();
         },
         error: (error) => this.alert.httpError(error),
       });

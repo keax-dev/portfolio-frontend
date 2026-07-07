@@ -14,10 +14,8 @@ export class EducationService {
   private readonly baseUrl = environment.url;
   private readonly http = inject(HttpClient);
 
-  getEducationListByDeleted(deleted = false): Observable<ApiResponse<Education[]>> {
-    return this.http.get<ApiResponse<Education[]>>(
-      `${this.baseUrl}${this.reference}/by-deleted/${deleted}`,
-    );
+  getEducationList(): Observable<ApiResponse<Education[]>> {
+    return this.http.get<ApiResponse<Education[]>>(`${this.baseUrl}${this.reference}`);
   }
 
   createEducation(payload: EducationPayload): Observable<ApiResponse<Education>> {

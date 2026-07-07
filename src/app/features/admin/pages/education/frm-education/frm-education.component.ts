@@ -92,7 +92,7 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
       this.educationForm.patchValue(this.data.education);
     }
 
-    this.getInstitutionListByDeleted();
+    this.getInstitutionList();
   }
 
   onSubmit(): void {
@@ -147,10 +147,10 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
       });
   }
 
-  getInstitutionListByDeleted(): void {
+  getInstitutionList(): void {
     this.spinner.show();
     this.institutionService
-      .getInstitutionListByDeleted()
+      .getInstitutionList()
       .pipe(
         finalize(() => this.spinner.hide()),
         takeUntilDestroyed(this.destroyRef),

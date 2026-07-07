@@ -39,11 +39,11 @@ describe('admin table components', () => {
       name: 'institution',
       component: TableInstitutionComponent,
       serviceToken: InstitutionService,
-      loadMethod: 'getInstitutionListByDeleted',
+      loadMethod: 'getInstitutionList',
       deleteMethod: 'deleteInstitution',
       modalMethod: 'modalInstitution',
       confirmMethod: 'confirmDelete',
-      serviceLoadMethod: 'getInstitutionListByDeleted',
+      serviceLoadMethod: 'getInstitutionList',
       serviceDeleteMethod: 'deleteInstitution',
       record: { id: 1, name: 'University', name_es: 'Universidad' },
     },
@@ -51,11 +51,11 @@ describe('admin table components', () => {
       name: 'education',
       component: TableEducationComponent,
       serviceToken: EducationService,
-      loadMethod: 'getEducationListByDeleted',
+      loadMethod: 'getEducationList',
       deleteMethod: 'deleteEducation',
       modalMethod: 'modalEducation',
       confirmMethod: 'confirmDelete',
-      serviceLoadMethod: 'getEducationListByDeleted',
+      serviceLoadMethod: 'getEducationList',
       serviceDeleteMethod: 'deleteEducation',
       record: { id: 2, position: 1, title: 'Degree' },
     },
@@ -63,11 +63,11 @@ describe('admin table components', () => {
       name: 'skill',
       component: TableSkillComponent,
       serviceToken: SkillService,
-      loadMethod: 'getSkillListByDeleted',
+      loadMethod: 'getSkillList',
       deleteMethod: 'deleteSkill',
       modalMethod: 'modalSkill',
       confirmMethod: 'confirmDelete',
-      serviceLoadMethod: 'getSkillListByDeleted',
+      serviceLoadMethod: 'getSkillList',
       serviceDeleteMethod: 'deleteSkill',
       record: { id: 3, name: 'Angular', position: 1 },
     },
@@ -75,11 +75,11 @@ describe('admin table components', () => {
       name: 'technology',
       component: TableTechnologyComponent,
       serviceToken: TechnologyService,
-      loadMethod: 'getTechnologyListByDeleted',
+      loadMethod: 'getTechnologyList',
       deleteMethod: 'deleteTechnology',
       modalMethod: 'modalTechnology',
       confirmMethod: 'confirmDelete',
-      serviceLoadMethod: 'getTechnologyListByDeleted',
+      serviceLoadMethod: 'getTechnologyList',
       serviceDeleteMethod: 'deleteTechnology',
       record: { id: 4, name: 'Angular', position: 1, projects: [] },
     },
@@ -87,11 +87,11 @@ describe('admin table components', () => {
       name: 'project',
       component: TableProjectComponent,
       serviceToken: ProjectService,
-      loadMethod: 'getProjectListByDeleted',
+      loadMethod: 'getProjectList',
       deleteMethod: 'deleteProject',
       modalMethod: 'modalProject',
       confirmMethod: 'confirmDelete',
-      serviceLoadMethod: 'getProjectListByDeleted',
+      serviceLoadMethod: 'getProjectList',
       serviceDeleteMethod: 'deleteProject',
       record: { id: 5, title: 'Portfolio', position: 1, technology: 2 },
     },
@@ -99,11 +99,11 @@ describe('admin table components', () => {
       name: 'social network',
       component: TableSocialNetworkComponent,
       serviceToken: SocialNetworkService,
-      loadMethod: 'getSocialNetworkListByDeleted',
+      loadMethod: 'getSocialNetworkList',
       deleteMethod: 'deleteSocialNetwork',
       modalMethod: 'modalSocialNetwork',
       confirmMethod: 'confirmDelete',
-      serviceLoadMethod: 'getSocialNetworkListByDeleted',
+      serviceLoadMethod: 'getSocialNetworkList',
       serviceDeleteMethod: 'deleteSocialNetwork',
       record: { id: 6, name: 'GitHub', position: 1 },
     },
@@ -187,7 +187,7 @@ describe('admin table components', () => {
         {
           provide: ProjectService,
           useValue: {
-            getProjectListByDeleted: vi.fn().mockReturnValue(
+            getProjectList: vi.fn().mockReturnValue(
               of({
                 status: true,
                 alert: '',
@@ -205,7 +205,7 @@ describe('admin table components', () => {
       ],
     }).compileComponents();
     const component = TestBed.createComponent(TableProjectComponent).componentInstance;
-    component.getProjectListByDeleted();
+    component.getProjectList();
     expect(component.positionsInfo()).toEqual({ 2: 2, 3: 1 });
   });
 

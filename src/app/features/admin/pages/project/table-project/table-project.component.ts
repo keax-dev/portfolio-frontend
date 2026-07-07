@@ -52,17 +52,17 @@ export class TableProjectComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-    this.getProjectListByDeleted();
+    this.getProjectList();
   }
 
   ngOnDestroy(): void {
     this.spinner.hide();
   }
 
-  getProjectListByDeleted(): void {
+  getProjectList(): void {
     this.spinner.show();
     this.projectService
-      .getProjectListByDeleted()
+      .getProjectList()
       .pipe(
         finalize(() => this.spinner.hide()),
         takeUntilDestroyed(this.destroyRef),
@@ -88,7 +88,7 @@ export class TableProjectComponent implements OnInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
-          if (result) this.getProjectListByDeleted();
+          if (result) this.getProjectList();
         },
       });
   }
@@ -108,7 +108,7 @@ export class TableProjectComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (result) => {
           this.alert.success(result.alert);
-          this.getProjectListByDeleted();
+          this.getProjectList();
         },
         error: (error) => this.alert.httpError(error),
       });

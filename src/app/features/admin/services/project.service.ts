@@ -14,10 +14,8 @@ export class ProjectService {
   private readonly baseUrl = environment.url;
   private readonly http = inject(HttpClient);
 
-  getProjectListByDeleted(deleted = false): Observable<ApiResponse<Project[]>> {
-    return this.http.get<ApiResponse<Project[]>>(
-      `${this.baseUrl}${this.reference}/by-deleted/${deleted}`,
-    );
+  getProjectList(): Observable<ApiResponse<Project[]>> {
+    return this.http.get<ApiResponse<Project[]>>(`${this.baseUrl}${this.reference}`);
   }
 
   createProject(payload: ProjectPayload): Observable<ApiResponse<Project>> {

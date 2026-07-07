@@ -14,10 +14,8 @@ export class SocialNetworkService {
   private readonly baseUrl = environment.url;
   private readonly http = inject(HttpClient);
 
-  getSocialNetworkListByDeleted(deleted = false): Observable<ApiResponse<SocialNetwork[]>> {
-    return this.http.get<ApiResponse<SocialNetwork[]>>(
-      `${this.baseUrl}${this.reference}/by-deleted/${deleted}`,
-    );
+  getSocialNetworkList(): Observable<ApiResponse<SocialNetwork[]>> {
+    return this.http.get<ApiResponse<SocialNetwork[]>>(`${this.baseUrl}${this.reference}`);
   }
 
   createSocialNetwork(payload: SocialNetworkPayload): Observable<ApiResponse<SocialNetwork>> {

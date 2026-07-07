@@ -41,17 +41,17 @@ export class TableSkillComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-    this.getSkillListByDeleted();
+    this.getSkillList();
   }
 
   ngOnDestroy(): void {
     this.spinner.hide();
   }
 
-  getSkillListByDeleted(): void {
+  getSkillList(): void {
     this.spinner.show();
     this.skillService
-      .getSkillListByDeleted()
+      .getSkillList()
       .pipe(
         finalize(() => this.spinner.hide()),
         takeUntilDestroyed(this.destroyRef),
@@ -75,7 +75,7 @@ export class TableSkillComponent implements OnInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
-          if (result) this.getSkillListByDeleted();
+          if (result) this.getSkillList();
         },
       });
   }
@@ -95,7 +95,7 @@ export class TableSkillComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (result) => {
           this.alert.success(result.alert);
-          this.getSkillListByDeleted();
+          this.getSkillList();
         },
         error: (error) => this.alert.httpError(error),
       });

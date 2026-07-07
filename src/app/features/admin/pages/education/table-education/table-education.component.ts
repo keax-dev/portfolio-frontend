@@ -45,17 +45,17 @@ export class TableEducationComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-    this.getEducationListByDeleted();
+    this.getEducationList();
   }
 
   ngOnDestroy(): void {
     this.spinner.hide();
   }
 
-  getEducationListByDeleted(): void {
+  getEducationList(): void {
     this.spinner.show();
     this.educationService
-      .getEducationListByDeleted()
+      .getEducationList()
       .pipe(
         finalize(() => this.spinner.hide()),
         takeUntilDestroyed(this.destroyRef),
@@ -79,7 +79,7 @@ export class TableEducationComponent implements OnInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
-          if (result) this.getEducationListByDeleted();
+          if (result) this.getEducationList();
         },
       });
   }
@@ -99,7 +99,7 @@ export class TableEducationComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (result) => {
           this.alert.success(result.alert);
-          this.getEducationListByDeleted();
+          this.getEducationList();
         },
         error: (error) => this.alert.httpError(error),
       });

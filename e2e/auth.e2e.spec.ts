@@ -33,7 +33,7 @@ test.describe('Authentication lifecycle', () => {
         return;
       }
 
-      if (path === '/api/institution/by-deleted/false') {
+      if (path === '/api/institution') {
         authorizationHeader = request.headers()['authorization'];
         await json(
           route,

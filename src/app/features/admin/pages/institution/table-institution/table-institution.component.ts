@@ -40,17 +40,17 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-    this.getInstitutionListByDeleted();
+    this.getInstitutionList();
   }
 
   ngOnDestroy(): void {
     this.spinner.hide();
   }
 
-  getInstitutionListByDeleted(): void {
+  getInstitutionList(): void {
     this.spinner.show();
     this.institutionService
-      .getInstitutionListByDeleted()
+      .getInstitutionList()
       .pipe(
         finalize(() => this.spinner.hide()),
         takeUntilDestroyed(this.destroyRef),
@@ -68,7 +68,7 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
-          if (result) this.getInstitutionListByDeleted();
+          if (result) this.getInstitutionList();
         },
       });
   }
@@ -88,7 +88,7 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (result) => {
           this.alert.success(result.alert);
-          this.getInstitutionListByDeleted();
+          this.getInstitutionList();
         },
         error: (error) => this.alert.httpError(error),
       });

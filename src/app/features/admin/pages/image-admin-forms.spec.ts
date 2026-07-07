@@ -192,7 +192,7 @@ describe('image admin forms', () => {
       uploadImageProject: vi.fn().mockReturnValue(of(response(withImage))),
     };
     const technologyService = {
-      getTechnologyListByDeleted: vi
+      getTechnologyList: vi
         .fn()
         .mockReturnValue(of(response([{ id: 2, name: 'Angular', position: 1, projects: [] }]))),
     };

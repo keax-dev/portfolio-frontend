@@ -180,7 +180,7 @@ describe('simple admin forms', () => {
       updateEducation: vi.fn(),
     };
     const institutionService = {
-      getInstitutionListByDeleted: vi
+      getInstitutionList: vi
         .fn()
         .mockReturnValue(of(response([{ id: 2, name: 'University', name_es: 'Universidad' }]))),
     };
@@ -229,7 +229,7 @@ describe('simple admin forms', () => {
         {
           provide: InstitutionService,
           useValue: {
-            getInstitutionListByDeleted: vi.fn().mockReturnValue(throwError(() => failure)),
+            getInstitutionList: vi.fn().mockReturnValue(throwError(() => failure)),
           },
         },
         { provide: NgxSpinnerService, useValue: spinner() },
@@ -239,7 +239,7 @@ describe('simple admin forms', () => {
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmEducationComponent).componentInstance;
-    component.getInstitutionListByDeleted();
+    component.getInstitutionList();
     expect(messages.httpError).toHaveBeenCalledWith(failure);
   });
 

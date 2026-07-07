@@ -43,17 +43,17 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-    this.getSocialNetworkListByDeleted();
+    this.getSocialNetworkList();
   }
 
   ngOnDestroy(): void {
     this.spinner.hide();
   }
 
-  getSocialNetworkListByDeleted(): void {
+  getSocialNetworkList(): void {
     this.spinner.show();
     this.socialNetworkService
-      .getSocialNetworkListByDeleted()
+      .getSocialNetworkList()
       .pipe(
         finalize(() => this.spinner.hide()),
         takeUntilDestroyed(this.destroyRef),
@@ -77,7 +77,7 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
-          if (result) this.getSocialNetworkListByDeleted();
+          if (result) this.getSocialNetworkList();
         },
       });
   }
@@ -97,7 +97,7 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (result) => {
           this.alert.success(result.alert);
-          this.getSocialNetworkListByDeleted();
+          this.getSocialNetworkList();
         },
         error: (error) => this.alert.httpError(error),
       });

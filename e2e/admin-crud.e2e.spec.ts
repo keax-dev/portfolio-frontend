@@ -20,11 +20,6 @@ test('creates and deletes an institution through the admin UI', async ({ page })
     const request = route.request();
     const path = new URL(request.url()).pathname;
 
-    if (path === '/api/institution/by-deleted/false') {
-      await json(route, api(institutions));
-      return;
-    }
-
     if (path === '/api/institution' && request.method() === 'POST') {
       const payload = request.postDataJSON() as {
         name: string;
@@ -33,6 +28,11 @@ test('creates and deletes an institution through the admin UI', async ({ page })
       const created = { id: 1, ...payload };
       institutions.splice(0, institutions.length, created);
       await json(route, api(created, 'Institution created'));
+      return;
+    }
+
+    if (path === '/api/institution') {
+      await json(route, api(institutions));
       return;
     }
 

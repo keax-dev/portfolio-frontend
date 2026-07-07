@@ -14,10 +14,8 @@ export class TechnologyService {
   private readonly baseUrl = environment.url;
   private readonly http = inject(HttpClient);
 
-  getTechnologyListByDeleted(deleted = false): Observable<ApiResponse<Technology[]>> {
-    return this.http.get<ApiResponse<Technology[]>>(
-      `${this.baseUrl}${this.reference}/by-deleted/${deleted}`,
-    );
+  getTechnologyList(): Observable<ApiResponse<Technology[]>> {
+    return this.http.get<ApiResponse<Technology[]>>(`${this.baseUrl}${this.reference}`);
   }
 
   createTechnology(payload: TechnologyPayload): Observable<ApiResponse<Technology>> {

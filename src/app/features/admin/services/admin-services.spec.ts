@@ -49,8 +49,8 @@ describe('admin HTTP services', () => {
       position: 1,
     };
 
-    service.getEducationListByDeleted(true).subscribe();
-    expectRequest('GET', `${baseUrl}/education/by-deleted/true`);
+    service.getEducationList().subscribe();
+    expectRequest('GET', `${baseUrl}/education`);
     service.createEducation(payload).subscribe();
     expectRequest('POST', `${baseUrl}/education`, payload);
     service.updateEducation(7, payload).subscribe();
@@ -64,8 +64,8 @@ describe('admin HTTP services', () => {
     const service = TestBed.inject(InstitutionService);
     const payload: InstitutionPayload = { name: 'University', name_es: 'Universidad' };
 
-    service.getInstitutionListByDeleted().subscribe();
-    expectRequest('GET', `${baseUrl}/institution/by-deleted/false`);
+    service.getInstitutionList().subscribe();
+    expectRequest('GET', `${baseUrl}/institution`);
     service.createInstitution(payload).subscribe();
     expectRequest('POST', `${baseUrl}/institution`, payload);
     service.updateInstitution(4, payload).subscribe();
@@ -88,8 +88,8 @@ describe('admin HTTP services', () => {
       technology: 3,
     };
 
-    service.getProjectListByDeleted().subscribe();
-    expectRequest('GET', `${baseUrl}/project/by-deleted/false`);
+    service.getProjectList().subscribe();
+    expectRequest('GET', `${baseUrl}/project`);
     service.createProject(payload).subscribe();
     expectRequest('POST', `${baseUrl}/project`, payload);
     service.updateProject(9, payload).subscribe();
@@ -103,8 +103,8 @@ describe('admin HTTP services', () => {
     const service = TestBed.inject(SkillService);
     const payload: SkillPayload = { name: 'Angular', position: 2 };
 
-    service.getSkillListByDeleted(true).subscribe();
-    expectRequest('GET', `${baseUrl}/skill/by-deleted/true`);
+    service.getSkillList().subscribe();
+    expectRequest('GET', `${baseUrl}/skill`);
     service.createSkill(payload).subscribe();
     expectRequest('POST', `${baseUrl}/skill`, payload);
     service.updateSkill(3, payload).subscribe();
@@ -118,8 +118,8 @@ describe('admin HTTP services', () => {
     const service = TestBed.inject(TechnologyService);
     const payload: TechnologyPayload = { name: 'Angular', position: 1 };
 
-    service.getTechnologyListByDeleted().subscribe();
-    expectRequest('GET', `${baseUrl}/technology/by-deleted/false`);
+    service.getTechnologyList().subscribe();
+    expectRequest('GET', `${baseUrl}/technology`);
     service.createTechnology(payload).subscribe();
     expectRequest('POST', `${baseUrl}/technology`, payload);
     service.updateTechnology(5, payload).subscribe();
@@ -139,8 +139,8 @@ describe('admin HTTP services', () => {
       url: 'https://github.com/example',
     };
 
-    service.getSocialNetworkListByDeleted().subscribe();
-    expectRequest('GET', `${baseUrl}/socialNetwork/by-deleted/false`);
+    service.getSocialNetworkList().subscribe();
+    expectRequest('GET', `${baseUrl}/socialNetwork`);
     service.createSocialNetwork(payload).subscribe();
     expectRequest('POST', `${baseUrl}/socialNetwork`, payload);
     service.updateSocialNetwork(8, payload).subscribe();

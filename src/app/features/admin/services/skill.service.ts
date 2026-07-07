@@ -14,10 +14,8 @@ export class SkillService {
   private readonly baseUrl = environment.url;
   private readonly http = inject(HttpClient);
 
-  getSkillListByDeleted(deleted = false): Observable<ApiResponse<Skill[]>> {
-    return this.http.get<ApiResponse<Skill[]>>(
-      `${this.baseUrl}${this.reference}/by-deleted/${deleted}`,
-    );
+  getSkillList(): Observable<ApiResponse<Skill[]>> {
+    return this.http.get<ApiResponse<Skill[]>>(`${this.baseUrl}${this.reference}`);
   }
 
   createSkill(payload: SkillPayload): Observable<ApiResponse<Skill>> {

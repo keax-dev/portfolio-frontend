@@ -14,10 +14,8 @@ export class InstitutionService {
   private readonly baseUrl = environment.url;
   private readonly http = inject(HttpClient);
 
-  getInstitutionListByDeleted(deleted = false): Observable<ApiResponse<Institution[]>> {
-    return this.http.get<ApiResponse<Institution[]>>(
-      `${this.baseUrl}${this.reference}/by-deleted/${deleted}`,
-    );
+  getInstitutionList(): Observable<ApiResponse<Institution[]>> {
+    return this.http.get<ApiResponse<Institution[]>>(`${this.baseUrl}${this.reference}`);
   }
 
   createInstitution(payload: InstitutionPayload): Observable<ApiResponse<Institution>> {

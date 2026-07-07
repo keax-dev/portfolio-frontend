@@ -101,7 +101,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
   }
 
   loadVariables(): void {
-    this.getTechnologyListByDeleted();
+    this.getTechnologyList();
 
     if (this.data.project) {
       const project = this.data.project;
@@ -117,10 +117,10 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
     this.positionList = Array.from({ length: total }, (_, i) => i + 1);
   }
 
-  getTechnologyListByDeleted(): void {
+  getTechnologyList(): void {
     this.spinner.show();
     this.technologyService
-      .getTechnologyListByDeleted()
+      .getTechnologyList()
       .pipe(
         finalize(() => this.spinner.hide()),
         takeUntilDestroyed(this.destroyRef),

@@ -12,6 +12,7 @@ import { NavbarComponent } from '@features/portfolio/pages/navbar/navbar.compone
 import { FooterComponent } from '@features/portfolio/pages/footer/footer.component';
 import { SkillComponent } from '@features/portfolio/pages/skill/skill.component';
 import { VisitorService } from '@features/portfolio/services/visitor.service';
+import { portfolioNavigationItems } from '@core/i18n/ui-text';
 import { NavigationItem } from '@shared/interfaces/navigation-item';
 import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
@@ -63,14 +64,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     image: './images/profile.jpg',
   });
 
-  readonly navItems: NavigationItem[] = [
-    { label: 'Home', label_es: 'Home', routerLink: '#home' },
-    { label: 'Education', label_es: 'Educación', routerLink: '#education' },
-    { label: 'Skills', label_es: 'Habilidades', routerLink: '#skills' },
-    { label: 'Portfolio', label_es: 'Portafolio', routerLink: '#portfolio' },
-    { label: 'Contact', label_es: 'Contacto', routerLink: '' },
-    { label: 'Login', label_es: 'Login', routerLink: '/login' },
-  ];
+  readonly navItems: NavigationItem[] = [...portfolioNavigationItems];
 
   readonly technologyList = signal<readonly Technology[]>([]);
   readonly educationList = signal<readonly Education[]>([]);
@@ -119,7 +113,9 @@ export class PortfolioComponent implements OnInit, OnDestroy {
       catchError((e) => this.infoEmpty<Profile>(e)),
       takeUntilDestroyed(this.destroyRef),
       tap((result) => {
-        if (result.status) this.profile.set(result.data);
+        if (result.status) {
+          this.profile.set(result.data);
+        }
       }),
       map(() => null),
     );
@@ -199,7 +195,9 @@ export class PortfolioComponent implements OnInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
-          if (result) void this.router.navigate(['/'], { fragment: 'home' });
+          if (result) {
+            void this.router.navigate(['/'], { fragment: 'home' });
+          }
         },
       });
   }

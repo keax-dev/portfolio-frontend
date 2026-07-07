@@ -4,6 +4,7 @@ import { TranslateService } from '@core/services/translate.service';
 import { ParameterService } from '@core/services/parameter.service';
 import { TitleCasePipe } from '@angular/common';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
+import { uiText } from '@core/i18n/ui-text';
 import { Profile } from '@shared/interfaces/profile';
 
 @Component({
@@ -17,9 +18,8 @@ export class HeaderComponent {
   protected readonly translate = inject(TranslateService);
   private readonly parameter = inject(ParameterService);
 
+  readonly text = uiText;
   readonly profile = input.required<Profile>();
-
-  cv = { label: 'View CV', label_es: 'Visualizar CV' };
 
   get classTitle() {
     switch (this.translate.getLang) {
@@ -30,6 +30,14 @@ export class HeaderComponent {
       default:
         return '';
     }
+  }
+
+  cvLabel(): string {
+    return this.translate.text(this.text.portfolio.viewCv);
+  }
+
+  profilePhotoAlt(): string {
+    return `${this.translate.text(this.text.portfolio.profilePhotoAltPrefix)} ${this.profile().name}`;
   }
 
   openCvPreview(): void {

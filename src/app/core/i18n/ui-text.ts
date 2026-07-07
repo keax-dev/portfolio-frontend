@@ -1,3 +1,5 @@
+import type { NavigationItem } from '@shared/interfaces/navigation-item';
+
 export type LocalizedText = Readonly<{
   en: string;
   es: string;
@@ -73,6 +75,10 @@ export const uiText = {
       es: 'El token de sesión es inválido o expiró',
     },
   },
+  common: {
+    loading: { en: 'Loading...', es: 'Cargando...' },
+    retry: { en: 'Try again', es: 'Intentar nuevamente' },
+  },
   contact: {
     title: { en: 'Contact me', es: 'Contáctame' },
     nameLabel: { en: 'Name', es: 'Nombre' },
@@ -82,6 +88,29 @@ export const uiText = {
     emailRequired: { en: 'The email is required', es: 'El correo es requerido' },
     emailInvalid: { en: 'Enter a valid email', es: 'Ingresa un correo válido' },
     messageRequired: { en: 'The message is required', es: 'El mensaje es requerido' },
+  },
+  portfolio: {
+    viewCv: { en: 'View CV', es: 'Ver CV' },
+    profilePhotoAltPrefix: { en: 'Photo of', es: 'Foto de' },
+    primaryNavigation: { en: 'Primary navigation', es: 'Navegación principal' },
+    footerNavigation: { en: 'Footer navigation', es: 'Navegación del pie de página' },
+    socialMediaLinks: { en: 'Social media links', es: 'Enlaces a redes sociales' },
+    toggleNavigation: { en: 'Toggle navigation', es: 'Alternar navegación' },
+    openSocialPrefix: { en: 'Open', es: 'Abrir' },
+    socialNetworksMessage: {
+      en: 'You can contact me through my social networks.',
+      es: 'Puedes contactarme a través de mis redes sociales.',
+    },
+    rightsReserved: { en: 'All rights reserved.', es: 'Todos los derechos reservados.' },
+    sections: {
+      home: { en: 'Home', es: 'Inicio' },
+      education: { en: 'Education', es: 'Educación' },
+      skills: { en: 'Skills', es: 'Habilidades' },
+      portfolio: { en: 'Portfolio', es: 'Portafolio' },
+      contact: { en: 'Contact', es: 'Contacto' },
+      login: { en: 'Login', es: 'Iniciar sesión' },
+    },
+    emptyRecords: { en: 'There are no records yet.', es: 'Todavía no hay registros.' },
   },
   session: {
     unauthorized: {
@@ -97,6 +126,41 @@ export const uiText = {
       es: 'Sesión cerrada',
     },
   },
+  table: {
+    actions: { en: 'Actions', es: 'Acciones' },
+    deleteRecord: { en: 'Delete record', es: 'Eliminar registro' },
+    details: { en: 'Details', es: 'Detalles' },
+    editRecord: { en: 'Edit record', es: 'Editar registro' },
+    emptyRecords: { en: 'There are no records.', es: 'No hay registros.' },
+    emptySearchResults: {
+      en: 'No records match the current search.',
+      es: 'No hay registros que coincidan con la búsqueda actual.',
+    },
+    loadError: {
+      en: 'We could not load the records. Please try again.',
+      es: 'No se pudieron cargar los registros. Inténtalo nuevamente.',
+    },
+    loadErrorDescription: {
+      en: 'The last request failed. Review the connection or try again later.',
+      es: 'La última solicitud falló. Revisa la conexión o inténtalo nuevamente más tarde.',
+    },
+    loadingDescription: {
+      en: 'Please wait while the latest records are loaded.',
+      es: 'Espera mientras se cargan los registros más recientes.',
+    },
+    loadingRecords: { en: 'Loading records...', es: 'Cargando registros...' },
+    newLabel: { en: 'New', es: 'Nuevo' },
+    next: { en: 'Next', es: 'Siguiente' },
+    noImage: { en: 'No image', es: 'Sin imagen' },
+    page: { en: 'Page', es: 'Página' },
+    previous: { en: 'Previous', es: 'Anterior' },
+    recordImage: { en: 'Record image', es: 'Imagen del registro' },
+    rows: { en: 'Rows', es: 'Filas' },
+    searchAriaLabel: { en: 'Search records', es: 'Buscar registros' },
+    searchPlaceholder: { en: 'Search', es: 'Buscar' },
+    sortBy: { en: 'Sort by', es: 'Ordenar por' },
+    viewDetails: { en: 'View details', es: 'Ver detalles' },
+  },
   confirmDelete: {
     title: { en: 'Are you sure?', es: '¿Estás seguro?' },
     message: {
@@ -105,3 +169,36 @@ export const uiText = {
     },
   },
 } as const;
+
+export const portfolioNavigationItems: readonly NavigationItem[] = [
+  {
+    label: uiText.portfolio.sections.home.en,
+    label_es: uiText.portfolio.sections.home.es,
+    routerLink: '#home',
+  },
+  {
+    label: uiText.portfolio.sections.education.en,
+    label_es: uiText.portfolio.sections.education.es,
+    routerLink: '#education',
+  },
+  {
+    label: uiText.portfolio.sections.skills.en,
+    label_es: uiText.portfolio.sections.skills.es,
+    routerLink: '#skills',
+  },
+  {
+    label: uiText.portfolio.sections.portfolio.en,
+    label_es: uiText.portfolio.sections.portfolio.es,
+    routerLink: '#portfolio',
+  },
+  {
+    label: uiText.portfolio.sections.contact.en,
+    label_es: uiText.portfolio.sections.contact.es,
+    routerLink: '',
+  },
+  {
+    label: uiText.portfolio.sections.login.en,
+    label_es: uiText.portfolio.sections.login.es,
+    routerLink: '/login',
+  },
+] as const;

@@ -4,10 +4,15 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
 import { ProjectService } from '@features/admin/services/project.service';
 import { TableComponent } from '@shared/components/table/table.component';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { AlertService } from '@core/services/alert.service';
 import { finalize } from 'rxjs';
 import { Project } from '@shared/interfaces/project';
 import { Column } from '@shared/components/interfaces/column';
+import {
+  ADMIN_TABLE_LOAD_ERROR_MESSAGE,
+  adminTableCopy,
+} from '@features/admin/config/admin-page-text';
 import {
   ChangeDetectionStrategy,
   DestroyRef,
@@ -23,7 +28,7 @@ import {
   selector: 'app-table-project',
   templateUrl: './table-project.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TableComponent],
+  imports: [TableComponent, PageHeaderComponent],
 })
 export class TableProjectComponent implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
@@ -33,7 +38,10 @@ export class TableProjectComponent implements OnInit, OnDestroy {
   private spinner = inject(NgxSpinnerService);
   private alert = inject(AlertService);
 
+  readonly pageCopy = adminTableCopy.project;
   readonly records = signal<readonly Project[]>([]);
+  readonly isLoading = signal(false);
+  readonly loadErrorMessage = signal('');
   readonly positionsInfo = computed(() =>
     this.records().reduce<Record<number, number>>((positions, project) => {
       positions[project.technology] = (positions[project.technology] ?? 0) + 1;
@@ -60,19 +68,22 @@ export class TableProjectComponent implements OnInit, OnDestroy {
   }
 
   getProjectList(): void {
-    this.spinner.show();
+    this.isLoading.set(true);
+    this.loadErrorMessage.set('');
     this.projectService
       .getProjectList()
       .pipe(
-        finalize(() => this.spinner.hide()),
+        finalize(() => this.isLoading.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (result) => {
           this.records.set(result.data);
+          this.loadErrorMessage.set('');
         },
         error: (error) => {
           this.records.set([]);
+          this.loadErrorMessage.set(ADMIN_TABLE_LOAD_ERROR_MESSAGE);
           this.alert.httpError(error);
         },
       });
@@ -88,7 +99,9 @@ export class TableProjectComponent implements OnInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
-          if (result) this.getProjectList();
+          if (result) {
+            this.getProjectList();
+          }
         },
       });
   }

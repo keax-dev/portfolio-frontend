@@ -4,10 +4,15 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
 import { TableComponent } from '@shared/components/table/table.component';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { AlertService } from '@core/services/alert.service';
 import { Institution } from '@shared/interfaces/institution';
 import { finalize } from 'rxjs';
 import { Column } from '@shared/components/interfaces/column';
+import {
+  ADMIN_TABLE_LOAD_ERROR_MESSAGE,
+  adminTableCopy,
+} from '@features/admin/config/admin-page-text';
 import {
   ChangeDetectionStrategy,
   DestroyRef,
@@ -22,7 +27,7 @@ import {
   selector: 'app-table-institution',
   templateUrl: './table-institution.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TableComponent],
+  imports: [TableComponent, PageHeaderComponent],
 })
 export class TableInstitutionComponent implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
@@ -32,7 +37,10 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
   private spinner = inject(NgxSpinnerService);
   private alert = inject(AlertService);
 
+  readonly pageCopy = adminTableCopy.institution;
   readonly records = signal<readonly Institution[]>([]);
+  readonly isLoading = signal(false);
+  readonly loadErrorMessage = signal('');
 
   columns: Column[] = [
     { name: 'Institution', value: 'name' },
@@ -48,16 +56,24 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
   }
 
   getInstitutionList(): void {
-    this.spinner.show();
+    this.isLoading.set(true);
+    this.loadErrorMessage.set('');
     this.institutionService
       .getInstitutionList()
       .pipe(
-        finalize(() => this.spinner.hide()),
+        finalize(() => this.isLoading.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: (result) => this.records.set(result.data),
-        error: (error) => this.alert.httpError(error),
+        next: (result) => {
+          this.records.set(result.data);
+          this.loadErrorMessage.set('');
+        },
+        error: (error) => {
+          this.records.set([]);
+          this.loadErrorMessage.set(ADMIN_TABLE_LOAD_ERROR_MESSAGE);
+          this.alert.httpError(error);
+        },
       });
   }
 
@@ -68,7 +84,9 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
-          if (result) this.getInstitutionList();
+          if (result) {
+            this.getInstitutionList();
+          }
         },
       });
   }

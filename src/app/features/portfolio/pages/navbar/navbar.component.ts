@@ -4,6 +4,7 @@ import { TranslateService } from '@core/services/translate.service';
 import { NavigationItem } from '@shared/interfaces/navigation-item';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { Profile } from '@shared/interfaces/profile';
+import { uiText } from '@core/i18n/ui-text';
 
 @Component({
   selector: 'app-navbar',
@@ -15,6 +16,7 @@ import { Profile } from '@shared/interfaces/profile';
 export class NavbarComponent {
   protected translate = inject(TranslateService);
 
+  readonly text = uiText;
   readonly contact = output<void>();
 
   readonly navItems = input<readonly NavigationItem[]>([]);
@@ -23,9 +25,17 @@ export class NavbarComponent {
   navbarExpanded = false;
 
   languages = [
-    { code: 'Es', language: 'Español' },
-    { code: 'En', language: 'English' },
+    { code: 'es', shortCode: 'ES', language: 'Español' },
+    { code: 'en', shortCode: 'EN', language: 'English' },
   ];
+
+  primaryNavigationLabel(): string {
+    return this.translate.text(this.text.portfolio.primaryNavigation);
+  }
+
+  toggleNavigationLabel(): string {
+    return this.translate.text(this.text.portfolio.toggleNavigation);
+  }
 
   toggleNavbar(): void {
     this.navbarExpanded = !this.navbarExpanded;

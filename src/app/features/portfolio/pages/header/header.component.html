@@ -2,7 +2,7 @@
   <div class="py-4">
     <div class="container">
       <img
-        [attr.alt]="'Foto de ' + profile().name"
+        [attr.alt]="profilePhotoAlt()"
         [src]="profile().image"
         class="img-fluid rounded-circle border border-primary border-2 mb-3"
         decoding="async"
@@ -33,7 +33,7 @@
         <span></span>
         <span></span>
         <span></span>
-        {{ cv | language: 'label' : translate.getLang | titlecase }}
+        {{ cvLabel() | titlecase }}
       </button>
     </div>
   </div>

@@ -8,7 +8,7 @@ export const routes: Routes = [
     title: 'Portfolio',
     data: {
       description:
-        'Portafolio público con perfil profesional, educación, habilidades, proyectos y contacto.',
+        'Public portfolio with professional profile, education, skills, projects and contact information.',
     },
     loadChildren: () =>
       import('@features/portfolio/routes/portfolio.routes').then((m) => m.portfolioRoutes),
@@ -17,7 +17,7 @@ export const routes: Routes = [
     path: 'login',
     title: 'Login',
     data: {
-      description: 'Acceso autenticado al panel administrativo del portafolio.',
+      description: 'Authenticated access to the portfolio administration panel.',
     },
     canMatch: [guestMatchGuard],
     loadChildren: () => import('@features/auth/routes/login.routes').then((m) => m.loginRoutes),
@@ -26,8 +26,7 @@ export const routes: Routes = [
     path: 'home',
     title: 'Admin',
     data: {
-      description:
-        'Panel administrativo protegido para gestionar el contenido del portafolio y revisar visitas.',
+      description: 'Protected administration panel to manage portfolio content and review visits.',
     },
     canMatch: [authMatchGuard],
     loadChildren: () => import('@features/admin/routes/home.routes').then((m) => m.homeRoutes),

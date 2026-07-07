@@ -4,7 +4,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { DOCUMENT } from '@angular/common';
 
 const DEFAULT_DESCRIPTION =
-  'Portafolio de Kevin con perfil profesional, educación, habilidades, proyectos y panel administrativo.';
+  'Kevin portfolio with professional profile, education, skills, projects and an administration panel.';
 
 @Injectable()
 export class AppTitleStrategy extends TitleStrategy {

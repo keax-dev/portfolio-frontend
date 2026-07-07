@@ -5,10 +5,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  computed,
   effect,
   inject,
   signal,
 } from '@angular/core';
+import { uiText } from '@core/i18n/ui-text';
 import { NotificationOutletComponent } from '@core/notifications/notification-outlet.component';
 import { TranslateService } from '@core/services/translate.service';
 import { NgxSpinnerModule } from 'ngx-spinner';
@@ -24,10 +26,13 @@ export class AppComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly document = inject(DOCUMENT);
   private readonly router = inject(Router);
-  private readonly translate = inject(TranslateService);
+  protected readonly translate = inject(TranslateService);
   private readonly isPublicRoute = signal(true);
 
   readonly title = 'Kevin Portfolio';
+  readonly loadingLabel = computed(() =>
+    this.isPublicRoute() ? this.translate.text(uiText.common.loading) : uiText.common.loading.en,
+  );
 
   constructor() {
     this.syncRouteScope(this.document.location?.pathname || this.router.url);

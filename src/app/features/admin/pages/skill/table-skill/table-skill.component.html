@@ -1,11 +1,5 @@
 <section class="container-fluid p-4">
-  <header>
-    <h1 class="text-center text-primary">Management of Skills</h1>
-  </header>
-
-  <hr />
-  <h2 class="text-secondary">List of Skills</h2>
-  <hr />
+  <app-page-header [title]="pageCopy.title" [subtitle]="pageCopy.subtitle"></app-page-header>
 
   <app-tabla
     (itemDelete)="confirmDelete($event)"
@@ -13,6 +7,8 @@
     (itemNew)="modalSkill()"
     [records]="records()"
     [columns]="columns"
-    [newTxt]="'Skill'"
+    [newTxt]="pageCopy.entity"
+    [loading]="isLoading()"
+    [errorMessage]="loadErrorMessage()"
   ></app-tabla>
 </section>

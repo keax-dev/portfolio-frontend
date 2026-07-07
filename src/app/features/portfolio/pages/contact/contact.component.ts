@@ -8,7 +8,6 @@ import { TranslateService } from '@core/services/translate.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { MatInputModule } from '@angular/material/input';
 import { AlertService } from '@core/services/alert.service';
-import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { MatDialogRef } from '@angular/material/dialog';
 import { finalize } from 'rxjs';
 import { uiText } from '@core/i18n/ui-text';
@@ -32,7 +31,6 @@ import {
     MatFormFieldModule,
     ButtonComponent,
     MatInputModule,
-    LanguagePipe,
   ],
 })
 export class ContactComponent implements OnDestroy {
@@ -44,6 +42,7 @@ export class ContactComponent implements OnDestroy {
   private readonly ref = inject<MatDialogRef<unknown, boolean>>(MatDialogRef);
   private readonly fb = inject(NonNullableFormBuilder);
 
+  readonly text = uiText;
   readonly contactForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
     email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
@@ -51,30 +50,6 @@ export class ContactComponent implements OnDestroy {
   });
 
   readonly isSaving = signal(false);
-
-  labels = {
-    title: { label: 'Contact me', label_es: 'Contáctame' },
-    name: {
-      label: 'Name: ',
-      label_es: 'Nombre: ',
-      required: 'The name is required',
-      required_es: 'El nombre es requerido',
-    },
-    email: {
-      label: 'Email: ',
-      label_es: 'Correo electrónico: ',
-      required: 'The email is required',
-      required_es: 'El correo es requerido',
-      invalid: 'Enter a valid email',
-      invalid_es: 'Ingresa un correo válido',
-    },
-    message: {
-      label: 'Message: ',
-      label_es: 'Mensaje: ',
-      required: 'The message is required',
-      required_es: 'El mensaje es requerido',
-    },
-  };
 
   ngOnDestroy(): void {
     this.isSaving.set(false);
@@ -116,38 +91,31 @@ export class ContactComponent implements OnDestroy {
 
   errorMessage(controlName: keyof typeof this.contactForm.controls): string {
     const control = this.controls[controlName];
+
     if (controlName === 'email' && control.hasError('email')) {
-      return this.translate.getLang === 'es'
-        ? this.labels.email.invalid_es
-        : this.labels.email.invalid;
+      return this.translate.text(this.text.contact.emailInvalid);
     }
 
     if (controlName === 'name') {
-      return this.translate.getLang === 'es'
-        ? this.labels.name.required_es
-        : this.labels.name.required;
+      return this.translate.text(this.text.contact.nameRequired);
     }
 
     if (controlName === 'email') {
-      return this.translate.getLang === 'es'
-        ? this.labels.email.required_es
-        : this.labels.email.required;
+      return this.translate.text(this.text.contact.emailRequired);
     }
 
-    return this.translate.getLang === 'es'
-      ? this.labels.message.required_es
-      : this.labels.message.required;
+    return this.translate.text(this.text.contact.messageRequired);
   }
 
   sendActionLabel(): string {
-    return this.translate.text(uiText.actions.send);
+    return this.translate.text(this.text.actions.send);
   }
 
   sendingActionLabel(): string {
-    return this.translate.text(uiText.actions.sending);
+    return this.translate.text(this.text.actions.sending);
   }
 
   cancelActionLabel(): string {
-    return this.translate.text(uiText.actions.cancel);
+    return this.translate.text(this.text.actions.cancel);
   }
 }

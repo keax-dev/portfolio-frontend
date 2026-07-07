@@ -1,0 +1,48 @@
+/**
+ * Pruebas unitarias de sincronización entre inputs y controles para las directivas de texto.
+ */
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LowerCaseDirective } from '@shared/components/directive/lowerCase.directive';
+import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
+import { Component } from '@angular/core';
+
+@Component({
+  template: `
+    <input id="upper" [formControl]="upper" appUppercase />
+    <input id="lower" [formControl]="lower" appLowerCase />
+  `,
+  imports: [ReactiveFormsModule, UppercaseDirective, LowerCaseDirective],
+})
+class HostComponent {
+  readonly upper = new FormControl('');
+  readonly lower = new FormControl('');
+}
+
+describe('text case directives', () => {
+  let fixture: ComponentFixture<HostComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [HostComponent] }).compileComponents();
+    fixture = TestBed.createComponent(HostComponent);
+    fixture.detectChanges();
+  });
+
+  // Caso: convierte a mayúsculas tanto el input como el valor del control.
+  it('uppercases both the input and form control value', () => {
+    const input = fixture.nativeElement.querySelector('#upper') as HTMLInputElement;
+    input.value = 'Kevin galarza';
+    input.dispatchEvent(new Event('input'));
+    expect(input.value).toBe('KEVIN GALARZA');
+    expect(fixture.componentInstance.upper.value).toBe('KEVIN GALARZA');
+  });
+
+  // Caso: convierte a minúsculas tanto el input como el valor del control.
+  it('lowercases both the input and form control value', () => {
+    const input = fixture.nativeElement.querySelector('#lower') as HTMLInputElement;
+    input.value = 'USER@EXAMPLE.COM';
+    input.dispatchEvent(new Event('input'));
+    expect(input.value).toBe('user@example.com');
+    expect(fixture.componentInstance.lower.value).toBe('user@example.com');
+  });
+});

@@ -4,10 +4,15 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
 import { TableComponent } from '@shared/components/table/table.component';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
 import { finalize } from 'rxjs';
 import { Column } from '@shared/components/interfaces/column';
+import {
+  ADMIN_TABLE_LOAD_ERROR_MESSAGE,
+  adminTableCopy,
+} from '@features/admin/config/admin-page-text';
 import {
   ChangeDetectionStrategy,
   DestroyRef,
@@ -22,7 +27,7 @@ import {
   selector: 'app-table-social-network',
   templateUrl: './table-social-network.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TableComponent],
+  imports: [TableComponent, PageHeaderComponent],
 })
 export class TableSocialNetworkComponent implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
@@ -32,7 +37,10 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
   private spinner = inject(NgxSpinnerService);
   private alert = inject(AlertService);
 
+  readonly pageCopy = adminTableCopy.socialNetwork;
   readonly records = signal<readonly SocialNetwork[]>([]);
+  readonly isLoading = signal(false);
+  readonly loadErrorMessage = signal('');
 
   columns: Column[] = [
     { name: 'Position', value: 'position' },
@@ -51,17 +59,22 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
   }
 
   getSocialNetworkList(): void {
-    this.spinner.show();
+    this.isLoading.set(true);
+    this.loadErrorMessage.set('');
     this.socialNetworkService
       .getSocialNetworkList()
       .pipe(
-        finalize(() => this.spinner.hide()),
+        finalize(() => this.isLoading.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: (result) => this.records.set(result.data),
+        next: (result) => {
+          this.records.set(result.data);
+          this.loadErrorMessage.set('');
+        },
         error: (error) => {
           this.records.set([]);
+          this.loadErrorMessage.set(ADMIN_TABLE_LOAD_ERROR_MESSAGE);
           this.alert.httpError(error);
         },
       });
@@ -77,7 +90,9 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
-          if (result) this.getSocialNetworkList();
+          if (result) {
+            this.getSocialNetworkList();
+          }
         },
       });
   }

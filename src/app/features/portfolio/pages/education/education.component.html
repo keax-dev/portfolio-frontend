@@ -5,13 +5,13 @@
         id="education-title"
         class="text-center text-primary py-4 mt-0 mt-md-5 pt-md-5 lead display-5 sticky-top"
       >
-        {{ title | language: 'label' : translate.getLang }}
+        {{ titleLabel() }}
       </h2>
     </header>
 
     <div class="col-md-9 col-12 py-4 shadow-lg bg-white card">
       @if (educationList().length === 0) {
-        <p class="text-center text-secondary">There are no records</p>
+        <p class="text-center text-secondary">{{ emptyMessage() }}</p>
       } @else {
         <ol class="list-unstyled m-0 p-0">
           @for (education of educationList(); track education.id) {

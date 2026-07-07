@@ -4,6 +4,13 @@
 :root {
   --primary: rgb(13, 110, 253) !important;
   --primary-hover: rgba(13, 109, 253, 0.75) !important;
+  --surface: #ffffff;
+  --surface-muted: #f8f9fa;
+  --border-subtle: #dce3ea;
+  --text-muted: #5f6b7a;
+  --focus-ring: rgba(13, 110, 253, 0.35);
+  --radius-md: 0.75rem;
+  --shadow-soft: 0 0.75rem 2rem rgba(15, 23, 42, 0.08);
 }
 
 * {
@@ -14,6 +21,8 @@
 
 body {
   background-color: #e1e4e571 !important;
+  color: #212529;
+  line-height: 1.5;
 }
 
 section[id] {
@@ -29,6 +38,48 @@ h6,
 p {
   margin: 0 !important;
   padding: 0 !important;
+}
+
+a,
+button,
+input,
+select,
+textarea,
+[role='button'],
+summary {
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem var(--focus-ring);
+}
+
+.mat-mdc-input-element:focus-visible,
+.mat-mdc-select-trigger:focus-visible,
+.mat-mdc-form-field textarea:focus-visible {
+  box-shadow: none;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 1200;
+  transform: translateY(-200%);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--bs-primary);
+  text-decoration: none;
+  box-shadow: var(--shadow-soft);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
 }
 
 .img-max {
@@ -62,6 +113,34 @@ p {
 .img-hover:hover {
   scale: 1.05;
   transition: 1s ease;
+}
+
+.table-state-cell {
+  padding: 2rem 1rem !important;
+}
+
+.table-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.table-state__icon {
+  font-size: 1.5rem;
+}
+
+.table-state__title {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.table-state__description {
+  color: var(--text-muted);
+  max-width: 32rem;
 }
 
 @keyframes appearKey {

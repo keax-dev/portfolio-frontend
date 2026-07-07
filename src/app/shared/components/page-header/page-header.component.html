@@ -1,0 +1,11 @@
+<header class="mb-4">
+  @if (eyebrow()) {
+    <p class="text-uppercase text-secondary fw-bold mb-1">{{ eyebrow() }}</p>
+  }
+
+  <h1 class="text-primary mb-1">{{ title() }}</h1>
+
+  @if (subtitle()) {
+    <p class="text-secondary mb-0">{{ subtitle() }}</p>
+  }
+</header>

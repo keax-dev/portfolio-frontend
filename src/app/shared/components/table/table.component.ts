@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { Column } from '@shared/components/interfaces/column';
+import { uiText } from '@core/i18n/ui-text';
 
 @Component({
   selector: 'app-tabla',
@@ -12,7 +13,7 @@ export class TableComponent<T extends object> {
   readonly records = input.required<readonly T[]>();
   readonly columns = input.required<readonly Column[]>();
 
-  readonly detailsTxt = input('Details');
+  readonly detailsTxt = input(uiText.table.details.en);
   readonly sortName = input('');
   readonly newTxt = input('');
   readonly order = input(1);
@@ -22,6 +23,28 @@ export class TableComponent<T extends object> {
   readonly delete = input(true);
   readonly search = input(true);
   readonly new = input(true);
+  readonly loading = input(false);
+  readonly errorMessage = input('');
+
+  readonly actionsLabel = input(uiText.table.actions.en);
+  readonly deleteRecordLabel = input(uiText.table.deleteRecord.en);
+  readonly editRecordLabel = input(uiText.table.editRecord.en);
+  readonly viewDetailsLabel = input(uiText.table.viewDetails.en);
+  readonly loadErrorDescription = input(uiText.table.loadErrorDescription.en);
+  readonly loadingDescription = input(uiText.table.loadingDescription.en);
+  readonly loadingText = input(uiText.table.loadingRecords.en);
+  readonly emptyText = input(uiText.table.emptyRecords.en);
+  readonly emptySearchText = input(uiText.table.emptySearchResults.en);
+  readonly newLabel = input(uiText.table.newLabel.en);
+  readonly nextLabel = input(uiText.table.next.en);
+  readonly noImageText = input(uiText.table.noImage.en);
+  readonly pageLabel = input(uiText.table.page.en);
+  readonly previousLabel = input(uiText.table.previous.en);
+  readonly recordImageLabel = input(uiText.table.recordImage.en);
+  readonly rowsLabel = input(uiText.table.rows.en);
+  readonly searchAriaLabel = input(uiText.table.searchAriaLabel.en);
+  readonly searchPlaceholder = input(uiText.table.searchPlaceholder.en);
+  readonly sortByLabel = input(uiText.table.sortBy.en);
 
   readonly itemDetails = output<T>();
   readonly itemDelete = output<T>();
@@ -75,6 +98,50 @@ export class TableComponent<T extends object> {
     return this.sortedRecords().slice(start, start + this.pageSize());
   });
 
+  protected readonly totalColumns = computed(
+    () => this.columns().length + (this.actions() ? 1 : 0) + (this.details() ? 1 : 0),
+  );
+
+  protected readonly newButtonText = computed(() =>
+    this.newTxt() ? `${this.newLabel()} ${this.newTxt()}` : this.newLabel(),
+  );
+
+  protected readonly emptyStateTitle = computed(() => {
+    if (this.loading()) {
+      return this.loadingText();
+    }
+
+    if (this.errorMessage()) {
+      return this.errorMessage();
+    }
+
+    return this.searchTerm().trim() ? this.emptySearchText() : this.emptyText();
+  });
+
+  protected readonly emptyStateDescription = computed(() => {
+    if (this.loading()) {
+      return this.loadingDescription();
+    }
+
+    if (this.errorMessage()) {
+      return this.loadErrorDescription();
+    }
+
+    return '';
+  });
+
+  protected readonly stateIcon = computed(() => {
+    if (this.loading()) {
+      return 'pi pi-spin pi-spinner';
+    }
+
+    if (this.errorMessage()) {
+      return 'pi pi-exclamation-triangle';
+    }
+
+    return 'pi pi-inbox';
+  });
+
   updateSearch(event: Event): void {
     this.searchTerm.set((event.target as HTMLInputElement).value);
     this.page.set(1);
@@ -121,7 +188,7 @@ export class TableComponent<T extends object> {
       }
     }
 
-    return 'Record image';
+    return this.recordImageLabel();
   }
 
   newItem(): void {

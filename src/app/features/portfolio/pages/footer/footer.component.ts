@@ -4,6 +4,7 @@ import { NavigationItem } from '@shared/interfaces/navigation-item';
 import { SocialNetwork } from '@shared/interfaces/social-network';
 import { TitleCasePipe } from '@angular/common';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
+import { uiText } from '@core/i18n/ui-text';
 
 @Component({
   selector: 'app-footer',
@@ -14,6 +15,7 @@ import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 export class FooterComponent {
   protected readonly translate = inject(TranslateService);
 
+  readonly text = uiText;
   readonly contact = output<void>();
 
   readonly socialNetworkList = input<readonly SocialNetwork[]>([]);
@@ -21,11 +23,25 @@ export class FooterComponent {
 
   year = new Date().getFullYear();
 
-  messageSN = {
-    label: 'You can contact me through my social networks.',
-    label_es: 'Puedes contactarme a través de mis redes sociales.',
-  };
-  messageCR = { label: 'All rights reserved.', label_es: 'Todos los derechos reservados.' };
+  socialNetworksMessage(): string {
+    return this.translate.text(this.text.portfolio.socialNetworksMessage);
+  }
+
+  rightsReserved(): string {
+    return this.translate.text(this.text.portfolio.rightsReserved);
+  }
+
+  socialMediaLabel(): string {
+    return this.translate.text(this.text.portfolio.socialMediaLinks);
+  }
+
+  footerNavigationLabel(): string {
+    return this.translate.text(this.text.portfolio.footerNavigation);
+  }
+
+  openSocialLabel(name: string): string {
+    return `${this.translate.text(this.text.portfolio.openSocialPrefix)} ${name}`;
+  }
 
   contactEmit(): void {
     this.contact.emit();

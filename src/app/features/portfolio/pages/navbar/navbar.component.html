@@ -1,5 +1,5 @@
 <nav
-  aria-label="Primary navigation"
+  [attr.aria-label]="primaryNavigationLabel()"
   class="navbar navbar-dark bg-primary shadow-lg sticky-top z-index-navbar"
   role="navigation"
 >
@@ -17,18 +17,19 @@
         |
       </a>
 
-      @for (lang of languages; track $index) {
+      @for (lang of languages; track lang.code) {
         <button
           (click)="selectLanguage(lang.code)"
           [ngClass]="{
-            'text-dark fw-bolder': translate.getLang === lang.code.toLowerCase(),
+            'text-dark fw-bolder': translate.getLang === lang.code,
           }"
-          [attr.aria-pressed]="translate.getLang === lang.code.toLowerCase()"
+          [attr.aria-label]="lang.language"
+          [attr.aria-pressed]="translate.getLang === lang.code"
           [title]="lang.language"
           class="btn btn-link d-flex align-items-center text-light link-dark text-decoration-none mx-1 p-0 border-0"
           type="button"
         >
-          {{ lang.code }}
+          {{ lang.shortCode }}
         </button>
       }
     </div>
@@ -37,7 +38,7 @@
       (click)="toggleNavbar()"
       [attr.aria-expanded]="navbarExpanded"
       aria-controls="navbarNav"
-      aria-label="Toggle navigation"
+      [attr.aria-label]="toggleNavigationLabel()"
       class="navbar-toggler mx-2 d-flex justify-content-center align-items-center"
       type="button"
     >

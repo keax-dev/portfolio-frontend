@@ -14,18 +14,18 @@
       <div class="col my-1">
         <div class="w-100 h-100 d-flex justify-content-center align-items-center flex-column">
           <p class="text-center text-light my-3">
-            {{ messageSN | language: 'label' : translate.getLang }}
+            {{ socialNetworksMessage() }}
           </p>
 
-          <nav aria-label="Social media links" class="w-100">
+          <nav [attr.aria-label]="socialMediaLabel()" class="w-100">
             <ul
               class="list-unstyled d-flex justify-content-center align-items-center flex-wrap mb-0"
             >
               @for (socialNetwork of socialNetworkList(); track socialNetwork.id) {
                 <li>
                   <a
-                    [attr.aria-label]="'Open ' + (socialNetwork.name | titlecase)"
-                    [title]="socialNetwork.name | titlecase"
+                    [attr.aria-label]="openSocialLabel(socialNetwork.name | titlecase)"
+                    [title]="openSocialLabel(socialNetwork.name | titlecase)"
                     [href]="socialNetwork.url"
                     target="_blank"
                     class="btn btn-light m-1 py-1 px-2 d-flex justify-content-center align-items-center"
@@ -46,7 +46,7 @@
 
       <div class="col my-3">
         <nav
-          aria-label="Footer navigation"
+          [attr.aria-label]="footerNavigationLabel()"
           class="w-100 h-100 d-flex justify-content-center align-items-center flex-wrap"
         >
           <ul
@@ -79,7 +79,7 @@
     <p class="text-center text-light pb-2">
       <small>
         Copyright &copy; {{ year }}.
-        {{ messageCR | language: 'label' : translate.getLang }}
+        {{ rightsReserved() }}
       </small>
     </p>
   </div>

@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-md-9 col-12 py-4 shadow-lg order-2 order-md-1 bg-white card">
       @if (skillList().length === 0) {
-        <p class="text-center text-secondary">There are no records</p>
+        <p class="text-center text-secondary">{{ emptyMessage() }}</p>
       }
       <ul class="d-flex flex-wrap gap-4 justify-content-center list-unstyled p-4">
         @for (skill of skillList(); track skill.id) {
@@ -27,7 +27,7 @@
         id="skills-title"
         class="text-center text-primary py-4 mt-0 mt-md-5 pt-md-5 lead display-5 sticky-top"
       >
-        {{ title | language: 'label' : translate.getLang }}
+        {{ titleLabel() }}
       </h2>
     </header>
   </div>

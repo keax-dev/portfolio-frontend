@@ -4,7 +4,7 @@
       (action)="newItem()"
       [classPadding]="'px-4 py-2'"
       [icon]="'pi-plus pi'"
-      [text]="newTxt()"
+      [text]="newButtonText()"
       [type]="'button'"
     ></app-button>
   </div>
@@ -13,14 +13,15 @@
 <section class="card shadow-sm">
   @if (search()) {
     <div class="card-header bg-white">
-      <label class="visually-hidden" for="table-search">Search records</label>
+      <label class="visually-hidden" for="table-search">{{ searchAriaLabel() }}</label>
       <div class="input-group">
         <span class="input-group-text">
           <i class="pi pi-search" aria-hidden="true"></i>
         </span>
         <input
           (input)="updateSearch($event)"
-          placeholder="Search"
+          [attr.aria-label]="searchAriaLabel()"
+          [placeholder]="searchPlaceholder()"
           class="form-control"
           type="search"
           id="table-search"
@@ -28,6 +29,11 @@
       </div>
     </div>
   }
+
+  <div aria-live="polite" class="visually-hidden">
+    {{ filteredRecords().length }} results. {{ pageLabel() }} {{ currentPage() }} of
+    {{ pageCount() }}.
+  </div>
 
   <div class="table-responsive">
     <table class="table table-striped table-hover align-middle mb-0">
@@ -37,7 +43,7 @@
             <th class="bg-primary text-light" scope="col">
               <button
                 (click)="sortBy(column)"
-                [title]="'Sort by' + column.name"
+                [title]="sortByLabel() + ' ' + column.name"
                 class="btn btn-link text-light text-decoration-none fw-bold p-0"
                 type="button"
               >
@@ -52,76 +58,93 @@
           }
 
           @if (actions()) {
-            <th scope="col" class="bg-primary text-light">Actions</th>
+            <th scope="col" class="bg-primary text-light">{{ actionsLabel() }}</th>
           }
         </tr>
       </thead>
-      <tbody>
-        @for (row of visibleRecords(); track row) {
+      <tbody [attr.aria-busy]="loading()">
+        @if (loading() || errorMessage()) {
           <tr>
-            @for (column of columns(); track column.value) {
-              <td>
-                @if (column.image) {
-                  @if (imageUrl(row, column); as image) {
-                    <img [src]="image" class="img-max" [alt]="imageAlt(row)" />
-                  } @else {
-                    <span>No image</span>
-                  }
-                } @else {
-                  {{ cellValue(row, column) }}
+            <td [attr.colspan]="totalColumns()" class="table-state-cell">
+              <div class="table-state">
+                <i [class]="stateIcon() + ' table-state__icon text-primary'" aria-hidden="true"></i>
+                <p class="table-state__title">{{ emptyStateTitle() }}</p>
+                @if (emptyStateDescription()) {
+                  <p class="table-state__description">{{ emptyStateDescription() }}</p>
                 }
-              </td>
-            }
-
-            @if (details()) {
-              <td>
-                <button
-                  (click)="detailsItem(row)"
-                  aria-label="View details"
-                  class="btn btn-outline-primary m-1"
-                  title="View details"
-                  type="button"
-                >
-                  <i class="pi pi-eye" aria-hidden="true"></i>
-                </button>
-              </td>
-            }
-
-            @if (actions()) {
-              <td>
-                <button
-                  (click)="modifyItem(row)"
-                  aria-label="Edit record"
-                  class="btn btn-success m-1"
-                  title="Edit record"
-                  type="button"
-                >
-                  <i class="pi pi-pencil" aria-hidden="true"></i>
-                </button>
-
-                @if (delete()) {
-                  <button
-                    (click)="deleteItem(row)"
-                    aria-label="Delete record"
-                    class="btn btn-danger m-1"
-                    title="Delete record"
-                    type="button"
-                  >
-                    <i class="pi pi-eraser" aria-hidden="true"></i>
-                  </button>
-                }
-              </td>
-            }
-          </tr>
-        } @empty {
-          <tr>
-            <td
-              [attr.colspan]="columns().length + (actions() ? 1 : 0) + (details() ? 1 : 0)"
-              class="text-center py-3"
-            >
-              There are no records.
+              </div>
             </td>
           </tr>
+        } @else {
+          @for (row of visibleRecords(); track row) {
+            <tr>
+              @for (column of columns(); track column.value) {
+                <td>
+                  @if (column.image) {
+                    @if (imageUrl(row, column); as image) {
+                      <img [src]="image" class="img-max" [alt]="imageAlt(row)" />
+                    } @else {
+                      <span>{{ noImageText() }}</span>
+                    }
+                  } @else {
+                    {{ cellValue(row, column) }}
+                  }
+                </td>
+              }
+
+              @if (details()) {
+                <td>
+                  <button
+                    (click)="detailsItem(row)"
+                    [attr.aria-label]="viewDetailsLabel()"
+                    class="btn btn-outline-primary m-1"
+                    [title]="viewDetailsLabel()"
+                    type="button"
+                  >
+                    <i class="pi pi-eye" aria-hidden="true"></i>
+                  </button>
+                </td>
+              }
+
+              @if (actions()) {
+                <td>
+                  <button
+                    (click)="modifyItem(row)"
+                    [attr.aria-label]="editRecordLabel()"
+                    class="btn btn-success m-1"
+                    [title]="editRecordLabel()"
+                    type="button"
+                  >
+                    <i class="pi pi-pencil" aria-hidden="true"></i>
+                  </button>
+
+                  @if (delete()) {
+                    <button
+                      (click)="deleteItem(row)"
+                      [attr.aria-label]="deleteRecordLabel()"
+                      class="btn btn-danger m-1"
+                      [title]="deleteRecordLabel()"
+                      type="button"
+                    >
+                      <i class="pi pi-eraser" aria-hidden="true"></i>
+                    </button>
+                  }
+                </td>
+              }
+            </tr>
+          } @empty {
+            <tr>
+              <td [attr.colspan]="totalColumns()" class="table-state-cell">
+                <div class="table-state">
+                  <i
+                    [class]="stateIcon() + ' table-state__icon text-primary'"
+                    aria-hidden="true"
+                  ></i>
+                  <p class="table-state__title">{{ emptyStateTitle() }}</p>
+                </div>
+              </td>
+            </tr>
+          }
         }
       </tbody>
     </table>
@@ -129,7 +152,7 @@
 
   <footer class="card-footer d-flex flex-wrap justify-content-between align-items-center gap-2">
     <label class="d-flex align-items-center gap-2">
-      Rows
+      {{ rowsLabel() }}
       <select class="form-select form-select-sm" (change)="updatePageSize($event)">
         @for (size of [5, 10, 20, 50]; track size) {
           <option [value]="size" [selected]="size === pageSize()">{{ size }}</option>
@@ -142,20 +165,20 @@
         (click)="previousPage()"
         [disabled]="currentPage() === 1"
         class="btn btn-outline-primary btn-sm"
-        title="Previous page"
+        [title]="previousLabel() + ' ' + pageLabel().toLowerCase()"
         type="button"
       >
-        Previous
+        {{ previousLabel() }}
       </button>
-      <span>Page {{ currentPage() }} of {{ pageCount() }}</span>
+      <span>{{ pageLabel() }} {{ currentPage() }} of {{ pageCount() }}</span>
       <button
         [disabled]="currentPage() === pageCount()"
         (click)="nextPage()"
         class="btn btn-outline-primary btn-sm"
-        title="Next page"
+        [title]="nextLabel() + ' ' + pageLabel().toLowerCase()"
         type="button"
       >
-        Next
+        {{ nextLabel() }}
       </button>
     </div>
   </footer>

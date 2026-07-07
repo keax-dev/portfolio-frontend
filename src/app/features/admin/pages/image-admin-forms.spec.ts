@@ -1,7 +1,7 @@
 /**
  * Pruebas unitarias de formularios administrativos que encadenan guardado y carga de imágenes.
  */
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FrmInstitutionComponent } from './institution/frm-institution/frm-institution.component';
 import { FrmProfileComponent } from './profile/frm-profile/frm-profile.component';
 import { FrmProjectComponent } from './project/frm-project/frm-project.component';
@@ -54,8 +54,8 @@ describe('image admin forms', () => {
         { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
-        { provide: DialogRef, useValue: ref },
-        { provide: DIALOG_DATA, useValue: null },
+        { provide: MatDialogRef, useValue: ref },
+        { provide: MAT_DIALOG_DATA, useValue: null },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmInstitutionComponent).componentInstance;
@@ -97,8 +97,8 @@ describe('image admin forms', () => {
         { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
-        { provide: DialogRef, useValue: ref },
-        { provide: DIALOG_DATA, useValue: existing },
+        { provide: MatDialogRef, useValue: ref },
+        { provide: MAT_DIALOG_DATA, useValue: existing },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmInstitutionComponent).componentInstance;
@@ -135,8 +135,8 @@ describe('image admin forms', () => {
         { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
-        { provide: DialogRef, useValue: ref },
-        { provide: DIALOG_DATA, useValue: { positions: 3 } },
+        { provide: MatDialogRef, useValue: ref },
+        { provide: MAT_DIALOG_DATA, useValue: { positions: 3 } },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmSkillComponent).componentInstance;
@@ -168,8 +168,8 @@ describe('image admin forms', () => {
         { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: messages },
-        { provide: DialogRef, useValue: ref },
-        { provide: DIALOG_DATA, useValue: { positions: 2 } },
+        { provide: MatDialogRef, useValue: ref },
+        { provide: MAT_DIALOG_DATA, useValue: { positions: 2 } },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmSkillComponent).componentInstance;
@@ -208,8 +208,8 @@ describe('image admin forms', () => {
         { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
-        { provide: DialogRef, useValue: ref },
-        { provide: DIALOG_DATA, useValue: { positionsInfo: { 2: 3 } } },
+        { provide: MatDialogRef, useValue: ref },
+        { provide: MAT_DIALOG_DATA, useValue: { positionsInfo: { 2: 3 } } },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmProjectComponent).componentInstance;

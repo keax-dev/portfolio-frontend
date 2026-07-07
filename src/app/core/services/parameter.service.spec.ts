@@ -4,8 +4,8 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { ParameterService } from './parameter.service';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { TestBed } from '@angular/core/testing';
-import { Dialog } from '@angular/cdk/dialog';
 
 describe('ParameterService', () => {
   let service: ParameterService;
@@ -19,7 +19,7 @@ describe('ParameterService', () => {
       providers: [
         ParameterService,
         { provide: BreakpointObserver, useValue: breakpoint },
-        { provide: Dialog, useValue: dialog },
+        { provide: MatDialog, useValue: dialog },
       ],
     });
     service = TestBed.inject(ParameterService);
@@ -69,7 +69,6 @@ describe('ParameterService', () => {
         data,
         width: '40%',
         maxWidth: '100vw',
-        autoFocus: 'first-tabbable',
         restoreFocus: true,
       }),
     );

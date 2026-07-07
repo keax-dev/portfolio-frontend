@@ -1,9 +1,11 @@
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { InstitutionService } from '@features/admin/services/institution.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { EducationService } from '@features/admin/services/education.service';
+import { MatSelectModule } from '@angular/material/select';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { AlertService } from '@core/services/alert.service';
 import { Institution } from '@shared/interfaces/institution';
@@ -15,6 +17,7 @@ import {
   FormsModule,
   Validators,
 } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 import {
   ChangeDetectionStrategy,
   DestroyRef,
@@ -34,7 +37,15 @@ interface EducationDialogData {
   selector: 'app-frm-education',
   templateUrl: './frm-education.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, ButtonComponent],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    UppercaseDirective,
+    ButtonComponent,
+    MatSelectModule,
+    MatInputModule,
+    FormsModule,
+  ],
 })
 export class FrmEducationComponent implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
@@ -42,9 +53,9 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
   private readonly institutionService = inject(InstitutionService);
   private readonly educationService = inject(EducationService);
   private readonly spinner = inject(NgxSpinnerService);
-  private readonly data = inject<EducationDialogData>(DIALOG_DATA);
+  private readonly data = inject<EducationDialogData>(MAT_DIALOG_DATA);
   private readonly alert = inject(AlertService);
-  private readonly ref = inject<DialogRef<Education>>(DialogRef);
+  private readonly ref = inject<MatDialogRef<unknown, Education>>(MatDialogRef);
   private readonly fb = inject(NonNullableFormBuilder);
 
   readonly educationForm = this.fb.group({
@@ -60,6 +71,7 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
   });
 
   readonly institutionList = signal<readonly Institution[]>([]);
+  readonly isSaving = signal(false);
   readonly positionList = Array.from({ length: this.data.positions }, (_, i) => i + 1);
   title = 'New Education';
 
@@ -84,6 +96,10 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    if (this.isSaving()) {
+      return;
+    }
+
     if (this.educationForm.invalid) {
       this.educationForm.markAllAsTouched();
       return;
@@ -98,11 +114,11 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
   }
 
   createEducation(): void {
-    this.spinner.show();
+    this.isSaving.set(true);
     this.educationService
       .createEducation(this.educationForm.getRawValue())
       .pipe(
-        finalize(() => this.spinner.hide()),
+        finalize(() => this.isSaving.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
@@ -110,16 +126,16 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.close(result.data);
         },
-        error: (error) => this.alert.httpError(error),
+        error: (error) => this.alert.httpError(error, undefined, false),
       });
   }
 
   updateEducation(): void {
-    this.spinner.show();
+    this.isSaving.set(true);
     this.educationService
       .updateEducation(this.data.education!.id!, this.educationForm.getRawValue())
       .pipe(
-        finalize(() => this.spinner.hide()),
+        finalize(() => this.isSaving.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
@@ -127,7 +143,7 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.close(result.data);
         },
-        error: (error) => this.alert.httpError(error),
+        error: (error) => this.alert.httpError(error, undefined, false),
       });
   }
 

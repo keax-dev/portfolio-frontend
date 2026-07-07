@@ -1,15 +1,23 @@
-import { Component, inject, DestroyRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  DestroyRef,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  signal,
+} from '@angular/core';
 import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { LowerCaseDirective } from '@shared/components/directive/lowerCase.directive';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { PortfolioService } from '@features/portfolio/services/portfolio.service';
 import { TranslateService } from '@core/services/translate.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { MatInputModule } from '@angular/material/input';
 import { AlertService } from '@core/services/alert.service';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
-import { DialogRef } from '@angular/cdk/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -20,7 +28,9 @@ import { finalize } from 'rxjs';
     ReactiveFormsModule,
     UppercaseDirective,
     LowerCaseDirective,
+    MatFormFieldModule,
     ButtonComponent,
+    MatInputModule,
     LanguagePipe,
   ],
 })
@@ -29,9 +39,8 @@ export class ContactComponent implements OnDestroy {
 
   protected readonly translate = inject(TranslateService);
   private readonly portfolioService = inject(PortfolioService);
-  private readonly spinner = inject(NgxSpinnerService);
   private readonly alert = inject(AlertService);
-  private readonly ref = inject<DialogRef<boolean>>(DialogRef);
+  private readonly ref = inject<MatDialogRef<unknown, boolean>>(MatDialogRef);
   private readonly fb = inject(NonNullableFormBuilder);
 
   readonly contactForm = this.fb.group({
@@ -39,6 +48,8 @@ export class ContactComponent implements OnDestroy {
     email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
     message: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(500)]],
   });
+
+  readonly isSaving = signal(false);
 
   labels = {
     title: { label: 'Contact me', label_es: 'Contactame' },
@@ -63,7 +74,7 @@ export class ContactComponent implements OnDestroy {
   };
 
   ngOnDestroy(): void {
-    this.spinner.hide();
+    this.isSaving.set(false);
   }
 
   onSubmit(): void {
@@ -72,11 +83,11 @@ export class ContactComponent implements OnDestroy {
       return;
     }
 
-    this.spinner.show();
+    this.isSaving.set(true);
     this.portfolioService
       .sendEmail(this.contactForm.getRawValue())
       .pipe(
-        finalize(() => this.spinner.hide()),
+        finalize(() => this.isSaving.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({

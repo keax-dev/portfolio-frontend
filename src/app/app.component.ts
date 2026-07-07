@@ -15,7 +15,7 @@ export class AppComponent {
   private readonly document = inject(DOCUMENT);
   private readonly translate = inject(TranslateService);
 
-  readonly title = 'Keax Portfolio';
+  readonly title = 'Kevin Portfolio';
 
   constructor() {
     effect(() => {

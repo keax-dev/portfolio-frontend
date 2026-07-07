@@ -1,5 +1,6 @@
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 export interface ConfirmDialogData {
   readonly confirmLabel: string;
@@ -11,22 +12,23 @@ export interface ConfirmDialogData {
 @Component({
   selector: 'app-confirm-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatDialogModule, MatButtonModule],
   template: `
-    <section aria-labelledby="confirm-dialog-title" class="bg-white rounded p-4 shadow">
-      <h2 class="h5 text-danger" id="confirm-dialog-title">{{ data.title }}</h2>
-      <p class="my-3">{{ data.message }}</p>
-      <footer class="d-flex justify-content-end gap-2">
-        <button class="btn btn-secondary" type="button" (click)="dialogRef.close(false)">
-          {{ data.cancelLabel }}
-        </button>
-        <button class="btn btn-danger" type="button" (click)="dialogRef.close(true)">
-          {{ data.confirmLabel }}
-        </button>
-      </footer>
-    </section>
+    <mat-dialog-content>
+      <h2 mat-dialog-title id="confirm-dialog-title">{{ data.title }}</h2>
+      <p>{{ data.message }}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button class="btn btn-dark px-4 m-1" type="button" (click)="dialogRef.close(false)">
+        {{ data.cancelLabel }}
+      </button>
+      <button class="btn btn-danger px-4 m-1" type="button" (click)="dialogRef.close(true)">
+        {{ data.confirmLabel }}
+      </button>
+    </mat-dialog-actions>
   `,
 })
 export class ConfirmDialogComponent {
-  protected readonly dialogRef = inject<DialogRef<boolean>>(DialogRef);
-  protected readonly data = inject<ConfirmDialogData>(DIALOG_DATA);
+  protected readonly dialogRef = inject<MatDialogRef<unknown, boolean>>(MatDialogRef);
+  protected readonly data = inject<ConfirmDialogData>(MAT_DIALOG_DATA);
 }

@@ -4,7 +4,7 @@
 import { FrmSocialNetworkComponent } from './social-network/frm-social-network/frm-social-network.component';
 import { FrmEducationComponent } from './education/frm-education/frm-education.component';
 import { FrmTechnologyComponent } from './technology/frm-technology/frm-technology.component';
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SocialNetworkService } from '@features/admin/services/social-network.service';
 import { InstitutionService } from '@features/admin/services/institution.service';
 import { TechnologyService } from '@features/admin/services/technology.service';
@@ -41,8 +41,8 @@ describe('simple admin forms', () => {
         { provide: TechnologyService, useValue: service },
         { provide: NgxSpinnerService, useValue: loading },
         { provide: AlertService, useValue: messages },
-        { provide: DialogRef, useValue: ref },
-        { provide: DIALOG_DATA, useValue: { positions: 3 } },
+        { provide: MatDialogRef, useValue: ref },
+        { provide: MAT_DIALOG_DATA, useValue: { positions: 3 } },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmTechnologyComponent).componentInstance;
@@ -53,7 +53,7 @@ describe('simple admin forms', () => {
     expect(service.createTechnology).toHaveBeenCalledWith({ name: 'Angular', position: 1 });
     expect(messages.success).toHaveBeenCalledWith('Saved');
     expect(ref.close).toHaveBeenCalledWith(saved);
-    expect(loading.hide).toHaveBeenCalled();
+    expect(component.isSaving()).toBe(false);
   });
 
   // Caso: carga y actualiza una tecnología existente.
@@ -76,8 +76,8 @@ describe('simple admin forms', () => {
         { provide: TechnologyService, useValue: service },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
-        { provide: DialogRef, useValue: ref },
-        { provide: DIALOG_DATA, useValue: { positions: 4, technology: existing } },
+        { provide: MatDialogRef, useValue: ref },
+        { provide: MAT_DIALOG_DATA, useValue: { positions: 4, technology: existing } },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmTechnologyComponent).componentInstance;
@@ -116,8 +116,8 @@ describe('simple admin forms', () => {
         { provide: SocialNetworkService, useValue: service },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
-        { provide: DialogRef, useValue: ref },
-        { provide: DIALOG_DATA, useValue: { positions: 2 } },
+        { provide: MatDialogRef, useValue: ref },
+        { provide: MAT_DIALOG_DATA, useValue: { positions: 2 } },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmSocialNetworkComponent).componentInstance;
@@ -158,8 +158,8 @@ describe('simple admin forms', () => {
         { provide: SocialNetworkService, useValue: service },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
-        { provide: DialogRef, useValue: dialogRef() },
-        { provide: DIALOG_DATA, useValue: { positions: 3, socialNetwork: existing } },
+        { provide: MatDialogRef, useValue: dialogRef() },
+        { provide: MAT_DIALOG_DATA, useValue: { positions: 3, socialNetwork: existing } },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmSocialNetworkComponent).componentInstance;
@@ -193,8 +193,8 @@ describe('simple admin forms', () => {
         { provide: InstitutionService, useValue: institutionService },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
-        { provide: DialogRef, useValue: ref },
-        { provide: DIALOG_DATA, useValue: { positions: 3 } },
+        { provide: MatDialogRef, useValue: ref },
+        { provide: MAT_DIALOG_DATA, useValue: { positions: 3 } },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmEducationComponent).componentInstance;
@@ -234,8 +234,8 @@ describe('simple admin forms', () => {
         },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: messages },
-        { provide: DialogRef, useValue: dialogRef() },
-        { provide: DIALOG_DATA, useValue: { positions: 1 } },
+        { provide: MatDialogRef, useValue: dialogRef() },
+        { provide: MAT_DIALOG_DATA, useValue: { positions: 1 } },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmEducationComponent).componentInstance;

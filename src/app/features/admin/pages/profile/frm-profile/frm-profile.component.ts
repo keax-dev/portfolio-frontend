@@ -1,14 +1,16 @@
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParameterService } from '@core/services/parameter.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { ProfileService } from '@features/admin/services/profile.service';
+import { MatInputModule } from '@angular/material/input';
 import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
-import { Profile } from '@shared/interfaces/profile';
 import { finalize } from 'rxjs';
+import { Profile } from '@shared/interfaces/profile';
 import {
   ChangeDetectionStrategy,
   DestroyRef,
@@ -23,7 +25,14 @@ import {
   selector: 'app-frm-profile',
   templateUrl: './frm-profile.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, ButtonComponent],
+  imports: [
+    ReactiveFormsModule,
+    UppercaseDirective,
+    MatFormFieldModule,
+    ButtonComponent,
+    MatInputModule,
+    FormsModule,
+  ],
 })
 export class FrmProfileComponent implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
@@ -49,6 +58,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
 
   readonly previousProfile = signal<Profile | null>(null);
   readonly urlPicture = signal('');
+  readonly isSaving = signal(false);
   readonly title = signal('New Profile');
   readonly update = signal(false);
 
@@ -97,6 +107,10 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    if (this.isSaving()) {
+      return;
+    }
+
     if (this.profileForm.invalid) {
       this.profileForm.markAllAsTouched();
       return;
@@ -111,7 +125,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
   }
 
   updateProfile(): void {
-    this.spinner.show();
+    this.isSaving.set(true);
     this.profileService
       .updateProfile(this.profile)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -124,14 +138,17 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
           }
 
           this.previousProfile.set(result.data);
-          this.spinner.hide();
+          this.isSaving.set(false);
         },
-        error: (error) => this.alert.httpError(error),
+        error: (error) => {
+          this.isSaving.set(false);
+          this.alert.httpError(error, undefined, false);
+        },
       });
   }
 
   createProfile(): void {
-    this.spinner.show();
+    this.isSaving.set(true);
     this.profileService
       .createProfile(this.profile)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -144,24 +161,26 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
           }
 
           this.previousProfile.set(result.data);
-          this.spinner.hide();
+          this.isSaving.set(false);
         },
-        error: (error) => this.alert.httpError(error),
+        error: (error) => {
+          this.isSaving.set(false);
+          this.alert.httpError(error, undefined, false);
+        },
       });
   }
 
   uploadImageProfile(profile: Profile, create?: boolean): void {
-    this.spinner.show();
     const image = this.controls.image.value;
     if (!image) {
-      this.spinner.hide();
+      this.isSaving.set(false);
       return;
     }
 
     this.imageService
       .uploadImageProfile(image)
       .pipe(
-        finalize(() => this.spinner.hide()),
+        finalize(() => this.isSaving.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
@@ -173,7 +192,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.previousProfile.set(profile);
-          this.alert.httpError(error);
+          this.alert.httpError(error, undefined, false);
         },
       });
   }

@@ -67,11 +67,14 @@ export class TableSkillComponent implements OnInit, OnDestroy {
       positions: this.records().length + 5,
       skill: skill,
     });
-    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (result) => {
-        if (result) this.getSkillListByDeleted();
-      },
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          if (result) this.getSkillListByDeleted();
+        },
+      });
   }
 
   confirmDelete(skill: Skill): void {

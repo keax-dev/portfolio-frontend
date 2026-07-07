@@ -80,11 +80,14 @@ export class TableProjectComponent implements OnInit, OnDestroy {
       positionsInfo: this.positionsInfo(),
       project: project,
     });
-    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (result) => {
-        if (result) this.getProjectListByDeleted();
-      },
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          if (result) this.getProjectListByDeleted();
+        },
+      });
   }
 
   confirmDelete(project: Project): void {

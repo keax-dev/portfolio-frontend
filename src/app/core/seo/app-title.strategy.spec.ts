@@ -1,11 +1,11 @@
 /**
  * Pruebas de integración del TitleStrategy personalizado y las meta etiquetas SEO.
  */
+import { provideRouter, TitleStrategy } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { AppTitleStrategy } from './app-title.strategy';
-import { Component } from '@angular/core';
-import { provideRouter, TitleStrategy } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 @Component({
@@ -56,9 +56,9 @@ describe('AppTitleStrategy', () => {
       'link[rel="canonical"]',
     ) as HTMLLinkElement | null;
 
-    expect(title.getTitle()).toBe('Keax | Login');
+    expect(title.getTitle()).toBe('Kevin | Login');
     expect(meta.getTag('name="description"')?.content).toBe('Login description');
-    expect(meta.getTag('property="og:title"')?.content).toBe('Keax | Login');
+    expect(meta.getTag('property="og:title"')?.content).toBe('Kevin | Login');
     expect(meta.getTag('name="twitter:description"')?.content).toBe('Login description');
     expect(canonical?.href).toMatch(/\/login$/);
   });

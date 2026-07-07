@@ -2,9 +2,9 @@ import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } fr
 import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { provideRouter, TitleStrategy, withInMemoryScrolling } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatDialogModule } from '@angular/material/dialog';
 import { authInterceptor } from '@core/interceptors/auth.interceptor';
 import { AppTitleStrategy } from '@core/seo/app-title.strategy';
-import { DialogModule } from '@angular/cdk/dialog';
 import { routes } from '@src/app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -20,6 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(withXhr(), withInterceptors([authInterceptor])),
     { provide: TitleStrategy, useClass: AppTitleStrategy },
-    importProvidersFrom(DialogModule),
+    importProvidersFrom(MatDialogModule),
   ],
 };

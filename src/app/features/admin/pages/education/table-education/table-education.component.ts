@@ -71,11 +71,14 @@ export class TableEducationComponent implements OnInit, OnDestroy {
       positions: this.records().length + 5,
       education: education,
     });
-    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (result) => {
-        if (result) this.getEducationListByDeleted();
-      },
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          if (result) this.getEducationListByDeleted();
+        },
+      });
   }
 
   confirmDelete(education: Education): void {

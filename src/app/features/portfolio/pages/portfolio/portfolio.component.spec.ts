@@ -13,7 +13,6 @@ import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
 import { Education } from '@shared/interfaces/education';
 import { Technology } from '@shared/interfaces/technology';
-import { DialogRef } from '@angular/cdk/dialog';
 import { Project } from '@shared/interfaces/project';
 import { Router } from '@angular/router';
 import { Skill } from '@shared/interfaces/skill';
@@ -58,7 +57,7 @@ describe('PortfolioComponent', () => {
     spinner = { show: vi.fn(), hide: vi.fn() };
     alert = { httpError: vi.fn() };
     parameter = {
-      openDialog: vi.fn().mockReturnValue({ closed: of(false) } as DialogRef),
+      openDialog: vi.fn().mockReturnValue({ afterClosed: () => of(false) }),
     };
     router = { url: '/projects', navigate: vi.fn().mockResolvedValue(true) };
 
@@ -182,7 +181,7 @@ describe('PortfolioComponent', () => {
 
   // Caso: vuelve al home después de completar el diálogo de contacto.
   it('returns home after a completed contact dialog', () => {
-    parameter.openDialog.mockReturnValue({ closed: of(true) });
+    parameter.openDialog.mockReturnValue({ afterClosed: () => of(true) });
     component.modalContact();
     expect(router.navigate).toHaveBeenCalledWith(['/'], { fragment: 'home' });
   });

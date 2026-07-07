@@ -69,11 +69,14 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
       positions: this.records().length + 5,
       socialNetwork: socialNetwork,
     });
-    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (result) => {
-        if (result) this.getSocialNetworkListByDeleted();
-      },
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          if (result) this.getSocialNetworkListByDeleted();
+        },
+      });
   }
 
   confirmDelete(socialNetwork: SocialNetwork): void {

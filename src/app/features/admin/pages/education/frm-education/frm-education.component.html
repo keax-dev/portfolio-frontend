@@ -7,85 +7,107 @@
 
   <div class="row g-3">
     <div class="col-12 col-md-6">
-      <label for="title" class="form-label fw-bold">Title (English): </label>
-      <input formControlName="title" class="form-control" id="title" appUppercase />
-      @if (controls['title'].touched && controls['title'].invalid) {
-        <small class="text-danger appear">The title is required</small>
-      }
-    </div>
-
-    <div class="col-12 col-md-6">
-      <label for="title_es" class="form-label fw-bold">Title (Spanish): </label>
-      <input formControlName="title_es" class="form-control" id="title_es" appUppercase />
-      @if (controls['title_es'].touched && controls['title_es'].invalid) {
-        <small class="text-danger appear">The Spanish title is required</small>
-      }
-    </div>
-
-    <div class="col-12 col-md-6">
-      <label for="institution" class="form-label fw-bold">Institution: </label>
-      <select formControlName="institution" class="form-select" id="institution">
-        <option [ngValue]="0" disabled>Select an institution</option>
-        @for (institution of institutionList(); track institution.id) {
-          <option [ngValue]="institution.id">{{ institution.name }}</option>
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Title (English)</mat-label>
+        <input formControlName="title" id="title" appUppercase matInput />
+        @if (controls['title'].touched && controls['title'].invalid) {
+          <mat-error>The title is required</mat-error>
         }
-      </select>
-      @if (controls['institution'].touched && controls['institution'].invalid) {
-        <small class="text-danger appear">The institution is required</small>
-      }
+      </mat-form-field>
     </div>
 
     <div class="col-12 col-md-6">
-      <label for="place" class="form-label fw-bold">Place (English): </label>
-      <input formControlName="place" class="form-control" id="place" appUppercase />
-      @if (controls['place'].touched && controls['place'].invalid) {
-        <small class="text-danger appear">The place is required</small>
-      }
-    </div>
-
-    <div class="col-12 col-md-6">
-      <label for="start" class="form-label fw-bold">Start (English): </label>
-      <input formControlName="start" class="form-control" id="start" appUppercase />
-    </div>
-
-    <div class="col-12 col-md-6">
-      <label for="start_es" class="form-label fw-bold">Start (Spanish): </label>
-      <input formControlName="start_es" class="form-control" id="start_es" appUppercase />
-    </div>
-
-    <div class="col-12 col-md-6">
-      <label for="end" class="form-label fw-bold">End (English): </label>
-      <input formControlName="end" class="form-control" id="end" appUppercase />
-      @if (controls['end'].touched && controls['end'].invalid) {
-        <small class="text-danger appear">The end is required</small>
-      }
-    </div>
-
-    <div class="col-12 col-md-6">
-      <label for="end_es" class="form-label fw-bold">End (Spanish): </label>
-      <input formControlName="end_es" class="form-control" id="end_es" appUppercase />
-      @if (controls['end_es'].touched && controls['end_es'].invalid) {
-        <small class="text-danger appear">The Spanish end is required</small>
-      }
-    </div>
-
-    <div class="col-12 col-md-6">
-      <label for="position" class="form-label fw-bold">Position: </label>
-      <select formControlName="position" class="form-select" id="position">
-        <option [ngValue]="0" disabled>Select a position</option>
-        @for (position of positionList; track position) {
-          <option [ngValue]="position">{{ position }}</option>
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Title (Spanish)</mat-label>
+        <input formControlName="title_es" id="title_es" appUppercase matInput />
+        @if (controls['title_es'].touched && controls['title_es'].invalid) {
+          <mat-error>The Spanish title is required</mat-error>
         }
-      </select>
-      @if (controls['position'].touched && controls['position'].invalid) {
-        <small class="text-danger appear">The position is required</small>
-      }
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Institution</mat-label>
+        <mat-select formControlName="institution" id="institution">
+          <mat-option [value]="0" disabled>Select an institution</mat-option>
+          @for (institution of institutionList(); track institution.id) {
+            <mat-option [value]="institution.id">{{ institution.name }}</mat-option>
+          }
+        </mat-select>
+        @if (controls['institution'].touched && controls['institution'].invalid) {
+          <mat-error>The institution is required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Place (English)</mat-label>
+        <input formControlName="place" id="place" appUppercase matInput />
+        @if (controls['place'].touched && controls['place'].invalid) {
+          <mat-error>The place is required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Start (English)</mat-label>
+        <input formControlName="start" id="start" appUppercase matInput />
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Start (Spanish)</mat-label>
+        <input formControlName="start_es" id="start_es" appUppercase matInput />
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>End (English)</mat-label>
+        <input formControlName="end" id="end" appUppercase matInput />
+        @if (controls['end'].touched && controls['end'].invalid) {
+          <mat-error>The end is required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>End (Spanish)</mat-label>
+        <input formControlName="end_es" id="end_es" appUppercase matInput />
+        @if (controls['end_es'].touched && controls['end_es'].invalid) {
+          <mat-error>The Spanish end is required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Position</mat-label>
+        <mat-select formControlName="position" id="position">
+          <mat-option [value]="0" disabled>Select a position</mat-option>
+          @for (position of positionList; track position) {
+            <mat-option [value]="position">{{ position }}</mat-option>
+          }
+        </mat-select>
+        @if (controls['position'].touched && controls['position'].invalid) {
+          <mat-error>The position is required</mat-error>
+        }
+      </mat-form-field>
     </div>
   </div>
 
   <footer class="w-100 d-flex justify-content-center align-items-center mt-3">
     <app-button [cancel]="true" (action)="close()"></app-button>
 
-    <app-button></app-button>
+    <app-button
+      [disabled]="isSaving()"
+      [icon]="isSaving() ? 'pi pi-spin pi-spinner' : 'pi pi-save'"
+      [text]="isSaving() ? 'Saving...' : 'Save'"
+    ></app-button>
   </footer>
 </form>

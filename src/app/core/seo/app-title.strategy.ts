@@ -4,7 +4,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { DOCUMENT } from '@angular/common';
 
 const DEFAULT_DESCRIPTION =
-  'Portafolio de Keax con perfil profesional, educación, habilidades, proyectos y panel administrativo.';
+  'Portafolio de Kevin con perfil profesional, educación, habilidades, proyectos y panel administrativo.';
 
 @Injectable()
 export class AppTitleStrategy extends TitleStrategy {
@@ -14,7 +14,7 @@ export class AppTitleStrategy extends TitleStrategy {
 
   override updateTitle(snapshot: RouterStateSnapshot): void {
     const routeTitle = this.buildTitle(snapshot) ?? 'Portfolio';
-    const fullTitle = routeTitle.startsWith('Keax') ? routeTitle : `Keax | ${routeTitle}`;
+    const fullTitle = routeTitle.startsWith('Kevin') ? routeTitle : `Kevin | ${routeTitle}`;
     const description = this.resolveDescription(snapshot.root) ?? DEFAULT_DESCRIPTION;
     const canonicalUrl = this.buildCanonicalUrl(snapshot);
 

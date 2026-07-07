@@ -1,8 +1,10 @@
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SocialNetworkService } from '@features/admin/services/social-network.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
@@ -13,6 +15,7 @@ import {
   FormsModule,
   Validators,
 } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -20,6 +23,7 @@ import {
   OnDestroy,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 
 interface SocialNetworkDialogData {
@@ -31,16 +35,24 @@ interface SocialNetworkDialogData {
   selector: 'app-frm-social-network',
   templateUrl: './frm-social-network.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, ButtonComponent],
+  imports: [
+    ReactiveFormsModule,
+    UppercaseDirective,
+    MatFormFieldModule,
+    ButtonComponent,
+    MatSelectModule,
+    MatInputModule,
+    FormsModule,
+  ],
 })
 export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly socialNetworkService = inject(SocialNetworkService);
   private readonly spinner = inject(NgxSpinnerService);
-  private readonly data = inject<SocialNetworkDialogData>(DIALOG_DATA);
+  private readonly data = inject<SocialNetworkDialogData>(MAT_DIALOG_DATA);
   private readonly alert = inject(AlertService);
-  private readonly ref = inject<DialogRef<SocialNetwork>>(DialogRef);
+  private readonly ref = inject<MatDialogRef<unknown, SocialNetwork>>(MatDialogRef);
   private readonly fb = inject(NonNullableFormBuilder);
 
   readonly socialNetworkForm = this.fb.group({
@@ -51,6 +63,7 @@ export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
     position: [0, [Validators.required, Validators.min(1)]],
   });
 
+  readonly isSaving = signal(false);
   readonly positionList = Array.from({ length: this.data.positions }, (_, i) => i + 1);
   title = 'New Social Network';
 
@@ -73,6 +86,10 @@ export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    if (this.isSaving()) {
+      return;
+    }
+
     if (this.socialNetworkForm.invalid) {
       this.socialNetworkForm.markAllAsTouched();
       return;
@@ -87,11 +104,11 @@ export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
   }
 
   createSocialNetwork(): void {
-    this.spinner.show();
+    this.isSaving.set(true);
     this.socialNetworkService
       .createSocialNetwork(this.socialNetworkForm.getRawValue())
       .pipe(
-        finalize(() => this.spinner.hide()),
+        finalize(() => this.isSaving.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
@@ -99,16 +116,16 @@ export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.close(result.data);
         },
-        error: (error) => this.alert.httpError(error),
+        error: (error) => this.alert.httpError(error, undefined, false),
       });
   }
 
   updateSocialNetwork(): void {
-    this.spinner.show();
+    this.isSaving.set(true);
     this.socialNetworkService
       .updateSocialNetwork(this.data.socialNetwork!.id!, this.socialNetworkForm.getRawValue())
       .pipe(
-        finalize(() => this.spinner.hide()),
+        finalize(() => this.isSaving.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
@@ -116,7 +133,7 @@ export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.close(result.data);
         },
-        error: (error) => this.alert.httpError(error),
+        error: (error) => this.alert.httpError(error, undefined, false),
       });
   }
 

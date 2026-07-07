@@ -14,47 +14,57 @@
     }
 
     <div class="row g-3">
-      <div class="col-md-6">
-        <label for="name" class="form-label fw-bold">Name:</label>
-        <input formControlName="name" class="form-control" id="name" appUppercase />
-        @if (controls['name'].touched && controls['name'].errors?.['required']) {
-          <small class="text-danger appear">The name is required</small>
-        }
+      <div class="col-12 col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Name</mat-label>
+          <input formControlName="name" id="name" appUppercase matInput />
+          @if (controls['name'].touched && controls['name'].errors?.['required']) {
+            <mat-error>The name is required</mat-error>
+          }
+        </mat-form-field>
       </div>
 
-      <div class="col-md-6">
-        <label for="last_name" class="form-label fw-bold">Last Name:</label>
-        <input formControlName="last_name" class="form-control" id="last_name" appUppercase />
-        @if (controls['last_name'].touched && controls['last_name'].errors?.['required']) {
-          <small class="text-danger appear">The last name is required</small>
-        }
+      <div class="col-12 col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Last Name</mat-label>
+          <input formControlName="last_name" id="last_name" appUppercase matInput />
+          @if (controls['last_name'].touched && controls['last_name'].errors?.['required']) {
+            <mat-error>The last name is required</mat-error>
+          }
+        </mat-form-field>
       </div>
 
-      <div class="col-md-6">
-        <label for="title" class="form-label fw-bold">Title (English):</label>
-        <input formControlName="title" class="form-control" id="title" appUppercase />
-        @if (controls['title'].touched && controls['title'].errors?.['required']) {
-          <small class="text-danger appear">The title is required</small>
-        }
+      <div class="col-12 col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Title (English)</mat-label>
+          <input formControlName="title" id="title" appUppercase matInput />
+          @if (controls['title'].touched && controls['title'].errors?.['required']) {
+            <mat-error>The title is required</mat-error>
+          }
+        </mat-form-field>
       </div>
 
-      <div class="col-md-6">
-        <label for="title_es" class="form-label fw-bold">Title (Spanish):</label>
-        <input formControlName="title_es" class="form-control" id="title_es" appUppercase />
-        @if (controls['title_es'].touched && controls['title_es'].errors?.['required']) {
-          <small class="text-danger appear">The Spanish title is required</small>
-        }
+      <div class="col-12 col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Title (Spanish)</mat-label>
+          <input formControlName="title_es" id="title_es" appUppercase matInput />
+          @if (controls['title_es'].touched && controls['title_es'].errors?.['required']) {
+            <mat-error>The Spanish title is required</mat-error>
+          }
+        </mat-form-field>
       </div>
 
-      <div class="col-md-6">
-        <label for="cv" class="form-label fw-bold">CV:</label>
-        <input formControlName="cv" class="form-control" type="url" id="cv" />
-        @if (controls['cv'].touched && controls['cv'].errors?.['required']) {
-          <small class="text-danger appear">The cv is required</small>
-        }
+      <div class="col-12 col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>CV</mat-label>
+          <input formControlName="cv" type="url" id="cv" matInput />
+          @if (controls['cv'].touched && controls['cv'].errors?.['required']) {
+            <mat-error>The cv is required</mat-error>
+          }
+        </mat-form-field>
       </div>
 
-      <div class="col-md-6">
+      <div class="col-12 col-md-6">
         <label for="image" class="form-label fw-bold">Image:</label>
         <input (change)="onFileSelected($event)" class="form-control" type="file" id="image" />
         @if (controls['image'].touched && controls['image'].errors?.['required']) {
@@ -72,7 +82,11 @@
     <footer class="w-100 d-flex justify-content-center align-items-center mt-3">
       <app-button [cancel]="true" (action)="cancel()"></app-button>
 
-      <app-button></app-button>
+      <app-button
+        [disabled]="isSaving()"
+        [icon]="isSaving() ? 'pi pi-spin pi-spinner' : 'pi pi-save'"
+        [text]="isSaving() ? 'Saving...' : 'Save'"
+      ></app-button>
     </footer>
   </form>
 </section>

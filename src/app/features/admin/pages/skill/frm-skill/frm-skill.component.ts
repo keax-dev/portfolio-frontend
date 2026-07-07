@@ -1,10 +1,13 @@
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { ParameterService } from '@core/services/parameter.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
 import { SkillService } from '@features/admin/services/skill.service';
@@ -17,6 +20,7 @@ import {
   OnDestroy,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 
 interface SkillDialogData {
@@ -28,7 +32,15 @@ interface SkillDialogData {
   selector: 'app-frm-skill',
   templateUrl: './frm-skill.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, ButtonComponent],
+  imports: [
+    ReactiveFormsModule,
+    UppercaseDirective,
+    MatFormFieldModule,
+    ButtonComponent,
+    MatSelectModule,
+    MatInputModule,
+    FormsModule,
+  ],
 })
 export class FrmSkillComponent implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
@@ -37,9 +49,9 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
   private readonly imageService = inject(ImageService);
   private readonly parameter = inject(ParameterService);
   private readonly spinner = inject(NgxSpinnerService);
-  private readonly data = inject<SkillDialogData>(DIALOG_DATA);
+  private readonly data = inject<SkillDialogData>(MAT_DIALOG_DATA);
   private readonly alert = inject(AlertService);
-  private readonly ref = inject<DialogRef<Skill>>(DialogRef);
+  private readonly ref = inject<MatDialogRef<unknown, Skill>>(MatDialogRef);
   private readonly fb = inject(FormBuilder);
 
   readonly skillForm = this.fb.group({
@@ -51,6 +63,7 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
     ]),
   });
 
+  readonly isSaving = signal(false);
   readonly positionList = Array.from({ length: this.data.positions }, (_, i) => i + 1);
   urlImage = '';
   title = 'New Skill';
@@ -76,6 +89,10 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    if (this.isSaving()) {
+      return;
+    }
+
     if (this.skillForm.invalid) {
       this.skillForm.markAllAsTouched();
       return;
@@ -90,7 +107,7 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
   }
 
   createSkill(): void {
-    this.spinner.show();
+    this.isSaving.set(true);
     this.skillService
       .createSkill(this.skill)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -99,12 +116,15 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.uploadImageInstitution(result.data);
         },
-        error: (error) => this.alert.httpError(error),
+        error: (error) => {
+          this.isSaving.set(false);
+          this.alert.httpError(error, undefined, false);
+        },
       });
   }
 
   updateSkill(): void {
-    this.spinner.show();
+    this.isSaving.set(true);
     this.skillService
       .updateSkill(this.data.skill!.id!, this.skill)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -117,23 +137,26 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
           }
 
           this.close(result.data);
-          this.spinner.hide();
+          this.isSaving.set(false);
         },
-        error: (error) => this.alert.httpError(error),
+        error: (error) => {
+          this.isSaving.set(false);
+          this.alert.httpError(error, undefined, false);
+        },
       });
   }
 
   uploadImageInstitution(skill: Skill): void {
     const image = this.controls.image.value;
     if (!image) {
-      this.spinner.hide();
+      this.isSaving.set(false);
       return;
     }
 
     this.imageService
       .uploadImageSkill(skill.id!, image)
       .pipe(
-        finalize(() => this.spinner.hide()),
+        finalize(() => this.isSaving.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
@@ -143,7 +166,7 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.close(skill);
-          this.alert.httpError(error);
+          this.alert.httpError(error, undefined, false);
         },
       });
   }

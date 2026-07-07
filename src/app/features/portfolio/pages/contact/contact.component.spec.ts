@@ -8,7 +8,7 @@ import { PortfolioService } from '@features/portfolio/services/portfolio.service
 import { ContactComponent } from './contact.component';
 import { of, throwError } from 'rxjs';
 import { AlertService } from '@core/services/alert.service';
-import { DialogRef } from '@angular/cdk/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 
 describe('ContactComponent', () => {
   let fixture: ComponentFixture<ContactComponent>;
@@ -37,7 +37,7 @@ describe('ContactComponent', () => {
         { provide: PortfolioService, useValue: portfolio },
         { provide: NgxSpinnerService, useValue: spinner },
         { provide: AlertService, useValue: alert },
-        { provide: DialogRef, useValue: dialogRef },
+        { provide: MatDialogRef, useValue: dialogRef },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(ContactComponent);

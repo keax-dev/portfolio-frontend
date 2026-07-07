@@ -12,6 +12,7 @@ import { NavbarComponent } from '@features/portfolio/pages/navbar/navbar.compone
 import { FooterComponent } from '@features/portfolio/pages/footer/footer.component';
 import { SkillComponent } from '@features/portfolio/pages/skill/skill.component';
 import { VisitorService } from '@features/portfolio/services/visitor.service';
+import { NavigationItem } from '@shared/interfaces/navigation-item';
 import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
 import { ApiResponse } from '@core/interfaces/apiresponse';
@@ -20,7 +21,6 @@ import { Education } from '@shared/interfaces/education';
 import { Profile } from '@shared/interfaces/profile';
 import { Router } from '@angular/router';
 import { Skill } from '@shared/interfaces/skill';
-import { NavigationItem } from '@shared/interfaces/navigation-item';
 import {
   ChangeDetectionStrategy,
   DestroyRef,
@@ -192,10 +192,13 @@ export class PortfolioComponent implements OnInit, OnDestroy {
 
   modalContact(): void {
     const dialogRef = this.parameter.openDialog(ContactComponent, null, '30%', '90%');
-    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (result) => {
-        if (result) void this.router.navigate(['/'], { fragment: 'home' });
-      },
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          if (result) void this.router.navigate(['/'], { fragment: 'home' });
+        },
+      });
   }
 }

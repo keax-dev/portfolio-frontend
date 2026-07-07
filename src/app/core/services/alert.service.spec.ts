@@ -5,8 +5,8 @@ import { NotificationService } from '@core/notifications/notification.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertService } from './alert.service';
+import { MatDialog } from '@angular/material/dialog';
 import { TestBed } from '@angular/core/testing';
-import { Dialog } from '@angular/cdk/dialog';
 import { of } from 'rxjs';
 
 describe('AlertService', () => {
@@ -24,7 +24,7 @@ describe('AlertService', () => {
         AlertService,
         { provide: NgxSpinnerService, useValue: spinner },
         { provide: NotificationService, useValue: notifications },
-        { provide: Dialog, useValue: dialog },
+        { provide: MatDialog, useValue: dialog },
       ],
     });
     service = TestBed.inject(AlertService);
@@ -100,7 +100,7 @@ describe('AlertService', () => {
   // Caso: ejecuta una acción de eliminación solo después de confirmar.
   it('executes a delete action only after confirmation', () => {
     const action = vi.fn();
-    dialog.open.mockReturnValue({ closed: of(true) });
+    dialog.open.mockReturnValue({ afterClosed: () => of(true) });
 
     service.confirmDelete(action);
 
@@ -116,7 +116,7 @@ describe('AlertService', () => {
   // Caso: no ejecuta una acción de eliminación cuando se cancela la confirmación.
   it('does not execute a delete action when confirmation is cancelled', () => {
     const action = vi.fn();
-    dialog.open.mockReturnValue({ closed: of(false) });
+    dialog.open.mockReturnValue({ afterClosed: () => of(false) });
     service.confirmDelete(action);
     expect(action).not.toHaveBeenCalled();
   });

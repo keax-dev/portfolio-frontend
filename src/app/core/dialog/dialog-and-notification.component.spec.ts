@@ -2,8 +2,8 @@
  * Pruebas unitarias de interacción DOM para el diálogo de confirmación y las notificaciones.
  */
 import { NotificationOutletComponent } from '@core/notifications/notification-outlet.component';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from './confirm-dialog.component';
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { NotificationService } from '@core/notifications/notification.service';
 import { TestBed } from '@angular/core/testing';
 
@@ -15,7 +15,7 @@ describe('dialog and notification components', () => {
       imports: [ConfirmDialogComponent],
       providers: [
         {
-          provide: DIALOG_DATA,
+          provide: MAT_DIALOG_DATA,
           useValue: {
             title: 'Delete?',
             message: 'This cannot be undone',
@@ -23,7 +23,7 @@ describe('dialog and notification components', () => {
             cancelLabel: 'Cancel',
           },
         },
-        { provide: DialogRef, useValue: ref },
+        { provide: MatDialogRef, useValue: ref },
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(ConfirmDialogComponent);

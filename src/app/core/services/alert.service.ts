@@ -4,7 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ApiResponse } from '@core/interfaces/apiresponse';
-import { Dialog } from '@angular/cdk/dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +12,7 @@ import { Dialog } from '@angular/cdk/dialog';
 export class AlertService {
   private notifications = inject(NotificationService);
   private spinner = inject(NgxSpinnerService);
-  private dialog = inject(Dialog);
+  private dialog = inject(MatDialog);
 
   success(sms: string): void {
     this.notifications.show('success', sms, 'Success');
@@ -134,21 +134,20 @@ export class AlertService {
   }
 
   confirmDelete(action: () => void): void {
-    const dialogRef = this.dialog.open<boolean, ConfirmDialogData>(ConfirmDialogComponent, {
-      data: {
-        title: 'Are you sure?',
-        message: "You won't be able to undo this!",
-        confirmLabel: 'Confirm',
-        cancelLabel: 'Cancel',
+    const dialogRef = this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
+      ConfirmDialogComponent,
+      {
+        data: {
+          title: 'Are you sure?',
+          message: "You won't be able to undo this!",
+          confirmLabel: 'Confirm',
+          cancelLabel: 'Cancel',
+        },
+        width: 'min(90vw, 28rem)',
       },
-      width: 'min(90vw, 28rem)',
-      autoFocus: 'first-tabbable',
-      restoreFocus: true,
-      panelClass: 'app-dialog-panel',
-      backdropClass: 'app-dialog-backdrop',
-    });
+    );
 
-    dialogRef.closed.subscribe((confirmed) => {
+    dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
         action();
       }

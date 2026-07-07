@@ -60,11 +60,14 @@ export class TableInstitutionComponent implements OnInit, OnDestroy {
 
   modalInstitution(institution?: Institution): void {
     const dialogRef = this.parameter.openDialog(FrmInstitutionComponent, institution);
-    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (result) => {
-        if (result) this.getInstitutionListByDeleted();
-      },
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          if (result) this.getInstitutionListByDeleted();
+        },
+      });
   }
 
   confirmDelete(institution: Institution): void {

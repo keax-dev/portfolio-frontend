@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 interface ImageDialogData {
   readonly url?: string;
@@ -12,8 +12,8 @@ interface ImageDialogData {
   templateUrl: './show-image.component.html',
 })
 export class ShowImageComponent implements OnInit {
-  private readonly data = inject<ImageDialogData>(DIALOG_DATA);
-  private readonly ref = inject(DialogRef);
+  private readonly data = inject<ImageDialogData>(MAT_DIALOG_DATA);
+  private readonly ref = inject<MatDialogRef<unknown>>(MatDialogRef);
 
   urlImg = '';
   altImg = '';

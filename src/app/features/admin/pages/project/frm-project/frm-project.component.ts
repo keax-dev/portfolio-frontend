@@ -1,11 +1,14 @@
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { TechnologyService } from '@features/admin/services/technology.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { ParameterService } from '@core/services/parameter.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 import { ProjectService } from '@features/admin/services/project.service';
 import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
@@ -31,7 +34,15 @@ interface ProjectDialogData {
   selector: 'app-frm-project',
   templateUrl: './frm-project.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, ReactiveFormsModule, UppercaseDirective, ButtonComponent],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    UppercaseDirective,
+    MatFormFieldModule,
+    MatSelectModule,
+    ButtonComponent,
+    MatInputModule,
+  ],
 })
 export class FrmProjectComponent implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
@@ -41,9 +52,9 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
   private readonly imageService = inject(ImageService);
   private readonly parameter = inject(ParameterService);
   private readonly spinner = inject(NgxSpinnerService);
-  private readonly data = inject<ProjectDialogData>(DIALOG_DATA);
+  private readonly data = inject<ProjectDialogData>(MAT_DIALOG_DATA);
   private readonly alert = inject(AlertService);
-  private readonly ref = inject<DialogRef<Project>>(DialogRef);
+  private readonly ref = inject<MatDialogRef<unknown, Project>>(MatDialogRef);
   private readonly fb = inject(FormBuilder);
 
   readonly projectForm = this.fb.group({
@@ -74,6 +85,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
   });
 
   readonly technologyList = signal<readonly Technology[]>([]);
+  readonly isSaving = signal(false);
   positionList: number[] = [];
   urlImage = '';
   title = 'New Project';
@@ -118,6 +130,10 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    if (this.isSaving()) {
+      return;
+    }
+
     if (this.projectForm.invalid) {
       this.projectForm.markAllAsTouched();
       return;
@@ -132,7 +148,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
   }
 
   createProject(): void {
-    this.spinner.show();
+    this.isSaving.set(true);
     this.projectService
       .createProject(this.project)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -141,12 +157,15 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
           this.alert.success(result.alert);
           this.uploadImageInstitution(result.data);
         },
-        error: (error) => this.alert.httpError(error),
+        error: (error) => {
+          this.isSaving.set(false);
+          this.alert.httpError(error, undefined, false);
+        },
       });
   }
 
   updateProject(): void {
-    this.spinner.show();
+    this.isSaving.set(true);
     this.projectService
       .updateProject(this.data.project!.id!, this.project)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -159,23 +178,26 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
           }
 
           this.close(result.data);
-          this.spinner.hide();
+          this.isSaving.set(false);
         },
-        error: (error) => this.alert.httpError(error),
+        error: (error) => {
+          this.isSaving.set(false);
+          this.alert.httpError(error, undefined, false);
+        },
       });
   }
 
   uploadImageInstitution(project: Project): void {
     const image = this.controls.image.value;
     if (!image) {
-      this.spinner.hide();
+      this.isSaving.set(false);
       return;
     }
 
     this.imageService
       .uploadImageProject(project.id!, image)
       .pipe(
-        finalize(() => this.spinner.hide()),
+        finalize(() => this.isSaving.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
@@ -185,7 +207,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.close(project);
-          this.alert.httpError(error);
+          this.alert.httpError(error, undefined, false);
         },
       });
   }

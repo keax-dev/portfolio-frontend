@@ -6,80 +6,95 @@
   <hr />
 
   <div class="row g-3">
-    <div class="col-md-6">
-      <label for="title" class="form-label fw-bold">Title (English):</label>
-      <input formControlName="title" class="form-control" id="title" appUppercase />
-      @if (controls['title'].touched && controls['title'].invalid) {
-        <small class="text-danger appear">The title is required</small>
-      }
-    </div>
-
-    <div class="col-md-6">
-      <label for="title_es" class="form-label fw-bold">Title (Spanish):</label>
-      <input formControlName="title_es" class="form-control" id="title_es" appUppercase />
-      @if (controls['title_es'].touched && controls['title_es'].invalid) {
-        <small class="text-danger appear">The Spanish title is required</small>
-      }
-    </div>
-
-    <div class="col-md-6">
-      <label for="description" class="form-label fw-bold">Description (English):</label>
-      <input formControlName="description" class="form-control" id="description" />
-      @if (controls['description'].touched && controls['description'].invalid) {
-        <small class="text-danger appear">The description is required</small>
-      }
-    </div>
-
-    <div class="col-md-6">
-      <label for="description_es" class="form-label fw-bold">Description (Spanish):</label>
-      <input formControlName="description_es" class="form-control" id="description_es" />
-      @if (controls['description_es'].touched && controls['description_es'].invalid) {
-        <small class="text-danger appear">The Spanish description is required</small>
-      }
-    </div>
-
-    <div class="col-md-6">
-      <label for="deploy" class="form-label fw-bold">Deploy:</label>
-      <input formControlName="deploy" class="form-control" id="deploy" type="url" />
-    </div>
-
-    <div class="col-md-6">
-      <label for="github" class="form-label fw-bold">GitHub:</label>
-      <input formControlName="github" class="form-control" id="github" type="url" />
-    </div>
-
-    <div class="col-md-6">
-      <label for="technology" class="form-label fw-bold">Technology: </label>
-      <select
-        (change)="loadPositionByTechnology(controls['technology']?.value || 0)"
-        formControlName="technology"
-        class="form-select"
-        id="technology"
-      >
-        <option [ngValue]="0" disabled>Select a technology</option>
-        @for (technology of technologyList(); track technology.id) {
-          <option [ngValue]="technology.id">{{ technology.name }}</option>
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Title (English)</mat-label>
+        <input formControlName="title" id="title" appUppercase matInput />
+        @if (controls['title'].touched && controls['title'].invalid) {
+          <mat-error>The title is required</mat-error>
         }
-      </select>
-      @if (controls['technology'].touched && controls['technology'].invalid) {
-        <small class="text-danger appear">The technology is required</small>
-      }
+      </mat-form-field>
     </div>
 
-    <div class="col-md-6">
-      <label for="position" class="form-label fw-bold">Position: </label>
-      <select formControlName="position" class="form-select" id="position">
-        <option [ngValue]="0" disabled>Select a position</option>
-        @for (position of positionList; track position) {
-          <option [ngValue]="position">{{ position }}</option>
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Title (Spanish)</mat-label>
+        <input formControlName="title_es" id="title_es" appUppercase matInput />
+        @if (controls['title_es'].touched && controls['title_es'].invalid) {
+          <mat-error>The Spanish title is required</mat-error>
         }
-      </select>
-      @if (controls['position'].touched && controls['position'].invalid) {
-        <small class="text-danger appear">The position is required</small>
-      }
+      </mat-form-field>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Description (English)</mat-label>
+        <textarea formControlName="description" id="description" rows="3" matInput></textarea>
+        @if (controls['description'].touched && controls['description'].invalid) {
+          <mat-error>The description is required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Description (Spanish)</mat-label>
+        <textarea formControlName="description_es" id="description_es" rows="3" matInput></textarea>
+        @if (controls['description_es'].touched && controls['description_es'].invalid) {
+          <mat-error>The Spanish description is required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Deploy</mat-label>
+        <input formControlName="deploy" id="deploy" type="url" matInput />
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>GitHub</mat-label>
+        <input formControlName="github" id="github" type="url" matInput />
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Technology</mat-label>
+        <mat-select
+          (selectionChange)="loadPositionByTechnology($event.value || 0)"
+          formControlName="technology"
+          id="technology"
+        >
+          <mat-option [value]="0" disabled>Select a technology</mat-option>
+          @for (technology of technologyList(); track technology.id) {
+            <mat-option [value]="technology.id">{{ technology.name }}</mat-option>
+          }
+        </mat-select>
+        @if (controls['technology'].touched && controls['technology'].invalid) {
+          <mat-error>The technology is required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Position</mat-label>
+        <mat-select formControlName="position" id="position">
+          <mat-option [value]="0" disabled>Select a position</mat-option>
+          @for (position of positionList; track position) {
+            <mat-option [value]="position">{{ position }}</mat-option>
+          }
+        </mat-select>
+        @if (controls['position'].touched && controls['position'].invalid) {
+          <mat-error>The position is required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
       <label for="image" class="form-label fw-bold">Image:</label>
       <input (change)="onFileSelected($event)" class="form-control" type="file" id="image" />
       @if (controls['image'].touched && controls['image'].errors?.['required']) {
@@ -92,7 +107,7 @@
     </div>
 
     @if (update) {
-      <div class="col-md-6">
+      <div class="col-12 col-md-6">
         <p class="fw-bolder text-center mb-2">Previous Image:</p>
 
         <div class="text-center">
@@ -105,6 +120,10 @@
   <footer class="w-100 d-flex justify-content-center align-items-center mt-3">
     <app-button [cancel]="true" (action)="close()"></app-button>
 
-    <app-button></app-button>
+    <app-button
+      [disabled]="isSaving()"
+      [icon]="isSaving() ? 'pi pi-spin pi-spinner' : 'pi pi-save'"
+      [text]="isSaving() ? 'Saving...' : 'Save'"
+    ></app-button>
   </footer>
 </form>

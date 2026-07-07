@@ -1,9 +1,9 @@
 /**
  * Pruebas unitarias de las interacciones visuales del portafolio y el panel administrativo.
  */
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ProjectCarouselComponent } from './technology/project-carousel/project-carousel.component';
 import { ProjectDetailsComponent } from './technology/project-details/project-details.component';
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { CvPreviewComponent } from './header/cv-preview/cv-preview.component';
 import { ShowImageComponent } from './technology/show-image/show-image.component';
 import { ParameterService } from '@core/services/parameter.service';
@@ -153,8 +153,8 @@ describe('portfolio interaction components', () => {
       providers: [
         { provide: TranslateService, useValue: { getLang: 'en' } },
         { provide: ParameterService, useValue: parameter },
-        { provide: DIALOG_DATA, useValue: project },
-        { provide: DialogRef, useValue: ref },
+        { provide: MAT_DIALOG_DATA, useValue: project },
+        { provide: MatDialogRef, useValue: ref },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(ProjectDetailsComponent).componentInstance;
@@ -177,8 +177,8 @@ describe('portfolio interaction components', () => {
     await TestBed.configureTestingModule({
       imports: [ShowImageComponent],
       providers: [
-        { provide: DIALOG_DATA, useValue: { url: 'image.png', alt: 'Preview' } },
-        { provide: DialogRef, useValue: ref },
+        { provide: MAT_DIALOG_DATA, useValue: { url: 'image.png', alt: 'Preview' } },
+        { provide: MatDialogRef, useValue: ref },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(ShowImageComponent).componentInstance;
@@ -195,8 +195,8 @@ describe('portfolio interaction components', () => {
     await TestBed.configureTestingModule({
       imports: [CvPreviewComponent],
       providers: [
-        { provide: DIALOG_DATA, useValue: { url: profile.cv } },
-        { provide: DialogRef, useValue: ref },
+        { provide: MAT_DIALOG_DATA, useValue: { url: profile.cv } },
+        { provide: MatDialogRef, useValue: ref },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(CvPreviewComponent).componentInstance;

@@ -1,29 +1,27 @@
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { inject, Injectable, Type } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Dialog, DialogRef } from '@angular/cdk/dialog';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ParameterService {
   private breakpointObserver = inject(BreakpointObserver);
-  private dialog = inject(Dialog);
+  private dialog = inject(MatDialog);
 
   openDialog<T, D, R = unknown>(
     component: Type<T>,
     data?: D,
     computer?: string,
     mobile?: string,
-  ): DialogRef<R, T> {
-    return this.dialog.open<R, D, T>(component, {
+  ): MatDialogRef<T, R> {
+    return this.dialog.open<T, D, R>(component, {
       width: this.getModalWidthByParameters(computer, mobile),
-      maxWidth: '100vw',
+      maxWidth: '95vw',
+      height: 'auto',
+      maxHeight: '95vh',
       data,
-      autoFocus: 'first-tabbable',
-      restoreFocus: true,
-      panelClass: 'app-dialog-panel',
-      backdropClass: 'app-dialog-backdrop',
     });
   }
 

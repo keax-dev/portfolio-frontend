@@ -130,7 +130,7 @@ describe('admin table components', () => {
       [testCase.serviceDeleteMethod]: remove,
     };
     const parameter = {
-      openDialog: vi.fn().mockReturnValue({ closed: of(true) }),
+      openDialog: vi.fn().mockReturnValue({ afterClosed: () => of(true) }),
     };
     const alert = {
       success: vi.fn(),

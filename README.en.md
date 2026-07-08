@@ -250,15 +250,18 @@ The production build includes:
 
 ## CI/CD
 
-The project uses GitHub Actions with two main workflows:
+The project uses GitHub Actions with three main workflows:
 
 - `ci.yml`: validates formatting, lint, typecheck, unit tests, integration tests, E2E tests, and the production build.
 - `deploy-prod.yml`: publishes the Docker image to GitHub Container Registry and updates the container on AWS Lightsail.
+- `rollback-prod.yml`: allows a manual restore of a previous production image by using an exact image tag.
 
 Current branch flow:
 
-- `development`: CI only.
-- `main`: CI plus production deployment if all checks pass.
+- Push to `main`: runs `ci.yml`.
+- Pull request targeting `main`: runs `ci.yml`.
+- Successful CI on `main`: triggers `deploy-prod.yml`.
+- Production rollback: launched manually from GitHub Actions through `rollback-prod.yml`.
 
 Current CI pipeline:
 
@@ -275,7 +278,8 @@ Current CI pipeline:
 Current architecture:
 
 - GitHub Actions builds the image using `Dockerfile`.
-- The image is published to GHCR.
+- The image is published to GHCR with `latest` and `sha-<commit>` tags.
+- A self-hosted runner installed on the Lightsail instance performs the deployment locally.
 - Lightsail runs `docker compose pull` and `docker compose up -d`.
 - The frontend container exposes `127.0.0.1:4201`.
 - Host Nginx works as the reverse proxy for `https://www.keax.dev`.
@@ -287,6 +291,8 @@ Relevant files:
 - `default.conf`: Nginx configuration inside the container.
 - `docker-compose.yml`: local execution.
 - `docker-compose.prod.yml`: remote Lightsail execution.
+- `.github/workflows/deploy-prod.yml`: production publishing and deployment.
+- `.github/workflows/rollback-prod.yml`: manual restore of previous versions.
 
 Useful production checks:
 
@@ -296,27 +302,42 @@ cd /opt/portfolio-frontend && docker compose --env-file .env.prod -f docker-comp
 curl -I http://127.0.0.1:4201
 ```
 
-Basic manual rollback path:
+Manual rollback from GitHub Actions:
+
+- Open `Actions > Rollback Prod`.
+- Run the workflow on the `main` branch.
+- In `image_tag`, provide a previously published immutable tag such as `sha-a7bc530`.
+
+What the rollback does:
+
+- updates `.env.prod` with the target image
+- pulls that image from GHCR
+- recreates the frontend container
+- validates the local HTTP response with `curl`
+
+Local reference to the currently deployed image:
 
 ```bash
-cd /opt/portfolio-frontend
-docker compose --env-file .env.prod -f docker-compose.prod.yml pull frontend
-docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --remove-orphans
+cat /opt/portfolio-frontend/.env.prod
 ```
 
 ## Required production secrets
 
 The deployment workflow uses the `production` GitHub environment and requires these secrets:
 
-- `LIGHTSAIL_HOST`
-- `LIGHTSAIL_USER`
-- `LIGHTSAIL_SSH_KEY`
 - `LIGHTSAIL_FRONTEND_PATH`
 - `GHCR_READ_TOKEN`
+
+In addition, for the documented deployment model to work, the production server must already have:
+
+- Docker Engine
+- Docker Compose plugin
+- a GitHub Actions self-hosted runner labeled `self-hosted`, `Linux`, `X64`, and `production`
 
 The repository must also enable:
 
 - `Settings > Actions > General > Workflow permissions > Read and write permissions`
+- branch protection for `main` with the required `validate` status check
 
 ## Quick structure
 
@@ -348,4 +369,4 @@ public/
 ## Notes
 
 - GitHub does not provide a native README language switcher, which is why the repository keeps both `README.md` and `README.en.md`.
-- The current deployment uses SSH into Lightsail. If you want a stricter security model later, the flow can evolve toward a more restricted access pattern or a self-hosted runner.
+- The current production deployment no longer depends on open SSH access from GitHub Actions; updates run directly inside Lightsail through a self-hosted runner.

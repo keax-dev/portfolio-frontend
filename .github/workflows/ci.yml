@@ -77,7 +77,8 @@ jobs:
         run: npm run test:e2e
 
       # Confirma que la aplicacion compila correctamente en modo produccion.
-      # En este flujo se deja al final para priorizar primero las validaciones funcionales.
+      # En este flujo se deja al final para priorizar primero las validaciones funcionales
+      # y evitar gastar tiempo de build si una prueba ya fallo antes.
       - name: Validar build de produccion
         run: npm run build -- --configuration=production
 

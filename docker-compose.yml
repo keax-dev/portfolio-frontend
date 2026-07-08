@@ -1,0 +1,10 @@
+services:
+  frontend:
+    container_name: portfolio-frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: portfolio-frontend:local
+    ports:
+      - "8080:80"
+    restart: unless-stopped

@@ -1,0 +1,11 @@
+# Compose de produccion del frontend.
+# Aqui ya no se construye la imagen localmente: se descarga desde GHCR.
+# El puerto se expone solo en localhost del servidor para que Nginx del host
+# actue como reverse proxy y mantenga SSL, dominio y reglas de seguridad.
+services:
+  frontend:
+    container_name: portfolio-frontend
+    image: ${FRONTEND_IMAGE}
+    ports:
+      - "127.0.0.1:4201:80"
+    restart: unless-stopped

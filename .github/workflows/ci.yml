@@ -1,0 +1,93 @@
+# Pipeline de integracion continua del frontend.
+# Su objetivo es validar calidad, compilacion y pruebas antes de desplegar.
+name: CI
+
+# Define en que eventos se ejecuta este workflow.
+on:
+  # Se ejecuta al subir cambios directamente a development o main.
+  push:
+    branches:
+      - development
+      - main
+  # Se ejecuta tambien cuando se abre o actualiza un Pull Request hacia estas ramas.
+  pull_request:
+    branches:
+      - development
+      - main
+
+# Permisos minimos necesarios para leer el repositorio.
+permissions:
+  contents: read
+
+# Evita que se acumulen ejecuciones viejas del mismo workflow y la misma rama.
+# Si subimos nuevos cambios a la misma rama, cancela la ejecucion anterior en progreso.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Job principal de validacion del proyecto.
+  validate:
+    # Usa una maquina Linux administrada por GitHub.
+    runs-on: ubuntu-latest
+    # Tiempo maximo del job para evitar ejecuciones colgadas indefinidamente.
+    timeout-minutes: 30
+
+    steps:
+      # Descarga el contenido del repositorio en el runner.
+      - name: Descargar el codigo
+        uses: actions/checkout@v4
+
+      # Instala la version de Node.js alineada con la usada en Docker.
+      # Tambien activa cache de npm para acelerar futuras ejecuciones.
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      # Instala dependencias exactamente como estan definidas en package-lock.json.
+      - name: Instalar dependencias
+        run: npm ci
+
+      # Valida que el formato del codigo coincida con las reglas de Prettier.
+      - name: Verificar formato
+        run: npm run format:check
+
+      # Ejecuta ESLint para detectar problemas de calidad o estilo de codigo.
+      - name: Ejecutar lint
+        run: npm run lint
+
+      # Verifica tipos de TypeScript en app, tests y e2e.
+      - name: Ejecutar typecheck
+        run: npm run typecheck
+
+      # Confirma que la aplicacion compila correctamente en modo produccion.
+      # Esto ayuda a detectar errores que no siempre aparecen en desarrollo.
+      - name: Validar build de produccion
+        run: npm run build -- --configuration=production
+
+      # Ejecuta las pruebas unitarias con Vitest.
+      - name: Ejecutar pruebas unitarias
+        run: npm run test:unit
+
+      # Ejecuta las pruebas de integracion del frontend.
+      - name: Ejecutar pruebas integracion
+        run: npm run test:integration
+
+      # Instala Chromium y dependencias del sistema necesarias para Playwright en CI.
+      - name: Instalar Chromium para Playwright
+        run: npx playwright install --with-deps chromium
+
+      # Ejecuta las pruebas end-to-end contra la aplicacion levantada localmente.
+      - name: Ejecutar pruebas e2e
+        run: npm run test:e2e
+
+      # Si alguna prueba falla, sube el reporte HTML de Playwright como artefacto
+      # para poder revisar evidencias desde GitHub Actions.
+      - name: Subir reporte de Playwright si falla
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report

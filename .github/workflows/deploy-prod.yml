@@ -1,0 +1,151 @@
+# Pipeline de publicacion de la imagen Docker de produccion.
+# Solo se ejecuta cuando el workflow de CI termina correctamente sobre main.
+name: Deploy Prod
+
+on:
+  workflow_run:
+    # Escucha el resultado del workflow de integracion continua.
+    workflows: ['CI']
+    types:
+      - completed
+    branches:
+      - main
+
+# Permisos necesarios:
+# - contents: leer el repositorio
+# - packages: publicar la imagen en GitHub Container Registry
+permissions:
+  contents: read
+  packages: write
+
+# Evita publicaciones paralelas de produccion.
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: true
+
+jobs:
+  publish-image:
+    # Solo continua si el CI termino exitosamente.
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment: production
+    outputs:
+      image_name: ${{ steps.image.outputs.name }}
+      image_ref: ${{ steps.image.outputs.name }}:latest
+
+    steps:
+      # Descarga el codigo exacto del commit que aprobo el CI.
+      - name: Descargar el codigo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      # Prepara el builder moderno de Docker para construir imagenes.
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Normaliza el nombre de la imagen a minusculas porque GHCR lo requiere.
+      - name: Normalizar nombre de imagen
+        id: image
+        shell: bash
+        run: echo "name=$(echo 'ghcr.io/${{ github.repository_owner }}/portfolio-frontend' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+
+      # Inicia sesion en GHCR usando el token automatico de GitHub Actions.
+      - name: Iniciar sesion en GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Genera tags y labels estandar para la imagen.
+      # - latest: ultima version aprobada en main
+      # - sha-xxxx: version trazable a un commit exacto
+      - name: Generar metadata de la imagen
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ steps.image.outputs.name }}
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=sha-
+
+      # Construye la imagen con el Dockerfile del proyecto y la publica en GHCR.
+      - name: Construir y publicar imagen Docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy-lightsail:
+    # Este job toma la imagen publicada y actualiza el contenedor remoto.
+    needs: publish-image
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      # Descarga el codigo del mismo commit para obtener el compose de produccion.
+      - name: Descargar el codigo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      # Prepara la llave SSH y registra la huella del servidor para evitar prompts interactivos.
+      - name: Configurar acceso SSH al servidor
+        shell: bash
+        env:
+          LIGHTSAIL_HOST: ${{ secrets.LIGHTSAIL_HOST }}
+          LIGHTSAIL_SSH_KEY: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s' "$LIGHTSAIL_SSH_KEY" > ~/.ssh/lightsail
+          chmod 600 ~/.ssh/lightsail
+          ssh-keyscan -H "$LIGHTSAIL_HOST" >> ~/.ssh/known_hosts
+
+      # Crea la carpeta de despliegue si no existe aun en el Lightsail.
+      - name: Preparar carpeta remota
+        shell: bash
+        env:
+          LIGHTSAIL_HOST: ${{ secrets.LIGHTSAIL_HOST }}
+          LIGHTSAIL_USER: ${{ secrets.LIGHTSAIL_USER }}
+          LIGHTSAIL_FRONTEND_PATH: ${{ secrets.LIGHTSAIL_FRONTEND_PATH }}
+        run: |
+          ssh -i ~/.ssh/lightsail "$LIGHTSAIL_USER@$LIGHTSAIL_HOST" "mkdir -p '$LIGHTSAIL_FRONTEND_PATH'"
+
+      # Copia el compose de produccion al servidor.
+      - name: Copiar compose de produccion
+        shell: bash
+        env:
+          LIGHTSAIL_HOST: ${{ secrets.LIGHTSAIL_HOST }}
+          LIGHTSAIL_USER: ${{ secrets.LIGHTSAIL_USER }}
+          LIGHTSAIL_FRONTEND_PATH: ${{ secrets.LIGHTSAIL_FRONTEND_PATH }}
+        run: |
+          scp -i ~/.ssh/lightsail ./docker-compose.prod.yml "$LIGHTSAIL_USER@$LIGHTSAIL_HOST:$LIGHTSAIL_FRONTEND_PATH/docker-compose.prod.yml"
+
+      # Inicia sesion en GHCR dentro del servidor, actualiza la imagen y recrea el contenedor.
+      - name: Actualizar contenedor en Lightsail
+        shell: bash
+        env:
+          LIGHTSAIL_HOST: ${{ secrets.LIGHTSAIL_HOST }}
+          LIGHTSAIL_USER: ${{ secrets.LIGHTSAIL_USER }}
+          LIGHTSAIL_FRONTEND_PATH: ${{ secrets.LIGHTSAIL_FRONTEND_PATH }}
+          GHCR_USERNAME: ${{ github.repository_owner }}
+          GHCR_READ_TOKEN: ${{ secrets.GHCR_READ_TOKEN }}
+          FRONTEND_IMAGE: ${{ needs.publish-image.outputs.image_ref }}
+        run: |
+          GHCR_TOKEN_B64="$(printf '%s' "$GHCR_READ_TOKEN" | base64 -w 0)"
+          ssh -i ~/.ssh/lightsail "$LIGHTSAIL_USER@$LIGHTSAIL_HOST" << EOF
+            set -e
+            mkdir -p "$LIGHTSAIL_FRONTEND_PATH"
+            cat > "$LIGHTSAIL_FRONTEND_PATH/.env.prod" << EOT
+            FRONTEND_IMAGE=$FRONTEND_IMAGE
+            EOT
+            printf '%s' "$GHCR_TOKEN_B64" | base64 -d | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+            cd "$LIGHTSAIL_FRONTEND_PATH"
+            docker compose --env-file .env.prod -f docker-compose.prod.yml pull frontend
+            docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --remove-orphans
+            docker image prune -f
+          EOF

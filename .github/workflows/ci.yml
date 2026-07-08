@@ -4,15 +4,13 @@ name: CI
 
 # Define en que eventos se ejecuta este workflow.
 on:
-  # Se ejecuta al subir cambios directamente a development o main.
+  # Se ejecuta al subir cambios directamente a main.
   push:
     branches:
-      - development
       - main
-  # Se ejecuta tambien cuando se abre o actualiza un Pull Request hacia estas ramas.
+  # Se ejecuta cuando se abre o actualiza un Pull Request hacia main.
   pull_request:
     branches:
-      - development
       - main
 
 # Permisos minimos necesarios para leer el repositorio.
@@ -31,7 +29,7 @@ jobs:
     # Usa una maquina Linux administrada por GitHub.
     runs-on: ubuntu-latest
     # Tiempo maximo del job para evitar ejecuciones colgadas indefinidamente.
-    timeout-minutes: 30
+    timeout-minutes: 10
 
     steps:
       # Descarga el contenido del repositorio en el runner.

@@ -81,7 +81,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   deploy-lightsail:
-    # Este job toma la imagen publicada y actualiza el contenedor remoto.
+    # Este job corre en el self-hosted runner del propio Lightsail.
+    # Por eso ya no necesita SSH: actualiza el despliegue localmente.
     needs: publish-image
     runs-on: [self-hosted, Linux, X64, production]
     environment: production
@@ -93,57 +94,36 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
-      # Prepara la llave SSH y registra la huella del servidor para evitar prompts interactivos.
-      - name: Configurar acceso SSH al servidor
+      # Crea la carpeta de despliegue local si no existe aun.
+      - name: Preparar carpeta de despliegue
         shell: bash
         env:
-          LIGHTSAIL_HOST: ${{ secrets.LIGHTSAIL_HOST }}
-          LIGHTSAIL_SSH_KEY: ${{ secrets.LIGHTSAIL_SSH_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          printf '%s' "$LIGHTSAIL_SSH_KEY" > ~/.ssh/lightsail
-          chmod 600 ~/.ssh/lightsail
-          ssh-keyscan -H "$LIGHTSAIL_HOST" >> ~/.ssh/known_hosts
-
-      # Crea la carpeta de despliegue si no existe aun en el Lightsail.
-      - name: Preparar carpeta remota
-        shell: bash
-        env:
-          LIGHTSAIL_HOST: ${{ secrets.LIGHTSAIL_HOST }}
-          LIGHTSAIL_USER: ${{ secrets.LIGHTSAIL_USER }}
           LIGHTSAIL_FRONTEND_PATH: ${{ secrets.LIGHTSAIL_FRONTEND_PATH }}
         run: |
-          ssh -i ~/.ssh/lightsail "$LIGHTSAIL_USER@$LIGHTSAIL_HOST" "mkdir -p '$LIGHTSAIL_FRONTEND_PATH'"
+          mkdir -p "$LIGHTSAIL_FRONTEND_PATH"
 
-      # Copia el compose de produccion al servidor.
+      # Copia el compose de produccion a la carpeta local del despliegue.
       - name: Copiar compose de produccion
         shell: bash
         env:
-          LIGHTSAIL_HOST: ${{ secrets.LIGHTSAIL_HOST }}
-          LIGHTSAIL_USER: ${{ secrets.LIGHTSAIL_USER }}
           LIGHTSAIL_FRONTEND_PATH: ${{ secrets.LIGHTSAIL_FRONTEND_PATH }}
         run: |
-          scp -i ~/.ssh/lightsail ./docker-compose.prod.yml "$LIGHTSAIL_USER@$LIGHTSAIL_HOST:$LIGHTSAIL_FRONTEND_PATH/docker-compose.prod.yml"
+          cp ./docker-compose.prod.yml "$LIGHTSAIL_FRONTEND_PATH/docker-compose.prod.yml"
 
-      # Inicia sesion en GHCR dentro del servidor, actualiza la imagen y recrea el contenedor.
+      # Inicia sesion en GHCR, actualiza la imagen y recrea el contenedor local.
       - name: Actualizar contenedor en Lightsail
         shell: bash
         env:
-          LIGHTSAIL_HOST: ${{ secrets.LIGHTSAIL_HOST }}
-          LIGHTSAIL_USER: ${{ secrets.LIGHTSAIL_USER }}
           LIGHTSAIL_FRONTEND_PATH: ${{ secrets.LIGHTSAIL_FRONTEND_PATH }}
           GHCR_USERNAME: ${{ github.repository_owner }}
           GHCR_READ_TOKEN: ${{ secrets.GHCR_READ_TOKEN }}
           FRONTEND_IMAGE: ${{ needs.publish-image.outputs.image_ref }}
         run: |
-          GHCR_TOKEN_B64="$(printf '%s' "$GHCR_READ_TOKEN" | base64 -w 0)"
-          ssh -i ~/.ssh/lightsail "$LIGHTSAIL_USER@$LIGHTSAIL_HOST" << EOF
-            set -euo pipefail
-            mkdir -p "$LIGHTSAIL_FRONTEND_PATH"
-            printf 'FRONTEND_IMAGE=%s\n' "$FRONTEND_IMAGE" > "$LIGHTSAIL_FRONTEND_PATH/.env.prod"
-            printf '%s' "$GHCR_TOKEN_B64" | base64 -d | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
-            cd "$LIGHTSAIL_FRONTEND_PATH"
-            docker compose --env-file .env.prod -f docker-compose.prod.yml pull frontend
-            docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --remove-orphans
-            docker image prune -f
-          EOF
+          set -euo pipefail
+          mkdir -p "$LIGHTSAIL_FRONTEND_PATH"
+          printf 'FRONTEND_IMAGE=%s\n' "$FRONTEND_IMAGE" > "$LIGHTSAIL_FRONTEND_PATH/.env.prod"
+          printf '%s' "$GHCR_READ_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+          cd "$LIGHTSAIL_FRONTEND_PATH"
+          docker compose --env-file .env.prod -f docker-compose.prod.yml pull frontend
+          docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --remove-orphans
+          docker image prune -f

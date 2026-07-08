@@ -29,9 +29,13 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment: production
+    # Cancela el job si la construccion/publicacion se queda colgada.
     timeout-minutes: 10
     outputs:
+      # Nombre base del repositorio de imagen en GHCR.
       image_name: ${{ steps.image.outputs.name }}
+      # Referencia exacta de la imagen que luego se desplegara en produccion.
+      # Usa el SHA del commit para que el despliegue sea trazable e inmutable.
       image_ref: ${{ steps.image.outputs.name }}:sha-${{ github.event.workflow_run.head_sha }}
 
     steps:
@@ -61,7 +65,7 @@ jobs:
 
       # Genera tags y labels estandar para la imagen.
       # - latest: ultima version aprobada en main
-      # - sha-xxxx: version trazable a un commit exacto
+      # - sha-<commit>: version inmutable para despliegue exacto y rollback
       - name: Generar metadata de la imagen
         id: meta
         uses: docker/metadata-action@v5
@@ -83,10 +87,12 @@ jobs:
 
   deploy-lightsail:
     # Este job corre en el self-hosted runner del propio Lightsail.
-    # Por eso ya no necesita SSH: actualiza el despliegue localmente.
+    # Por eso ya no necesita SSH: actualiza el despliegue localmente
+    # y evita abrir el puerto 22 a internet para el pipeline.
     needs: publish-image
     runs-on: [self-hosted, Linux, X64, production]
     environment: production
+    # Cancela el deploy si algo se cuelga mas de 10 minutos.
     timeout-minutes: 10
 
     steps:
@@ -122,15 +128,20 @@ jobs:
           FRONTEND_IMAGE: ${{ needs.publish-image.outputs.image_ref }}
         run: |
           set -euo pipefail
+          # Guarda en .env.prod la imagen exacta que debe ejecutar produccion.
           mkdir -p "$LIGHTSAIL_FRONTEND_PATH"
           printf 'FRONTEND_IMAGE=%s\n' "$FRONTEND_IMAGE" > "$LIGHTSAIL_FRONTEND_PATH/.env.prod"
+          # Autentica Docker contra GHCR para poder descargar la imagen publicada.
           printf '%s' "$GHCR_READ_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+          # Descarga la imagen objetivo y recrea el contenedor con esa version exacta.
           cd "$LIGHTSAIL_FRONTEND_PATH"
           docker compose --env-file .env.prod -f docker-compose.prod.yml pull frontend
           docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --remove-orphans
+          # Limpia imagenes sin uso para no crecer innecesariamente en disco.
           docker image prune -f
 
-      # Verifica que el frontend desplegado responda localmente dentro del servidor.
+      # Smoke check posterior al deploy.
+      # Si el contenedor no responde HTTP, el workflow falla aunque docker compose haya terminado.
       - name: Verificar frontend desplegado
         shell: bash
         run: |

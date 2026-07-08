@@ -1,0 +1,80 @@
+# Workflow manual para restaurar una version anterior del frontend en produccion.
+# El objetivo es redeplegar una imagen especifica ya publicada en GHCR.
+name: Rollback Prod
+
+on:
+  # Permite lanzar el rollback manualmente desde GitHub Actions.
+  workflow_dispatch:
+    inputs:
+      # Tag exacto de la imagen a restaurar, por ejemplo: sha-a7bc530...
+      image_tag:
+        description: 'Production image tag to redeploy (example: sha-a7bc530...)'
+        required: true
+        type: string
+
+# Permiso minimo para leer el repositorio y reutilizar archivos como docker-compose.prod.yml.
+permissions:
+  contents: read
+
+# Evita que se ejecuten dos rollbacks al mismo tiempo.
+concurrency:
+  group: rollback-prod
+  cancel-in-progress: false
+
+jobs:
+  # Job que ejecuta el rollback directamente dentro del Lightsail usando el self-hosted runner.
+  rollback-lightsail:
+    # Se ejecuta en el runner de produccion alojado en el propio servidor.
+    runs-on: [self-hosted, Linux, X64, production]
+    # Usa el environment de produccion para heredar sus secrets y controles.
+    environment: production
+    # Cancela el job si el rollback se cuelga mas de 10 minutos.
+    timeout-minutes: 10
+
+    steps:
+      # Descarga el codigo del repositorio para reutilizar el compose de produccion.
+      - name: Descargar el codigo
+        uses: actions/checkout@v4
+
+      # Asegura que exista la carpeta local donde vive el despliegue del frontend.
+      - name: Preparar carpeta de despliegue
+        shell: bash
+        env:
+          LIGHTSAIL_FRONTEND_PATH: ${{ secrets.LIGHTSAIL_FRONTEND_PATH }}
+        run: |
+          mkdir -p "$LIGHTSAIL_FRONTEND_PATH"
+
+      # Copia el archivo compose actual a la carpeta de despliegue del servidor.
+      - name: Copiar compose de produccion
+        shell: bash
+        env:
+          LIGHTSAIL_FRONTEND_PATH: ${{ secrets.LIGHTSAIL_FRONTEND_PATH }}
+        run: |
+          cp ./docker-compose.prod.yml "$LIGHTSAIL_FRONTEND_PATH/docker-compose.prod.yml"
+
+      # Reemplaza la imagen actual por la version indicada manualmente y recrea el contenedor.
+      - name: Ejecutar rollback de produccion
+        shell: bash
+        env:
+          LIGHTSAIL_FRONTEND_PATH: ${{ secrets.LIGHTSAIL_FRONTEND_PATH }}
+          GHCR_USERNAME: ${{ github.repository_owner }}
+          GHCR_READ_TOKEN: ${{ secrets.GHCR_READ_TOKEN }}
+          FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/portfolio-frontend:${{ inputs.image_tag }}
+        run: |
+          set -euo pipefail
+          # Guarda en .env.prod la imagen exacta que queremos restaurar.
+          printf 'FRONTEND_IMAGE=%s\n' "$FRONTEND_IMAGE" > "$LIGHTSAIL_FRONTEND_PATH/.env.prod"
+          # Autentica Docker contra GHCR para poder descargar la imagen historica.
+          printf '%s' "$GHCR_READ_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+          # Descarga la imagen restaurada y reinicia el servicio frontend con esa version.
+          cd "$LIGHTSAIL_FRONTEND_PATH"
+          docker compose --env-file .env.prod -f docker-compose.prod.yml pull frontend
+          docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --remove-orphans
+          # Limpia imagenes sin uso para evitar crecimiento innecesario del disco.
+          docker image prune -f
+
+      # Verifica que la aplicacion restaurada responda correctamente en el puerto local del contenedor.
+      - name: Verificar frontend restaurado
+        shell: bash
+        run: |
+          curl --fail --silent --show-error http://127.0.0.1:4201 > /dev/null

@@ -138,11 +138,9 @@ jobs:
         run: |
           GHCR_TOKEN_B64="$(printf '%s' "$GHCR_READ_TOKEN" | base64 -w 0)"
           ssh -i ~/.ssh/lightsail "$LIGHTSAIL_USER@$LIGHTSAIL_HOST" << EOF
-            set -e
+            set -euo pipefail
             mkdir -p "$LIGHTSAIL_FRONTEND_PATH"
-            cat > "$LIGHTSAIL_FRONTEND_PATH/.env.prod" << EOT
-            FRONTEND_IMAGE=$FRONTEND_IMAGE
-            EOT
+            printf 'FRONTEND_IMAGE=%s\n' "$FRONTEND_IMAGE" > "$LIGHTSAIL_FRONTEND_PATH/.env.prod"
             printf '%s' "$GHCR_TOKEN_B64" | base64 -d | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
             cd "$LIGHTSAIL_FRONTEND_PATH"
             docker compose --env-file .env.prod -f docker-compose.prod.yml pull frontend

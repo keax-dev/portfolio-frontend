@@ -83,7 +83,7 @@ jobs:
   deploy-lightsail:
     # Este job toma la imagen publicada y actualiza el contenedor remoto.
     needs: publish-image
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, production]
     environment: production
 
     steps:

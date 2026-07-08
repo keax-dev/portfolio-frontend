@@ -129,3 +129,9 @@ jobs:
           docker compose --env-file .env.prod -f docker-compose.prod.yml pull frontend
           docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --remove-orphans
           docker image prune -f
+
+      # Verifica que el frontend desplegado responda localmente dentro del servidor.
+      - name: Verificar frontend desplegado
+        shell: bash
+        run: |
+          curl --fail --silent --show-error http://127.0.0.1:4201 > /dev/null

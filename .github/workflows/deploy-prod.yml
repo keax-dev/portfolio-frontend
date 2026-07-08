@@ -31,7 +31,7 @@ jobs:
     environment: production
     outputs:
       image_name: ${{ steps.image.outputs.name }}
-      image_ref: ${{ steps.image.outputs.name }}:latest
+      image_ref: ${{ steps.image.outputs.name }}:sha-${{ github.event.workflow_run.head_sha }}
 
     steps:
       # Descarga el codigo exacto del commit que aprobo el CI.
@@ -68,7 +68,7 @@ jobs:
           images: ${{ steps.image.outputs.name }}
           tags: |
             type=raw,value=latest
-            type=sha,prefix=sha-
+            type=raw,value=sha-${{ github.event.workflow_run.head_sha }}
 
       # Construye la imagen con el Dockerfile del proyecto y la publica en GHCR.
       - name: Construir y publicar imagen Docker

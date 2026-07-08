@@ -29,7 +29,7 @@ jobs:
     # Usa una maquina Linux administrada por GitHub.
     runs-on: ubuntu-latest
     # Tiempo maximo del job para evitar ejecuciones colgadas indefinidamente.
-    timeout-minutes: 30
+    timeout-minutes: 10
 
     steps:
       # Descarga el contenido del repositorio en el runner.

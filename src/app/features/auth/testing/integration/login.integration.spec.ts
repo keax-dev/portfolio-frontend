@@ -62,7 +62,7 @@ describe('Login flow integration', () => {
     expect(localStorage.getItem('token')).toBe(token);
     expect(localStorage.getItem('expiration')).toBe(String(expirationSeconds * 1000));
     expect(alert.success).toHaveBeenCalledWith('Welcome');
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/home');
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/home/visitor-dashboard');
     controller.verify();
   });
 

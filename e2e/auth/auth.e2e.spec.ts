@@ -17,7 +17,7 @@ test.describe('Authentication lifecycle', () => {
     await expect(page.getByText('You must sign in to continue')).toBeVisible();
   });
 
-  // Caso: inicia sesión, envía el token bearer y cierra sesión.
+  // Caso: inicia sesión, carga el dashboard, envía el bearer token y cierra sesión.
   test('logs in, sends the bearer token and logs out', async ({ page }) => {
     let authorizationHeader: string | undefined;
 
@@ -33,16 +33,34 @@ test.describe('Authentication lifecycle', () => {
         return;
       }
 
-      if (path === '/api/institution') {
+      if (path === '/api/visitor/dashboard') {
+        authorizationHeader = request.headers()['authorization'];
+        await json(
+          route,
+          api({
+            totalVisits: 5,
+            uniqueVisitors: 3,
+            visitsLast24Hours: 1,
+            countries: [{ country: 'Ecuador', total: 4 }],
+            cities: [{ city: 'Guayaquil', total: 2 }],
+          }),
+        );
+        return;
+      }
+
+      if (path === '/api/visitor' && request.method() === 'GET') {
         authorizationHeader = request.headers()['authorization'];
         await json(
           route,
           api([
             {
               id: 1,
-              name: 'University',
-              name_es: 'Universidad',
-              url: '/images/logo.png',
+              ip: '203.0.113.25',
+              country: 'Ecuador',
+              city: 'Guayaquil',
+              path: '/portfolio',
+              userAgent: 'Playwright',
+              visitedAt: '2026-07-13T12:00:00.000Z',
             },
           ]),
         );
@@ -52,15 +70,16 @@ test.describe('Authentication lifecycle', () => {
       await route.fulfill({ status: 404, body: 'Unhandled auth endpoint' });
     });
 
-    // Completa el formulario real y espera la navegación protegida.
+    // Completa el formulario real y espera la nueva navegación protegida al dashboard.
     await page.goto('/login');
     await page.getByLabel('Username:').fill('admin');
     await page.getByLabel('Password:').fill('secret');
     await page.getByRole('button', { name: 'Login' }).click();
-    await expect(page).toHaveURL(/\/home\/institution$/);
-    await expect(page.getByRole('heading', { name: 'Institutions' })).toBeVisible();
+    await expect(page).toHaveURL(/\/home\/visitor-dashboard$/);
+    await expect(page.getByRole('heading', { name: 'Visitor Dashboard' })).toBeVisible();
+    await expect(page.getByText('Total visits in range')).toBeVisible();
 
-    // Confirma persistencia y uso efectivo del token por el interceptor.
+    // Confirma persistencia y uso efectivo del token por el interceptor en el dashboard.
     expect(await page.evaluate(() => localStorage.getItem('token'))).toBeTruthy();
     expect(authorizationHeader).toMatch(/^Bearer /);
 

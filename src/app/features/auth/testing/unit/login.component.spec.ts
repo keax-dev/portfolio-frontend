@@ -94,7 +94,7 @@ describe('LoginComponent', () => {
     });
     expect(alert.success).toHaveBeenCalledWith('Welcome');
     expect(userInfo.setSession).toHaveBeenCalledWith('jwt-token', 2_000_000);
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/home');
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/home/visitor-dashboard');
   });
 
   // Caso: rechaza tokens sin expiración válida y evita persistir una sesión insegura.

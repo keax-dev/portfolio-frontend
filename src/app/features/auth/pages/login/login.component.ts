@@ -78,7 +78,7 @@ export class LoginComponent implements OnDestroy {
     }
 
     this.userInfoService.setSession(data.token, expiration);
-    void this.router.navigateByUrl('/home');
+    void this.router.navigateByUrl('/home/visitor-dashboard');
   }
 
   resolveSessionExpiration(token: string): number | null {

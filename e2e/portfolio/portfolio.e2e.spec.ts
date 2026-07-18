@@ -19,8 +19,21 @@ test.describe('Public portfolio', () => {
 
     // Comprueba que las secciones principales y sus datos estén renderizados.
     await expect(page.getByRole('heading', { name: 'Educación' })).toBeVisible();
-    await expect(page.getByText('Angular', { exact: true })).toBeVisible();
-    await expect(page.getByText('Frontend', { exact: true })).toBeVisible();
+    const projectAccordion = page.locator('.project-accordion');
+    const firstProject = projectAccordion.locator('details').first();
+    await expect(projectAccordion.getByText('Angular', { exact: true })).toBeVisible();
+    await expect(projectAccordion.locator('summary').getByText('Portafolio')).toBeVisible();
+    await expect(firstProject).toHaveAttribute('open', '');
+    await firstProject.locator('summary').click();
+    await expect(firstProject).not.toHaveAttribute('open', '');
+    await firstProject.locator('summary').click();
+    await expect(firstProject).toHaveAttribute('open', '');
+    await expect(
+      firstProject.getByRole('link', { name: 'Visitar sitio de Portafolio' }),
+    ).toBeVisible();
+    await expect(
+      firstProject.getByRole('button', { name: 'Ver detalles Portafolio' }),
+    ).toBeVisible();
     await expect(page.locator('#portfolio-title')).toHaveText('Portafolio');
 
     // Cambia el idioma desde la navegación y verifica contenido derivado del signal.

@@ -17,7 +17,7 @@ import { NavigationItem } from '@shared/interfaces/navigation-item';
 import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
 import { ApiResponse } from '@core/interfaces/apiresponse';
-import { Technology } from '@shared/interfaces/technology';
+import { Project } from '@shared/interfaces/project';
 import { Education } from '@shared/interfaces/education';
 import { Profile } from '@shared/interfaces/profile';
 import { Router } from '@angular/router';
@@ -66,7 +66,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
 
   readonly navItems: NavigationItem[] = [...portfolioNavigationItems];
 
-  readonly technologyList = signal<readonly Technology[]>([]);
+  readonly projectList = signal<readonly Project[]>([]);
   readonly educationList = signal<readonly Education[]>([]);
   readonly socialNetworkList = signal<readonly SocialNetwork[]>([]);
   readonly skillList = signal<readonly Skill[]>([]);
@@ -84,7 +84,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     this.spinner.show();
     forkJoin([
       this.uploadSocialNetwork(),
-      this.uploadTechnology(),
+      this.uploadProject(),
       this.uploadEducation(),
       this.uploadProfile(),
       this.uploadSkill(),
@@ -147,17 +147,18 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     );
   }
 
-  uploadTechnology(): Observable<null> {
-    return this.portfolioService.getTechnology().pipe(
-      catchError((e) => this.infoEmpty<Technology[]>(e)),
+  uploadProject(): Observable<null> {
+    return this.portfolioService.getProject().pipe(
+      catchError((e) => this.infoEmpty<Project[]>(e)),
       takeUntilDestroyed(this.destroyRef),
       tap((result) => {
         if (result.status) {
-          this.technologyList.set(
+          this.projectList.set(
             result.data
-              .map((technology) => ({
-                ...technology,
-                projects: [...technology.projects].sort((a, b) => a.position - b.position),
+              .map((project) => ({
+                ...project,
+                technologies: [...project.technologies].sort((a, b) => a.position - b.position),
+                links: [...project.links].sort((a, b) => a.position - b.position),
               }))
               .sort((a, b) => a.position - b.position),
           );

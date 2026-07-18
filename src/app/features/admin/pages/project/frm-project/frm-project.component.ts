@@ -14,7 +14,12 @@ import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
 import { Technology } from '@shared/interfaces/technology';
 import { finalize } from 'rxjs';
-import { Project } from '@shared/interfaces/project';
+import {
+  Project,
+  ProjectLink,
+  ProjectLinkType,
+  ProjectTechnology,
+} from '@shared/interfaces/project';
 import {
   ChangeDetectionStrategy,
   DestroyRef,
@@ -27,8 +32,15 @@ import {
 
 interface ProjectDialogData {
   readonly project?: Project;
-  readonly positionsInfo?: Readonly<Record<number, number>>;
+  readonly positions?: number;
 }
+
+const projectLinkTypes: readonly { readonly value: ProjectLinkType; readonly label: string }[] = [
+  { value: 'DEPLOY', label: 'Deploy' },
+  { value: 'GITHUB', label: 'GitHub' },
+  { value: 'GITHUB_FRONTEND', label: 'GitHub Frontend' },
+  { value: 'GITHUB_BACKEND', label: 'GitHub Backend' },
+];
 
 @Component({
   selector: 'app-frm-project',
@@ -68,16 +80,19 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
       this.data.project?.description_es ?? '',
       Validators.required,
     ),
-    deploy: this.fb.nonNullable.control(this.data.project?.deploy ?? ''),
-    github: this.fb.nonNullable.control(this.data.project?.github ?? ''),
     position: this.fb.nonNullable.control(this.data.project?.position ?? 0, [
       Validators.required,
       Validators.min(1),
     ]),
-    technology: this.fb.nonNullable.control(this.data.project?.technology ?? 0, [
-      Validators.required,
-      Validators.min(1),
-    ]),
+    technologies: this.fb.array(
+      (this.data.project?.technologies?.length
+        ? this.data.project.technologies
+        : [{ id: 0, position: 1 }]
+      ).map((technology) => this.createTechnologyGroup(technology)),
+    ),
+    links: this.fb.array(
+      (this.data.project?.links ?? []).map((link) => this.createLinkGroup(link)),
+    ),
     image: this.fb.control<File | null>(null, [
       this.parameter.imageFileValidator,
       ...(this.data.project ? [] : [Validators.required]),
@@ -85,6 +100,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
   });
 
   readonly technologyList = signal<readonly Technology[]>([]);
+  readonly linkTypeOptions = projectLinkTypes;
   readonly isSaving = signal(false);
   positionList: number[] = [];
   urlImage = '';
@@ -102,18 +118,18 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
 
   loadVariables(): void {
     this.getTechnologyList();
+    this.loadPositions();
 
     if (this.data.project) {
       const project = this.data.project;
       this.update = true;
       this.urlImage = project.picture || '';
       this.title = 'Update Project';
-      this.loadPositionByTechnology(project.technology);
     }
   }
 
-  loadPositionByTechnology(technologyId: number): void {
-    const total = 5 + (this.data.positionsInfo?.[technologyId] ?? 0);
+  loadPositions(): void {
+    const total = 5 + (this.data.positions ?? 0);
     this.positionList = Array.from({ length: total }, (_, i) => i + 1);
   }
 
@@ -136,7 +152,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.projectForm.invalid) {
+    if (this.projectForm.invalid || !this.validateCollections()) {
       this.projectForm.markAllAsTouched();
       return;
     }
@@ -157,7 +173,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (result) => {
           this.alert.success(result.alert);
-          this.uploadImageInstitution(result.data);
+          this.uploadProjectImage(result.data);
         },
         error: (error) => {
           this.isSaving.set(false);
@@ -175,7 +191,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
         next: (result) => {
           this.alert.success(result.alert);
           if (this.controls['image'].value) {
-            this.uploadImageInstitution(result.data);
+            this.uploadProjectImage(result.data);
             return;
           }
 
@@ -189,7 +205,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
       });
   }
 
-  uploadImageInstitution(project: Project): void {
+  uploadProjectImage(project: Project): void {
     const image = this.controls.image.value;
     if (!image) {
       this.isSaving.set(false);
@@ -232,11 +248,97 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
       title_es: value.title_es,
       description: value.description,
       description_es: value.description_es,
-      deploy: value.deploy,
-      github: value.github,
       position: value.position,
-      technology: value.technology,
+      technologies: value.technologies.map((technology) => ({
+        ...(technology.relation_id ? { relation_id: technology.relation_id } : {}),
+        id: technology.id,
+        position: technology.position,
+      })),
+      links: value.links.map((link) => ({
+        ...(link.id ? { id: link.id } : {}),
+        type: link.type,
+        url: link.url.trim(),
+        position: link.position,
+      })),
     };
+  }
+
+  get technologies() {
+    return this.controls.technologies;
+  }
+
+  get links() {
+    return this.controls.links;
+  }
+
+  addTechnology(): void {
+    this.technologies.push(
+      this.createTechnologyGroup({ id: 0, position: this.technologies.length + 1 }),
+    );
+  }
+
+  removeTechnology(index: number): void {
+    this.technologies.removeAt(index);
+  }
+
+  addLink(): void {
+    this.links.push(
+      this.createLinkGroup({ type: 'DEPLOY', url: '', position: this.links.length + 1 }),
+    );
+  }
+
+  removeLink(index: number): void {
+    this.links.removeAt(index);
+  }
+
+  private createTechnologyGroup(technology: Partial<ProjectTechnology>) {
+    return this.fb.group({
+      relation_id: this.fb.control<number | null>(technology.relation_id ?? null),
+      id: this.fb.nonNullable.control(technology.id ?? 0, [Validators.required, Validators.min(1)]),
+      position: this.fb.nonNullable.control(technology.position ?? 1, [
+        Validators.required,
+        Validators.min(1),
+      ]),
+    });
+  }
+
+  private createLinkGroup(link: Partial<ProjectLink>) {
+    return this.fb.group({
+      id: this.fb.control<number | null>(link.id ?? null),
+      type: this.fb.nonNullable.control<ProjectLinkType>(
+        link.type ?? 'DEPLOY',
+        Validators.required,
+      ),
+      url: this.fb.nonNullable.control(link.url ?? '', [
+        Validators.required,
+        Validators.pattern(/^https?:\/\/.+/),
+      ]),
+      position: this.fb.nonNullable.control(link.position ?? 1, [
+        Validators.required,
+        Validators.min(1),
+      ]),
+    });
+  }
+
+  private validateCollections(): boolean {
+    const technologyValues = this.technologies.getRawValue();
+    const technologyIds = technologyValues.map((technology) => technology.id);
+    const technologyPositions = technologyValues.map((technology) => technology.position);
+    const technologyError =
+      technologyValues.length === 0 ||
+      new Set(technologyIds).size !== technologyIds.length ||
+      new Set(technologyPositions).size !== technologyPositions.length;
+    this.technologies.setErrors(technologyError ? { duplicateOrEmpty: true } : null);
+
+    const linkValues = this.links.getRawValue();
+    const linkTypes = linkValues.map((link) => link.type);
+    const linkPositions = linkValues.map((link) => link.position);
+    const linkError =
+      new Set(linkTypes).size !== linkTypes.length ||
+      new Set(linkPositions).size !== linkPositions.length;
+    this.links.setErrors(linkError ? { duplicate: true } : null);
+
+    return !technologyError && !linkError;
   }
 
   get controls(): typeof this.projectForm.controls {

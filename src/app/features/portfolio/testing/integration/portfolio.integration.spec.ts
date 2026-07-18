@@ -65,22 +65,7 @@ describe('Public portfolio integration', () => {
         { id: 1, name: 'Angular', position: 1 },
       ]),
     );
-    controller.expectOne(`${baseUrl}/portfolio/technology`).flush(
-      api([
-        {
-          id: 2,
-          name: 'Backend',
-          position: 2,
-          projects: [project(2), project(1)],
-        },
-        {
-          id: 1,
-          name: 'Frontend',
-          position: 1,
-          projects: [],
-        },
-      ]),
-    );
+    controller.expectOne(`${baseUrl}/portfolio/project`).flush(api([project(2), project(1)]));
     controller.expectOne(`${baseUrl}/portfolio/socialNetwork`).flush(
       api([
         {
@@ -105,8 +90,8 @@ describe('Public portfolio integration', () => {
     // El componente debe exponer modelos consistentes y ordenados para la vista.
     expect(component.educationList().map((item) => item.position)).toEqual([1, 2]);
     expect(component.skillList().map((item) => item.position)).toEqual([1, 2]);
-    expect(component.technologyList().map((item) => item.position)).toEqual([1, 2]);
-    expect(component.technologyList()[1].projects.map((item) => item.position)).toEqual([1, 2]);
+    expect(component.projectList().map((item) => item.position)).toEqual([1, 2]);
+    expect(component.projectList()[0].technologies.map((item) => item.position)).toEqual([1, 2]);
     expect(component.socialNetworkList().map((item) => item.position)).toEqual([1, 2]);
   });
 
@@ -161,7 +146,11 @@ describe('Public portfolio integration', () => {
       description: 'Description',
       description_es: 'Descripción',
       position,
-      technology: 2,
+      technologies: [
+        { id: 2, name: 'Laravel', position: 2 },
+        { id: 1, name: 'Angular', position: 1 },
+      ],
+      links: [],
     };
   }
 });

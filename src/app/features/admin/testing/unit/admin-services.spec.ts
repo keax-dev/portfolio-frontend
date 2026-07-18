@@ -82,10 +82,12 @@ describe('admin HTTP services', () => {
       title_es: 'Portafolio',
       description: 'Description',
       description_es: 'Descripción',
-      deploy: 'https://example.com',
-      github: 'https://github.com/example',
       position: 1,
-      technology: 3,
+      technologies: [{ id: 3, position: 1 }],
+      links: [
+        { type: 'DEPLOY', url: 'https://example.com', position: 1 },
+        { type: 'GITHUB', url: 'https://github.com/example', position: 2 },
+      ],
     };
 
     service.getProjectList().subscribe();

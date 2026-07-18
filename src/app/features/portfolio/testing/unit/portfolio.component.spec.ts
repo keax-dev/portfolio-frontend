@@ -12,7 +12,6 @@ import { VisitorService } from '@features/portfolio/services/visitor.service';
 import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
 import { Education } from '@shared/interfaces/education';
-import { Technology } from '@shared/interfaces/technology';
 import { Project } from '@shared/interfaces/project';
 import { Router } from '@angular/router';
 import { Skill } from '@shared/interfaces/skill';
@@ -24,7 +23,7 @@ describe('PortfolioComponent', () => {
     getProfile: ReturnType<typeof vi.fn>;
     getEducation: ReturnType<typeof vi.fn>;
     getSkill: ReturnType<typeof vi.fn>;
-    getTechnology: ReturnType<typeof vi.fn>;
+    getProject: ReturnType<typeof vi.fn>;
     getSocialNetwork: ReturnType<typeof vi.fn>;
   };
   let visitor: { registerVisit: ReturnType<typeof vi.fn> };
@@ -50,7 +49,7 @@ describe('PortfolioComponent', () => {
       getProfile: vi.fn(),
       getEducation: vi.fn(),
       getSkill: vi.fn(),
-      getTechnology: vi.fn(),
+      getProject: vi.fn(),
       getSocialNetwork: vi.fn(),
     };
     visitor = { registerVisit: vi.fn().mockReturnValue(of(api(null))) };
@@ -74,7 +73,7 @@ describe('PortfolioComponent', () => {
     );
     portfolio.getEducation.mockReturnValue(of(api([])));
     portfolio.getSkill.mockReturnValue(of(api([])));
-    portfolio.getTechnology.mockReturnValue(of(api([])));
+    portfolio.getProject.mockReturnValue(of(api([])));
     portfolio.getSocialNetwork.mockReturnValue(of(api([])));
 
     await TestBed.configureTestingModule({
@@ -100,7 +99,7 @@ describe('PortfolioComponent', () => {
     expect(portfolio.getProfile).toHaveBeenCalledOnce();
     expect(portfolio.getEducation).toHaveBeenCalledOnce();
     expect(portfolio.getSkill).toHaveBeenCalledOnce();
-    expect(portfolio.getTechnology).toHaveBeenCalledOnce();
+    expect(portfolio.getProject).toHaveBeenCalledOnce();
     expect(portfolio.getSocialNetwork).toHaveBeenCalledOnce();
     expect(spinner.hide).toHaveBeenCalledOnce();
   });
@@ -131,17 +130,23 @@ describe('PortfolioComponent', () => {
   });
 
   // Caso: ordena tecnologías y cada lista anidada de proyectos.
-  it('sorts technologies and each nested project list', () => {
-    const technologies: Technology[] = [
-      { id: 2, name: 'Backend', position: 2, projects: [projectItem(2), projectItem(1)] },
-      { id: 1, name: 'Frontend', position: 1, projects: [projectItem(3), projectItem(1)] },
+  it('sorts projects and their nested technologies and links', () => {
+    const projects = [projectItem(2), projectItem(1)];
+    projects[1].technologies = [
+      { id: 2, name: 'Laravel', position: 2 },
+      { id: 1, name: 'Angular', position: 1 },
     ];
-    portfolio.getTechnology.mockReturnValue(of(api(technologies)));
+    projects[1].links = [
+      { type: 'GITHUB_BACKEND', url: 'https://github.com/example/api', position: 2 },
+      { type: 'DEPLOY', url: 'https://example.com', position: 1 },
+    ];
+    portfolio.getProject.mockReturnValue(of(api(projects)));
 
-    component.uploadTechnology().subscribe();
+    component.uploadProject().subscribe();
 
-    expect(component.technologyList().map((item) => item.position)).toEqual([1, 2]);
-    expect(component.technologyList()[0].projects.map((item) => item.position)).toEqual([1, 3]);
+    expect(component.projectList().map((item) => item.position)).toEqual([1, 2]);
+    expect(component.projectList()[0].technologies.map((item) => item.position)).toEqual([1, 2]);
+    expect(component.projectList()[0].links.map((item) => item.position)).toEqual([1, 2]);
   });
 
   // Caso: mantiene el estado existente cuando el estado de la respuesta API es false.
@@ -214,7 +219,8 @@ describe('PortfolioComponent', () => {
       description: 'Description',
       description_es: 'Descripción',
       position,
-      technology: 1,
+      technologies: [{ id: 1, name: 'Angular', position: 1 }],
+      links: [],
     };
   }
 });

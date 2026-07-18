@@ -101,6 +101,17 @@ export const uiText = {
       en: 'You can contact me through my social networks.',
       es: 'Puedes contactarme a través de mis redes sociales.',
     },
+    project: {
+      technologies: { en: 'Project technologies', es: 'Tecnologías del proyecto' },
+      openImage: { en: 'Open image of', es: 'Abrir imagen de' },
+      closeDetails: { en: 'Close project details', es: 'Cerrar detalles del proyecto' },
+      viewDetails: { en: 'View details', es: 'Ver detalles' },
+      visitSite: { en: 'Visit site', es: 'Visitar sitio' },
+      sourceCode: { en: 'Source code', es: 'Código fuente' },
+      frontendCode: { en: 'Frontend code', es: 'Código frontend' },
+      backendCode: { en: 'Backend code', es: 'Código backend' },
+      linkFor: { en: 'for', es: 'de' },
+    },
     rightsReserved: { en: 'All rights reserved.', es: 'Todos los derechos reservados.' },
     sections: {
       home: { en: 'Home', es: 'Inicio' },

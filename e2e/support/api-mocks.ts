@@ -75,24 +75,25 @@ export async function mockPublicPortfolio(page: Page): Promise<void> {
       return;
     }
 
-    if (path === '/api/portfolio/technology') {
+    if (path === '/api/portfolio/project') {
       await json(
         route,
         api([
           {
             id: 1,
-            name: 'Frontend',
+            title: 'Portfolio',
+            title_es: 'Portafolio',
+            description: 'Personal website',
+            description_es: 'Sitio personal',
+            picture: '/images/logo.png',
             position: 1,
-            projects: [
+            technologies: [{ id: 1, name: 'Angular', position: 1 }],
+            links: [
               {
                 id: 1,
-                title: 'Portfolio',
-                title_es: 'Portafolio',
-                description: 'Personal website',
-                description_es: 'Sitio personal',
-                picture: '/images/logo.png',
+                type: 'DEPLOY',
+                url: 'https://example.com',
                 position: 1,
-                technology: 1,
               },
             ],
           },

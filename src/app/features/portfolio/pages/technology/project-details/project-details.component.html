@@ -1,9 +1,9 @@
 <article class="container-fluid p-4 position-relative">
   <button
     (click)="close()"
-    aria-label="Close project details"
+    [attr.aria-label]="translate.text(text.portfolio.project.closeDetails)"
+    [title]="translate.text(text.portfolio.project.closeDetails)"
     class="btn btn-close position-absolute top-0 end-0 m-2"
-    title="Close"
     type="button"
   ></button>
 
@@ -11,6 +11,17 @@
     <h2 class="text-primary fw-bolder">
       {{ project | language: 'title' : translate.getLang }}
     </h2>
+
+    <div
+      class="d-flex flex-wrap justify-content-center gap-2 mt-3"
+      [attr.aria-label]="translate.text(text.portfolio.project.technologies)"
+    >
+      @for (technology of project.technologies; track technology.id) {
+        <span class="badge rounded-pill text-bg-light border text-secondary">
+          {{ technology.name }}
+        </span>
+      }
+    </div>
   </header>
 
   <hr />
@@ -20,13 +31,17 @@
   <figure class="d-flex justify-content-center align-items-center">
     <button
       (click)="showImage()"
-      [attr.aria-label]="'Open image of ' + (project | language: 'title' : translate.getLang)"
+      [attr.aria-label]="
+        translate.text(text.portfolio.project.openImage) +
+        ' ' +
+        (project | language: 'title' : translate.getLang)
+      "
       class="p-0 border-0 bg-transparent"
       type="button"
     >
       <img
         [src]="project.picture"
-        [alt]="project.title"
+        [alt]="project | language: 'title' : translate.getLang"
         decoding="async"
         loading="lazy"
         class="w-75 img-hover"
@@ -42,33 +57,16 @@
 
   <footer class="row">
     <div class="col-12 text-center">
-      @if (project.deploy) {
+      @for (link of project.links; track link.id ?? link.type) {
         <a
-          [href]="project.deploy"
-          [attr.aria-label]="
-            'Open deployment for ' + (project | language: 'title' : translate.getLang)
-          "
+          [href]="link.url"
+          [attr.aria-label]="projectLinkLabel(link)"
           target="_blank"
-          class="btn btn-secondary m-1"
-          title="Open deployment"
+          class="btn btn-outline-secondary m-1"
           rel="noopener noreferrer"
         >
-          <i class="pi pi-external-link" aria-hidden="true"></i>
-        </a>
-      }
-
-      @if (project.github) {
-        <a
-          [href]="project.github"
-          [attr.aria-label]="
-            'Open GitHub repository for ' + (project | language: 'title' : translate.getLang)
-          "
-          target="_blank"
-          title="Open GitHub repository"
-          class="btn btn-dark m-1"
-          rel="noopener noreferrer"
-        >
-          <i class="pi pi-github" aria-hidden="true"></i>
+          <i [class]="linkIcon(link)" aria-hidden="true"></i>
+          {{ linkLabel(link) }}
         </a>
       }
     </div>

@@ -4,7 +4,8 @@ import { ShowImageComponent } from '@features/portfolio/pages/technology/show-im
 import { ParameterService } from '@core/services/parameter.service';
 import { TranslateService } from '@core/services/translate.service';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
-import { Project } from '@shared/interfaces/project';
+import { Project, ProjectLink } from '@shared/interfaces/project';
+import { uiText } from '@core/i18n/ui-text';
 
 @Component({
   selector: 'app-project-details',
@@ -19,6 +20,7 @@ export class ProjectDetailsComponent implements OnInit {
   private readonly ref = inject<MatDialogRef<unknown>>(MatDialogRef);
 
   project!: Project;
+  readonly text = uiText;
 
   ngOnInit(): void {
     this.project = this.data;
@@ -29,7 +31,30 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   showImage(): void {
-    const info = { url: this.project.picture, alt: this.project.title };
+    const title = this.translate.getLang === 'es' ? this.project.title_es : this.project.title;
+    const info = { url: this.project.picture, alt: title };
     this.parameter.openDialog(ShowImageComponent, info, '95%', '97.5%');
+  }
+
+  linkLabel(link: ProjectLink): string {
+    switch (link.type) {
+      case 'DEPLOY':
+        return this.translate.text(uiText.portfolio.project.visitSite);
+      case 'GITHUB_FRONTEND':
+        return this.translate.text(uiText.portfolio.project.frontendCode);
+      case 'GITHUB_BACKEND':
+        return this.translate.text(uiText.portfolio.project.backendCode);
+      default:
+        return this.translate.text(uiText.portfolio.project.sourceCode);
+    }
+  }
+
+  linkIcon(link: ProjectLink): string {
+    return link.type === 'DEPLOY' ? 'pi pi-external-link' : 'pi pi-github';
+  }
+
+  projectLinkLabel(link: ProjectLink): string {
+    const title = this.translate.getLang === 'es' ? this.project.title_es : this.project.title;
+    return `${this.linkLabel(link)} ${this.translate.text(uiText.portfolio.project.linkFor)} ${title}`;
   }
 }

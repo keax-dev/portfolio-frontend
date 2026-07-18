@@ -15,7 +15,7 @@ Frontend application for the public portfolio and admin panel, built with Angula
 
 This project exposes two main experiences:
 
-- Public portfolio with profile, education, skills, technologies, projects, social links, and contact form.
+- Public portfolio with profile, education, skills, project catalog, social links, and contact form.
 - Protected admin panel used to manage portfolio content and inspect the visitor dashboard.
 
 Main routes:
@@ -29,7 +29,10 @@ Main routes:
 ### Public portfolio
 
 - Main profile loading with photo, description, CV, and social links.
-- Education, skills, technologies, and projects sections rendered from the API.
+- Education, skills, and projects sections rendered from the API.
+- Unified project catalog presented as an accordion with a title, ordered technologies, a centered carousel, and available actions.
+- Carousel for every project, even when only one image exists, with support for one to three images per project.
+- Details modal with localized description, technologies, links, and stacked images; image enlargement is available only from this modal.
 - Contact modal with reactive form validation and backend submission.
 - Public language switcher with Spanish and English support.
 - Section-based portfolio navigation powered by localized text definitions from `ui-text.ts`.
@@ -46,9 +49,20 @@ Main routes:
   - projects
   - social networks
   - main profile
+- Technology catalog managed by name only; its position is defined per project relationship.
+- Project form with one or more ordered technologies, typed and ordered links, and between one and three images.
+- Existing image management and precise removal of the selected technology or link while preserving the remaining relationships.
 - Visitor dashboard with metrics, countries, cities, and visit traces.
 - Reusable tables with search, pagination, sorting, and empty/error/loading states.
 - Angular Material forms and reusable buttons with loading state support.
+
+### Current project model
+
+- Each record represents a complete project; frontend and backend are no longer published as separate projects.
+- Titles and descriptions remain available in Spanish and English, together with the project's overall position.
+- `technologies` contains one or more technologies, each with its own position within the project and no duplicates.
+- `images` is the project's only image source and contains between one and three ordered entries; the legacy `picture` field is no longer used.
+- `links` is optional and supports `DEPLOY`, `GITHUB`, `GITHUB_FRONTEND`, and `GITHUB_BACKEND`, with unique positions within the project.
 
 ### Cross-cutting UX and behavior
 
@@ -173,6 +187,18 @@ npm run test:e2e:ui
 npm run test:e2e:live
 ```
 
+### Full local validation
+
+```bash
+npm run validate
+```
+
+This command mirrors the main CI flow: formatting, linting, type checking, unit tests, integration tests, E2E tests, and the production build. To prepare Chromium on a fresh installation:
+
+```bash
+npx playwright install chromium
+```
+
 ## Testing strategy
 
 The project separates tests into three levels:
@@ -205,6 +231,7 @@ Important notes:
 
 - Default E2E tests are deterministic and mock the API.
 - `npm run test:e2e:live` runs a separate smoke flow against the real backend.
+- Admin flows verify removal of the selected relationship and the reordered project technology payload.
 - In CI, Playwright keeps traces, screenshots, and video only when failures happen.
 
 ## Local Docker workflow
@@ -359,7 +386,7 @@ public/
 
 ## Development recommendations
 
-- Run `npm run format:check`, `npm run lint`, and `npm run typecheck` before pushing changes.
+- Run `npm run validate` before pushing changes to reproduce the CI checks locally.
 - Use `npm run test:unit` for quick iterations.
 - Use `npm run test:integration` when changing authentication, routing, or HTTP services.
 - Use `npm run test:e2e` to validate critical flows before closing a delivery.

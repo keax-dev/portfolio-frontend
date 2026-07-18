@@ -8,21 +8,9 @@
     </h2>
   </header>
 
-  <div class="accordion w-100 shadow-lg card bg-white">
-    @for (technology of technologyList(); track technology.id) {
-      <details class="accordion-item" [open]="$first">
-        <summary class="accordion-header p-3 pointer">
-          <span class="text-secondary fw-semibold fs-5">{{ technology.name | titlecase }}</span>
-        </summary>
-        <div class="accordion-body">
-          <app-project-carousel
-            [projectList]="technology.projects"
-            [technology]="technology.id!"
-          ></app-project-carousel>
-        </div>
-      </details>
-    } @empty {
-      <p class="text-center text-secondary py-3">{{ emptyMessage() }}</p>
-    }
-  </div>
+  @if (projectList().length) {
+    <app-project-gallery [projectList]="projectList()"></app-project-gallery>
+  } @else {
+    <p class="text-center text-secondary py-3">{{ emptyMessage() }}</p>
+  }
 </section>

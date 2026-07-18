@@ -194,7 +194,7 @@ describe('image admin forms', () => {
     const technologyService = {
       getTechnologyList: vi
         .fn()
-        .mockReturnValue(of(response([{ id: 2, name: 'Angular', position: 1, projects: [] }]))),
+        .mockReturnValue(of(response([{ id: 2, name: 'Angular', position: 1 }]))),
     };
     const ref = dialogRef();
     const file = new File(['image'], 'project.png', { type: 'image/png' });
@@ -209,7 +209,7 @@ describe('image admin forms', () => {
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
         { provide: MatDialogRef, useValue: ref },
-        { provide: MAT_DIALOG_DATA, useValue: { positionsInfo: { 2: 3 } } },
+        { provide: MAT_DIALOG_DATA, useValue: { positions: 3 } },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmProjectComponent).componentInstance;
@@ -218,13 +218,12 @@ describe('image admin forms', () => {
       title_es: 'Portafolio',
       description: 'Description',
       description_es: 'Descripción',
-      deploy: '',
-      github: '',
       position: 1,
-      technology: 2,
+      technologies: [{ relation_id: null, id: 2, position: 1 }],
+      links: [],
       image: file,
     });
-    component.loadPositionByTechnology(2);
+    component.loadPositions();
     component.onSubmit();
 
     expect(component.positionList).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -233,10 +232,9 @@ describe('image admin forms', () => {
       title_es: 'Portafolio',
       description: 'Description',
       description_es: 'Descripción',
-      deploy: '',
-      github: '',
       position: 1,
-      technology: 2,
+      technologies: [{ id: 2, position: 1 }],
+      links: [],
     });
     expect(imageService.uploadImageProject).toHaveBeenCalledWith(4, file);
     expect(ref.close).toHaveBeenCalledWith(withImage);
@@ -290,10 +288,9 @@ describe('image admin forms', () => {
       title_es: 'Portafolio',
       description: 'Description',
       description_es: 'Descripción',
-      deploy: '',
-      github: '',
       position: 1,
-      technology: 2,
+      technologies: [{ id: 2, name: 'Angular', position: 1 }],
+      links: [],
     };
   }
 });

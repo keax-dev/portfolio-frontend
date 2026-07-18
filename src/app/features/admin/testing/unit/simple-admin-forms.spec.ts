@@ -29,7 +29,7 @@ describe('simple admin forms', () => {
       createTechnology: vi.fn(),
       updateTechnology: vi.fn(),
     };
-    const saved: Technology = { id: 1, name: 'Angular', position: 1, projects: [] };
+    const saved: Technology = { id: 1, name: 'Angular', position: 1 };
     service.createTechnology.mockReturnValue(of(response(saved)));
     const ref = dialogRef();
     const loading = spinner();
@@ -62,7 +62,6 @@ describe('simple admin forms', () => {
       id: 3,
       name: 'Angular',
       position: 2,
-      projects: [],
     };
     const service = {
       createTechnology: vi.fn(),

@@ -2,7 +2,7 @@
  * Pruebas unitarias de las interacciones visuales del portafolio y el panel administrativo.
  */
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ProjectCarouselComponent } from '@features/portfolio/pages/technology/project-carousel/project-carousel.component';
+import { ProjectGalleryComponent } from '@features/portfolio/pages/technology/project-gallery/project-gallery.component';
 import { ProjectDetailsComponent } from '@features/portfolio/pages/technology/project-details/project-details.component';
 import { CvPreviewComponent } from '@features/portfolio/pages/header/cv-preview/cv-preview.component';
 import { ShowImageComponent } from '@features/portfolio/pages/technology/show-image/show-image.component';
@@ -14,7 +14,6 @@ import { HeaderComponent } from '@features/portfolio/pages/header/header.compone
 import { SessionService } from '@core/services/session.service';
 import { HomeComponent } from '@features/admin/pages/home/home.component';
 import { provideRouter } from '@angular/router';
-import { SimpleChange } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Profile } from '@shared/interfaces/profile';
 import { Project } from '@shared/interfaces/project';
@@ -35,7 +34,8 @@ describe('portfolio interaction components', () => {
     description_es: 'Descripción',
     picture: 'project.png',
     position: 1,
-    technology: 2,
+    technologies: [{ id: 2, name: 'Angular', position: 1 }],
+    links: [{ type: 'DEPLOY', url: 'https://example.com', position: 1 }],
   };
 
   // Caso: alterna la barra de navegación, cambia el idioma y emite contacto.
@@ -107,33 +107,28 @@ describe('portfolio interaction components', () => {
   });
 
   // Caso: construye identificadores del carrusel y abre diálogos de proyectos.
-  it('builds carousel identifiers and opens project dialogs', async () => {
+  it('opens project gallery dialogs and formats links', async () => {
     const parameter = { openDialog: vi.fn() };
     await TestBed.configureTestingModule({
-      imports: [ProjectCarouselComponent],
+      imports: [ProjectGalleryComponent],
       providers: [
-        { provide: TranslateService, useValue: { getLang: 'en' } },
+        {
+          provide: TranslateService,
+          useValue: { getLang: 'en', text: (value: { en: string }) => value.en },
+        },
         { provide: ParameterService, useValue: parameter },
       ],
     }).compileComponents();
-    const fixture = TestBed.createComponent(ProjectCarouselComponent);
-    fixture.componentRef.setInput('technology', 7);
+    const fixture = TestBed.createComponent(ProjectGalleryComponent);
+    fixture.componentRef.setInput('projectList', [project]);
     const component = fixture.componentInstance;
-    component.ngOnInit();
-    expect(component.carouselId).toBe('carouselProject7');
-
-    fixture.componentRef.setInput('technology', 9);
-    component.ngOnChanges({
-      technology: new SimpleChange(7, 9, false),
-    });
-    expect(component.carouselId).toBe('carouselProject9');
 
     component.showProjectDetails(project);
     expect(parameter.openDialog).toHaveBeenCalledWith(
       ProjectDetailsComponent,
       project,
-      '30%',
-      '90%',
+      '70%',
+      '95%',
     );
     component.showImage(project);
     expect(parameter.openDialog).toHaveBeenCalledWith(
@@ -142,6 +137,8 @@ describe('portfolio interaction components', () => {
       '95%',
       '97.5%',
     );
+    expect(component.linkLabel(project.links[0])).toBe('Visit site');
+    expect(component.linkIcon(project.links[0])).toBe('pi pi-external-link');
   });
 
   // Caso: inicializa los detalles del proyecto, abre su imagen y cierra.
@@ -151,7 +148,10 @@ describe('portfolio interaction components', () => {
     await TestBed.configureTestingModule({
       imports: [ProjectDetailsComponent],
       providers: [
-        { provide: TranslateService, useValue: { getLang: 'en' } },
+        {
+          provide: TranslateService,
+          useValue: { getLang: 'en', text: (value: { en: string }) => value.en },
+        },
         { provide: ParameterService, useValue: parameter },
         { provide: MAT_DIALOG_DATA, useValue: project },
         { provide: MatDialogRef, useValue: ref },

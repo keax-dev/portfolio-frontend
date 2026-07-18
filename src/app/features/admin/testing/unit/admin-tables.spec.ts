@@ -81,7 +81,7 @@ describe('admin table components', () => {
       confirmMethod: 'confirmDelete',
       serviceLoadMethod: 'getTechnologyList',
       serviceDeleteMethod: 'deleteTechnology',
-      record: { id: 4, name: 'Angular', position: 1, projects: [] },
+      record: { id: 4, name: 'Angular', position: 1 },
     },
     {
       name: 'project',
@@ -93,7 +93,16 @@ describe('admin table components', () => {
       confirmMethod: 'confirmDelete',
       serviceLoadMethod: 'getProjectList',
       serviceDeleteMethod: 'deleteProject',
-      record: { id: 5, title: 'Portfolio', position: 1, technology: 2 },
+      record: {
+        id: 5,
+        title: 'Portfolio',
+        title_es: 'Portafolio',
+        description: 'Description',
+        description_es: 'Descripción',
+        position: 1,
+        technologies: [{ id: 2, name: 'Angular', position: 1 }],
+        links: [],
+      },
     },
     {
       name: 'social network',
@@ -180,11 +189,21 @@ describe('admin table components', () => {
   });
 
   // Caso: cuenta posiciones de proyectos por tecnología para el diálogo de proyecto.
-  it('counts project positions per technology for the project dialog', async () => {
+  it('formats project technologies and links for the project table', async () => {
     const records = [
-      { id: 1, technology: 2, position: 1 },
-      { id: 2, technology: 2, position: 2 },
-      { id: 3, technology: 3, position: 1 },
+      {
+        id: 1,
+        title: 'Portfolio',
+        title_es: 'Portafolio',
+        description: 'Description',
+        description_es: 'Descripción',
+        position: 1,
+        technologies: [
+          { id: 2, name: 'Angular', position: 1 },
+          { id: 3, name: 'Spring Boot', position: 2 },
+        ],
+        links: [{ type: 'DEPLOY' as const, url: 'https://example.com', position: 1 }],
+      },
     ];
     await TestBed.configureTestingModule({
       imports: [TableProjectComponent],
@@ -211,7 +230,10 @@ describe('admin table components', () => {
     }).compileComponents();
     const component = TestBed.createComponent(TableProjectComponent).componentInstance;
     component.getProjectList();
-    expect(component.positionsInfo()).toEqual({ 2: 2, 3: 1 });
+    expect(component.tableRecords()[0]).toMatchObject({
+      technology_names: 'Angular, Spring Boot',
+      link_types: 'DEPLOY',
+    });
   });
 
   function invoke(component: Record<string, unknown>, method: string, ...args: unknown[]): void {

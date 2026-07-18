@@ -1,0 +1,76 @@
+<div class="accordion project-accordion w-100 bg-white shadow-lg">
+  @for (project of projectList(); track project.id) {
+    <details class="accordion-item project-accordion__item" [open]="$first">
+      <summary class="accordion-header project-accordion__summary pointer p-3">
+        <span class="text-primary fw-bold fs-5">
+          {{ project | language: 'title' : translate.getLang }}
+        </span>
+
+        <i
+          class="pi pi-chevron-down project-accordion__chevron text-secondary ms-3"
+          aria-hidden="true"
+        ></i>
+      </summary>
+
+      <div class="accordion-body project-accordion__body">
+        <div class="d-flex justify-content-center align-items-center flex-column gap-3">
+          <p class="text-center text-secondary">
+            @for (technology of project.technologies; track technology.id; let last = $last) {
+              <span
+                class="badge rounded-pill text-bg-light border text-secondary fw-semibold m-1 fs-6"
+              >
+                {{ technology.name }}
+              </span>
+            }
+          </p>
+
+          @if (project.picture) {
+            <button
+              (click)="showImage(project)"
+              [attr.aria-label]="projectImageLabel(project)"
+              class="project-accordion__image-button border-0 bg-transparent p-0"
+              type="button"
+            >
+              <img
+                [src]="project.picture"
+                [alt]="projectTitle(project)"
+                [attr.loading]="$first ? 'eager' : 'lazy'"
+                class="project-accordion__image img-hover"
+                decoding="async"
+              />
+            </button>
+          }
+
+          <div class="d-flex flex-wrap justify-content-center gap-2">
+            @for (link of project.links; track link.id ?? link.type) {
+              <a
+                [href]="link.url"
+                [attr.aria-label]="projectLinkLabel(link, project)"
+                [class.btn-secondary]="link.type === 'DEPLOY'"
+                [class.btn-dark]="link.type !== 'DEPLOY'"
+                [title]="linkLabel(link)"
+                class="btn project-accordion__action"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i [class]="linkIcon(link)" aria-hidden="true"></i>
+              </a>
+            }
+
+            <button
+              (click)="showProjectDetails(project)"
+              [attr.aria-label]="
+                translate.text(text.portfolio.project.viewDetails) + ' ' + projectTitle(project)
+              "
+              [title]="translate.text(text.portfolio.project.viewDetails)"
+              class="btn btn-primary project-accordion__action"
+              type="button"
+            >
+              <i class="pi pi-eye" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </details>
+  }
+</div>

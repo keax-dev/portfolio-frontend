@@ -42,21 +42,21 @@ export class TableProjectComponent implements OnInit, OnDestroy {
   readonly records = signal<readonly Project[]>([]);
   readonly isLoading = signal(false);
   readonly loadErrorMessage = signal('');
-  readonly positionsInfo = computed(() =>
-    this.records().reduce<Record<number, number>>((positions, project) => {
-      positions[project.technology] = (positions[project.technology] ?? 0) + 1;
-      return positions;
-    }, {}),
+  readonly tableRecords = computed(() =>
+    this.records().map((project) => ({
+      ...project,
+      technology_names: project.technologies.map((technology) => technology.name).join(', '),
+      link_types: project.links.map((link) => link.type.replaceAll('_', ' ')).join(', '),
+    })),
   );
 
   columns: Column[] = [
     { name: 'Position', value: 'position' },
-    { name: 'Technology', value: 'technology_name' },
+    { name: 'Technologies', value: 'technology_names' },
     { name: 'Title', value: 'title' },
     { name: 'Description', value: 'description' },
     { name: 'Picture', value: 'picture', image: true },
-    { name: 'Deploy', value: 'deploy' },
-    { name: 'Github', value: 'github' },
+    { name: 'Links', value: 'link_types' },
   ];
 
   ngOnInit(): void {
@@ -91,7 +91,7 @@ export class TableProjectComponent implements OnInit, OnDestroy {
 
   modalProject(project?: Project): void {
     const dialogRef = this.parameter.openDialog(FrmProjectComponent, {
-      positionsInfo: this.positionsInfo(),
+      positions: this.records().length,
       project: project,
     });
     dialogRef

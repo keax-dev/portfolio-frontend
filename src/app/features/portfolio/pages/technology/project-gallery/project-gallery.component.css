@@ -37,30 +37,12 @@
   background-color: var(--surface-muted);
 }
 
-.project-accordion__image-button {
-  width: min(100%, 52rem);
-  overflow: hidden;
-  border-radius: var(--radius-md);
-}
-
-.project-accordion__image {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-}
-
 .project-accordion__action {
   display: inline-flex;
   width: 2.75rem;
   height: 2.5rem;
   align-items: center;
   justify-content: center;
-}
-
-.project-accordion__image-button:focus-visible {
-  position: relative;
-  z-index: 1;
 }
 
 @media (max-width: 575.98px) {

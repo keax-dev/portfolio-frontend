@@ -14,13 +14,19 @@ export interface ProjectLink {
   position: number;
 }
 
+export interface ProjectImage {
+  id?: number;
+  url: string;
+  position: number;
+}
+
 export interface Project {
   id?: number;
   title: string;
   title_es: string;
   description: string;
   description_es: string;
-  picture?: string;
+  images: ProjectImage[];
   position: number;
   technologies: ProjectTechnology[];
   links: ProjectLink[];

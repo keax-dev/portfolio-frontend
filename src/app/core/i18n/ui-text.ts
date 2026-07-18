@@ -104,6 +104,9 @@ export const uiText = {
     project: {
       technologies: { en: 'Project technologies', es: 'Tecnologías del proyecto' },
       openImage: { en: 'Open image of', es: 'Abrir imagen de' },
+      previousImage: { en: 'Previous image', es: 'Imagen anterior' },
+      nextImage: { en: 'Next image', es: 'Imagen siguiente' },
+      of: { en: 'of', es: 'de' },
       closeDetails: { en: 'Close project details', es: 'Cerrar detalles del proyecto' },
       viewDetails: { en: 'View details', es: 'Ver detalles' },
       visitSite: { en: 'Visit site', es: 'Visitar sitio' },

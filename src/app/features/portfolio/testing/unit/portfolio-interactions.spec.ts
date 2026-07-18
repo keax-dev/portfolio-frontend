@@ -3,6 +3,7 @@
  */
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ProjectGalleryComponent } from '@features/portfolio/pages/technology/project-gallery/project-gallery.component';
+import { ProjectImagesComponent } from '@features/portfolio/pages/technology/project-images/project-images.component';
 import { ProjectDetailsComponent } from '@features/portfolio/pages/technology/project-details/project-details.component';
 import { CvPreviewComponent } from '@features/portfolio/pages/header/cv-preview/cv-preview.component';
 import { ShowImageComponent } from '@features/portfolio/pages/technology/show-image/show-image.component';
@@ -32,7 +33,7 @@ describe('portfolio interaction components', () => {
     title_es: 'Portafolio',
     description: 'Description',
     description_es: 'Descripción',
-    picture: 'project.png',
+    images: [{ id: 1, url: 'project.png', position: 1 }],
     position: 1,
     technologies: [{ id: 2, name: 'Angular', position: 1 }],
     links: [{ type: 'DEPLOY', url: 'https://example.com', position: 1 }],
@@ -130,15 +131,45 @@ describe('portfolio interaction components', () => {
       '70%',
       '95%',
     );
-    component.showImage(project);
+    expect(component.linkLabel(project.links[0])).toBe('Visit site');
+    expect(component.linkIcon(project.links[0])).toBe('pi pi-external-link');
+  });
+
+  it('opens ordered images only from the project details layout', async () => {
+    const parameter = { openDialog: vi.fn() };
+    await TestBed.configureTestingModule({
+      imports: [ProjectImagesComponent],
+      providers: [
+        {
+          provide: TranslateService,
+          useValue: { getLang: 'en', text: (value: { en: string }) => value.en },
+        },
+        { provide: ParameterService, useValue: parameter },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(ProjectImagesComponent);
+    fixture.componentRef.setInput('project', project);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.carousel')).not.toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('.project-images__control')).toHaveLength(2);
+    expect(fixture.nativeElement.querySelector('.carousel-item button')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.carousel-item img').alt).toBe('1 of 1: Portfolio');
+    expect(parameter.openDialog).not.toHaveBeenCalled();
+
+    fixture.componentRef.setInput('layout', 'stack');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.carousel')).toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('[role="listitem"]')).toHaveLength(1);
+
+    fixture.nativeElement.querySelector('.project-images__stack button').click();
+
     expect(parameter.openDialog).toHaveBeenCalledWith(
       ShowImageComponent,
-      { url: 'project.png', alt: 'Portfolio' },
+      { url: 'project.png', alt: 'Open image of 1 of 1: Portfolio' },
       '95%',
       '97.5%',
     );
-    expect(component.linkLabel(project.links[0])).toBe('Visit site');
-    expect(component.linkIcon(project.links[0])).toBe('pi pi-external-link');
   });
 
   // Caso: inicializa los detalles del proyecto, abre su imagen y cierra.
@@ -160,13 +191,6 @@ describe('portfolio interaction components', () => {
     const component = TestBed.createComponent(ProjectDetailsComponent).componentInstance;
     component.ngOnInit();
     expect(component.project).toBe(project);
-    component.showImage();
-    expect(parameter.openDialog).toHaveBeenCalledWith(
-      ShowImageComponent,
-      { url: 'project.png', alt: 'Portfolio' },
-      '95%',
-      '97.5%',
-    );
     component.close();
     expect(ref.close).toHaveBeenCalledOnce();
   });

@@ -159,6 +159,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
                 ...project,
                 technologies: [...project.technologies].sort((a, b) => a.position - b.position),
                 links: [...project.links].sort((a, b) => a.position - b.position),
+                images: [...project.images].sort((a, b) => a.position - b.position),
               }))
               .sort((a, b) => a.position - b.position),
           );

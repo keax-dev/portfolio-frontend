@@ -193,6 +193,7 @@ describe('admin table components', () => {
     const records = [
       {
         id: 1,
+        images: [{ id: 1, url: 'project.png', position: 1 }],
         title: 'Portfolio',
         title_es: 'Portafolio',
         description: 'Description',
@@ -233,6 +234,8 @@ describe('admin table components', () => {
     expect(component.tableRecords()[0]).toMatchObject({
       technology_names: 'Angular, Spring Boot',
       link_types: 'DEPLOY',
+      image_count: 1,
+      preview_image: 'project.png',
     });
   });
 

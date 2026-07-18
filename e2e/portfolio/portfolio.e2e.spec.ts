@@ -34,6 +34,34 @@ test.describe('Public portfolio', () => {
     await expect(
       firstProject.getByRole('button', { name: 'Ver detalles Portafolio' }),
     ).toBeVisible();
+    const projectImages = firstProject.locator('.project-images');
+    await expect(projectImages.locator('.carousel-item')).toHaveCount(2);
+    const [carouselBox, accordionBodyBox] = await Promise.all([
+      projectImages.boundingBox(),
+      firstProject.locator('.project-accordion__body').boundingBox(),
+    ]);
+    expect(carouselBox).not.toBeNull();
+    expect(accordionBodyBox).not.toBeNull();
+    expect(
+      Math.abs(
+        carouselBox!.x +
+          carouselBox!.width / 2 -
+          (accordionBodyBox!.x + accordionBodyBox!.width / 2),
+      ),
+    ).toBeLessThan(2);
+    await expect(projectImages.locator('.carousel-item button')).toHaveCount(0);
+    await projectImages.getByRole('button', { name: 'Imagen siguiente' }).click();
+    await expect(projectImages.locator('.carousel-item').nth(1)).toHaveClass(/active/);
+
+    await firstProject.getByRole('button', { name: 'Ver detalles Portafolio' }).click();
+    const projectDetails = page.locator('app-project-details');
+    await expect(projectDetails.locator('.project-images__stack [role="listitem"]')).toHaveCount(2);
+    await expect(projectDetails.locator('.carousel')).toHaveCount(0);
+    await projectDetails.locator('.project-images__stack button').first().click();
+    await expect(page.locator('app-show-image')).toBeVisible();
+    await page.locator('app-show-image').getByRole('button').click();
+    await expect(page.locator('app-show-image')).toHaveCount(0);
+    await projectDetails.getByRole('button', { name: 'Cerrar detalles del proyecto' }).click();
     await expect(page.locator('#portfolio-title')).toHaveText('Portafolio');
 
     // Cambia el idioma desde la navegación y verifica contenido derivado del signal.

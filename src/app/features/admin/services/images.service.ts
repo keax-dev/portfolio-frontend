@@ -31,10 +31,21 @@ export class ImageService {
     );
   }
 
-  uploadImageProject(projectId: number, image: File): Observable<ApiResponse<Project>> {
+  uploadProjectImages(
+    projectId: number,
+    images: readonly File[],
+  ): Observable<ApiResponse<Project>> {
+    const formData = new FormData();
+    images.forEach((image) => formData.append('images', image));
     return this.http.post<ApiResponse<Project>>(
       `${this.baseUrl}${this.reference}/project/${projectId}`,
-      this.formData(image),
+      formData,
+    );
+  }
+
+  deleteProjectImage(projectId: number, projectImageId: number): Observable<ApiResponse<Project>> {
+    return this.http.delete<ApiResponse<Project>>(
+      `${this.baseUrl}${this.reference}/project/${projectId}/${projectImageId}`,
     );
   }
 

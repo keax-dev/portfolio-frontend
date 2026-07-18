@@ -1,4 +1,12 @@
-import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
@@ -16,6 +24,7 @@ import { Technology } from '@shared/interfaces/technology';
 import { finalize } from 'rxjs';
 import {
   Project,
+  ProjectImage,
   ProjectLink,
   ProjectLinkType,
   ProjectTechnology,
@@ -69,6 +78,8 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
   private readonly ref = inject<MatDialogRef<unknown, Project>>(MatDialogRef);
   private readonly fb = inject(FormBuilder);
 
+  readonly existingImages = signal<readonly ProjectImage[]>(this.initialProjectImages());
+
   readonly projectForm = this.fb.group({
     title: this.fb.nonNullable.control(this.data.project?.title ?? '', Validators.required),
     title_es: this.fb.nonNullable.control(this.data.project?.title_es ?? '', Validators.required),
@@ -93,17 +104,13 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
     links: this.fb.array(
       (this.data.project?.links ?? []).map((link) => this.createLinkGroup(link)),
     ),
-    image: this.fb.control<File | null>(null, [
-      this.parameter.imageFileValidator,
-      ...(this.data.project ? [] : [Validators.required]),
-    ]),
+    images: this.fb.nonNullable.control<File[]>([], [this.projectImageFilesValidator()]),
   });
 
   readonly technologyList = signal<readonly Technology[]>([]);
   readonly linkTypeOptions = projectLinkTypes;
   readonly isSaving = signal(false);
   positionList: number[] = [];
-  urlImage = '';
   title = 'New Project';
 
   update = false;
@@ -121,9 +128,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
     this.loadPositions();
 
     if (this.data.project) {
-      const project = this.data.project;
       this.update = true;
-      this.urlImage = project.picture || '';
       this.title = 'Update Project';
     }
   }
@@ -173,7 +178,7 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (result) => {
           this.alert.success(result.alert);
-          this.uploadProjectImage(result.data);
+          this.uploadProjectImages(result.data);
         },
         error: (error) => {
           this.isSaving.set(false);
@@ -190,8 +195,8 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (result) => {
           this.alert.success(result.alert);
-          if (this.controls['image'].value) {
-            this.uploadProjectImage(result.data);
+          if (this.controls.images.value.length) {
+            this.uploadProjectImages(result.data);
             return;
           }
 
@@ -205,15 +210,16 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
       });
   }
 
-  uploadProjectImage(project: Project): void {
-    const image = this.controls.image.value;
-    if (!image) {
+  uploadProjectImages(project: Project): void {
+    const images = this.controls.images.value;
+    if (!images.length) {
+      this.close(project);
       this.isSaving.set(false);
       return;
     }
 
     this.imageService
-      .uploadImageProject(project.id!, image)
+      .uploadProjectImages(project.id!, images)
       .pipe(
         finalize(() => this.isSaving.set(false)),
         takeUntilDestroyed(this.destroyRef),
@@ -224,17 +230,55 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
           this.close(result.data);
         },
         error: (error) => {
-          this.close(project);
           this.alert.httpError(error);
+          if (this.update) {
+            this.close(project);
+            return;
+          }
+
+          this.projectService
+            .deleteProject(project.id!)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: () => this.close(),
+              error: () => this.close(project),
+            });
         },
       });
   }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input?.files && input.files.length > 0) {
-      this.controls.image.setValue(input.files[0]);
+    const images = input.files ? Array.from(input.files) : [];
+    this.controls.images.setValue(images);
+    this.controls.images.markAsTouched();
+    this.controls.images.updateValueAndValidity();
+  }
+
+  removeExistingImage(image: ProjectImage): void {
+    if (!this.data.project?.id || !image.id || this.existingImages().length <= 1) {
+      return;
     }
+
+    this.isSaving.set(true);
+    this.imageService
+      .deleteProjectImage(this.data.project.id, image.id)
+      .pipe(
+        finalize(() => this.isSaving.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (result) => {
+          this.existingImages.set(this.normalizeImages(result.data));
+          this.controls.images.updateValueAndValidity();
+          this.alert.success(result.alert);
+        },
+        error: (error) => this.alert.httpError(error),
+      });
+  }
+
+  remainingImageSlots(): number {
+    return Math.max(0, 3 - this.existingImages().length - this.controls.images.value.length);
   }
 
   close(project?: Project): void {
@@ -339,6 +383,35 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
     this.links.setErrors(linkError ? { duplicate: true } : null);
 
     return !technologyError && !linkError;
+  }
+
+  private projectImageFilesValidator(): ValidatorFn {
+    return (control: AbstractControl<File[]>): ValidationErrors | null => {
+      const images = control.value ?? [];
+      const totalImages = this.existingImages().length + images.length;
+      if (totalImages < 1) {
+        return { required: true };
+      }
+      const invalidFileType = images.some(
+        (image) => !['image/png', 'image/jpeg', 'image/gif'].includes(image.type),
+      );
+      if (invalidFileType) {
+        return { invalidFileType: true };
+      }
+      if (totalImages > 3) {
+        return { maxImages: true };
+      }
+      return null;
+    };
+  }
+
+  private initialProjectImages(): ProjectImage[] {
+    return this.normalizeImages(this.data.project);
+  }
+
+  private normalizeImages(project?: Project): ProjectImage[] {
+    const images = project?.images ?? [];
+    return [...images].sort((a, b) => a.position - b.position);
   }
 
   get controls(): typeof this.projectForm.controls {

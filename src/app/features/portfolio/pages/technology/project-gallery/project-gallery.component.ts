@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { ProjectDetailsComponent } from '@features/portfolio/pages/technology/project-details/project-details.component';
-import { ShowImageComponent } from '@features/portfolio/pages/technology/show-image/show-image.component';
+import { ProjectImagesComponent } from '@features/portfolio/pages/technology/project-images/project-images.component';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { ParameterService } from '@core/services/parameter.service';
 import { TranslateService } from '@core/services/translate.service';
@@ -12,7 +12,7 @@ import { uiText } from '@core/i18n/ui-text';
   templateUrl: './project-gallery.component.html',
   styleUrl: './project-gallery.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LanguagePipe],
+  imports: [LanguagePipe, ProjectImagesComponent],
 })
 export class ProjectGalleryComponent {
   protected readonly translate = inject(TranslateService);
@@ -23,15 +23,6 @@ export class ProjectGalleryComponent {
 
   showProjectDetails(project: Project): void {
     this.parameter.openDialog(ProjectDetailsComponent, project, '70%', '95%');
-  }
-
-  showImage(project: Project): void {
-    this.parameter.openDialog(
-      ShowImageComponent,
-      { url: project.picture, alt: this.projectTitle(project) },
-      '95%',
-      '97.5%',
-    );
   }
 
   linkLabel(link: ProjectLink): string {
@@ -53,10 +44,6 @@ export class ProjectGalleryComponent {
 
   projectLinkLabel(link: ProjectLink, project: Project): string {
     return `${this.linkLabel(link)} ${this.translate.text(uiText.portfolio.project.linkFor)} ${this.projectTitle(project)}`;
-  }
-
-  projectImageLabel(project: Project): string {
-    return `${this.translate.text(uiText.portfolio.project.openImage)} ${this.projectTitle(project)}`;
   }
 
   projectTitle(project: Project): string {

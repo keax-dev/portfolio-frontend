@@ -47,6 +47,8 @@ export class TableProjectComponent implements OnInit, OnDestroy {
       ...project,
       technology_names: project.technologies.map((technology) => technology.name).join(', '),
       link_types: project.links.map((link) => link.type.replaceAll('_', ' ')).join(', '),
+      image_count: project.images.length,
+      preview_image: project.images[0]?.url,
     })),
   );
 
@@ -55,7 +57,8 @@ export class TableProjectComponent implements OnInit, OnDestroy {
     { name: 'Technologies', value: 'technology_names' },
     { name: 'Title', value: 'title' },
     { name: 'Description', value: 'description' },
-    { name: 'Picture', value: 'picture', image: true },
+    { name: 'Images', value: 'image_count' },
+    { name: 'Preview', value: 'preview_image', image: true },
     { name: 'Links', value: 'link_types' },
   ];
 

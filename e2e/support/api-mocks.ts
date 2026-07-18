@@ -85,7 +85,10 @@ export async function mockPublicPortfolio(page: Page): Promise<void> {
             title_es: 'Portafolio',
             description: 'Personal website',
             description_es: 'Sitio personal',
-            picture: '/images/logo.png',
+            images: [
+              { id: 1, url: '/images/logo.png', position: 1 },
+              { id: 2, url: '/images/logo.png', position: 2 },
+            ],
             position: 1,
             technologies: [{ id: 1, name: 'Angular', position: 1 }],
             links: [

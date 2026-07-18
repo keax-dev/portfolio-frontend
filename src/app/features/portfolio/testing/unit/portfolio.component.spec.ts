@@ -214,6 +214,7 @@ describe('PortfolioComponent', () => {
   function projectItem(position: number): Project {
     return {
       id: position,
+      images: [],
       title: `Project ${position}`,
       title_es: `Proyecto ${position}`,
       description: 'Description',

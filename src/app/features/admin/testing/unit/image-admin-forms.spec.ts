@@ -183,13 +183,16 @@ describe('image admin forms', () => {
   // Caso: crea un proyecto, quita la imagen del payload y luego la sube.
   it('creates a project, strips the image from its payload and then uploads it', async () => {
     const created = project(4);
-    const withImage = { ...created, picture: 'project.png' };
+    const withImage = {
+      ...created,
+      images: [{ id: 1, url: 'project.png', position: 1 }],
+    };
     const projectService = {
       createProject: vi.fn().mockReturnValue(of(response(created))),
       updateProject: vi.fn(),
     };
     const imageService = {
-      uploadImageProject: vi.fn().mockReturnValue(of(response(withImage))),
+      uploadProjectImages: vi.fn().mockReturnValue(of(response(withImage))),
     };
     const technologyService = {
       getTechnologyList: vi
@@ -213,6 +216,9 @@ describe('image admin forms', () => {
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmProjectComponent).componentInstance;
+    component.controls.images.setValue([file, file, file, file]);
+    expect(component.controls.images.errors?.['maxImages']).toBe(true);
+
     component.projectForm.setValue({
       title: 'Portfolio',
       title_es: 'Portafolio',
@@ -221,7 +227,7 @@ describe('image admin forms', () => {
       position: 1,
       technologies: [{ relation_id: null, id: 2, position: 1 }],
       links: [],
-      image: file,
+      images: [file],
     });
     component.loadPositions();
     component.onSubmit();
@@ -236,7 +242,7 @@ describe('image admin forms', () => {
       technologies: [{ id: 2, position: 1 }],
       links: [],
     });
-    expect(imageService.uploadImageProject).toHaveBeenCalledWith(4, file);
+    expect(imageService.uploadProjectImages).toHaveBeenCalledWith(4, [file]);
     expect(ref.close).toHaveBeenCalledWith(withImage);
   });
 
@@ -284,6 +290,7 @@ describe('image admin forms', () => {
   function project(id: number): Project {
     return {
       id,
+      images: [],
       title: 'Portfolio',
       title_es: 'Portafolio',
       description: 'Description',

@@ -28,30 +28,9 @@
   <p>{{ project | language: 'description' : translate.getLang }}</p>
   <hr />
 
-  <figure class="d-flex justify-content-center align-items-center">
-    <button
-      (click)="showImage()"
-      [attr.aria-label]="
-        translate.text(text.portfolio.project.openImage) +
-        ' ' +
-        (project | language: 'title' : translate.getLang)
-      "
-      class="p-0 border-0 bg-transparent"
-      type="button"
-    >
-      <img
-        [src]="project.picture"
-        [alt]="project | language: 'title' : translate.getLang"
-        decoding="async"
-        loading="lazy"
-        class="w-75 img-hover"
-      />
-    </button>
-
-    <figcaption class="visually-hidden">
-      {{ project | language: 'title' : translate.getLang }}
-    </figcaption>
-  </figure>
+  <div class="d-flex justify-content-center align-items-center">
+    <app-project-images [project]="project" layout="stack"></app-project-images>
+  </div>
 
   <hr />
 

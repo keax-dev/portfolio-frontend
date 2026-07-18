@@ -78,7 +78,7 @@
         </div>
       </div>
 
-      @for (technologyGroup of technologies.controls; track $index) {
+      @for (technologyGroup of technologies.controls; track technologyGroup) {
         <div class="row g-2 align-items-start mb-2" [formGroupName]="$index">
           <div class="col-12 col-md-7">
             <mat-form-field appearance="outline" class="w-100">
@@ -101,7 +101,7 @@
 
           <div class="col-4 col-md-2 text-center pt-2">
             <button
-              (click)="removeTechnology($index)"
+              (click)="removeTechnology(technologyGroup)"
               [attr.aria-label]="'Remove technology ' + ($index + 1)"
               class="btn btn-outline-danger"
               type="button"
@@ -132,7 +132,7 @@
         </div>
       </div>
 
-      @for (linkGroup of links.controls; track $index) {
+      @for (linkGroup of links.controls; track linkGroup) {
         <div class="row g-2 align-items-start mb-2" [formGroupName]="$index">
           <div class="col-12 col-md-3">
             <mat-form-field appearance="outline" class="w-100">
@@ -161,7 +161,7 @@
 
           <div class="col-4 col-md-2 text-center pt-2">
             <button
-              (click)="removeLink($index)"
+              (click)="removeLink(linkGroup)"
               [attr.aria-label]="'Remove link ' + ($index + 1)"
               class="btn btn-outline-danger"
               type="button"

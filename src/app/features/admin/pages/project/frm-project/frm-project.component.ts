@@ -321,8 +321,11 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
     );
   }
 
-  removeTechnology(index: number): void {
-    this.technologies.removeAt(index);
+  removeTechnology(technologyGroup: AbstractControl): void {
+    const index = this.technologies.controls.findIndex((control) => control === technologyGroup);
+    if (index >= 0) {
+      this.technologies.removeAt(index);
+    }
   }
 
   addLink(): void {
@@ -331,8 +334,11 @@ export class FrmProjectComponent implements OnInit, OnDestroy {
     );
   }
 
-  removeLink(index: number): void {
-    this.links.removeAt(index);
+  removeLink(linkGroup: AbstractControl): void {
+    const index = this.links.controls.findIndex((control) => control === linkGroup);
+    if (index >= 0) {
+      this.links.removeAt(index);
+    }
   }
 
   private createTechnologyGroup(technology: Partial<ProjectTechnology>) {

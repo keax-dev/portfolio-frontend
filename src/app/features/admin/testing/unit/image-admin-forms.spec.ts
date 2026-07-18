@@ -245,6 +245,63 @@ describe('image admin forms', () => {
   });
 
   // Caso: crea un perfil con imagen y pasa al modo de actualización.
+  it('removes the selected project technology instead of the last row', async () => {
+    const existing: Project = {
+      ...project(4),
+      images: [{ id: 1, url: 'project.png', position: 1 }],
+      technologies: [
+        { relation_id: 1, id: 1, name: 'Angular', position: 1 },
+        { relation_id: 9, id: 3, name: 'Laravel', position: 2 },
+        { relation_id: 12, id: 6, name: 'MySQL', position: 5 },
+        { relation_id: 13, id: 4, name: 'Spring Boot', position: 3 },
+        { relation_id: 14, id: 5, name: 'PostgreSQL', position: 4 },
+      ],
+    };
+    const technologyService = {
+      getTechnologyList: vi.fn().mockReturnValue(
+        of(
+          response([
+            { id: 1, name: 'Angular' },
+            { id: 3, name: 'Laravel' },
+            { id: 4, name: 'Spring Boot' },
+            { id: 5, name: 'PostgreSQL' },
+            { id: 6, name: 'MySQL' },
+          ]),
+        ),
+      ),
+    };
+
+    await TestBed.configureTestingModule({
+      imports: [FrmProjectComponent],
+      providers: [
+        { provide: ProjectService, useValue: {} },
+        { provide: ImageService, useValue: {} },
+        { provide: TechnologyService, useValue: technologyService },
+        { provide: ParameterService, useValue: parameter() },
+        { provide: NgxSpinnerService, useValue: spinner() },
+        { provide: AlertService, useValue: alert() },
+        { provide: MatDialogRef, useValue: dialogRef() },
+        { provide: MAT_DIALOG_DATA, useValue: { project: existing, positions: 1 } },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(FrmProjectComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const removedControl = component.technologies.at(2);
+    const removeButtons = fixture.nativeElement.querySelectorAll(
+      'button[aria-label^="Remove technology"]',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    removeButtons[2].click();
+    fixture.detectChanges();
+
+    expect(component.technologies.controls).not.toContain(removedControl);
+    expect(component.technologies.getRawValue().map(({ id }) => id)).toEqual([1, 3, 4, 5]);
+    expect(
+      fixture.nativeElement.querySelectorAll('button[aria-label^="Remove technology"]'),
+    ).toHaveLength(4);
+  });
+
   it('creates a profile with an image and transitions to update mode', async () => {
     const created: Profile = {
       name: 'Kevin',

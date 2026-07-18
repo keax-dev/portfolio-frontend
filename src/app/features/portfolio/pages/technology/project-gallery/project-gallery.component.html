@@ -16,7 +16,9 @@
         <div class="d-flex justify-content-center align-items-center flex-column gap-3">
           <p class="text-center text-secondary">
             @for (technology of project.technologies; track technology.id; let last = $last) {
-             <span class="badge rounded-pill text-bg-light border text-secondary fw-semibold m-1 fs-6">
+              <span
+                class="badge rounded-pill text-bg-light border text-secondary fw-semibold m-1 fs-6"
+              >
                 {{ technology.name }}
               </span>
             }

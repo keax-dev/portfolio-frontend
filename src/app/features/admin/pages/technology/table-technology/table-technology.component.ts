@@ -42,10 +42,7 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
   readonly isLoading = signal(false);
   readonly loadErrorMessage = signal('');
 
-  columns: Column[] = [
-    { name: 'Position', value: 'position' },
-    { name: 'Name', value: 'name' },
-  ];
+  columns: Column[] = [{ name: 'Name', value: 'name' }];
 
   ngOnInit(): void {
     this.getTechnologyList();
@@ -79,7 +76,6 @@ export class TableTechnologyComponent implements OnInit, OnDestroy {
 
   modalTechnology(technology?: Technology): void {
     const dialogRef = this.parameter.openDialog(FrmTechnologyComponent, {
-      positions: this.records().length + 5,
       technology: technology,
     });
     dialogRef

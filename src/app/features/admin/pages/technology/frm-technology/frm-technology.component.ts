@@ -4,17 +4,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TechnologyService } from '@features/admin/services/technology.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { MatSelectModule } from '@angular/material/select';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { AlertService } from '@core/services/alert.service';
 import { Technology } from '@shared/interfaces/technology';
 import { finalize } from 'rxjs';
-import {
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  FormsModule,
-  Validators,
-} from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import {
   ChangeDetectionStrategy,
@@ -27,7 +21,6 @@ import {
 } from '@angular/core';
 
 interface TechnologyDialogData {
-  readonly positions: number;
   readonly technology?: Technology;
 }
 
@@ -40,9 +33,7 @@ interface TechnologyDialogData {
     UppercaseDirective,
     MatFormFieldModule,
     ButtonComponent,
-    MatSelectModule,
     MatInputModule,
-    FormsModule,
   ],
 })
 export class FrmTechnologyComponent implements OnInit, OnDestroy {
@@ -57,11 +48,9 @@ export class FrmTechnologyComponent implements OnInit, OnDestroy {
 
   readonly technologyForm = this.fb.group({
     name: ['', Validators.required],
-    position: [0, [Validators.required, Validators.min(1)]],
   });
 
   readonly isSaving = signal(false);
-  readonly positionList = Array.from({ length: this.data.positions }, (_, i) => i + 1);
   title = 'New Technology';
 
   update = false;

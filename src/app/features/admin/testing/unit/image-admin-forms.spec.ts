@@ -195,9 +195,7 @@ describe('image admin forms', () => {
       uploadProjectImages: vi.fn().mockReturnValue(of(response(withImage))),
     };
     const technologyService = {
-      getTechnologyList: vi
-        .fn()
-        .mockReturnValue(of(response([{ id: 2, name: 'Angular', position: 1 }]))),
+      getTechnologyList: vi.fn().mockReturnValue(of(response([{ id: 2, name: 'Angular' }]))),
     };
     const ref = dialogRef();
     const file = new File(['image'], 'project.png', { type: 'image/png' });

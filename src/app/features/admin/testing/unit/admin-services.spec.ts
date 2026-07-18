@@ -118,7 +118,7 @@ describe('admin HTTP services', () => {
   // Caso: usa el contrato CRUD de tecnologías.
   it('uses the technology CRUD contract', () => {
     const service = TestBed.inject(TechnologyService);
-    const payload: TechnologyPayload = { name: 'Angular', position: 1 };
+    const payload: TechnologyPayload = { name: 'Angular' };
 
     service.getTechnologyList().subscribe();
     expectRequest('GET', `${baseUrl}/technology`);

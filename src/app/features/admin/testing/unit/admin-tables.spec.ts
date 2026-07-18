@@ -81,7 +81,7 @@ describe('admin table components', () => {
       confirmMethod: 'confirmDelete',
       serviceLoadMethod: 'getTechnologyList',
       serviceDeleteMethod: 'deleteTechnology',
-      record: { id: 4, name: 'Angular', position: 1 },
+      record: { id: 4, name: 'Angular' },
     },
     {
       name: 'project',
@@ -237,6 +237,25 @@ describe('admin table components', () => {
       image_count: 1,
       preview_image: 'project.png',
     });
+  });
+
+  it('shows only the name column in technology management', async () => {
+    await TestBed.configureTestingModule({
+      imports: [TableTechnologyComponent],
+      providers: [
+        {
+          provide: TechnologyService,
+          useValue: { getTechnologyList: vi.fn().mockReturnValue(of({ data: [], alert: '' })) },
+        },
+        { provide: ParameterService, useValue: { openDialog: vi.fn() } },
+        { provide: AlertService, useValue: { httpError: vi.fn() } },
+        { provide: NgxSpinnerService, useValue: { hide: vi.fn() } },
+      ],
+    }).compileComponents();
+
+    const component = TestBed.createComponent(TableTechnologyComponent).componentInstance;
+
+    expect(component.columns).toEqual([{ name: 'Name', value: 'name' }]);
   });
 
   function invoke(component: Record<string, unknown>, method: string, ...args: unknown[]): void {

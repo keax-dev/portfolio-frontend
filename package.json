@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test:unit && npm run test:integration && npm run test:e2e && npm run build -- --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test --watch=false",
     "test:unit": "ng test --watch=false --exclude=src/**/*.integration.spec.ts",

@@ -10,6 +10,7 @@ import { ParameterService } from '@core/services/parameter.service';
 import { AlertService } from '@core/services/alert.service';
 import { environment } from '@src/environments/environment';
 import { TestBed } from '@angular/core/testing';
+import { Project } from '@shared/interfaces/project';
 import { Router } from '@angular/router';
 
 describe('Public portfolio integration', () => {
@@ -138,13 +139,14 @@ describe('Public portfolio integration', () => {
     };
   }
 
-  function project(position: number): object {
+  function project(position: number): Project {
     return {
       id: position,
       title: `Project ${position}`,
       title_es: `Proyecto ${position}`,
       description: 'Description',
       description_es: 'Descripción',
+      images: [],
       position,
       technologies: [
         { id: 2, name: 'Laravel', position: 2 },

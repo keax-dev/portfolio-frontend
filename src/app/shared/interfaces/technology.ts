@@ -1,6 +1,8 @@
 export interface Technology {
-  id?: number;
-  name: string;
+  readonly id: number;
+  readonly name: string;
 }
 
-export type TechnologyPayload = Pick<Technology, 'name'>;
+export interface TechnologyPayload {
+  readonly name: string;
+}

@@ -1,27 +1,19 @@
-import { FrmTechnologyComponent } from '@features/admin/pages/technology/frm-technology/frm-technology.component';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TechnologyService } from '@features/admin/services/technology.service';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ParameterService } from '@core/services/parameter.service';
-import { TableComponent } from '@shared/components/table/table.component';
-import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { AlertService } from '@core/services/alert.service';
-import { Technology } from '@shared/interfaces/technology';
-import { finalize } from 'rxjs';
-import { Column } from '@shared/components/interfaces/column';
+import { ConfirmationService } from '@core/services/confirmation.service';
+import { DialogService } from '@core/services/dialog.service';
 import {
   ADMIN_TABLE_LOAD_ERROR_MESSAGE,
   adminTableCopy,
 } from '@features/admin/config/admin-page-text';
-import {
-  ChangeDetectionStrategy,
-  DestroyRef,
-  OnDestroy,
-  Component,
-  OnInit,
-  inject,
-  signal,
-} from '@angular/core';
+import { FrmTechnologyComponent } from '@features/admin/pages/technology/frm-technology/frm-technology.component';
+import { createAdminCrudListState } from '@features/admin/state/admin-crud-list.state';
+import { TechnologyService } from '@features/admin/services/technology.service';
+import { Column } from '@shared/components/interfaces/column';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+import { TableComponent } from '@shared/components/table/table.component';
+import { Technology } from '@shared/interfaces/technology';
 
 @Component({
   selector: 'app-table-technology',
@@ -29,85 +21,51 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TableComponent, PageHeaderComponent],
 })
-export class TableTechnologyComponent implements OnInit, OnDestroy {
+export class TableTechnologyComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
-
-  private technologyService = inject(TechnologyService);
-  private parameter = inject(ParameterService);
-  private spinner = inject(NgxSpinnerService);
-  private alert = inject(AlertService);
+  private readonly technologyService = inject(TechnologyService);
+  private readonly dialogs = inject(DialogService);
+  private readonly confirmation = inject(ConfirmationService);
+  private readonly alert = inject(AlertService);
+  private readonly state = createAdminCrudListState<Technology>({
+    destroyRef: this.destroyRef,
+    load: () => this.technologyService.getTechnologyList(),
+    remove: (id) => this.technologyService.deleteTechnology(id),
+    loadErrorMessage: ADMIN_TABLE_LOAD_ERROR_MESSAGE,
+    onError: (error) => this.alert.httpError(error),
+    onRemoved: (message) => this.alert.success(message),
+  });
 
   readonly pageCopy = adminTableCopy.technology;
-  readonly records = signal<readonly Technology[]>([]);
-  readonly isLoading = signal(false);
-  readonly loadErrorMessage = signal('');
-
-  columns: Column[] = [{ name: 'Name', value: 'name' }];
+  readonly records = this.state.records;
+  readonly isLoading = this.state.isLoading;
+  readonly loadErrorMessage = this.state.loadErrorMessage;
+  readonly columns: readonly Column<Technology>[] = [{ name: 'Name', value: 'name' }];
 
   ngOnInit(): void {
     this.getTechnologyList();
   }
 
-  ngOnDestroy(): void {
-    this.spinner.hide();
-  }
-
   getTechnologyList(): void {
-    this.isLoading.set(true);
-    this.loadErrorMessage.set('');
-    this.technologyService
-      .getTechnologyList()
-      .pipe(
-        finalize(() => this.isLoading.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.records.set(result.data);
-          this.loadErrorMessage.set('');
-        },
-        error: (error) => {
-          this.records.set([]);
-          this.loadErrorMessage.set(ADMIN_TABLE_LOAD_ERROR_MESSAGE);
-          this.alert.httpError(error);
-        },
-      });
+    this.state.load();
   }
 
   modalTechnology(technology?: Technology): void {
-    const dialogRef = this.parameter.openDialog(FrmTechnologyComponent, {
-      technology: technology,
-    });
-    dialogRef
+    this.dialogs
+      .open(FrmTechnologyComponent, { data: { technology } })
       .afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (result) => {
-          if (result) {
-            this.getTechnologyList();
-          }
-        },
-      });
+      .subscribe((result) => result && this.getTechnologyList());
   }
 
   confirmDelete(technology: Technology): void {
-    this.alert.confirmDelete(() => this.deleteTechnology(technology));
+    this.confirmation
+      .confirmDelete()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((confirmed) => confirmed && this.deleteTechnology(technology));
   }
 
   deleteTechnology(technology: Technology): void {
-    this.spinner.show();
-    this.technologyService
-      .deleteTechnology(technology.id!)
-      .pipe(
-        finalize(() => this.spinner.hide()),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.alert.success(result.alert);
-          this.getTechnologyList();
-        },
-        error: (error) => this.alert.httpError(error),
-      });
+    this.state.remove(technology.id);
   }
 }

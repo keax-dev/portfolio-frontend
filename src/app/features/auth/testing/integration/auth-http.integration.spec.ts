@@ -24,7 +24,7 @@ describe('Authenticated HTTP integration', () => {
 
   beforeEach(() => {
     // Inicializa una sesión real y sustituye únicamente efectos externos de UI/navegación.
-    localStorage.clear();
+    sessionStorage.clear();
     router = { navigateByUrl: vi.fn().mockResolvedValue(true) };
     alert = { warning: vi.fn(), success: vi.fn() };
     TestBed.configureTestingModule({
@@ -42,14 +42,13 @@ describe('Authenticated HTTP integration', () => {
 
   afterEach(() => {
     controller.verify();
-    localStorage.clear();
+    sessionStorage.clear();
   });
 
   // Caso: lee la sesión real y adjunta su token a las solicitudes API.
   it('reads the real session and attaches its token to API requests', () => {
     // Guarda una sesión mediante la API pública de UserInfoService.
-    userInfo.setToken = 'integration-token';
-    userInfo.setTimeExpiration = Date.now() + 60_000;
+    userInfo.setSession('integration-token', Date.now() + 60_000);
 
     // Dispara HttpClient para atravesar la cadena real de interceptores.
     http.get(`${baseUrl}/profile`).subscribe();
@@ -64,8 +63,7 @@ describe('Authenticated HTTP integration', () => {
   // Caso: limpia y redirige una sesión real después de un 401 protegido.
   it('clears and redirects a real session after a protected 401', () => {
     // Prepara una sesión inicialmente válida.
-    userInfo.setToken = 'revoked-token';
-    userInfo.setTimeExpiration = Date.now() + 60_000;
+    userInfo.setSession('revoked-token', Date.now() + 60_000);
     const completed = vi.fn();
 
     // Responde 401 desde un recurso protegido.

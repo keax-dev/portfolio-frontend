@@ -29,7 +29,6 @@ export class AppComponent {
   protected readonly translate = inject(TranslateService);
   private readonly isPublicRoute = signal(true);
 
-  readonly title = 'Kevin Portfolio';
   readonly loadingLabel = computed(() =>
     this.isPublicRoute() ? this.translate.text(uiText.common.loading) : uiText.common.loading.en,
   );

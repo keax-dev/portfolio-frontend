@@ -4,6 +4,7 @@ import { ProjectImagesComponent } from '@features/portfolio/pages/project/projec
 import { TranslateService } from '@core/services/translate.service';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { Project, ProjectLink } from '@shared/interfaces/project';
+import { PROJECT_LINK_META } from '@shared/config/project-link-meta';
 import { uiText } from '@core/i18n/ui-text';
 
 @Component({
@@ -29,20 +30,11 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   linkLabel(link: ProjectLink): string {
-    switch (link.type) {
-      case 'DEPLOY':
-        return this.translate.text(uiText.portfolio.project.visitSite);
-      case 'GITHUB_FRONTEND':
-        return this.translate.text(uiText.portfolio.project.frontendCode);
-      case 'GITHUB_BACKEND':
-        return this.translate.text(uiText.portfolio.project.backendCode);
-      default:
-        return this.translate.text(uiText.portfolio.project.sourceCode);
-    }
+    return this.translate.text(PROJECT_LINK_META[link.type].label);
   }
 
   linkIcon(link: ProjectLink): string {
-    return link.type === 'DEPLOY' ? 'pi pi-external-link' : 'pi pi-github';
+    return PROJECT_LINK_META[link.type].icon;
   }
 
   projectLinkLabel(link: ProjectLink): string {

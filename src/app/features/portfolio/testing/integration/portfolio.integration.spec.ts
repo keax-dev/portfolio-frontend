@@ -1,41 +1,29 @@
-/**
- * Pruebas de integración de PortfolioComponent con PortfolioService y VisitorService reales.
- * Validan la composición de múltiples respuestas HTTP y el registro geográfico de visitas.
- */
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { PortfolioComponent } from '@features/portfolio/pages/portfolio/portfolio.component';
 import { provideHttpClient } from '@angular/common/http';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ParameterService } from '@core/services/parameter.service';
-import { AlertService } from '@core/services/alert.service';
-import { environment } from '@src/environments/environment';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { Project } from '@shared/interfaces/project';
 import { Router } from '@angular/router';
+import { AlertService } from '@core/services/alert.service';
+import { DialogService } from '@core/services/dialog.service';
+import { PortfolioComponent } from '@features/portfolio/pages/portfolio/portfolio.component';
+import { Project } from '@shared/interfaces/project';
+import { environment } from '@src/environments/environment';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 describe('Public portfolio integration', () => {
   const baseUrl = environment.url;
-  const visitorGeoUrl = environment.visitorGeoUrl;
   let controller: HttpTestingController;
   let component: PortfolioComponent;
 
   beforeEach(async () => {
-    // Usa servicios HTTP reales y mocks solamente para UI, Router y dialogs.
     await TestBed.configureTestingModule({
       imports: [PortfolioComponent],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        {
-          provide: NgxSpinnerService,
-          useValue: { show: vi.fn(), hide: vi.fn() },
-        },
+        { provide: NgxSpinnerService, useValue: { show: vi.fn(), hide: vi.fn() } },
         { provide: AlertService, useValue: { httpError: vi.fn() } },
-        { provide: ParameterService, useValue: { openDialog: vi.fn() } },
-        {
-          provide: Router,
-          useValue: { url: '/', navigate: vi.fn().mockResolvedValue(true) },
-        },
+        { provide: DialogService, useValue: { open: vi.fn() } },
+        { provide: Router, useValue: { url: '/', navigate: vi.fn().mockResolvedValue(true) } },
       ],
     }).compileComponents();
     component = TestBed.createComponent(PortfolioComponent).componentInstance;
@@ -44,12 +32,8 @@ describe('Public portfolio integration', () => {
 
   afterEach(() => controller.verify());
 
-  // Caso: combina y ordena todos los recursos públicos de la API.
   it('combines and orders all public API resources', () => {
-    // Inicia el forkJoin del componente para producir las cinco solicitudes.
     component.getInformation();
-
-    // Responde cada endpoint con datos deliberadamente desordenados.
     controller.expectOne(`${baseUrl}/portfolio/profile`).flush(
       api({
         name: 'Kevin',
@@ -70,26 +54,11 @@ describe('Public portfolio integration', () => {
     controller.expectOne(`${baseUrl}/portfolio/project`).flush(api([project(2), project(1)]));
     controller.expectOne(`${baseUrl}/portfolio/socialNetwork`).flush(
       api([
-        {
-          id: 2,
-          name: 'LinkedIn',
-          icon: '',
-          color: '',
-          position: 2,
-          url: '',
-        },
-        {
-          id: 1,
-          name: 'GitHub',
-          icon: '',
-          color: '',
-          position: 1,
-          url: '',
-        },
+        { id: 2, name: 'LinkedIn', icon: '', color: '', position: 2, url: '' },
+        { id: 1, name: 'GitHub', icon: '', color: '', position: 1, url: '' },
       ]),
     );
 
-    // El componente debe exponer modelos consistentes y ordenados para la vista.
     expect(component.educationList().map((item) => item.position)).toEqual([1, 2]);
     expect(component.skillList().map((item) => item.position)).toEqual([1, 2]);
     expect(component.projectList().map((item) => item.position)).toEqual([1, 2]);
@@ -97,22 +66,11 @@ describe('Public portfolio integration', () => {
     expect(component.socialNetworkList().map((item) => item.position)).toEqual([1, 2]);
   });
 
-  // Caso: resuelve la geolocalización antes de registrar la visita.
-  it('resolves geolocation before posting the visit', () => {
-    // Inicia el registro mediante VisitorService real.
+  it('posts the visit path without contacting an external geolocation service', () => {
     component.registerVisit();
-    controller.expectOne(visitorGeoUrl).flush({
-      location: { country: 'Ecuador', city: 'Guayaquil' },
-    });
-
-    // La segunda solicitud debe incorporar la ruta y ubicación resueltas.
     const request = controller.expectOne(`${baseUrl}/visitor`);
     expect(request.request.method).toBe('POST');
-    expect(request.request.body).toEqual({
-      path: '/',
-      country: 'Ecuador',
-      city: 'Guayaquil',
-    });
+    expect(request.request.body).toEqual({ path: '/' });
     request.flush(api(null));
   });
 
@@ -150,8 +108,8 @@ describe('Public portfolio integration', () => {
       images: [],
       position,
       technologies: [
-        { id: 2, name: 'Laravel', position: 2 },
-        { id: 1, name: 'Angular', position: 1 },
+        { relation_id: 2, id: 2, name: 'Laravel', position: 2 },
+        { relation_id: 1, id: 1, name: 'Angular', position: 1 },
       ],
       links: [],
     };

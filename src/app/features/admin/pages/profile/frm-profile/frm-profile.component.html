@@ -61,8 +61,8 @@
           @if (controls['cv'].touched && controls['cv'].errors?.['required']) {
             <mat-error>The English CV URL is required</mat-error>
           }
-          @if (controls['cv'].touched && controls['cv'].errors?.['pattern']) {
-            <mat-error>The English CV URL must start with http:// or https://</mat-error>
+          @if (controls['cv'].touched && controls['cv'].errors?.['httpsUrl']) {
+            <mat-error>The English CV URL must be a valid HTTPS URL</mat-error>
           }
         </mat-form-field>
       </div>
@@ -74,8 +74,8 @@
           @if (controls['cv_es'].touched && controls['cv_es'].errors?.['required']) {
             <mat-error>The Spanish CV URL is required</mat-error>
           }
-          @if (controls['cv_es'].touched && controls['cv_es'].errors?.['pattern']) {
-            <mat-error>The Spanish CV URL must start with http:// or https://</mat-error>
+          @if (controls['cv_es'].touched && controls['cv_es'].errors?.['httpsUrl']) {
+            <mat-error>The Spanish CV URL must be a valid HTTPS URL</mat-error>
           }
         </mat-form-field>
       </div>
@@ -91,6 +91,9 @@
           <small class="text-danger appear"
             >Only image files (png, jpg, jpeg, gif) are allowed</small
           >
+        }
+        @if (controls['image'].touched && controls['image'].errors?.['maxFileSize']) {
+          <small class="text-danger appear">The image must be 5 MB or smaller</small>
         }
       </div>
     </div>

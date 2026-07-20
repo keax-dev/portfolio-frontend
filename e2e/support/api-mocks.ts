@@ -7,13 +7,6 @@ import { Page, Route } from '@playwright/test';
 const apiBase = 'http://localhost:9090/api';
 
 export async function mockPublicPortfolio(page: Page): Promise<void> {
-  // Evita que la geolocalización externa vuelva inestable la ejecución.
-  await page.route('https://ip.guide/**', async (route) => {
-    await json(route, {
-      location: { country: 'Ecuador', city: 'Guayaquil' },
-    });
-  });
-
   // El test solo verifica la URL localizada del iframe, no carga el visor externo.
   await page.route('https://docs.google.com/**', async (route) => route.abort());
 
@@ -142,10 +135,10 @@ export async function mockPublicPortfolio(page: Page): Promise<void> {
 }
 
 export async function installValidSession(page: Page): Promise<void> {
-  // Inserta la sesión antes de que Angular y los guards lean localStorage.
+  // Inserta la sesión antes de que Angular y los guards lean sessionStorage.
   await page.addInitScript(() => {
-    localStorage.setItem('token', 'e2e-token');
-    localStorage.setItem('expiration', String(Date.now() + 3_600_000));
+    sessionStorage.setItem('token', 'e2e-token');
+    sessionStorage.setItem('expiration', String(Date.now() + 3_600_000));
   });
 }
 

@@ -62,7 +62,7 @@ jobs:
 
       # Ejecuta las pruebas unitarias con Vitest.
       - name: Ejecutar pruebas unitarias
-        run: npm run test:unit
+        run: npm run test:unit:coverage
 
       # Ejecuta las pruebas de integracion del frontend.
       - name: Ejecutar pruebas integracion

@@ -11,12 +11,7 @@ import { AlertService } from '@core/services/alert.service';
 import { Institution } from '@shared/interfaces/institution';
 import { Education } from '@shared/interfaces/education';
 import { finalize } from 'rxjs';
-import {
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  FormsModule,
-  Validators,
-} from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import {
   ChangeDetectionStrategy,
@@ -44,7 +39,6 @@ interface EducationDialogData {
     ButtonComponent,
     MatSelectModule,
     MatInputModule,
-    FormsModule,
   ],
 })
 export class FrmEducationComponent implements OnInit, OnDestroy {

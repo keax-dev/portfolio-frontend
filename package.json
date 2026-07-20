@@ -9,6 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test --watch=false",
     "test:unit": "ng test --watch=false --exclude=src/**/*.integration.spec.ts",
+    "test:unit:coverage": "ng test --watch=false --coverage --exclude=src/**/*.integration.spec.ts",
     "test:integration": "ng test --watch=false --include=src/**/*.integration.spec.ts",
     "test:watch": "ng test --watch",
     "test:coverage": "ng test --watch=false --coverage",

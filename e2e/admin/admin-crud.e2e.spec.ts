@@ -136,7 +136,7 @@ test('removes the selected project technology and submits its reordered relation
   await page.goto('/home/project');
   await page.getByRole('button', { name: 'Edit record' }).click();
   const form = page.locator('app-frm-project');
-  const technologyRows = form.locator('fieldset[formarrayname="technologies"]');
+  const technologyRows = form.locator('app-project-technologies-control fieldset');
   await expect(technologyRows.getByRole('button', { name: /^Remove technology/ })).toHaveCount(5);
   await expect(technologyRows.getByText('MySQL', { exact: true })).toBeVisible();
 

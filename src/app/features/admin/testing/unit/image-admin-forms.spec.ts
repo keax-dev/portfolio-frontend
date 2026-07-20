@@ -9,7 +9,6 @@ import { InstitutionService } from '@features/admin/services/institution.service
 import { NgxSpinnerService } from 'ngx-spinner';
 import { TechnologyService } from '@features/admin/services/technology.service';
 import { FrmSkillComponent } from '@features/admin/pages/skill/frm-skill/frm-skill.component';
-import { ParameterService } from '@core/services/parameter.service';
 import { of, throwError } from 'rxjs';
 import { ProfileService } from '@features/admin/services/profile.service';
 import { ProjectService } from '@features/admin/services/project.service';
@@ -26,7 +25,6 @@ describe('image admin forms', () => {
   const spinner = () => ({ show: vi.fn(), hide: vi.fn() });
   const alert = () => ({ success: vi.fn(), httpError: vi.fn() });
   const dialogRef = () => ({ close: vi.fn() });
-  const parameter = () => ({ imageFileValidator: vi.fn().mockReturnValue(null) });
   const response = <T>(data: T, text = 'Saved') => ({
     status: true,
     alert: text,
@@ -51,7 +49,6 @@ describe('image admin forms', () => {
       providers: [
         { provide: InstitutionService, useValue: institutionService },
         { provide: ImageService, useValue: imageService },
-        { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
         { provide: MatDialogRef, useValue: ref },
@@ -94,7 +91,6 @@ describe('image admin forms', () => {
       providers: [
         { provide: InstitutionService, useValue: service },
         { provide: ImageService, useValue: {} },
-        { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
         { provide: MatDialogRef, useValue: ref },
@@ -132,7 +128,6 @@ describe('image admin forms', () => {
       providers: [
         { provide: SkillService, useValue: skillService },
         { provide: ImageService, useValue: imageService },
-        { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
         { provide: MatDialogRef, useValue: ref },
@@ -165,7 +160,6 @@ describe('image admin forms', () => {
           provide: ImageService,
           useValue: { uploadImageSkill: vi.fn().mockReturnValue(throwError(() => failure)) },
         },
-        { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: messages },
         { provide: MatDialogRef, useValue: ref },
@@ -206,7 +200,6 @@ describe('image admin forms', () => {
         { provide: ProjectService, useValue: projectService },
         { provide: ImageService, useValue: imageService },
         { provide: TechnologyService, useValue: technologyService },
-        { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
         { provide: MatDialogRef, useValue: ref },
@@ -277,7 +270,6 @@ describe('image admin forms', () => {
         { provide: ProjectService, useValue: {} },
         { provide: ImageService, useValue: {} },
         { provide: TechnologyService, useValue: technologyService },
-        { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
         { provide: MatDialogRef, useValue: dialogRef() },
@@ -327,7 +319,6 @@ describe('image admin forms', () => {
       providers: [
         { provide: ProfileService, useValue: profileService },
         { provide: ImageService, useValue: imageService },
-        { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
       ],
@@ -352,7 +343,7 @@ describe('image admin forms', () => {
       description: 'Description',
       description_es: 'Descripción',
       position: 1,
-      technologies: [{ id: 2, name: 'Angular', position: 1 }],
+      technologies: [{ relation_id: 1, id: 2, name: 'Angular', position: 1 }],
       links: [],
     };
   }

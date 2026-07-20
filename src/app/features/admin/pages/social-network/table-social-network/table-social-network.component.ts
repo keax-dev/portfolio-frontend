@@ -1,27 +1,20 @@
-import { FrmSocialNetworkComponent } from '@features/admin/pages/social-network/frm-social-network/frm-social-network.component';
-import { SocialNetworkService } from '@features/admin/services/social-network.service';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ParameterService } from '@core/services/parameter.service';
-import { TableComponent } from '@shared/components/table/table.component';
-import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
-import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
-import { finalize } from 'rxjs';
-import { Column } from '@shared/components/interfaces/column';
+import { ConfirmationService } from '@core/services/confirmation.service';
+import { DialogService } from '@core/services/dialog.service';
 import {
+  ADMIN_POSITION_BUFFER,
   ADMIN_TABLE_LOAD_ERROR_MESSAGE,
   adminTableCopy,
 } from '@features/admin/config/admin-page-text';
-import {
-  ChangeDetectionStrategy,
-  DestroyRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  signal,
-  inject,
-} from '@angular/core';
+import { FrmSocialNetworkComponent } from '@features/admin/pages/social-network/frm-social-network/frm-social-network.component';
+import { SocialNetworkService } from '@features/admin/services/social-network.service';
+import { createAdminCrudListState } from '@features/admin/state/admin-crud-list.state';
+import { Column } from '@shared/components/interfaces/column';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+import { TableComponent } from '@shared/components/table/table.component';
+import { SocialNetwork } from '@shared/interfaces/social-network';
 
 @Component({
   selector: 'app-table-social-network',
@@ -29,20 +22,26 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TableComponent, PageHeaderComponent],
 })
-export class TableSocialNetworkComponent implements OnInit, OnDestroy {
+export class TableSocialNetworkComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
-
-  private socialNetworkService = inject(SocialNetworkService);
-  private parameter = inject(ParameterService);
-  private spinner = inject(NgxSpinnerService);
-  private alert = inject(AlertService);
+  private readonly socialNetworkService = inject(SocialNetworkService);
+  private readonly dialogs = inject(DialogService);
+  private readonly confirmation = inject(ConfirmationService);
+  private readonly alert = inject(AlertService);
+  private readonly state = createAdminCrudListState<SocialNetwork>({
+    destroyRef: this.destroyRef,
+    load: () => this.socialNetworkService.getSocialNetworkList(),
+    remove: (id) => this.socialNetworkService.deleteSocialNetwork(id),
+    loadErrorMessage: ADMIN_TABLE_LOAD_ERROR_MESSAGE,
+    onError: (error) => this.alert.httpError(error),
+    onRemoved: (message) => this.alert.success(message),
+  });
 
   readonly pageCopy = adminTableCopy.socialNetwork;
-  readonly records = signal<readonly SocialNetwork[]>([]);
-  readonly isLoading = signal(false);
-  readonly loadErrorMessage = signal('');
-
-  columns: Column[] = [
+  readonly records = this.state.records;
+  readonly isLoading = this.state.isLoading;
+  readonly loadErrorMessage = this.state.loadErrorMessage;
+  readonly columns: readonly Column<SocialNetwork>[] = [
     { name: 'Position', value: 'position' },
     { name: 'Name', value: 'name' },
     { name: 'Icon', value: 'icon' },
@@ -54,67 +53,28 @@ export class TableSocialNetworkComponent implements OnInit, OnDestroy {
     this.getSocialNetworkList();
   }
 
-  ngOnDestroy(): void {
-    this.spinner.hide();
-  }
-
   getSocialNetworkList(): void {
-    this.isLoading.set(true);
-    this.loadErrorMessage.set('');
-    this.socialNetworkService
-      .getSocialNetworkList()
-      .pipe(
-        finalize(() => this.isLoading.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.records.set(result.data);
-          this.loadErrorMessage.set('');
-        },
-        error: (error) => {
-          this.records.set([]);
-          this.loadErrorMessage.set(ADMIN_TABLE_LOAD_ERROR_MESSAGE);
-          this.alert.httpError(error);
-        },
-      });
+    this.state.load();
   }
 
   modalSocialNetwork(socialNetwork?: SocialNetwork): void {
-    const dialogRef = this.parameter.openDialog(FrmSocialNetworkComponent, {
-      positions: this.records().length + 5,
-      socialNetwork: socialNetwork,
-    });
-    dialogRef
+    this.dialogs
+      .open(FrmSocialNetworkComponent, {
+        data: { positions: this.records().length + ADMIN_POSITION_BUFFER, socialNetwork },
+      })
       .afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (result) => {
-          if (result) {
-            this.getSocialNetworkList();
-          }
-        },
-      });
+      .subscribe((result) => result && this.getSocialNetworkList());
   }
 
   confirmDelete(socialNetwork: SocialNetwork): void {
-    this.alert.confirmDelete(() => this.deleteSocialNetwork(socialNetwork));
+    this.confirmation
+      .confirmDelete()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((confirmed) => confirmed && this.deleteSocialNetwork(socialNetwork));
   }
 
   deleteSocialNetwork(socialNetwork: SocialNetwork): void {
-    this.spinner.show();
-    this.socialNetworkService
-      .deleteSocialNetwork(socialNetwork.id!)
-      .pipe(
-        finalize(() => this.spinner.hide()),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.alert.success(result.alert);
-          this.getSocialNetworkList();
-        },
-        error: (error) => this.alert.httpError(error),
-      });
+    this.state.remove(socialNetwork.id);
   }
 }

@@ -1,28 +1,33 @@
-import { FrmProjectComponent } from '@features/admin/pages/project/frm-project/frm-project.component';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ParameterService } from '@core/services/parameter.service';
-import { ProjectService } from '@features/admin/services/project.service';
-import { TableComponent } from '@shared/components/table/table.component';
-import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { AlertService } from '@core/services/alert.service';
-import { finalize } from 'rxjs';
-import { Project } from '@shared/interfaces/project';
-import { Column } from '@shared/components/interfaces/column';
+import { ConfirmationService } from '@core/services/confirmation.service';
+import { DialogService } from '@core/services/dialog.service';
 import {
   ADMIN_TABLE_LOAD_ERROR_MESSAGE,
   adminTableCopy,
 } from '@features/admin/config/admin-page-text';
-import {
-  ChangeDetectionStrategy,
-  DestroyRef,
-  Component,
-  OnDestroy,
-  computed,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { FrmProjectComponent } from '@features/admin/pages/project/frm-project/frm-project.component';
+import { ProjectService } from '@features/admin/services/project.service';
+import { createAdminCrudListState } from '@features/admin/state/admin-crud-list.state';
+import { Column } from '@shared/components/interfaces/column';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+import { TableComponent } from '@shared/components/table/table.component';
+import { Project } from '@shared/interfaces/project';
+
+interface ProjectTableRecord extends Project {
+  readonly technology_names: string;
+  readonly link_types: string;
+  readonly image_count: number;
+  readonly preview_image?: string;
+}
 
 @Component({
   selector: 'app-table-project',
@@ -30,19 +35,26 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TableComponent, PageHeaderComponent],
 })
-export class TableProjectComponent implements OnInit, OnDestroy {
+export class TableProjectComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
-
-  private projectService = inject(ProjectService);
-  private parameter = inject(ParameterService);
-  private spinner = inject(NgxSpinnerService);
-  private alert = inject(AlertService);
+  private readonly projectService = inject(ProjectService);
+  private readonly dialogs = inject(DialogService);
+  private readonly confirmation = inject(ConfirmationService);
+  private readonly alert = inject(AlertService);
+  private readonly state = createAdminCrudListState<Project>({
+    destroyRef: this.destroyRef,
+    load: () => this.projectService.getProjectList(),
+    remove: (id) => this.projectService.deleteProject(id),
+    loadErrorMessage: ADMIN_TABLE_LOAD_ERROR_MESSAGE,
+    onError: (error) => this.alert.httpError(error),
+    onRemoved: (message) => this.alert.success(message),
+  });
 
   readonly pageCopy = adminTableCopy.project;
-  readonly records = signal<readonly Project[]>([]);
-  readonly isLoading = signal(false);
-  readonly loadErrorMessage = signal('');
-  readonly tableRecords = computed(() =>
+  readonly records = this.state.records;
+  readonly isLoading = this.state.isLoading;
+  readonly loadErrorMessage = this.state.loadErrorMessage;
+  readonly tableRecords = computed<readonly ProjectTableRecord[]>(() =>
     this.records().map((project) => ({
       ...project,
       technology_names: project.technologies.map((technology) => technology.name).join(', '),
@@ -51,14 +63,13 @@ export class TableProjectComponent implements OnInit, OnDestroy {
       preview_image: project.images[0]?.url,
     })),
   );
-
-  columns: Column[] = [
+  readonly columns: readonly Column<ProjectTableRecord>[] = [
     { name: 'Position', value: 'position' },
     { name: 'Technologies', value: 'technology_names' },
     { name: 'Title', value: 'title' },
     { name: 'Description', value: 'description' },
     { name: 'Images', value: 'image_count' },
-    { name: 'Preview', value: 'preview_image', image: true },
+    { name: 'Preview', value: 'preview_image', image: true, imageAlt: (record) => record.title },
     { name: 'Links', value: 'link_types' },
   ];
 
@@ -66,67 +77,26 @@ export class TableProjectComponent implements OnInit, OnDestroy {
     this.getProjectList();
   }
 
-  ngOnDestroy(): void {
-    this.spinner.hide();
-  }
-
   getProjectList(): void {
-    this.isLoading.set(true);
-    this.loadErrorMessage.set('');
-    this.projectService
-      .getProjectList()
-      .pipe(
-        finalize(() => this.isLoading.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.records.set(result.data);
-          this.loadErrorMessage.set('');
-        },
-        error: (error) => {
-          this.records.set([]);
-          this.loadErrorMessage.set(ADMIN_TABLE_LOAD_ERROR_MESSAGE);
-          this.alert.httpError(error);
-        },
-      });
+    this.state.load();
   }
 
   modalProject(project?: Project): void {
-    const dialogRef = this.parameter.openDialog(FrmProjectComponent, {
-      positions: this.records().length,
-      project: project,
-    });
-    dialogRef
+    this.dialogs
+      .open(FrmProjectComponent, { data: { positions: this.records().length, project } })
       .afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (result) => {
-          if (result) {
-            this.getProjectList();
-          }
-        },
-      });
+      .subscribe((result) => result && this.getProjectList());
   }
 
   confirmDelete(project: Project): void {
-    this.alert.confirmDelete(() => this.deleteProject(project));
+    this.confirmation
+      .confirmDelete()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((confirmed) => confirmed && this.deleteProject(project));
   }
 
   deleteProject(project: Project): void {
-    this.spinner.show();
-    this.projectService
-      .deleteProject(project.id!)
-      .pipe(
-        finalize(() => this.spinner.hide()),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.alert.success(result.alert);
-          this.getProjectList();
-        },
-        error: (error) => this.alert.httpError(error),
-      });
+    this.state.remove(project.id);
   }
 }

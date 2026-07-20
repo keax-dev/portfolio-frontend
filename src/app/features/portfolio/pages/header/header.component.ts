@@ -1,7 +1,7 @@
 import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { CvPreviewComponent } from '@features/portfolio/pages/header/cv-preview/cv-preview.component';
 import { TranslateService } from '@core/services/translate.service';
-import { ParameterService } from '@core/services/parameter.service';
+import { DialogService } from '@core/services/dialog.service';
 import { TitleCasePipe } from '@angular/common';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { uiText } from '@core/i18n/ui-text';
@@ -16,7 +16,7 @@ import { Profile } from '@shared/interfaces/profile';
 })
 export class HeaderComponent {
   protected readonly translate = inject(TranslateService);
-  private readonly parameter = inject(ParameterService);
+  private readonly dialogs = inject(DialogService);
 
   readonly text = uiText;
   readonly profile = input.required<Profile>();
@@ -53,6 +53,10 @@ export class HeaderComponent {
       return;
     }
 
-    this.parameter.openDialog(CvPreviewComponent, { url }, '92%', '98%');
+    this.dialogs.open(CvPreviewComponent, {
+      data: { url },
+      desktopWidth: '92%',
+      mobileWidth: '98%',
+    });
   }
 }

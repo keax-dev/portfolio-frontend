@@ -1,8 +1,11 @@
 export interface Institution {
-  id?: number;
-  name: string;
-  name_es: string;
-  url?: string;
+  readonly id: number;
+  readonly name: string;
+  readonly name_es: string;
+  readonly url?: string;
 }
 
-export type InstitutionPayload = Pick<Institution, 'name' | 'name_es'>;
+export interface InstitutionPayload {
+  readonly name: string;
+  readonly name_es: string;
+}

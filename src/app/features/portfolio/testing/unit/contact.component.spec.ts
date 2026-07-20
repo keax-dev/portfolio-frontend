@@ -20,6 +20,7 @@ describe('ContactComponent', () => {
   let dialogRef: { close: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
+    localStorage.clear();
     portfolio = { sendEmail: vi.fn() };
     alert = { success: vi.fn(), httpError: vi.fn() };
     dialogRef = { close: vi.fn() };
@@ -27,7 +28,10 @@ describe('ContactComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ContactComponent],
       providers: [
-        TranslateService,
+        {
+          provide: TranslateService,
+          useValue: { getLang: 'en', text: (value: { en: string }) => value.en },
+        },
         { provide: PortfolioService, useValue: portfolio },
         { provide: AlertService, useValue: alert },
         { provide: MatDialogRef, useValue: dialogRef },
@@ -35,6 +39,7 @@ describe('ContactComponent', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(ContactComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   afterEach(() => localStorage.clear());
@@ -50,6 +55,21 @@ describe('ContactComponent', () => {
     expect(component.controls.name.hasError('minlength')).toBe(true);
     expect(component.controls.email.hasError('email')).toBe(true);
     expect(component.controls.message.hasError('minlength')).toBe(true);
+    expect(component.errorMessage('name')).toContain('at least 2');
+    expect(component.errorMessage('email')).toContain('valid email');
+    expect(component.errorMessage('message')).toContain('at least 5');
+  });
+
+  it('provides localized action labels and precise maximum-length messages', () => {
+    component.controls.name.setValue('A'.repeat(101));
+    component.controls.email.setValue(`${'a'.repeat(250)}@example.com`);
+    component.controls.message.setValue('A'.repeat(501));
+    expect(component.errorMessage('name')).toContain('100');
+    expect(component.errorMessage('email')).toContain('254');
+    expect(component.errorMessage('message')).toContain('500');
+    expect(component.sendActionLabel()).toBe('Send');
+    expect(component.sendingActionLabel()).toBe('Sending...');
+    expect(component.cancelActionLabel()).toBe('Cancel');
   });
 
   // Caso: no envía un formulario inválido.

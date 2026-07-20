@@ -16,9 +16,9 @@
         <input class="form-control" type="date" name="endDate" [(ngModel)]="endDate" />
       </label>
 
-      <button class="btn btn-primary" type="submit">
+      <button class="btn btn-primary" type="submit" [disabled]="isLoading()">
         <i class="pi pi-filter me-1" aria-hidden="true"></i>
-        Apply
+        {{ isLoading() ? 'Loading...' : 'Apply' }}
       </button>
     </form>
   </header>

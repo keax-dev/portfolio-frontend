@@ -16,7 +16,7 @@ export const homeRoutes: Routes = [
           description: 'Dashboard de visitantes con métricas, países, ciudades y trazas de visita.',
         },
         loadComponent: () =>
-          import('@features/admin/pages/visitor-dashboard/visitor-dashboard.component').then(
+          import('@features/visitor/pages/visitor-dashboard.component').then(
             (component) => component.VisitorDashboardComponent,
           ),
       },

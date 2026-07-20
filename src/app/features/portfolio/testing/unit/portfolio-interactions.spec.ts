@@ -7,7 +7,7 @@ import { ProjectImagesComponent } from '@features/portfolio/pages/project/projec
 import { ProjectDetailsComponent } from '@features/portfolio/pages/project/project-details/project-details.component';
 import { CvPreviewComponent } from '@features/portfolio/pages/header/cv-preview/cv-preview.component';
 import { ShowImageComponent } from '@features/portfolio/pages/project/show-image/show-image.component';
-import { ParameterService } from '@core/services/parameter.service';
+import { DialogService } from '@core/services/dialog.service';
 import { TranslateService } from '@core/services/translate.service';
 import { NavbarComponent } from '@features/portfolio/pages/navbar/navbar.component';
 import { FooterComponent } from '@features/portfolio/pages/footer/footer.component';
@@ -36,8 +36,8 @@ describe('portfolio interaction components', () => {
     description_es: 'Descripción',
     images: [{ id: 1, url: 'project.png', position: 1 }],
     position: 1,
-    technologies: [{ id: 2, name: 'Angular', position: 1 }],
-    links: [{ type: 'DEPLOY', url: 'https://example.com', position: 1 }],
+    technologies: [{ relation_id: 2, id: 2, name: 'Angular', position: 1 }],
+    links: [{ id: 1, type: 'DEPLOY', url: 'https://example.com', position: 1 }],
   };
 
   // Caso: alterna la barra de navegación, cambia el idioma y emite contacto.
@@ -68,12 +68,12 @@ describe('portfolio interaction components', () => {
   // Caso: deriva la clase del encabezado y abre solo CVs configurados.
   it('derives the header class and opens only configured CVs', async () => {
     const translate = { getLang: 'es' };
-    const parameter = { openDialog: vi.fn() };
+    const parameter = { open: vi.fn() };
     await TestBed.configureTestingModule({
       imports: [HeaderComponent],
       providers: [
         { provide: TranslateService, useValue: translate },
-        { provide: ParameterService, useValue: parameter },
+        { provide: DialogService, useValue: parameter },
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(HeaderComponent);
@@ -82,25 +82,23 @@ describe('portfolio interaction components', () => {
 
     expect(component.classTitle).toBe('machine-2-es');
     component.openCvPreview();
-    expect(parameter.openDialog).toHaveBeenCalledWith(
-      CvPreviewComponent,
-      { url: profile.cv_es },
-      '92%',
-      '98%',
-    );
+    expect(parameter.open).toHaveBeenCalledWith(CvPreviewComponent, {
+      data: { url: profile.cv_es },
+      desktopWidth: '92%',
+      mobileWidth: '98%',
+    });
 
     translate.getLang = 'en';
     component.openCvPreview();
-    expect(parameter.openDialog).toHaveBeenLastCalledWith(
-      CvPreviewComponent,
-      { url: profile.cv },
-      '92%',
-      '98%',
-    );
+    expect(parameter.open).toHaveBeenLastCalledWith(CvPreviewComponent, {
+      data: { url: profile.cv },
+      desktopWidth: '92%',
+      mobileWidth: '98%',
+    });
 
     fixture.componentRef.setInput('profile', { ...profile, cv: '', cv_es: '' });
     component.openCvPreview();
-    expect(parameter.openDialog).toHaveBeenCalledTimes(2);
+    expect(parameter.open).toHaveBeenCalledTimes(2);
   });
 
   // Caso: emite acciones de contacto desde el footer.
@@ -119,7 +117,7 @@ describe('portfolio interaction components', () => {
 
   // Caso: construye identificadores del carrusel y abre diálogos de proyectos.
   it('opens project gallery dialogs and formats links', async () => {
-    const parameter = { openDialog: vi.fn() };
+    const parameter = { open: vi.fn() };
     await TestBed.configureTestingModule({
       imports: [ProjectGalleryComponent],
       providers: [
@@ -127,7 +125,7 @@ describe('portfolio interaction components', () => {
           provide: TranslateService,
           useValue: { getLang: 'en', text: (value: { en: string }) => value.en },
         },
-        { provide: ParameterService, useValue: parameter },
+        { provide: DialogService, useValue: parameter },
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(ProjectGalleryComponent);
@@ -135,18 +133,17 @@ describe('portfolio interaction components', () => {
     const component = fixture.componentInstance;
 
     component.showProjectDetails(project);
-    expect(parameter.openDialog).toHaveBeenCalledWith(
-      ProjectDetailsComponent,
-      project,
-      '70%',
-      '95%',
-    );
+    expect(parameter.open).toHaveBeenCalledWith(ProjectDetailsComponent, {
+      data: project,
+      desktopWidth: '70%',
+      mobileWidth: '95%',
+    });
     expect(component.linkLabel(project.links[0])).toBe('Visit site');
     expect(component.linkIcon(project.links[0])).toBe('pi pi-external-link');
   });
 
   it('opens ordered images only from the project details layout', async () => {
-    const parameter = { openDialog: vi.fn() };
+    const parameter = { open: vi.fn() };
     await TestBed.configureTestingModule({
       imports: [ProjectImagesComponent],
       providers: [
@@ -154,7 +151,7 @@ describe('portfolio interaction components', () => {
           provide: TranslateService,
           useValue: { getLang: 'en', text: (value: { en: string }) => value.en },
         },
-        { provide: ParameterService, useValue: parameter },
+        { provide: DialogService, useValue: parameter },
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(ProjectImagesComponent);
@@ -165,7 +162,7 @@ describe('portfolio interaction components', () => {
     expect(fixture.nativeElement.querySelectorAll('.project-images__control')).toHaveLength(2);
     expect(fixture.nativeElement.querySelector('.carousel-item button')).toBeNull();
     expect(fixture.nativeElement.querySelector('.carousel-item img').alt).toBe('1 of 1: Portfolio');
-    expect(parameter.openDialog).not.toHaveBeenCalled();
+    expect(parameter.open).not.toHaveBeenCalled();
 
     fixture.componentRef.setInput('layout', 'stack');
     fixture.detectChanges();
@@ -174,17 +171,16 @@ describe('portfolio interaction components', () => {
 
     fixture.nativeElement.querySelector('.project-images__stack button').click();
 
-    expect(parameter.openDialog).toHaveBeenCalledWith(
-      ShowImageComponent,
-      { url: 'project.png', alt: 'Open image of 1 of 1: Portfolio' },
-      '95%',
-      '97.5%',
-    );
+    expect(parameter.open).toHaveBeenCalledWith(ShowImageComponent, {
+      data: { url: 'project.png', alt: 'Open image of 1 of 1: Portfolio' },
+      desktopWidth: '95%',
+      mobileWidth: '97.5%',
+    });
   });
 
   // Caso: inicializa los detalles del proyecto, abre su imagen y cierra.
   it('initializes project details, opens its image and closes', async () => {
-    const parameter = { openDialog: vi.fn() };
+    const parameter = { open: vi.fn() };
     const ref = { close: vi.fn() };
     await TestBed.configureTestingModule({
       imports: [ProjectDetailsComponent],
@@ -193,7 +189,7 @@ describe('portfolio interaction components', () => {
           provide: TranslateService,
           useValue: { getLang: 'en', text: (value: { en: string }) => value.en },
         },
-        { provide: ParameterService, useValue: parameter },
+        { provide: DialogService, useValue: parameter },
         { provide: MAT_DIALOG_DATA, useValue: project },
         { provide: MatDialogRef, useValue: ref },
       ],

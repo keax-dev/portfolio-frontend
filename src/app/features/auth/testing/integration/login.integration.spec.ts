@@ -1,5 +1,5 @@
 /**
- * Prueba de integración del formulario LoginComponent con LoginService, HttpClient y localStorage.
+ * Prueba de integración del formulario LoginComponent con LoginService, HttpClient y sessionStorage.
  * Recorre el flujo desde eventos DOM hasta persistencia de sesión y navegación.
  */
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -13,8 +13,8 @@ import { Router } from '@angular/router';
 describe('Login flow integration', () => {
   const baseUrl = environment.url;
 
-  beforeEach(() => localStorage.clear());
-  afterEach(() => localStorage.clear());
+  beforeEach(() => sessionStorage.clear());
+  afterEach(() => sessionStorage.clear());
 
   // Caso: envía credenciales desde el DOM, persiste el JWT recibido y navega al home.
   it('submits DOM credentials, persists the returned JWT and navigates home', async () => {
@@ -59,8 +59,8 @@ describe('Login flow integration', () => {
       data: { token },
     });
 
-    expect(localStorage.getItem('token')).toBe(token);
-    expect(localStorage.getItem('expiration')).toBe(String(expirationSeconds * 1000));
+    expect(sessionStorage.getItem('token')).toBe(token);
+    expect(sessionStorage.getItem('expiration')).toBe(String(expirationSeconds * 1000));
     expect(alert.success).toHaveBeenCalledWith('Welcome');
     expect(router.navigateByUrl).toHaveBeenCalledWith('/home/visitor-dashboard');
     controller.verify();

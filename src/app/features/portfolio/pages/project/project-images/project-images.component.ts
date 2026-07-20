@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { ShowImageComponent } from '@features/portfolio/pages/project/show-image/show-image.component';
-import { ParameterService } from '@core/services/parameter.service';
+import { DialogService } from '@core/services/dialog.service';
 import { TranslateService } from '@core/services/translate.service';
 import { Project, ProjectImage } from '@shared/interfaces/project';
 import { uiText } from '@core/i18n/ui-text';
@@ -13,7 +13,7 @@ import { uiText } from '@core/i18n/ui-text';
 })
 export class ProjectImagesComponent {
   protected readonly translate = inject(TranslateService);
-  private readonly parameter = inject(ParameterService);
+  private readonly dialogs = inject(DialogService);
 
   readonly project = input.required<Project>();
   readonly eager = input(false);
@@ -28,12 +28,11 @@ export class ProjectImagesComponent {
   );
 
   showImage(image: ProjectImage, index: number): void {
-    this.parameter.openDialog(
-      ShowImageComponent,
-      { url: image.url, alt: this.imageLabel(index) },
-      '95%',
-      '97.5%',
-    );
+    this.dialogs.open(ShowImageComponent, {
+      data: { url: image.url, alt: this.imageLabel(index) },
+      desktopWidth: '95%',
+      mobileWidth: '97.5%',
+    });
   }
 
   imageLabel(index: number): string {

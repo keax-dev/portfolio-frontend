@@ -1,8 +1,7 @@
-import { Visitor, VisitorDashboard } from '@features/portfolio/interfaces/visitor';
+import { Visitor, VisitorDashboard } from '@features/visitor/models/visitor';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize, forkJoin } from 'rxjs';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { VisitorService } from '@features/portfolio/services/visitor.service';
+import { catchError, defer, EMPTY, finalize, forkJoin, Subject, switchMap } from 'rxjs';
+import { VisitorService } from '@features/visitor/data-access/visitor.service';
 import { AlertService } from '@core/services/alert.service';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -10,11 +9,15 @@ import {
   ChangeDetectionStrategy,
   DestroyRef,
   Component,
-  OnDestroy,
   inject,
   OnInit,
   signal,
 } from '@angular/core';
+
+interface VisitorDateRange {
+  readonly startAt?: string;
+  readonly endAt?: string;
+}
 
 @Component({
   selector: 'app-visitor-dashboard',
@@ -23,12 +26,12 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DatePipe, FormsModule],
 })
-export class VisitorDashboardComponent implements OnInit, OnDestroy {
+export class VisitorDashboardComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly visitorService = inject(VisitorService);
-  private readonly spinner = inject(NgxSpinnerService);
   private readonly alert = inject(AlertService);
+  private readonly dateRangeRequests = new Subject<VisitorDateRange>();
 
   readonly dashboard = signal<VisitorDashboard>({
     totalVisits: 0,
@@ -39,16 +42,14 @@ export class VisitorDashboardComponent implements OnInit, OnDestroy {
   });
 
   readonly records = signal<readonly Visitor[]>([]);
+  readonly isLoading = signal(false);
   startDate = '';
   endDate = '';
 
   ngOnInit(): void {
     this.setDefaultDateRange();
+    this.observeDateRangeRequests();
     this.loadDashboard();
-  }
-
-  ngOnDestroy(): void {
-    this.spinner.hide();
   }
 
   loadDashboard(): void {
@@ -60,13 +61,27 @@ export class VisitorDashboardComponent implements OnInit, OnDestroy {
     const startAt = this.toStartOfDayIso(this.startDate);
     const endAt = this.toEndOfDayIso(this.endDate);
 
-    this.spinner.show();
-    forkJoin({
-      dashboard: this.visitorService.getDashboard(startAt, endAt),
-      visitors: this.visitorService.getVisitorList(startAt, endAt),
-    })
+    this.dateRangeRequests.next({ startAt, endAt });
+  }
+
+  private observeDateRangeRequests(): void {
+    this.dateRangeRequests
       .pipe(
-        finalize(() => this.spinner.hide()),
+        switchMap((range) =>
+          defer(() => {
+            this.isLoading.set(true);
+            return forkJoin({
+              dashboard: this.visitorService.getDashboard(range.startAt, range.endAt),
+              visitors: this.visitorService.getVisitorList(range.startAt, range.endAt),
+            }).pipe(
+              catchError((error: unknown) => {
+                this.alert.httpError(error);
+                return EMPTY;
+              }),
+              finalize(() => this.isLoading.set(false)),
+            );
+          }),
+        ),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
@@ -74,7 +89,6 @@ export class VisitorDashboardComponent implements OnInit, OnDestroy {
           this.dashboard.set(result.dashboard.data);
           this.records.set(result.visitors.data);
         },
-        error: (error) => this.alert.httpError(error),
       });
   }
 

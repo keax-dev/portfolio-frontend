@@ -36,6 +36,9 @@
       @if (controls['image'].touched && controls['image'].errors?.['invalidFileType']) {
         <small class="text-danger appear">Only image files (png, jpg, jpeg, gif) are allowed</small>
       }
+      @if (controls['image'].touched && controls['image'].errors?.['maxFileSize']) {
+        <small class="text-danger appear">The image must be 5 MB or smaller</small>
+      }
     </div>
 
     @if (update) {

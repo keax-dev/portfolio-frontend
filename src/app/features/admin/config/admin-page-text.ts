@@ -1,4 +1,5 @@
 export const ADMIN_TABLE_LOAD_ERROR_MESSAGE = 'We could not load the records. Please try again.';
+export const ADMIN_POSITION_BUFFER = 5;
 
 export const adminTableCopy = {
   education: {

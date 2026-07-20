@@ -85,9 +85,29 @@ export const uiText = {
     emailLabel: { en: 'Email', es: 'Correo electrónico' },
     messageLabel: { en: 'Message', es: 'Mensaje' },
     nameRequired: { en: 'The name is required', es: 'El nombre es requerido' },
+    nameMinLength: {
+      en: 'The name must contain at least 2 characters',
+      es: 'El nombre debe contener al menos 2 caracteres',
+    },
+    nameMaxLength: {
+      en: 'The name cannot exceed 100 characters',
+      es: 'El nombre no puede superar los 100 caracteres',
+    },
     emailRequired: { en: 'The email is required', es: 'El correo es requerido' },
     emailInvalid: { en: 'Enter a valid email', es: 'Ingresa un correo válido' },
+    emailMaxLength: {
+      en: 'The email cannot exceed 254 characters',
+      es: 'El correo no puede superar los 254 caracteres',
+    },
     messageRequired: { en: 'The message is required', es: 'El mensaje es requerido' },
+    messageMinLength: {
+      en: 'The message must contain at least 5 characters',
+      es: 'El mensaje debe contener al menos 5 caracteres',
+    },
+    messageMaxLength: {
+      en: 'The message cannot exceed 500 characters',
+      es: 'El mensaje no puede superar los 500 caracteres',
+    },
   },
   portfolio: {
     viewCv: { en: 'Show CV', es: 'Visualizar CV' },

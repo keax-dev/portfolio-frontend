@@ -1,7 +1,51 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { ButtonComponent } from '@shared/components/button/button.component';
-import { Column } from '@shared/components/interfaces/column';
+import { Column, ColumnKey } from '@shared/components/interfaces/column';
 import { uiText } from '@core/i18n/ui-text';
+
+export interface TableCopy {
+  readonly actions: string;
+  readonly deleteRecord: string;
+  readonly editRecord: string;
+  readonly viewDetails: string;
+  readonly loadErrorDescription: string;
+  readonly loadingDescription: string;
+  readonly loadingRecords: string;
+  readonly emptyRecords: string;
+  readonly emptySearchResults: string;
+  readonly newLabel: string;
+  readonly next: string;
+  readonly noImage: string;
+  readonly page: string;
+  readonly previous: string;
+  readonly recordImage: string;
+  readonly rows: string;
+  readonly searchAriaLabel: string;
+  readonly searchPlaceholder: string;
+  readonly sortBy: string;
+}
+
+const DEFAULT_TABLE_COPY: TableCopy = {
+  actions: uiText.table.actions.en,
+  deleteRecord: uiText.table.deleteRecord.en,
+  editRecord: uiText.table.editRecord.en,
+  viewDetails: uiText.table.viewDetails.en,
+  loadErrorDescription: uiText.table.loadErrorDescription.en,
+  loadingDescription: uiText.table.loadingDescription.en,
+  loadingRecords: uiText.table.loadingRecords.en,
+  emptyRecords: uiText.table.emptyRecords.en,
+  emptySearchResults: uiText.table.emptySearchResults.en,
+  newLabel: uiText.table.newLabel.en,
+  next: uiText.table.next.en,
+  noImage: uiText.table.noImage.en,
+  page: uiText.table.page.en,
+  previous: uiText.table.previous.en,
+  recordImage: uiText.table.recordImage.en,
+  rows: uiText.table.rows.en,
+  searchAriaLabel: uiText.table.searchAriaLabel.en,
+  searchPlaceholder: uiText.table.searchPlaceholder.en,
+  sortBy: uiText.table.sortBy.en,
+};
 
 @Component({
   selector: 'app-tabla',
@@ -11,10 +55,11 @@ import { uiText } from '@core/i18n/ui-text';
 })
 export class TableComponent<T extends object> {
   readonly records = input.required<readonly T[]>();
-  readonly columns = input.required<readonly Column[]>();
+  readonly columns = input.required<readonly Column<T>[]>();
+  readonly copy = input<Readonly<TableCopy>>(DEFAULT_TABLE_COPY);
 
   readonly detailsTxt = input(uiText.table.details.en);
-  readonly sortName = input('');
+  readonly sortName = input<ColumnKey<T> | ''>('');
   readonly newTxt = input('');
   readonly order = input(1);
 
@@ -26,33 +71,13 @@ export class TableComponent<T extends object> {
   readonly loading = input(false);
   readonly errorMessage = input('');
 
-  readonly actionsLabel = input(uiText.table.actions.en);
-  readonly deleteRecordLabel = input(uiText.table.deleteRecord.en);
-  readonly editRecordLabel = input(uiText.table.editRecord.en);
-  readonly viewDetailsLabel = input(uiText.table.viewDetails.en);
-  readonly loadErrorDescription = input(uiText.table.loadErrorDescription.en);
-  readonly loadingDescription = input(uiText.table.loadingDescription.en);
-  readonly loadingText = input(uiText.table.loadingRecords.en);
-  readonly emptyText = input(uiText.table.emptyRecords.en);
-  readonly emptySearchText = input(uiText.table.emptySearchResults.en);
-  readonly newLabel = input(uiText.table.newLabel.en);
-  readonly nextLabel = input(uiText.table.next.en);
-  readonly noImageText = input(uiText.table.noImage.en);
-  readonly pageLabel = input(uiText.table.page.en);
-  readonly previousLabel = input(uiText.table.previous.en);
-  readonly recordImageLabel = input(uiText.table.recordImage.en);
-  readonly rowsLabel = input(uiText.table.rows.en);
-  readonly searchAriaLabel = input(uiText.table.searchAriaLabel.en);
-  readonly searchPlaceholder = input(uiText.table.searchPlaceholder.en);
-  readonly sortByLabel = input(uiText.table.sortBy.en);
-
   readonly itemDetails = output<T>();
   readonly itemDelete = output<T>();
   readonly itemEdit = output<T>();
   readonly itemNew = output<void>();
 
   protected readonly searchTerm = signal('');
-  protected readonly sortKey = signal('');
+  protected readonly sortKey = signal<ColumnKey<T> | ''>('');
   protected readonly sortDirection = signal<1 | -1>(1);
   protected readonly page = signal(1);
   protected readonly pageSize = signal(10);
@@ -103,28 +128,28 @@ export class TableComponent<T extends object> {
   );
 
   protected readonly newButtonText = computed(() =>
-    this.newTxt() ? `${this.newLabel()} ${this.newTxt()}` : this.newLabel(),
+    this.newTxt() ? `${this.copy().newLabel} ${this.newTxt()}` : this.copy().newLabel,
   );
 
   protected readonly emptyStateTitle = computed(() => {
     if (this.loading()) {
-      return this.loadingText();
+      return this.copy().loadingRecords;
     }
 
     if (this.errorMessage()) {
       return this.errorMessage();
     }
 
-    return this.searchTerm().trim() ? this.emptySearchText() : this.emptyText();
+    return this.searchTerm().trim() ? this.copy().emptySearchResults : this.copy().emptyRecords;
   });
 
   protected readonly emptyStateDescription = computed(() => {
     if (this.loading()) {
-      return this.loadingDescription();
+      return this.copy().loadingDescription;
     }
 
     if (this.errorMessage()) {
-      return this.loadErrorDescription();
+      return this.copy().loadErrorDescription;
     }
 
     return '';
@@ -153,7 +178,7 @@ export class TableComponent<T extends object> {
     this.page.set(1);
   }
 
-  sortBy(column: Column): void {
+  sortBy(column: Column<T>): void {
     if (this.sortKey() === column.value) {
       this.sortDirection.update((direction) => (direction === 1 ? -1 : 1));
       return;
@@ -171,24 +196,17 @@ export class TableComponent<T extends object> {
     this.page.update((page) => Math.min(this.pageCount(), page + 1));
   }
 
-  cellValue(record: T, column: Column): unknown {
+  cellValue(record: T, column: Column<T>): unknown {
     return this.readValue(record, column.value);
   }
 
-  imageUrl(record: T, column: Column): string {
+  imageUrl(record: T, column: Column<T>): string {
     const value = this.readValue(record, column.value);
     return typeof value === 'string' ? value : '';
   }
 
-  imageAlt(record: T): string {
-    for (const key of ['name', 'title', 'institution_name']) {
-      const value = this.readValue(record, key);
-      if (typeof value === 'string' && value) {
-        return value;
-      }
-    }
-
-    return this.recordImageLabel();
+  imageAlt(record: T, column: Column<T>): string {
+    return column.imageAlt?.(record) || this.copy().recordImage;
   }
 
   newItem(): void {
@@ -207,8 +225,8 @@ export class TableComponent<T extends object> {
     this.itemDetails.emit(item);
   }
 
-  readValue(record: T, key: string): unknown {
-    return (record as Record<string, unknown>)[key];
+  readValue(record: T, key: ColumnKey<T>): unknown {
+    return record[key];
   }
 
   compare(left: unknown, right: unknown): number {

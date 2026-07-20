@@ -3,7 +3,6 @@ import { UppercaseDirective } from '@shared/components/directive/uppercase.direc
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TechnologyService } from '@features/admin/services/technology.service';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { AlertService } from '@core/services/alert.service';
 import { Technology } from '@shared/interfaces/technology';
@@ -13,7 +12,6 @@ import { MatInputModule } from '@angular/material/input';
 import {
   ChangeDetectionStrategy,
   DestroyRef,
-  OnDestroy,
   Component,
   OnInit,
   inject,
@@ -36,11 +34,10 @@ interface TechnologyDialogData {
     MatInputModule,
   ],
 })
-export class FrmTechnologyComponent implements OnInit, OnDestroy {
+export class FrmTechnologyComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly technologyService = inject(TechnologyService);
-  private readonly spinner = inject(NgxSpinnerService);
   private readonly data = inject<TechnologyDialogData>(MAT_DIALOG_DATA);
   private readonly alert = inject(AlertService);
   private readonly ref = inject<MatDialogRef<unknown, Technology>>(MatDialogRef);
@@ -57,10 +54,6 @@ export class FrmTechnologyComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadVariables();
-  }
-
-  ngOnDestroy(): void {
-    this.spinner.hide();
   }
 
   loadVariables(): void {

@@ -1,10 +1,9 @@
-import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ParameterService } from '@core/services/parameter.service';
+import { imageFileValidator } from '@core/validators/image-file.validator';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
@@ -17,7 +16,6 @@ import {
   ChangeDetectionStrategy,
   DestroyRef,
   Component,
-  OnDestroy,
   inject,
   OnInit,
   signal,
@@ -39,16 +37,13 @@ interface SkillDialogData {
     ButtonComponent,
     MatSelectModule,
     MatInputModule,
-    FormsModule,
   ],
 })
-export class FrmSkillComponent implements OnInit, OnDestroy {
+export class FrmSkillComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly skillService = inject(SkillService);
   private readonly imageService = inject(ImageService);
-  private readonly parameter = inject(ParameterService);
-  private readonly spinner = inject(NgxSpinnerService);
   private readonly data = inject<SkillDialogData>(MAT_DIALOG_DATA);
   private readonly alert = inject(AlertService);
   private readonly ref = inject<MatDialogRef<unknown, Skill>>(MatDialogRef);
@@ -58,7 +53,7 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
     name: this.fb.nonNullable.control('', Validators.required),
     position: this.fb.nonNullable.control(0, [Validators.required, Validators.min(1)]),
     image: this.fb.control<File | null>(null, [
-      this.parameter.imageFileValidator,
+      imageFileValidator(),
       ...(this.data.skill ? [] : [Validators.required]),
     ]),
   });
@@ -72,10 +67,6 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadVariables();
-  }
-
-  ngOnDestroy(): void {
-    this.spinner.hide();
   }
 
   loadVariables(): void {
@@ -175,6 +166,7 @@ export class FrmSkillComponent implements OnInit, OnDestroy {
     const input = event.target as HTMLInputElement;
     if (input?.files && input.files.length > 0) {
       this.controls.image.setValue(input.files[0]);
+      this.controls.image.markAsTouched();
     }
   }
 

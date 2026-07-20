@@ -8,10 +8,10 @@ export class LowerCaseDirective {
   @HostListener('input', ['$event'])
   onInputChange(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const uppercased = input.value.toLowerCase();
+    const lowercased = input.value.toLowerCase();
 
-    input.value = uppercased;
+    input.value = lowercased;
 
-    this.control.control?.setValue(uppercased, { emitEvent: false });
+    this.control.control?.setValue(lowercased, { emitEvent: false });
   }
 }

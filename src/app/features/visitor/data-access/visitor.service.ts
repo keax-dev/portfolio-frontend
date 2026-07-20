@@ -1,14 +1,9 @@
-import { catchError, map, Observable, of, switchMap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { environment } from '@src/environments/environment';
-import {
-  VisitorLocationResponse,
-  VisitorRegisterPayload,
-  VisitorDashboard,
-  Visitor,
-} from '@features/portfolio/interfaces/visitor';
+import { VisitorDashboard, Visitor } from '@features/visitor/models/visitor';
 
 @Injectable({
   providedIn: 'root',
@@ -17,19 +12,10 @@ export class VisitorService {
   private readonly reference = '/visitor';
 
   private readonly baseUrl = environment.url;
-  private readonly visitorGeoUrl = environment.visitorGeoUrl;
   private readonly http = inject(HttpClient);
 
   registerVisit(path: string): Observable<ApiResponse<Visitor | null>> {
-    return this.resolveLocation().pipe(
-      switchMap((location) =>
-        this.http.post<ApiResponse<Visitor | null>>(this.baseUrl + this.reference, {
-          path,
-          country: location.country,
-          city: location.city,
-        }),
-      ),
-    );
+    return this.http.post<ApiResponse<Visitor | null>>(this.baseUrl + this.reference, { path });
   }
 
   getVisitorList(startAt?: string, endAt?: string): Observable<ApiResponse<Visitor[]>> {
@@ -45,24 +31,6 @@ export class VisitorService {
         params: this.dateRangeParams(startAt, endAt),
       },
     );
-  }
-
-  private resolveLocation(): Observable<Partial<VisitorRegisterPayload>> {
-    return this.http.get<VisitorLocationResponse>(this.visitorGeoUrl).pipe(
-      map((response) => ({
-        country: this.clean(response.location?.country),
-        city: this.clean(response.location?.city),
-      })),
-      catchError(() => of({})),
-    );
-  }
-
-  private clean(value?: string): string | undefined {
-    if (!value?.trim()) {
-      return undefined;
-    }
-
-    return value.trim();
   }
 
   private dateRangeParams(startAt?: string, endAt?: string): HttpParams {

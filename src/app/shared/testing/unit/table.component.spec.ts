@@ -134,7 +134,14 @@ describe('TableComponent', () => {
 
   // Caso: renderiza valores de imagen y un texto alternativo accesible.
   it('renders image values and accessible fallback text', () => {
-    fixture.componentRef.setInput('columns', [{ name: 'Picture', value: 'picture', image: true }]);
+    fixture.componentRef.setInput('columns', [
+      {
+        name: 'Picture',
+        value: 'picture',
+        image: true,
+        imageAlt: (record: { name: string }) => record.name,
+      },
+    ]);
     fixture.componentRef.setInput('records', [
       { name: 'Angular', position: 1, picture: 'angular.png' },
       { name: 'No image', position: 2 },

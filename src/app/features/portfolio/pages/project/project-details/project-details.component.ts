@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ProjectImagesComponent } from '@features/portfolio/pages/technology/project-images/project-images.component';
+import { ProjectImagesComponent } from '@features/portfolio/pages/project/project-images/project-images.component';
 import { TranslateService } from '@core/services/translate.service';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { Project, ProjectLink } from '@shared/interfaces/project';

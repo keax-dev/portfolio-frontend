@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { ProjectDetailsComponent } from '@features/portfolio/pages/technology/project-details/project-details.component';
-import { ProjectImagesComponent } from '@features/portfolio/pages/technology/project-images/project-images.component';
+import { ProjectDetailsComponent } from '@features/portfolio/pages/project/project-details/project-details.component';
+import { ProjectImagesComponent } from '@features/portfolio/pages/project/project-images/project-images.component';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { ParameterService } from '@core/services/parameter.service';
 import { TranslateService } from '@core/services/translate.service';

@@ -1,5 +1,5 @@
 import { catchError, finalize, forkJoin, map, Observable, of, tap, throwError } from 'rxjs';
-import { TechnologyComponent } from '@features/portfolio/pages/technology/technology.component';
+import { ProjectComponent } from '@features/portfolio/pages/project/project.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EducationComponent } from '@features/portfolio/pages/education/education.component';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -37,7 +37,7 @@ import {
   templateUrl: './portfolio.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    TechnologyComponent,
+    ProjectComponent,
     EducationComponent,
     HeaderComponent,
     NavbarComponent,

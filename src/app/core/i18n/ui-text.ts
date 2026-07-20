@@ -90,7 +90,7 @@ export const uiText = {
     messageRequired: { en: 'The message is required', es: 'El mensaje es requerido' },
   },
   portfolio: {
-    viewCv: { en: 'View CV', es: 'Ver CV' },
+    viewCv: { en: 'Show CV', es: 'Visualizar CV' },
     profilePhotoAltPrefix: { en: 'Photo of', es: 'Foto de' },
     primaryNavigation: { en: 'Primary navigation', es: 'Navegación principal' },
     footerNavigation: { en: 'Footer navigation', es: 'Navegación del pie de página' },

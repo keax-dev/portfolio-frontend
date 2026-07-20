@@ -2,11 +2,11 @@
  * Pruebas unitarias de las interacciones visuales del portafolio y el panel administrativo.
  */
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ProjectGalleryComponent } from '@features/portfolio/pages/technology/project-gallery/project-gallery.component';
-import { ProjectImagesComponent } from '@features/portfolio/pages/technology/project-images/project-images.component';
-import { ProjectDetailsComponent } from '@features/portfolio/pages/technology/project-details/project-details.component';
+import { ProjectGalleryComponent } from '@features/portfolio/pages/project/project-gallery/project-gallery.component';
+import { ProjectImagesComponent } from '@features/portfolio/pages/project/project-images/project-images.component';
+import { ProjectDetailsComponent } from '@features/portfolio/pages/project/project-details/project-details.component';
 import { CvPreviewComponent } from '@features/portfolio/pages/header/cv-preview/cv-preview.component';
-import { ShowImageComponent } from '@features/portfolio/pages/technology/show-image/show-image.component';
+import { ShowImageComponent } from '@features/portfolio/pages/project/show-image/show-image.component';
 import { ParameterService } from '@core/services/parameter.service';
 import { TranslateService } from '@core/services/translate.service';
 import { NavbarComponent } from '@features/portfolio/pages/navbar/navbar.component';

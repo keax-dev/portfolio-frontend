@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { ShowImageComponent } from '@features/portfolio/pages/technology/show-image/show-image.component';
+import { ShowImageComponent } from '@features/portfolio/pages/project/show-image/show-image.component';
 import { ParameterService } from '@core/services/parameter.service';
 import { TranslateService } from '@core/services/translate.service';
 import { Project, ProjectImage } from '@shared/interfaces/project';

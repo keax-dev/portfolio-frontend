@@ -3,7 +3,6 @@ import { SocialNetwork } from '@shared/interfaces/social-network';
 import { environment } from '@src/environments/environment';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { HttpClient } from '@angular/common/http';
-import { Technology } from '@shared/interfaces/technology';
 import { Project } from '@shared/interfaces/project';
 import { Observable } from 'rxjs';
 import { Education } from '@shared/interfaces/education';
@@ -29,10 +28,6 @@ export class PortfolioService {
 
   getSkill(): Observable<ApiResponse<Skill[]>> {
     return this.http.get<ApiResponse<Skill[]>>(`${this.baseUrl}${this.reference}/skill`);
-  }
-
-  getTechnology(): Observable<ApiResponse<Technology[]>> {
-    return this.http.get<ApiResponse<Technology[]>>(`${this.baseUrl}${this.reference}/technology`);
   }
 
   getProject(): Observable<ApiResponse<Project[]>> {

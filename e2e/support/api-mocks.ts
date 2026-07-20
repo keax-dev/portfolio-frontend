@@ -7,12 +7,8 @@ import { Page, Route } from '@playwright/test';
 const apiBase = 'http://localhost:9090/api';
 
 export async function mockPublicPortfolio(page: Page): Promise<void> {
-  // Evita que la geolocalización externa vuelva inestable la ejecución.
-  await page.route('https://ip.guide/**', async (route) => {
-    await json(route, {
-      location: { country: 'Ecuador', city: 'Guayaquil' },
-    });
-  });
+  // El test solo verifica la URL localizada del iframe, no carga el visor externo.
+  await page.route('https://docs.google.com/**', async (route) => route.abort());
 
   // Simula todos los endpoints consumidos al construir la página pública.
   await page.route(`${apiBase}/**`, async (route) => {
@@ -27,7 +23,8 @@ export async function mockPublicPortfolio(page: Page): Promise<void> {
           last_name: 'Galarza',
           title: 'Software Engineer',
           title_es: 'Ingeniero de Software',
-          cv: 'https://example.com/cv.pdf',
+          cv: 'https://example.com/cv-en.pdf',
+          cv_es: 'https://example.com/cv-es.pdf',
           image: '/images/profile.jpg',
         }),
       );
@@ -85,7 +82,10 @@ export async function mockPublicPortfolio(page: Page): Promise<void> {
             title_es: 'Portafolio',
             description: 'Personal website',
             description_es: 'Sitio personal',
-            picture: '/images/logo.png',
+            images: [
+              { id: 1, url: '/images/logo.png', position: 1 },
+              { id: 2, url: '/images/logo.png', position: 2 },
+            ],
             position: 1,
             technologies: [{ id: 1, name: 'Angular', position: 1 }],
             links: [
@@ -135,10 +135,10 @@ export async function mockPublicPortfolio(page: Page): Promise<void> {
 }
 
 export async function installValidSession(page: Page): Promise<void> {
-  // Inserta la sesión antes de que Angular y los guards lean localStorage.
+  // Inserta la sesión antes de que Angular y los guards lean sessionStorage.
   await page.addInitScript(() => {
-    localStorage.setItem('token', 'e2e-token');
-    localStorage.setItem('expiration', String(Date.now() + 3_600_000));
+    sessionStorage.setItem('token', 'e2e-token');
+    sessionStorage.setItem('expiration', String(Date.now() + 3_600_000));
   });
 }
 

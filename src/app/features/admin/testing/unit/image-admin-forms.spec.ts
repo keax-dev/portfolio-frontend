@@ -9,7 +9,6 @@ import { InstitutionService } from '@features/admin/services/institution.service
 import { NgxSpinnerService } from 'ngx-spinner';
 import { TechnologyService } from '@features/admin/services/technology.service';
 import { FrmSkillComponent } from '@features/admin/pages/skill/frm-skill/frm-skill.component';
-import { ParameterService } from '@core/services/parameter.service';
 import { of, throwError } from 'rxjs';
 import { ProfileService } from '@features/admin/services/profile.service';
 import { ProjectService } from '@features/admin/services/project.service';
@@ -26,7 +25,6 @@ describe('image admin forms', () => {
   const spinner = () => ({ show: vi.fn(), hide: vi.fn() });
   const alert = () => ({ success: vi.fn(), httpError: vi.fn() });
   const dialogRef = () => ({ close: vi.fn() });
-  const parameter = () => ({ imageFileValidator: vi.fn().mockReturnValue(null) });
   const response = <T>(data: T, text = 'Saved') => ({
     status: true,
     alert: text,
@@ -51,7 +49,6 @@ describe('image admin forms', () => {
       providers: [
         { provide: InstitutionService, useValue: institutionService },
         { provide: ImageService, useValue: imageService },
-        { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
         { provide: MatDialogRef, useValue: ref },
@@ -94,7 +91,6 @@ describe('image admin forms', () => {
       providers: [
         { provide: InstitutionService, useValue: service },
         { provide: ImageService, useValue: {} },
-        { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
         { provide: MatDialogRef, useValue: ref },
@@ -132,7 +128,6 @@ describe('image admin forms', () => {
       providers: [
         { provide: SkillService, useValue: skillService },
         { provide: ImageService, useValue: imageService },
-        { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
         { provide: MatDialogRef, useValue: ref },
@@ -165,7 +160,6 @@ describe('image admin forms', () => {
           provide: ImageService,
           useValue: { uploadImageSkill: vi.fn().mockReturnValue(throwError(() => failure)) },
         },
-        { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: messages },
         { provide: MatDialogRef, useValue: ref },
@@ -183,18 +177,19 @@ describe('image admin forms', () => {
   // Caso: crea un proyecto, quita la imagen del payload y luego la sube.
   it('creates a project, strips the image from its payload and then uploads it', async () => {
     const created = project(4);
-    const withImage = { ...created, picture: 'project.png' };
+    const withImage = {
+      ...created,
+      images: [{ id: 1, url: 'project.png', position: 1 }],
+    };
     const projectService = {
       createProject: vi.fn().mockReturnValue(of(response(created))),
       updateProject: vi.fn(),
     };
     const imageService = {
-      uploadImageProject: vi.fn().mockReturnValue(of(response(withImage))),
+      uploadProjectImages: vi.fn().mockReturnValue(of(response(withImage))),
     };
     const technologyService = {
-      getTechnologyList: vi
-        .fn()
-        .mockReturnValue(of(response([{ id: 2, name: 'Angular', position: 1 }]))),
+      getTechnologyList: vi.fn().mockReturnValue(of(response([{ id: 2, name: 'Angular' }]))),
     };
     const ref = dialogRef();
     const file = new File(['image'], 'project.png', { type: 'image/png' });
@@ -205,7 +200,6 @@ describe('image admin forms', () => {
         { provide: ProjectService, useValue: projectService },
         { provide: ImageService, useValue: imageService },
         { provide: TechnologyService, useValue: technologyService },
-        { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
         { provide: MatDialogRef, useValue: ref },
@@ -213,6 +207,9 @@ describe('image admin forms', () => {
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmProjectComponent).componentInstance;
+    component.controls.images.setValue([file, file, file, file]);
+    expect(component.controls.images.errors?.['maxImages']).toBe(true);
+
     component.projectForm.setValue({
       title: 'Portfolio',
       title_es: 'Portafolio',
@@ -221,7 +218,7 @@ describe('image admin forms', () => {
       position: 1,
       technologies: [{ relation_id: null, id: 2, position: 1 }],
       links: [],
-      image: file,
+      images: [file],
     });
     component.loadPositions();
     component.onSubmit();
@@ -236,18 +233,75 @@ describe('image admin forms', () => {
       technologies: [{ id: 2, position: 1 }],
       links: [],
     });
-    expect(imageService.uploadImageProject).toHaveBeenCalledWith(4, file);
+    expect(imageService.uploadProjectImages).toHaveBeenCalledWith(4, [file]);
     expect(ref.close).toHaveBeenCalledWith(withImage);
   });
 
   // Caso: crea un perfil con imagen y pasa al modo de actualización.
+  it('removes the selected project technology instead of the last row', async () => {
+    const existing: Project = {
+      ...project(4),
+      images: [{ id: 1, url: 'project.png', position: 1 }],
+      technologies: [
+        { relation_id: 1, id: 1, name: 'Angular', position: 1 },
+        { relation_id: 9, id: 3, name: 'Laravel', position: 2 },
+        { relation_id: 12, id: 6, name: 'MySQL', position: 5 },
+        { relation_id: 13, id: 4, name: 'Spring Boot', position: 3 },
+        { relation_id: 14, id: 5, name: 'PostgreSQL', position: 4 },
+      ],
+    };
+    const technologyService = {
+      getTechnologyList: vi.fn().mockReturnValue(
+        of(
+          response([
+            { id: 1, name: 'Angular' },
+            { id: 3, name: 'Laravel' },
+            { id: 4, name: 'Spring Boot' },
+            { id: 5, name: 'PostgreSQL' },
+            { id: 6, name: 'MySQL' },
+          ]),
+        ),
+      ),
+    };
+
+    await TestBed.configureTestingModule({
+      imports: [FrmProjectComponent],
+      providers: [
+        { provide: ProjectService, useValue: {} },
+        { provide: ImageService, useValue: {} },
+        { provide: TechnologyService, useValue: technologyService },
+        { provide: NgxSpinnerService, useValue: spinner() },
+        { provide: AlertService, useValue: alert() },
+        { provide: MatDialogRef, useValue: dialogRef() },
+        { provide: MAT_DIALOG_DATA, useValue: { project: existing, positions: 1 } },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(FrmProjectComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const removedControl = component.technologies.at(2);
+    const removeButtons = fixture.nativeElement.querySelectorAll(
+      'button[aria-label^="Remove technology"]',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    removeButtons[2].click();
+    fixture.detectChanges();
+
+    expect(component.technologies.controls).not.toContain(removedControl);
+    expect(component.technologies.getRawValue().map(({ id }) => id)).toEqual([1, 3, 4, 5]);
+    expect(
+      fixture.nativeElement.querySelectorAll('button[aria-label^="Remove technology"]'),
+    ).toHaveLength(4);
+  });
+
   it('creates a profile with an image and transitions to update mode', async () => {
     const created: Profile = {
       name: 'Kevin',
       last_name: 'Galarza',
       title: 'Engineer',
       title_es: 'Ingeniero',
-      cv: 'https://example.com/cv.pdf',
+      cv: 'https://example.com/cv-en.pdf',
+      cv_es: 'https://example.com/cv-es.pdf',
     };
     const withImage = { ...created, image: 'profile.png' };
     const profileService = {
@@ -265,7 +319,6 @@ describe('image admin forms', () => {
       providers: [
         { provide: ProfileService, useValue: profileService },
         { provide: ImageService, useValue: imageService },
-        { provide: ParameterService, useValue: parameter() },
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
       ],
@@ -284,12 +337,13 @@ describe('image admin forms', () => {
   function project(id: number): Project {
     return {
       id,
+      images: [],
       title: 'Portfolio',
       title_es: 'Portafolio',
       description: 'Description',
       description_es: 'Descripción',
       position: 1,
-      technologies: [{ id: 2, name: 'Angular', position: 1 }],
+      technologies: [{ relation_id: 1, id: 2, name: 'Angular', position: 1 }],
       links: [],
     };
   }

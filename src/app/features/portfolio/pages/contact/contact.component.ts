@@ -92,18 +92,32 @@ export class ContactComponent implements OnDestroy {
   errorMessage(controlName: keyof typeof this.contactForm.controls): string {
     const control = this.controls[controlName];
 
-    if (controlName === 'email' && control.hasError('email')) {
-      return this.translate.text(this.text.contact.emailInvalid);
-    }
-
     if (controlName === 'name') {
+      if (control.hasError('minlength')) {
+        return this.translate.text(this.text.contact.nameMinLength);
+      }
+      if (control.hasError('maxlength')) {
+        return this.translate.text(this.text.contact.nameMaxLength);
+      }
       return this.translate.text(this.text.contact.nameRequired);
     }
 
     if (controlName === 'email') {
+      if (control.hasError('maxlength')) {
+        return this.translate.text(this.text.contact.emailMaxLength);
+      }
+      if (control.hasError('email')) {
+        return this.translate.text(this.text.contact.emailInvalid);
+      }
       return this.translate.text(this.text.contact.emailRequired);
     }
 
+    if (control.hasError('minlength')) {
+      return this.translate.text(this.text.contact.messageMinLength);
+    }
+    if (control.hasError('maxlength')) {
+      return this.translate.text(this.text.contact.messageMaxLength);
+    }
     return this.translate.text(this.text.contact.messageRequired);
   }
 

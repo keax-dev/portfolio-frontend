@@ -15,7 +15,7 @@ Aplicación frontend del portafolio público y panel administrativo, construida 
 
 Este proyecto expone dos experiencias principales:
 
-- Portafolio público con perfil, educación, habilidades, tecnologías, proyectos, redes sociales y formulario de contacto.
+- Portafolio público con perfil, educación, habilidades, catálogo de proyectos, redes sociales y formulario de contacto.
 - Panel administrativo protegido para gestionar el contenido del portafolio y consultar el dashboard de visitantes.
 
 Rutas principales:
@@ -28,8 +28,12 @@ Rutas principales:
 
 ### Portafolio público
 
-- Carga del perfil principal con foto, descripción, CV y enlaces sociales.
-- Secciones de educación, habilidades, tecnologías y proyectos renderizadas desde la API.
+- Carga del perfil principal con foto, descripción, CV localizado y enlaces sociales.
+- Apertura del CV en español o inglés según el idioma activo del portafolio.
+- Secciones de educación, habilidades y proyectos renderizadas desde la API.
+- Catálogo unificado de proyectos presentado como acordeón, con título, tecnologías ordenadas, carrusel centrado y acciones disponibles.
+- Carrusel para todos los proyectos, incluso cuando existe una sola imagen, con soporte de una a tres imágenes por proyecto.
+- Modal de detalles con descripción localizada, tecnologías, links e imágenes apiladas; la ampliación de imágenes está disponible únicamente desde este modal.
 - Modal de contacto con formulario reactivo, validaciones y envío al backend.
 - Selector de idioma para experiencia pública en español e inglés.
 - Navegación por secciones del portafolio y consumo de textos localizados desde `ui-text.ts`.
@@ -46,9 +50,21 @@ Rutas principales:
   - proyectos
   - redes sociales
   - perfil principal
+- Catálogo de tecnologías administrado únicamente por nombre; su posición se define por cada relación dentro de un proyecto.
+- Formulario de proyectos con una o varias tecnologías ordenadas, links tipados y ordenados, y entre una y tres imágenes.
+- Edición de imágenes existentes y eliminación precisa de tecnologías o links seleccionados, conservando las relaciones restantes.
+- Gestión independiente de las URLs del CV en inglés y español desde el perfil principal.
 - Dashboard de visitantes para revisar métricas, países, ciudades y trazas de acceso.
 - Tablas reutilizables con búsqueda, paginación, ordenamiento y estados vacíos/error/loading.
 - Formularios con Angular Material y botones reutilizables con estado de carga.
+
+### Modelo actual de proyectos
+
+- Cada registro representa un proyecto completo; frontend y backend ya no se publican como proyectos separados.
+- Los títulos y descripciones se mantienen en español e inglés, junto con una posición general del proyecto.
+- `technologies` contiene una o varias tecnologías, cada una con su propia posición dentro del proyecto y sin duplicados.
+- `images` es la única fuente de imágenes del proyecto y contiene entre uno y tres elementos ordenados; el campo legado `picture` ya no se utiliza.
+- `links` es opcional y admite `DEPLOY`, `GITHUB`, `GITHUB_FRONTEND` y `GITHUB_BACKEND`, con posiciones únicas dentro del proyecto.
 
 ### UX y comportamiento transversal
 
@@ -173,6 +189,18 @@ npm run test:e2e:ui
 npm run test:e2e:live
 ```
 
+### Validación completa local
+
+```bash
+npm run validate
+```
+
+Este comando replica el flujo principal del CI: formato, lint, typecheck, pruebas unitarias, integración, E2E y build de producción. Para preparar Chromium en una instalación nueva:
+
+```bash
+npx playwright install chromium
+```
+
 ## Estrategia de pruebas
 
 El proyecto separa las pruebas en tres niveles:
@@ -205,6 +233,7 @@ Notas importantes:
 
 - Las pruebas E2E por defecto son deterministas y mockean la API.
 - `npm run test:e2e:live` ejecuta un smoke separado contra el backend real.
+- Los flujos administrativos verifican la eliminación de la relación seleccionada y el payload reordenado de tecnologías del proyecto.
 - En CI, Playwright conserva trazas, capturas y video solo cuando hay fallos.
 
 ## Docker local
@@ -359,7 +388,7 @@ public/
 
 ## Recomendaciones para desarrollo
 
-- Ejecuta `npm run format:check`, `npm run lint` y `npm run typecheck` antes de subir cambios.
+- Ejecuta `npm run validate` antes de subir cambios para reproducir localmente las validaciones del CI.
 - Usa `npm run test:unit` para iteraciones rápidas.
 - Usa `npm run test:integration` cuando toques autenticación, routing o servicios HTTP.
 - Usa `npm run test:e2e` para validar flujos críticos antes de cerrar una entrega.

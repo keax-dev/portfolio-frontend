@@ -1,22 +1,20 @@
-import { catchError, finalize, forkJoin, map, Observable, of, tap, throwError } from 'rxjs';
-import { TechnologyComponent } from '@features/portfolio/pages/technology/technology.component';
+import { finalize } from 'rxjs';
+import { ProjectComponent } from '@features/portfolio/pages/project/project.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EducationComponent } from '@features/portfolio/pages/education/education.component';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { HttpErrorResponse } from '@angular/common/http';
-import { PortfolioService } from '@features/portfolio/services/portfolio.service';
-import { ParameterService } from '@core/services/parameter.service';
+import { PortfolioFacade } from '@features/portfolio/services/portfolio.facade';
+import { DialogService } from '@core/services/dialog.service';
 import { ContactComponent } from '@features/portfolio/pages/contact/contact.component';
 import { HeaderComponent } from '@features/portfolio/pages/header/header.component';
 import { NavbarComponent } from '@features/portfolio/pages/navbar/navbar.component';
 import { FooterComponent } from '@features/portfolio/pages/footer/footer.component';
 import { SkillComponent } from '@features/portfolio/pages/skill/skill.component';
-import { VisitorService } from '@features/portfolio/services/visitor.service';
+import { VisitorService } from '@features/visitor/data-access/visitor.service';
 import { portfolioNavigationItems } from '@core/i18n/ui-text';
 import { NavigationItem } from '@shared/interfaces/navigation-item';
 import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
-import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Project } from '@shared/interfaces/project';
 import { Education } from '@shared/interfaces/education';
 import { Profile } from '@shared/interfaces/profile';
@@ -25,6 +23,7 @@ import { Skill } from '@shared/interfaces/skill';
 import {
   ChangeDetectionStrategy,
   DestroyRef,
+  ErrorHandler,
   OnDestroy,
   Component,
   OnInit,
@@ -37,7 +36,7 @@ import {
   templateUrl: './portfolio.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    TechnologyComponent,
+    ProjectComponent,
     EducationComponent,
     HeaderComponent,
     NavbarComponent,
@@ -48,12 +47,13 @@ import {
 export class PortfolioComponent implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
 
-  private portfolioService = inject(PortfolioService);
+  private facade = inject(PortfolioFacade);
   private visitorService = inject(VisitorService);
-  private parameter = inject(ParameterService);
+  private dialogs = inject(DialogService);
   private spinner = inject(NgxSpinnerService);
   private router = inject(Router);
   private alert = inject(AlertService);
+  private errorHandler = inject(ErrorHandler);
 
   readonly profile = signal<Profile>({
     name: 'KEVIN',
@@ -61,6 +61,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     title: 'INFORMATION SYSTEMS ENGINEER',
     title_es: 'INGENIERO EN SISTEMAS DE INFORMACIÓN',
     cv: '',
+    cv_es: '',
     image: './images/profile.jpg',
   });
 
@@ -82,115 +83,37 @@ export class PortfolioComponent implements OnInit, OnDestroy {
 
   getInformation(): void {
     this.spinner.show();
-    forkJoin([
-      this.uploadSocialNetwork(),
-      this.uploadProject(),
-      this.uploadEducation(),
-      this.uploadProfile(),
-      this.uploadSkill(),
-    ])
+    this.facade
+      .load()
       .pipe(
         finalize(() => this.spinner.hide()),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        error: (error) => this.alert.httpError(error),
+        next: (data) => {
+          if (data.profile) this.profile.set(data.profile);
+          this.educationList.set(data.education);
+          this.projectList.set(data.projects);
+          this.skillList.set(data.skills);
+          this.socialNetworkList.set(data.socialNetworks);
+          data.errors.forEach((error) => this.alert.httpError(error));
+        },
       });
   }
 
   registerVisit(): void {
     this.visitorService
       .registerVisit(this.router.url || '/')
-      .pipe(
-        catchError(() => of(null)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe();
-  }
-
-  uploadProfile(): Observable<null> {
-    return this.portfolioService.getProfile().pipe(
-      catchError((e) => this.infoEmpty<Profile>(e)),
-      takeUntilDestroyed(this.destroyRef),
-      tap((result) => {
-        if (result.status) {
-          this.profile.set(result.data);
-        }
-      }),
-      map(() => null),
-    );
-  }
-
-  uploadEducation(): Observable<null> {
-    return this.portfolioService.getEducation().pipe(
-      catchError((e) => this.infoEmpty<Education[]>(e)),
-      takeUntilDestroyed(this.destroyRef),
-      tap((result) => {
-        if (result.status) {
-          this.educationList.set([...result.data].sort((a, b) => a.position - b.position));
-        }
-      }),
-      map(() => null),
-    );
-  }
-
-  uploadSkill(): Observable<null> {
-    return this.portfolioService.getSkill().pipe(
-      catchError((e) => this.infoEmpty<Skill[]>(e)),
-      takeUntilDestroyed(this.destroyRef),
-      tap((result) => {
-        if (result.status) {
-          this.skillList.set([...result.data].sort((a, b) => a.position - b.position));
-        }
-      }),
-      map(() => null),
-    );
-  }
-
-  uploadProject(): Observable<null> {
-    return this.portfolioService.getProject().pipe(
-      catchError((e) => this.infoEmpty<Project[]>(e)),
-      takeUntilDestroyed(this.destroyRef),
-      tap((result) => {
-        if (result.status) {
-          this.projectList.set(
-            result.data
-              .map((project) => ({
-                ...project,
-                technologies: [...project.technologies].sort((a, b) => a.position - b.position),
-                links: [...project.links].sort((a, b) => a.position - b.position),
-              }))
-              .sort((a, b) => a.position - b.position),
-          );
-        }
-      }),
-      map(() => null),
-    );
-  }
-
-  uploadSocialNetwork(): Observable<null> {
-    return this.portfolioService.getSocialNetwork().pipe(
-      catchError((e) => this.infoEmpty<SocialNetwork[]>(e)),
-      takeUntilDestroyed(this.destroyRef),
-      tap((result) => {
-        if (result.status) {
-          this.socialNetworkList.set([...result.data].sort((a, b) => a.position - b.position));
-        }
-      }),
-      map(() => null),
-    );
-  }
-
-  infoEmpty<T>(e: HttpErrorResponse): Observable<ApiResponse<T>> {
-    if (e.status === 400) {
-      return of(e.error as ApiResponse<T>);
-    }
-
-    return throwError(() => e);
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({ error: (error) => this.errorHandler.handleError(error) });
   }
 
   modalContact(): void {
-    const dialogRef = this.parameter.openDialog(ContactComponent, null, '30%', '90%');
+    const dialogRef = this.dialogs.open(ContactComponent, {
+      data: null,
+      desktopWidth: '30%',
+      mobileWidth: '90%',
+    });
     dialogRef
       .afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))

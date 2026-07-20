@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { AUTH_STORAGE } from '@core/storage/auth-storage';
 
 @Injectable({
   providedIn: 'root',
@@ -6,20 +7,21 @@ import { Injectable } from '@angular/core';
 export class UserInfoService {
   private readonly expirationStorageKey = 'expiration';
   private readonly tokenStorageKey = 'token';
+  private readonly storage = inject(AUTH_STORAGE);
 
-  private timeExpiration = 0;
-  private token = '';
+  private expirationTime = 0;
+  private tokenValue = '';
 
   constructor() {
-    this.timeExpiration = this.loadTimeExpiration();
-    this.token = this.loadToken();
+    this.expirationTime = this.loadTimeExpiration();
+    this.tokenValue = this.loadToken();
   }
 
   clearInfo(): void {
-    this.timeExpiration = 0;
-    this.token = '';
-    this.removeStorageValue(this.expirationStorageKey);
-    this.removeStorageValue(this.tokenStorageKey);
+    this.expirationTime = 0;
+    this.tokenValue = '';
+    this.storage.removeItem(this.expirationStorageKey);
+    this.storage.removeItem(this.tokenStorageKey);
   }
 
   setSession(token: string, timeExpiration: number): void {
@@ -31,10 +33,10 @@ export class UserInfoService {
       return;
     }
 
-    this.token = normalizedToken;
-    this.timeExpiration = normalizedExpiration;
-    this.persistStorageValue(this.tokenStorageKey, normalizedToken);
-    this.persistStorageValue(this.expirationStorageKey, normalizedExpiration.toString());
+    this.tokenValue = normalizedToken;
+    this.expirationTime = normalizedExpiration;
+    this.storage.setItem(this.tokenStorageKey, normalizedToken);
+    this.storage.setItem(this.expirationStorageKey, normalizedExpiration.toString());
   }
 
   resolveTokenExpiration(token: string): number | null {
@@ -43,24 +45,16 @@ export class UserInfoService {
     return payload.exp * 1000;
   }
 
-  loadTimeExpiration(): number {
-    try {
-      const storedExpiration = localStorage.getItem(this.expirationStorageKey);
-      if (!storedExpiration) return 0;
+  private loadTimeExpiration(): number {
+    const storedExpiration = this.storage.getItem(this.expirationStorageKey);
+    if (!storedExpiration) return 0;
 
-      const expiration = Number(storedExpiration);
-      return Number.isFinite(expiration) && expiration > 0 ? expiration : 0;
-    } catch {
-      return 0;
-    }
+    const expiration = Number(storedExpiration);
+    return Number.isFinite(expiration) && expiration > 0 ? expiration : 0;
   }
 
-  loadToken(): string {
-    try {
-      return localStorage.getItem(this.tokenStorageKey)?.trim() ?? '';
-    } catch {
-      return '';
-    }
+  private loadToken(): string {
+    return this.storage.getItem(this.tokenStorageKey)?.trim() ?? '';
   }
 
   parseJwtPayload(token: string): { exp?: number } | null {
@@ -73,69 +67,33 @@ export class UserInfoService {
         .replace(/_/g, '/')
         .padEnd(payload.length + ((4 - (payload.length % 4)) % 4), '=');
 
-      return JSON.parse(atob(normalizedPayload)) as { exp?: number };
+      const parsed: unknown = JSON.parse(atob(normalizedPayload));
+      if (!parsed || typeof parsed !== 'object') return null;
+
+      const expiration = (parsed as Record<string, unknown>)['exp'];
+      return typeof expiration === 'number' ? { exp: expiration } : {};
     } catch {
       return null;
     }
   }
 
-  set setToken(token: string) {
-    const normalizedToken = token.trim();
-    this.token = normalizedToken;
-
-    if (normalizedToken) {
-      this.persistStorageValue(this.tokenStorageKey, normalizedToken);
-      return;
-    }
-
-    this.removeStorageValue(this.tokenStorageKey);
+  get token(): string {
+    return this.tokenValue;
   }
 
-  set setTimeExpiration(timeExpiration: number) {
-    const normalizedExpiration = Number.isFinite(timeExpiration) ? timeExpiration : 0;
-    this.timeExpiration = normalizedExpiration > 0 ? normalizedExpiration : 0;
-
-    if (this.timeExpiration > 0) {
-      this.persistStorageValue(this.expirationStorageKey, this.timeExpiration.toString());
-      return;
-    }
-
-    this.removeStorageValue(this.expirationStorageKey);
-  }
-
-  get getToken(): string {
-    return this.token;
-  }
-
-  get getTimeExpiration(): number {
-    return this.timeExpiration;
+  get expiresAt(): number {
+    return this.expirationTime;
   }
 
   get hasValidSession(): boolean {
-    return Boolean(this.token) && this.timeExpiration > Date.now();
+    return Boolean(this.tokenValue) && this.expirationTime > Date.now();
   }
 
   get hasStoredSession(): boolean {
-    return Boolean(this.token) || this.timeExpiration > 0;
+    return Boolean(this.tokenValue) || this.expirationTime > 0;
   }
 
   get remainingSessionTime(): number {
-    return Math.max(this.timeExpiration - Date.now(), 0);
-  }
-
-  private persistStorageValue(key: string, value: string): void {
-    try {
-      localStorage.setItem(key, value);
-    } catch {
-      // Ignora fallos de almacenamiento y conserva el valor solo en memoria.
-    }
-  }
-
-  private removeStorageValue(key: string): void {
-    try {
-      localStorage.removeItem(key);
-    } catch {
-      // Ignora fallos de almacenamiento y conserva la limpieza solo en memoria.
-    }
+    return Math.max(this.expirationTime - Date.now(), 0);
   }
 }

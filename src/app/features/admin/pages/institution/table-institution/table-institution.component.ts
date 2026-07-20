@@ -1,27 +1,19 @@
-import { FrmInstitutionComponent } from '@features/admin/pages/institution/frm-institution/frm-institution.component';
-import { InstitutionService } from '@features/admin/services/institution.service';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ParameterService } from '@core/services/parameter.service';
-import { TableComponent } from '@shared/components/table/table.component';
-import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { AlertService } from '@core/services/alert.service';
-import { Institution } from '@shared/interfaces/institution';
-import { finalize } from 'rxjs';
-import { Column } from '@shared/components/interfaces/column';
+import { ConfirmationService } from '@core/services/confirmation.service';
+import { DialogService } from '@core/services/dialog.service';
 import {
   ADMIN_TABLE_LOAD_ERROR_MESSAGE,
   adminTableCopy,
 } from '@features/admin/config/admin-page-text';
-import {
-  ChangeDetectionStrategy,
-  DestroyRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  inject,
-  signal,
-} from '@angular/core';
+import { FrmInstitutionComponent } from '@features/admin/pages/institution/frm-institution/frm-institution.component';
+import { InstitutionService } from '@features/admin/services/institution.service';
+import { createAdminCrudListState } from '@features/admin/state/admin-crud-list.state';
+import { Column } from '@shared/components/interfaces/column';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+import { TableComponent } from '@shared/components/table/table.component';
+import { Institution } from '@shared/interfaces/institution';
 
 @Component({
   selector: 'app-table-institution',
@@ -29,86 +21,54 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TableComponent, PageHeaderComponent],
 })
-export class TableInstitutionComponent implements OnInit, OnDestroy {
+export class TableInstitutionComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
-
-  private institutionService = inject(InstitutionService);
-  private parameter = inject(ParameterService);
-  private spinner = inject(NgxSpinnerService);
-  private alert = inject(AlertService);
+  private readonly institutionService = inject(InstitutionService);
+  private readonly dialogs = inject(DialogService);
+  private readonly confirmation = inject(ConfirmationService);
+  private readonly alert = inject(AlertService);
+  private readonly state = createAdminCrudListState<Institution>({
+    destroyRef: this.destroyRef,
+    load: () => this.institutionService.getInstitutionList(),
+    remove: (id) => this.institutionService.deleteInstitution(id),
+    loadErrorMessage: ADMIN_TABLE_LOAD_ERROR_MESSAGE,
+    onError: (error) => this.alert.httpError(error),
+    onRemoved: (message) => this.alert.success(message),
+  });
 
   readonly pageCopy = adminTableCopy.institution;
-  readonly records = signal<readonly Institution[]>([]);
-  readonly isLoading = signal(false);
-  readonly loadErrorMessage = signal('');
-
-  columns: Column[] = [
+  readonly records = this.state.records;
+  readonly isLoading = this.state.isLoading;
+  readonly loadErrorMessage = this.state.loadErrorMessage;
+  readonly columns: readonly Column<Institution>[] = [
     { name: 'Institution', value: 'name' },
-    { name: 'Picture', value: 'url', image: true },
+    { name: 'Picture', value: 'url', image: true, imageAlt: (record) => record.name },
   ];
 
   ngOnInit(): void {
     this.getInstitutionList();
   }
 
-  ngOnDestroy(): void {
-    this.spinner.hide();
-  }
-
   getInstitutionList(): void {
-    this.isLoading.set(true);
-    this.loadErrorMessage.set('');
-    this.institutionService
-      .getInstitutionList()
-      .pipe(
-        finalize(() => this.isLoading.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.records.set(result.data);
-          this.loadErrorMessage.set('');
-        },
-        error: (error) => {
-          this.records.set([]);
-          this.loadErrorMessage.set(ADMIN_TABLE_LOAD_ERROR_MESSAGE);
-          this.alert.httpError(error);
-        },
-      });
+    this.state.load();
   }
 
   modalInstitution(institution?: Institution): void {
-    const dialogRef = this.parameter.openDialog(FrmInstitutionComponent, institution);
-    dialogRef
+    this.dialogs
+      .open(FrmInstitutionComponent, { data: institution })
       .afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (result) => {
-          if (result) {
-            this.getInstitutionList();
-          }
-        },
-      });
+      .subscribe((result) => result && this.getInstitutionList());
   }
 
   confirmDelete(institution: Institution): void {
-    this.alert.confirmDelete(() => this.deleteInstitution(institution));
+    this.confirmation
+      .confirmDelete()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((confirmed) => confirmed && this.deleteInstitution(institution));
   }
 
   deleteInstitution(institution: Institution): void {
-    this.spinner.show();
-    this.institutionService
-      .deleteInstitution(institution.id!)
-      .pipe(
-        finalize(() => this.spinner.hide()),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.alert.success(result.alert);
-          this.getInstitutionList();
-        },
-        error: (error) => this.alert.httpError(error),
-      });
+    this.state.remove(institution.id);
   }
 }

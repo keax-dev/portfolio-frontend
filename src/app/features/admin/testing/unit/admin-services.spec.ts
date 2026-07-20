@@ -118,7 +118,7 @@ describe('admin HTTP services', () => {
   // Caso: usa el contrato CRUD de tecnologías.
   it('uses the technology CRUD contract', () => {
     const service = TestBed.inject(TechnologyService);
-    const payload: TechnologyPayload = { name: 'Angular', position: 1 };
+    const payload: TechnologyPayload = { name: 'Angular' };
 
     service.getTechnologyList().subscribe();
     expectRequest('GET', `${baseUrl}/technology`);
@@ -159,7 +159,8 @@ describe('admin HTTP services', () => {
       last_name: 'Galarza',
       title: 'Engineer',
       title_es: 'Ingeniero',
-      cv: 'https://example.com/cv.pdf',
+      cv: 'https://example.com/cv-en.pdf',
+      cv_es: 'https://example.com/cv-es.pdf',
     };
 
     service.getProfile().subscribe();
@@ -181,12 +182,14 @@ describe('admin HTTP services', () => {
 
     if (resource === 'institution') service.uploadImageInstitution(id, file).subscribe();
     if (resource === 'skill') service.uploadImageSkill(id, file).subscribe();
-    if (resource === 'project') service.uploadImageProject(id, file).subscribe();
+    if (resource === 'project') service.uploadProjectImages(id, [file]).subscribe();
 
     const request = http.expectOne(`${baseUrl}/image/${resource}/${id}`);
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toBeInstanceOf(FormData);
-    expect((request.request.body as FormData).get('image')).toBe(file);
+    expect(
+      (request.request.body as FormData).get(resource === 'project' ? 'images' : 'image'),
+    ).toBe(file);
     request.flush({ status: true, alert: 'ok', data: {} });
   });
 
@@ -200,6 +203,13 @@ describe('admin HTTP services', () => {
     expect(request.request.method).toBe('POST');
     expect((request.request.body as FormData).get('image')).toBe(file);
     request.flush({ status: true, alert: 'ok', data: {} });
+  });
+
+  it('deletes a project image by its project and image identifiers', () => {
+    const service = TestBed.inject(ImageService);
+    service.deleteProjectImage(6, 12).subscribe();
+
+    expectRequest('DELETE', `${baseUrl}/image/project/6/12`);
   });
 
   function expectRequest(method: string, url: string, body?: unknown): void {

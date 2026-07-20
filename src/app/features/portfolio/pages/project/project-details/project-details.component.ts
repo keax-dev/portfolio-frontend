@@ -1,21 +1,20 @@
 import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ShowImageComponent } from '@features/portfolio/pages/technology/show-image/show-image.component';
-import { ParameterService } from '@core/services/parameter.service';
+import { ProjectImagesComponent } from '@features/portfolio/pages/project/project-images/project-images.component';
 import { TranslateService } from '@core/services/translate.service';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { Project, ProjectLink } from '@shared/interfaces/project';
+import { PROJECT_LINK_META } from '@shared/config/project-link-meta';
 import { uiText } from '@core/i18n/ui-text';
 
 @Component({
   selector: 'app-project-details',
   templateUrl: './project-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LanguagePipe],
+  imports: [LanguagePipe, ProjectImagesComponent],
 })
 export class ProjectDetailsComponent implements OnInit {
   protected translate = inject(TranslateService);
-  private parameter = inject(ParameterService);
   private readonly data = inject<Project>(MAT_DIALOG_DATA);
   private readonly ref = inject<MatDialogRef<unknown>>(MatDialogRef);
 
@@ -30,27 +29,12 @@ export class ProjectDetailsComponent implements OnInit {
     this.ref.close();
   }
 
-  showImage(): void {
-    const title = this.translate.getLang === 'es' ? this.project.title_es : this.project.title;
-    const info = { url: this.project.picture, alt: title };
-    this.parameter.openDialog(ShowImageComponent, info, '95%', '97.5%');
-  }
-
   linkLabel(link: ProjectLink): string {
-    switch (link.type) {
-      case 'DEPLOY':
-        return this.translate.text(uiText.portfolio.project.visitSite);
-      case 'GITHUB_FRONTEND':
-        return this.translate.text(uiText.portfolio.project.frontendCode);
-      case 'GITHUB_BACKEND':
-        return this.translate.text(uiText.portfolio.project.backendCode);
-      default:
-        return this.translate.text(uiText.portfolio.project.sourceCode);
-    }
+    return this.translate.text(PROJECT_LINK_META[link.type].label);
   }
 
   linkIcon(link: ProjectLink): string {
-    return link.type === 'DEPLOY' ? 'pi pi-external-link' : 'pi pi-github';
+    return PROJECT_LINK_META[link.type].icon;
   }
 
   projectLinkLabel(link: ProjectLink): string {

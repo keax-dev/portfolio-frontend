@@ -1,16 +1,13 @@
-import { ConfirmDialogComponent, ConfirmDialogData } from '@core/dialog/confirm-dialog.component';
 import { NotificationService } from '@core/notifications/notification.service';
 import { inject, Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiResponse } from '@core/interfaces/apiresponse';
-import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AlertService {
   private notifications = inject(NotificationService);
-  private dialog = inject(MatDialog);
 
   success(sms: string): void {
     this.notifications.show('success', sms, 'Success');
@@ -52,11 +49,6 @@ export class AlertService {
       fallbackMessage || this.messageByStatus(error.status),
       this.titleByStatus(error.status),
     );
-  }
-
-  resultWarnings<T>(response: ApiResponse<T>): void {
-    response.messages?.forEach((message) => this.warning(message));
-    this.error(response.alert);
   }
 
   asApiResponse(error: unknown): ApiResponse<unknown> | null {
@@ -119,26 +111,5 @@ export class AlertService {
       default:
         return 'Contact support';
     }
-  }
-
-  confirmDelete(action: () => void): void {
-    const dialogRef = this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
-      ConfirmDialogComponent,
-      {
-        data: {
-          title: 'Are you sure?',
-          message: 'This action cannot be undone.',
-          confirmLabel: 'Confirm',
-          cancelLabel: 'Cancel',
-        },
-        width: 'min(90vw, 28rem)',
-      },
-    );
-
-    dialogRef.afterClosed().subscribe((confirmed) => {
-      if (confirmed) {
-        action();
-      }
-    });
   }
 }

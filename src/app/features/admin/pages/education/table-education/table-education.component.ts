@@ -1,27 +1,20 @@
-import { FrmEducationComponent } from '@features/admin/pages/education/frm-education/frm-education.component';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ParameterService } from '@core/services/parameter.service';
-import { EducationService } from '@features/admin/services/education.service';
-import { TableComponent } from '@shared/components/table/table.component';
-import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { AlertService } from '@core/services/alert.service';
-import { Education } from '@shared/interfaces/education';
-import { finalize } from 'rxjs';
-import { Column } from '@shared/components/interfaces/column';
+import { ConfirmationService } from '@core/services/confirmation.service';
+import { DialogService } from '@core/services/dialog.service';
 import {
+  ADMIN_POSITION_BUFFER,
   ADMIN_TABLE_LOAD_ERROR_MESSAGE,
   adminTableCopy,
 } from '@features/admin/config/admin-page-text';
-import {
-  ChangeDetectionStrategy,
-  DestroyRef,
-  Component,
-  OnDestroy,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { FrmEducationComponent } from '@features/admin/pages/education/frm-education/frm-education.component';
+import { EducationService } from '@features/admin/services/education.service';
+import { createAdminCrudListState } from '@features/admin/state/admin-crud-list.state';
+import { Column } from '@shared/components/interfaces/column';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+import { TableComponent } from '@shared/components/table/table.component';
+import { Education } from '@shared/interfaces/education';
 
 @Component({
   selector: 'app-table-education',
@@ -29,24 +22,35 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TableComponent, PageHeaderComponent],
 })
-export class TableEducationComponent implements OnInit, OnDestroy {
+export class TableEducationComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
-
-  private educationService = inject(EducationService);
-  private parameter = inject(ParameterService);
-  private spinner = inject(NgxSpinnerService);
-  private alert = inject(AlertService);
+  private readonly educationService = inject(EducationService);
+  private readonly dialogs = inject(DialogService);
+  private readonly confirmation = inject(ConfirmationService);
+  private readonly alert = inject(AlertService);
+  private readonly state = createAdminCrudListState<Education>({
+    destroyRef: this.destroyRef,
+    load: () => this.educationService.getEducationList(),
+    remove: (id) => this.educationService.deleteEducation(id),
+    loadErrorMessage: ADMIN_TABLE_LOAD_ERROR_MESSAGE,
+    onError: (error) => this.alert.httpError(error),
+    onRemoved: (message) => this.alert.success(message),
+  });
 
   readonly pageCopy = adminTableCopy.education;
-  readonly records = signal<readonly Education[]>([]);
-  readonly isLoading = signal(false);
-  readonly loadErrorMessage = signal('');
-
-  columns: Column[] = [
+  readonly records = this.state.records;
+  readonly isLoading = this.state.isLoading;
+  readonly loadErrorMessage = this.state.loadErrorMessage;
+  readonly columns: readonly Column<Education>[] = [
     { name: 'Position', value: 'position' },
     { name: 'Title', value: 'title' },
     { name: 'Institution', value: 'institution_name' },
-    { name: 'Picture', value: 'institution_url', image: true },
+    {
+      name: 'Picture',
+      value: 'institution_url',
+      image: true,
+      imageAlt: (record) => record.institution_name,
+    },
     { name: 'Place', value: 'place' },
     { name: 'Start', value: 'start' },
     { name: 'End', value: 'end' },
@@ -56,67 +60,28 @@ export class TableEducationComponent implements OnInit, OnDestroy {
     this.getEducationList();
   }
 
-  ngOnDestroy(): void {
-    this.spinner.hide();
-  }
-
   getEducationList(): void {
-    this.isLoading.set(true);
-    this.loadErrorMessage.set('');
-    this.educationService
-      .getEducationList()
-      .pipe(
-        finalize(() => this.isLoading.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.records.set(result.data);
-          this.loadErrorMessage.set('');
-        },
-        error: (error) => {
-          this.records.set([]);
-          this.loadErrorMessage.set(ADMIN_TABLE_LOAD_ERROR_MESSAGE);
-          this.alert.httpError(error);
-        },
-      });
+    this.state.load();
   }
 
   modalEducation(education?: Education): void {
-    const dialogRef = this.parameter.openDialog(FrmEducationComponent, {
-      positions: this.records().length + 5,
-      education: education,
-    });
-    dialogRef
+    this.dialogs
+      .open(FrmEducationComponent, {
+        data: { positions: this.records().length + ADMIN_POSITION_BUFFER, education },
+      })
       .afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (result) => {
-          if (result) {
-            this.getEducationList();
-          }
-        },
-      });
+      .subscribe((result) => result && this.getEducationList());
   }
 
   confirmDelete(education: Education): void {
-    this.alert.confirmDelete(() => this.deleteEducation(education));
+    this.confirmation
+      .confirmDelete()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((confirmed) => confirmed && this.deleteEducation(education));
   }
 
   deleteEducation(education: Education): void {
-    this.spinner.show();
-    this.educationService
-      .deleteEducation(education.id!)
-      .pipe(
-        finalize(() => this.spinner.hide()),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.alert.success(result.alert);
-          this.getEducationList();
-        },
-        error: (error) => this.alert.httpError(error),
-      });
+    this.state.remove(education.id);
   }
 }

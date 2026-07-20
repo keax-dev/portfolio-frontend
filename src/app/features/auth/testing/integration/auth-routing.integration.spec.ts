@@ -25,6 +25,7 @@ describe('Auth routing integration', () => {
   beforeEach(() => {
     // Aísla el almacenamiento y configura rutas reales con ambos guards.
     localStorage.clear();
+    sessionStorage.clear();
     alert = { warning: vi.fn(), success: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
@@ -46,7 +47,10 @@ describe('Auth routing integration', () => {
     });
   });
 
-  afterEach(() => localStorage.clear());
+  afterEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
 
   // Caso: redirige la navegación protegida anónima al login.
   it('redirects anonymous protected navigation to login', async () => {
@@ -62,8 +66,8 @@ describe('Auth routing integration', () => {
   // Caso: permite que una sesión válida almacenada llegue al home protegido.
   it('allows a valid stored session to reach the protected home', async () => {
     // Prepara la misma información que existiría después de un login exitoso.
-    localStorage.setItem('token', 'valid-token');
-    localStorage.setItem('expiration', String(Date.now() + 60_000));
+    sessionStorage.setItem('token', 'valid-token');
+    sessionStorage.setItem('expiration', String(Date.now() + 60_000));
 
     // Navega usando Router, guard y servicios reales.
     const harness = await RouterTestingHarness.create();
@@ -77,8 +81,8 @@ describe('Auth routing integration', () => {
   // Caso: redirige a los usuarios autenticados fuera de la ruta de login para invitados.
   it('redirects authenticated users away from the guest login route', async () => {
     // Simula una sesión vigente antes de solicitar la página pública de login.
-    localStorage.setItem('token', 'valid-token');
-    localStorage.setItem('expiration', String(Date.now() + 60_000));
+    sessionStorage.setItem('token', 'valid-token');
+    sessionStorage.setItem('expiration', String(Date.now() + 60_000));
 
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/login');
@@ -90,16 +94,16 @@ describe('Auth routing integration', () => {
   // Caso: limpia una sesión almacenada expirada mientras redirige al login.
   it('clears an expired stored session while redirecting to login', async () => {
     // Conserva un token con una expiración pasada para probar la normalización.
-    localStorage.setItem('token', 'expired-token');
-    localStorage.setItem('expiration', String(Date.now() - 1));
+    sessionStorage.setItem('token', 'expired-token');
+    sessionStorage.setItem('expiration', String(Date.now() - 1));
 
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/home');
 
     // La integración debe limpiar ambos valores y explicar la causa al usuario.
     expect(harness.routeNativeElement?.textContent).toContain('Login page');
-    expect(localStorage.getItem('token')).toBeNull();
-    expect(localStorage.getItem('expiration')).toBeNull();
+    expect(sessionStorage.getItem('token')).toBeNull();
+    expect(sessionStorage.getItem('expiration')).toBeNull();
     expect(alert.warning).toHaveBeenCalledWith('Session expired');
   });
 });

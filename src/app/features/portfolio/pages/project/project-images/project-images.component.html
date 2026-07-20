@@ -1,0 +1,81 @@
+@if (images().length) {
+  @if (layout() === 'stack') {
+    <div
+      [attr.aria-label]="projectTitle()"
+      class="project-images project-images__stack"
+      role="list"
+    >
+      @for (image of images(); track image.id ?? image.url) {
+        <div role="listitem">
+          <button
+            (click)="showImage(image, $index)"
+            [attr.aria-label]="imageLabel($index)"
+            class="project-images__button border-0 bg-transparent p-0 rounded overflow-hidden"
+            type="button"
+          >
+            <img
+              [src]="image.url"
+              [alt]="imageDescription($index)"
+              class="project-images__image img-hover"
+              decoding="async"
+              loading="lazy"
+            />
+          </button>
+        </div>
+      }
+    </div>
+  } @else {
+    <div
+      [id]="carouselId()"
+      [attr.aria-label]="projectTitle()"
+      class="carousel slide project-images"
+    >
+      <div class="carousel-indicators">
+        @for (image of images(); track image.id ?? image.url) {
+          <button
+            [attr.aria-label]="imageDescription($index)"
+            [attr.aria-current]="$first ? 'true' : null"
+            [attr.data-bs-slide-to]="$index"
+            [attr.data-bs-target]="'#' + carouselId()"
+            [class.active]="$first"
+            type="button"
+          ></button>
+        }
+      </div>
+
+      <div class="carousel-inner rounded overflow-hidden">
+        @for (image of images(); track image.id ?? image.url) {
+          <div class="carousel-item" [class.active]="$first">
+            <img
+              [src]="image.url"
+              [alt]="imageDescription($index)"
+              [attr.loading]="eager() && $first ? 'eager' : 'lazy'"
+              class="project-images__image"
+              decoding="async"
+            />
+          </div>
+        }
+      </div>
+
+      <button
+        [attr.data-bs-target]="'#' + carouselId()"
+        [attr.aria-label]="previousImageLabel()"
+        class="carousel-control-prev project-images__control"
+        data-bs-slide="prev"
+        type="button"
+      >
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      </button>
+
+      <button
+        [attr.data-bs-target]="'#' + carouselId()"
+        [attr.aria-label]="nextImageLabel()"
+        class="carousel-control-next project-images__control"
+        data-bs-slide="next"
+        type="button"
+      >
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      </button>
+    </div>
+  }
+}

@@ -1,6 +1,6 @@
 /**
  * Smoke E2E con backend real: valida que el frontend pueda consumir los contratos públicos
- * sin mockear la API del proyecto. Solo se estabiliza la geolocalización externa.
+ * sin mockear la API del proyecto.
  */
 import { expect, test } from '@playwright/test';
 
@@ -18,16 +18,6 @@ test.describe('Live public portfolio contract', () => {
     }
 
     test.skip(!backendAvailable, 'El backend real no está disponible en localhost:9090.');
-
-    await page.route('https://ip.guide/**', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          location: { country: 'Ecuador', city: 'Guayaquil' },
-        }),
-      });
-    });
 
     const [
       profileResponse,

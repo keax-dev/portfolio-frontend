@@ -1,8 +1,11 @@
 export interface Skill {
-  id?: number;
-  name: string;
-  position: number;
-  picture?: string;
+  readonly id: number;
+  readonly name: string;
+  readonly position: number;
+  readonly picture?: string;
 }
 
-export type SkillPayload = Pick<Skill, 'name' | 'position'>;
+export interface SkillPayload {
+  readonly name: string;
+  readonly position: number;
+}

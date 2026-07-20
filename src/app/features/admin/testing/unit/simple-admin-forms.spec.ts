@@ -29,7 +29,7 @@ describe('simple admin forms', () => {
       createTechnology: vi.fn(),
       updateTechnology: vi.fn(),
     };
-    const saved: Technology = { id: 1, name: 'Angular', position: 1 };
+    const saved: Technology = { id: 1, name: 'Angular' };
     service.createTechnology.mockReturnValue(of(response(saved)));
     const ref = dialogRef();
     const loading = spinner();
@@ -42,15 +42,15 @@ describe('simple admin forms', () => {
         { provide: NgxSpinnerService, useValue: loading },
         { provide: AlertService, useValue: messages },
         { provide: MatDialogRef, useValue: ref },
-        { provide: MAT_DIALOG_DATA, useValue: { positions: 3 } },
+        { provide: MAT_DIALOG_DATA, useValue: {} },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmTechnologyComponent).componentInstance;
-    component.technologyForm.setValue({ name: 'Angular', position: 1 });
+    component.technologyForm.setValue({ name: 'Angular' });
 
     component.onSubmit();
 
-    expect(service.createTechnology).toHaveBeenCalledWith({ name: 'Angular', position: 1 });
+    expect(service.createTechnology).toHaveBeenCalledWith({ name: 'Angular' });
     expect(messages.success).toHaveBeenCalledWith('Saved');
     expect(ref.close).toHaveBeenCalledWith(saved);
     expect(component.isSaving()).toBe(false);
@@ -61,7 +61,6 @@ describe('simple admin forms', () => {
     const existing: Technology = {
       id: 3,
       name: 'Angular',
-      position: 2,
     };
     const service = {
       createTechnology: vi.fn(),
@@ -76,7 +75,7 @@ describe('simple admin forms', () => {
         { provide: NgxSpinnerService, useValue: spinner() },
         { provide: AlertService, useValue: alert() },
         { provide: MatDialogRef, useValue: ref },
-        { provide: MAT_DIALOG_DATA, useValue: { positions: 4, technology: existing } },
+        { provide: MAT_DIALOG_DATA, useValue: { technology: existing } },
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmTechnologyComponent).componentInstance;
@@ -85,11 +84,7 @@ describe('simple admin forms', () => {
 
     expect(component.update).toBe(true);
     expect(component.title).toBe('Update Technology');
-    expect(component.positionList).toEqual([1, 2, 3, 4]);
-    expect(service.updateTechnology).toHaveBeenCalledWith(
-      3,
-      expect.objectContaining({ name: 'Angular', position: 2 }),
-    );
+    expect(service.updateTechnology).toHaveBeenCalledWith(3, { name: 'Angular' });
     expect(ref.close).toHaveBeenCalledWith(existing);
   });
 

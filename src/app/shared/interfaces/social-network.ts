@@ -1,10 +1,16 @@
 export interface SocialNetwork {
-  id?: number;
-  name: string;
-  icon: string;
-  color: string;
-  position: number;
-  url: string;
+  readonly id: number;
+  readonly name: string;
+  readonly icon: string;
+  readonly color: string;
+  readonly position: number;
+  readonly url: string;
 }
 
-export type SocialNetworkPayload = Omit<SocialNetwork, 'id'>;
+export interface SocialNetworkPayload {
+  readonly name: string;
+  readonly icon: string;
+  readonly color: string;
+  readonly position: number;
+  readonly url: string;
+}

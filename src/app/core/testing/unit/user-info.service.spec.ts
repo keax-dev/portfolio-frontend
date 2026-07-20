@@ -1,116 +1,105 @@
-/**
- * Pruebas unitarias de persistencia, vigencia y decodificación JWT de UserInfoService.
- */
-import { UserInfoService } from '@core/services/user-info.service';
 import { TestBed } from '@angular/core/testing';
+import { UserInfoService } from '@core/services/user-info.service';
+import { AUTH_STORAGE, AuthStorage } from '@core/storage/auth-storage';
 
 describe('UserInfoService', () => {
-  let service: UserInfoService;
+  let values: Map<string, string>;
+  let storage: AuthStorage;
 
   beforeEach(() => {
-    localStorage.clear();
-    TestBed.configureTestingModule({ providers: [UserInfoService] });
-    service = TestBed.inject(UserInfoService);
+    values = new Map();
+    storage = {
+      getItem: (key) => values.get(key) ?? null,
+      setItem: (key, value) => values.set(key, value),
+      removeItem: (key) => void values.delete(key),
+    };
   });
 
-  afterEach(() => {
-    localStorage.clear();
-    vi.restoreAllMocks();
-  });
+  afterEach(() => vi.restoreAllMocks());
 
-  // Caso: inicia sin una sesión almacenada.
+  const createService = (): UserInfoService => {
+    TestBed.configureTestingModule({
+      providers: [UserInfoService, { provide: AUTH_STORAGE, useValue: storage }],
+    });
+    return TestBed.inject(UserInfoService);
+  };
+
   it('starts without a stored session', () => {
-    expect(service.getToken).toBe('');
-    expect(service.getTimeExpiration).toBe(0);
+    const service = createService();
+    expect(service.token).toBe('');
+    expect(service.expiresAt).toBe(0);
     expect(service.hasStoredSession).toBe(false);
     expect(service.hasValidSession).toBe(false);
   });
 
-  // Caso: restaura un token y una expiración almacenados.
   it('restores a stored token and expiration', () => {
-    localStorage.setItem('token', 'stored-token');
-    localStorage.setItem('expiration', '1700000000000');
+    values.set('token', 'stored-token');
+    values.set('expiration', '1700000000000');
+    const service = createService();
 
-    const restored = new UserInfoService();
-
-    expect(restored.getToken).toBe('stored-token');
-    expect(restored.getTimeExpiration).toBe(1_700_000_000_000);
-    expect(restored.hasStoredSession).toBe(true);
+    expect(service.token).toBe('stored-token');
+    expect(service.expiresAt).toBe(1_700_000_000_000);
+    expect(service.hasStoredSession).toBe(true);
   });
 
-  // Caso: persiste el token y la expiración mediante el método de sesión.
   it('persists token and expiration through setSession', () => {
+    const service = createService();
     service.setSession('new-token', 1_800_000_000_000);
 
-    expect(localStorage.getItem('token')).toBe('new-token');
-    expect(localStorage.getItem('expiration')).toBe('1800000000000');
+    expect(values.get('token')).toBe('new-token');
+    expect(values.get('expiration')).toBe('1800000000000');
   });
 
-  // Caso: informa la vigencia de la sesión y el tiempo restante usando la hora actual.
   it('reports session validity and remaining time using the current time', () => {
     vi.spyOn(Date, 'now').mockReturnValue(1_000);
-    service.setToken = 'token';
-    service.setTimeExpiration = 2_500;
-
+    const service = createService();
+    service.setSession('token', 2_500);
     expect(service.hasValidSession).toBe(true);
     expect(service.remainingSessionTime).toBe(1_500);
 
-    service.setTimeExpiration = 500;
+    service.setSession('token', 500);
     expect(service.hasValidSession).toBe(false);
     expect(service.remainingSessionTime).toBe(0);
   });
 
-  // Caso: limpia la memoria y el almacenamiento local.
-  it('clears memory and local storage', () => {
-    service.setToken = 'token';
-    service.setTimeExpiration = 2_000;
-
+  it('clears memory and storage', () => {
+    const service = createService();
+    service.setSession('token', 2_000);
     service.clearInfo();
 
-    expect(service.getToken).toBe('');
-    expect(service.getTimeExpiration).toBe(0);
-    expect(localStorage.getItem('token')).toBeNull();
-    expect(localStorage.getItem('expiration')).toBeNull();
+    expect(service.token).toBe('');
+    expect(service.expiresAt).toBe(0);
+    expect(values.has('token')).toBe(false);
+    expect(values.has('expiration')).toBe(false);
   });
 
-  // Caso: ignora metadata de sesión inválida y limpia el estado.
   it('ignores invalid session metadata and clears the state', () => {
+    const service = createService();
     service.setSession('', Number.NaN);
     expect(service.hasStoredSession).toBe(false);
   });
 
-  // Caso: lee la expiración desde un payload JWT válido.
-  it('reads the expiration from a valid JWT payload', () => {
+  it('reads numeric expiration from regular and URL-safe JWT payloads', () => {
+    const service = createService();
     const payload = btoa(JSON.stringify({ exp: 1_700_000_000 }));
-    const token = `header.${payload}.signature`;
+    expect(service.resolveTokenExpiration(`header.${payload}.signature`)).toBe(1_700_000_000_000);
 
-    expect(service.resolveTokenExpiration(token)).toBe(1_700_000_000_000);
-  });
-
-  // Caso: lee un payload JWT codificado en base64url.
-  it('reads a base64url JWT payload', () => {
-    const payload = btoa(JSON.stringify({ exp: 1_700_000_001 }))
+    const urlSafe = btoa(JSON.stringify({ exp: 1_700_000_001 }))
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
       .replace(/=+$/, '');
-
-    expect(service.resolveTokenExpiration(`header.${payload}.signature`)).toBe(1_700_000_001_000);
+    expect(service.resolveTokenExpiration(`header.${urlSafe}.signature`)).toBe(1_700_000_001_000);
   });
 
-  // Caso: rechaza un JWT sin una expiración numérica.
-  it('rejects a JWT without a numeric expiration', () => {
+  it('rejects malformed JWT payloads and non-numeric expiration', () => {
+    const service = createService();
     const payload = btoa(JSON.stringify({ exp: 'tomorrow' }));
     expect(service.resolveTokenExpiration(`header.${payload}.signature`)).toBeNull();
-  });
-
-  // Caso: rechaza un payload JWT mal formado.
-  it('rejects a malformed JWT payload', () => {
     expect(service.resolveTokenExpiration('not-a-jwt')).toBeNull();
   });
 
-  // Caso: ignora una expiración almacenada mal formada.
   it('ignores a malformed stored expiration', () => {
-    localStorage.setItem('expiration', 'not-a-number');
-    expect(new UserInfoService().getTimeExpiration).toBe(0);
+    values.set('expiration', 'not-a-number');
+    expect(createService().expiresAt).toBe(0);
   });
 });

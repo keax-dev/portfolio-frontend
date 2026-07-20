@@ -61,143 +61,28 @@
       </mat-form-field>
     </div>
 
-    <fieldset class="col-12 border rounded p-3" formArrayName="technologies">
-      <div class="row mb-3">
-        <div class="col-6">
-          <legend class="fs-6 fw-bold mb-0">Technologies</legend>
-        </div>
-        <div class="col-6 text-end">
-          <button
-            (click)="addTechnology()"
-            class="btn btn-sm btn-outline-primary px-4"
-            type="button"
-          >
-            <i class="pi pi-plus" aria-hidden="true"></i>
-            Technology
-          </button>
-        </div>
-      </div>
+    <app-project-technologies-control
+      (addTechnology)="addTechnology()"
+      (removeTechnology)="removeTechnology($event)"
+      [technologies]="technologies"
+      [technologyList]="technologyList()"
+    />
 
-      @for (technologyGroup of technologies.controls; track $index) {
-        <div class="row g-2 align-items-start mb-2" [formGroupName]="$index">
-          <div class="col-12 col-md-7">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Technology</mat-label>
-              <mat-select formControlName="id">
-                <mat-option [value]="0" disabled>Select a technology</mat-option>
-                @for (technology of technologyList(); track technology.id) {
-                  <mat-option [value]="technology.id">{{ technology.name }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-          </div>
+    <app-project-links-control
+      (addLink)="addLink()"
+      (removeLink)="removeLink($event)"
+      [links]="links"
+      [linkTypeOptions]="linkTypeOptions"
+    />
 
-          <div class="col-8 col-md-3">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Order</mat-label>
-              <input formControlName="position" min="1" type="number" matInput />
-            </mat-form-field>
-          </div>
-
-          <div class="col-4 col-md-2 text-center pt-2">
-            <button
-              (click)="removeTechnology($index)"
-              [attr.aria-label]="'Remove technology ' + ($index + 1)"
-              class="btn btn-outline-danger"
-              type="button"
-            >
-              <i class="pi pi-trash" aria-hidden="true"></i>
-            </button>
-          </div>
-        </div>
-      }
-
-      @if (technologies.touched && technologies.invalid) {
-        <small class="text-danger"
-          >Select at least one technology without duplicated technologies or positions.</small
-        >
-      }
-    </fieldset>
-
-    <fieldset class="col-12 border rounded p-3" formArrayName="links">
-      <div class="row mb-3">
-        <div class="col-6">
-          <legend class="fs-6 fw-bold mb-0">Project links</legend>
-        </div>
-        <div class="col-6 text-end">
-          <button (click)="addLink()" class="btn btn-sm btn-outline-primary px-4" type="button">
-            <i class="pi pi-plus" aria-hidden="true"></i>
-            Link
-          </button>
-        </div>
-      </div>
-
-      @for (linkGroup of links.controls; track $index) {
-        <div class="row g-2 align-items-start mb-2" [formGroupName]="$index">
-          <div class="col-12 col-md-3">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Type</mat-label>
-              <mat-select formControlName="type">
-                @for (option of linkTypeOptions; track option.value) {
-                  <mat-option [value]="option.value">{{ option.label }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-          </div>
-
-          <div class="col-12 col-md-5">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>URL</mat-label>
-              <input formControlName="url" type="url" matInput />
-            </mat-form-field>
-          </div>
-
-          <div class="col-8 col-md-2">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Order</mat-label>
-              <input formControlName="position" min="1" type="number" matInput />
-            </mat-form-field>
-          </div>
-
-          <div class="col-4 col-md-2 text-center pt-2">
-            <button
-              (click)="removeLink($index)"
-              [attr.aria-label]="'Remove link ' + ($index + 1)"
-              class="btn btn-outline-danger"
-              type="button"
-            >
-              <i class="pi pi-trash" aria-hidden="true"></i>
-            </button>
-          </div>
-        </div>
-      }
-
-      @if (links.touched && links.invalid) {
-        <small class="text-danger">Link types and positions must not be duplicated.</small>
-      }
-    </fieldset>
-
-    <div class="col-12 col-md-6">
-      <label for="image" class="form-label fw-bold">Image:</label>
-      <input (change)="onFileSelected($event)" class="form-control" type="file" id="image" />
-      @if (controls['image'].touched && controls['image'].errors?.['required']) {
-        <small class="text-danger appear">The image is required</small>
-      }
-
-      @if (controls['image'].touched && controls['image'].errors?.['invalidFileType']) {
-        <small class="text-danger appear">Only image files (png, jpg, jpeg, gif) are allowed</small>
-      }
-    </div>
-
-    @if (update) {
-      <div class="col-12 col-md-6">
-        <p class="fw-bolder text-center mb-2">Previous Image:</p>
-
-        <div class="text-center">
-          <img [src]="urlImage" class="img-max" alt="Previous project image" />
-        </div>
-      </div>
-    }
+    <app-project-images-control
+      (filesSelected)="onFileSelected($event)"
+      (removeImage)="removeExistingImage($event)"
+      [existingImages]="existingImages()"
+      [imagesControl]="controls.images"
+      [isSaving]="isSaving()"
+      [update]="update"
+    />
   </div>
 
   <footer class="w-100 d-flex justify-content-center align-items-center mt-3">

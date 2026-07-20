@@ -13,15 +13,15 @@
 <section class="card shadow-sm">
   @if (search()) {
     <div class="card-header bg-white">
-      <label class="visually-hidden" for="table-search">{{ searchAriaLabel() }}</label>
+      <label class="visually-hidden" for="table-search">{{ copy().searchAriaLabel }}</label>
       <div class="input-group">
         <span class="input-group-text">
           <i class="pi pi-search" aria-hidden="true"></i>
         </span>
         <input
           (input)="updateSearch($event)"
-          [attr.aria-label]="searchAriaLabel()"
-          [placeholder]="searchPlaceholder()"
+          [attr.aria-label]="copy().searchAriaLabel"
+          [placeholder]="copy().searchPlaceholder"
           class="form-control"
           type="search"
           id="table-search"
@@ -31,7 +31,7 @@
   }
 
   <div aria-live="polite" class="visually-hidden">
-    {{ filteredRecords().length }} results. {{ pageLabel() }} {{ currentPage() }} of
+    {{ filteredRecords().length }} results. {{ copy().page }} {{ currentPage() }} of
     {{ pageCount() }}.
   </div>
 
@@ -43,7 +43,7 @@
             <th class="bg-primary text-light" scope="col">
               <button
                 (click)="sortBy(column)"
-                [title]="sortByLabel() + ' ' + column.name"
+                [title]="copy().sortBy + ' ' + column.name"
                 class="btn btn-link text-light text-decoration-none fw-bold p-0"
                 type="button"
               >
@@ -58,7 +58,7 @@
           }
 
           @if (actions()) {
-            <th scope="col" class="bg-primary text-light">{{ actionsLabel() }}</th>
+            <th scope="col" class="bg-primary text-light">{{ copy().actions }}</th>
           }
         </tr>
       </thead>
@@ -82,9 +82,9 @@
                 <td>
                   @if (column.image) {
                     @if (imageUrl(row, column); as image) {
-                      <img [src]="image" class="img-max" [alt]="imageAlt(row)" />
+                      <img [src]="image" class="img-max" [alt]="imageAlt(row, column)" />
                     } @else {
-                      <span>{{ noImageText() }}</span>
+                      <span>{{ copy().noImage }}</span>
                     }
                   } @else {
                     {{ cellValue(row, column) }}
@@ -96,9 +96,9 @@
                 <td>
                   <button
                     (click)="detailsItem(row)"
-                    [attr.aria-label]="viewDetailsLabel()"
+                    [attr.aria-label]="copy().viewDetails"
                     class="btn btn-outline-primary m-1"
-                    [title]="viewDetailsLabel()"
+                    [title]="copy().viewDetails"
                     type="button"
                   >
                     <i class="pi pi-eye" aria-hidden="true"></i>
@@ -110,9 +110,9 @@
                 <td>
                   <button
                     (click)="modifyItem(row)"
-                    [attr.aria-label]="editRecordLabel()"
+                    [attr.aria-label]="copy().editRecord"
                     class="btn btn-success m-1"
-                    [title]="editRecordLabel()"
+                    [title]="copy().editRecord"
                     type="button"
                   >
                     <i class="pi pi-pencil" aria-hidden="true"></i>
@@ -121,9 +121,9 @@
                   @if (delete()) {
                     <button
                       (click)="deleteItem(row)"
-                      [attr.aria-label]="deleteRecordLabel()"
+                      [attr.aria-label]="copy().deleteRecord"
                       class="btn btn-danger m-1"
-                      [title]="deleteRecordLabel()"
+                      [title]="copy().deleteRecord"
                       type="button"
                     >
                       <i class="pi pi-eraser" aria-hidden="true"></i>
@@ -152,7 +152,7 @@
 
   <footer class="card-footer d-flex flex-wrap justify-content-between align-items-center gap-2">
     <label class="d-flex align-items-center gap-2">
-      {{ rowsLabel() }}
+      {{ copy().rows }}
       <select class="form-select form-select-sm" (change)="updatePageSize($event)">
         @for (size of [5, 10, 20, 50]; track size) {
           <option [value]="size" [selected]="size === pageSize()">{{ size }}</option>
@@ -165,20 +165,20 @@
         (click)="previousPage()"
         [disabled]="currentPage() === 1"
         class="btn btn-outline-primary btn-sm"
-        [title]="previousLabel() + ' ' + pageLabel().toLowerCase()"
+        [title]="copy().previous + ' ' + copy().page.toLowerCase()"
         type="button"
       >
-        {{ previousLabel() }}
+        {{ copy().previous }}
       </button>
-      <span>{{ pageLabel() }} {{ currentPage() }} of {{ pageCount() }}</span>
+      <span>{{ copy().page }} {{ currentPage() }} of {{ pageCount() }}</span>
       <button
         [disabled]="currentPage() === pageCount()"
         (click)="nextPage()"
         class="btn btn-outline-primary btn-sm"
-        [title]="nextLabel() + ' ' + pageLabel().toLowerCase()"
+        [title]="copy().next + ' ' + copy().page.toLowerCase()"
         type="button"
       >
-        {{ nextLabel() }}
+        {{ copy().next }}
       </button>
     </div>
   </footer>

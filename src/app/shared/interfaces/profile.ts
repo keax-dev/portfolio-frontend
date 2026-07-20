@@ -4,7 +4,11 @@ export interface Profile {
   title: string;
   title_es: string;
   cv: string;
+  cv_es: string;
   image?: string | null;
 }
 
-export type ProfilePayload = Pick<Profile, 'name' | 'last_name' | 'title' | 'title_es' | 'cv'>;
+export type ProfilePayload = Pick<
+  Profile,
+  'name' | 'last_name' | 'title' | 'title_es' | 'cv' | 'cv_es'
+>;

@@ -1,6 +1,6 @@
 /**
  * E2E de autenticación: protección de rutas, login real, persistencia, logout y expiración.
- * Verifica los límites de seguridad desde URLs y localStorage observables por el usuario.
+ * Verifica los límites de seguridad desde URLs y sessionStorage observables por el usuario.
  */
 import { expect, test } from '@playwright/test';
 import { api, json, mockPublicPortfolio } from '../support/api-mocks';
@@ -8,7 +8,7 @@ import { api, json, mockPublicPortfolio } from '../support/api-mocks';
 test.describe('Authentication lifecycle', () => {
   // Caso: redirige a los usuarios anónimos fuera del área administrativa.
   test('redirects anonymous users away from the admin area', async ({ page }) => {
-    // Solicita directamente una URL protegida sin preparar localStorage.
+    // Solicita directamente una URL protegida sin preparar sessionStorage.
     await page.goto('/home');
 
     // El guard debe terminar en login y comunicar por qué ocurrió.
@@ -80,22 +80,22 @@ test.describe('Authentication lifecycle', () => {
     await expect(page.getByText('Total visits in range')).toBeVisible();
 
     // Confirma persistencia y uso efectivo del token por el interceptor en el dashboard.
-    expect(await page.evaluate(() => localStorage.getItem('token'))).toBeTruthy();
+    expect(await page.evaluate(() => sessionStorage.getItem('token'))).toBeTruthy();
     expect(authorizationHeader).toMatch(/^Bearer /);
 
     // Prepara endpoints públicos requeridos al volver al portafolio y cierra sesión.
     await mockPublicPortfolio(page);
     await page.getByRole('button', { name: 'Log Out' }).click();
     await expect(page).toHaveURL('/');
-    expect(await page.evaluate(() => localStorage.getItem('token'))).toBeNull();
+    expect(await page.evaluate(() => sessionStorage.getItem('token'))).toBeNull();
   });
 
   // Caso: limpia una sesión expirada y vuelve al login.
   test('clears an expired session and returns to login', async ({ page }) => {
     // Inserta credenciales expiradas antes del bootstrap Angular.
     await page.addInitScript(() => {
-      localStorage.setItem('token', 'expired-token');
-      localStorage.setItem('expiration', String(Date.now() - 1));
+      sessionStorage.setItem('token', 'expired-token');
+      sessionStorage.setItem('expiration', String(Date.now() - 1));
     });
 
     await page.goto('/home');
@@ -103,6 +103,6 @@ test.describe('Authentication lifecycle', () => {
     // La navegación debe limpiar storage y mostrar el mensaje específico de expiración.
     await expect(page).toHaveURL(/\/login$/);
     await expect(page.getByText('Session expired')).toBeVisible();
-    expect(await page.evaluate(() => localStorage.getItem('token'))).toBeNull();
+    expect(await page.evaluate(() => sessionStorage.getItem('token'))).toBeNull();
   });
 });

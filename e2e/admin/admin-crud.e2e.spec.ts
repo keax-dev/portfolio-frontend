@@ -78,3 +78,84 @@ test('creates and deletes an institution through the admin UI', async ({ page })
   await expect(page.getByText('There are no records.')).toBeVisible();
   await expect(page.getByText('OPENAI UNIVERSITY')).toBeHidden();
 });
+
+test('removes the selected project technology and submits its reordered relations', async ({
+  page,
+}) => {
+  await installValidSession(page);
+  const technologies = [
+    { id: 1, name: 'Angular' },
+    { id: 3, name: 'Laravel' },
+    { id: 4, name: 'Spring Boot' },
+    { id: 5, name: 'PostgreSQL' },
+    { id: 6, name: 'MySQL' },
+  ];
+  const project = {
+    id: 1,
+    title: 'Courier Operations Platform',
+    title_es: 'Plataforma de Operaciones Courier',
+    description: 'Courier operations',
+    description_es: 'Operaciones courier',
+    images: [{ id: 1, url: '/images/logo.png', position: 1 }],
+    position: 1,
+    technologies: [
+      { relation_id: 1, id: 1, name: 'Angular', position: 1 },
+      { relation_id: 9, id: 3, name: 'Laravel', position: 2 },
+      { relation_id: 12, id: 6, name: 'MySQL', position: 5 },
+      { relation_id: 13, id: 4, name: 'Spring Boot', position: 3 },
+      { relation_id: 14, id: 5, name: 'PostgreSQL', position: 4 },
+    ],
+    links: [],
+  };
+  let submittedTechnologies: unknown;
+
+  await page.route('http://localhost:9090/api/**', async (route) => {
+    const request = route.request();
+    const path = new URL(request.url()).pathname;
+
+    if (path === '/api/project/1' && request.method() === 'PUT') {
+      const payload = request.postDataJSON() as { technologies: unknown };
+      submittedTechnologies = payload.technologies;
+      await json(route, api({ ...project, ...payload }, 'Project updated'));
+      return;
+    }
+
+    if (path === '/api/project') {
+      await json(route, api([project]));
+      return;
+    }
+
+    if (path === '/api/technology') {
+      await json(route, api(technologies));
+      return;
+    }
+
+    await route.fulfill({ status: 404, body: 'Unhandled admin endpoint' });
+  });
+
+  await page.goto('/home/project');
+  await page.getByRole('button', { name: 'Edit record' }).click();
+  const form = page.locator('app-frm-project');
+  const technologyRows = form.locator('app-project-technologies-control fieldset');
+  await expect(technologyRows.getByRole('button', { name: /^Remove technology/ })).toHaveCount(5);
+  await expect(technologyRows.getByText('MySQL', { exact: true })).toBeVisible();
+
+  await technologyRows.getByRole('button', { name: 'Remove technology 3' }).click();
+
+  await expect(technologyRows.getByRole('button', { name: /^Remove technology/ })).toHaveCount(4);
+  await expect(technologyRows.getByText('MySQL', { exact: true })).toHaveCount(0);
+  const orderInputs = technologyRows.locator('input[formcontrolname="position"]');
+  for (const [index, position] of [4, 3, 2, 1].entries()) {
+    await orderInputs.nth(index).fill(String(position));
+  }
+  await form.getByRole('button', { name: 'Save' }).click({ force: true });
+
+  await expect
+    .poll(() => submittedTechnologies)
+    .toEqual([
+      { relation_id: 1, id: 1, position: 4 },
+      { relation_id: 9, id: 3, position: 3 },
+      { relation_id: 13, id: 4, position: 2 },
+      { relation_id: 14, id: 5, position: 1 },
+    ]);
+});

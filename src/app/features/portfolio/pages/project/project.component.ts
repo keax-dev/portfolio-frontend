@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { ProjectGalleryComponent } from '@features/portfolio/pages/technology/project-gallery/project-gallery.component';
+import { ProjectGalleryComponent } from '@features/portfolio/pages/project/project-gallery/project-gallery.component';
 import { TranslateService } from '@core/services/translate.service';
 import { Project } from '@shared/interfaces/project';
 import { uiText } from '@core/i18n/ui-text';
 
 @Component({
-  selector: 'app-technology',
+  selector: 'app-project',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './technology.component.html',
+  templateUrl: './project.component.html',
   imports: [ProjectGalleryComponent],
 })
-export class TechnologyComponent {
+export class ProjectComponent {
   protected readonly translate = inject(TranslateService);
 
   readonly text = uiText;

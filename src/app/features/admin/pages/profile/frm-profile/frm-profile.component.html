@@ -56,10 +56,26 @@
 
       <div class="col-12 col-md-6">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>CV</mat-label>
+          <mat-label>CV URL (English)</mat-label>
           <input formControlName="cv" type="url" id="cv" matInput />
           @if (controls['cv'].touched && controls['cv'].errors?.['required']) {
-            <mat-error>The cv is required</mat-error>
+            <mat-error>The English CV URL is required</mat-error>
+          }
+          @if (controls['cv'].touched && controls['cv'].errors?.['httpsUrl']) {
+            <mat-error>The English CV URL must be a valid HTTPS URL</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>CV URL (Spanish)</mat-label>
+          <input formControlName="cv_es" type="url" id="cv_es" matInput />
+          @if (controls['cv_es'].touched && controls['cv_es'].errors?.['required']) {
+            <mat-error>The Spanish CV URL is required</mat-error>
+          }
+          @if (controls['cv_es'].touched && controls['cv_es'].errors?.['httpsUrl']) {
+            <mat-error>The Spanish CV URL must be a valid HTTPS URL</mat-error>
           }
         </mat-form-field>
       </div>
@@ -75,6 +91,9 @@
           <small class="text-danger appear"
             >Only image files (png, jpg, jpeg, gif) are allowed</small
           >
+        }
+        @if (controls['image'].touched && controls['image'].errors?.['maxFileSize']) {
+          <small class="text-danger appear">The image must be 5 MB or smaller</small>
         }
       </div>
     </div>

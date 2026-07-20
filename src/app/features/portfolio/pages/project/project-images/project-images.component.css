@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.project-images {
+  width: min(100%, 52rem);
+  margin-inline: auto;
+}
+
+.project-images__stack {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.project-images__button {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+
+.project-images__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.project-images__control {
+  width: 12%;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.project-images__button:focus-visible,
+.project-images__control:focus-visible {
+  position: relative;
+  z-index: 3;
+}

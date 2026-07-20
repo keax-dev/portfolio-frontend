@@ -3,24 +3,18 @@ import { SocialNetworkService } from '@features/admin/services/social-network.se
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
 import { finalize } from 'rxjs';
-import {
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  FormsModule,
-  Validators,
-} from '@angular/forms';
+import { httpsUrlValidator } from '@core/validators/external-url.validator';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  OnDestroy,
   inject,
   OnInit,
   signal,
@@ -42,14 +36,12 @@ interface SocialNetworkDialogData {
     ButtonComponent,
     MatSelectModule,
     MatInputModule,
-    FormsModule,
   ],
 })
-export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
+export class FrmSocialNetworkComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly socialNetworkService = inject(SocialNetworkService);
-  private readonly spinner = inject(NgxSpinnerService);
   private readonly data = inject<SocialNetworkDialogData>(MAT_DIALOG_DATA);
   private readonly alert = inject(AlertService);
   private readonly ref = inject<MatDialogRef<unknown, SocialNetwork>>(MatDialogRef);
@@ -59,7 +51,7 @@ export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
     name: ['', Validators.required],
     icon: ['', Validators.required],
     color: ['', Validators.required],
-    url: ['', [Validators.required, Validators.pattern(/^https?:\/\//i)]],
+    url: ['', [Validators.required, httpsUrlValidator()]],
     position: [0, [Validators.required, Validators.min(1)]],
   });
 
@@ -71,10 +63,6 @@ export class FrmSocialNetworkComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadVariables();
-  }
-
-  ngOnDestroy(): void {
-    this.spinner.hide();
   }
 
   loadVariables(): void {

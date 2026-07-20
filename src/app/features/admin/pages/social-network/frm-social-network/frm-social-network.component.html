@@ -40,8 +40,11 @@
       <mat-form-field appearance="outline" class="w-100">
         <mat-label>Url</mat-label>
         <input formControlName="url" id="url" type="url" matInput />
-        @if (controls['url'].touched && controls['url'].invalid) {
-          <mat-error>The url is required</mat-error>
+        @if (controls['url'].touched && controls['url'].errors?.['required']) {
+          <mat-error>The URL is required</mat-error>
+        }
+        @if (controls['url'].touched && controls['url'].errors?.['httpsUrl']) {
+          <mat-error>The URL must be a valid HTTPS URL</mat-error>
         }
       </mat-form-field>
     </div>

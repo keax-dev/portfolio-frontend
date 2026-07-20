@@ -1,9 +1,10 @@
-import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ParameterService } from '@core/services/parameter.service';
+import { imageFileValidator } from '@core/validators/image-file.validator';
+import { httpsUrlValidator } from '@core/validators/external-url.validator';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { ProfileService } from '@features/admin/services/profile.service';
 import { MatInputModule } from '@angular/material/input';
@@ -31,7 +32,6 @@ import {
     MatFormFieldModule,
     ButtonComponent,
     MatInputModule,
-    FormsModule,
   ],
 })
 export class FrmProfileComponent implements OnInit, OnDestroy {
@@ -39,7 +39,6 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
 
   private readonly profileService = inject(ProfileService);
   private readonly imageService = inject(ImageService);
-  private readonly parameter = inject(ParameterService);
   private readonly spinner = inject(NgxSpinnerService);
   private readonly alert = inject(AlertService);
   private readonly fb = inject(FormBuilder);
@@ -49,11 +48,9 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
     last_name: this.fb.nonNullable.control('', Validators.required),
     title: this.fb.nonNullable.control('', Validators.required),
     title_es: this.fb.nonNullable.control('', Validators.required),
-    cv: this.fb.nonNullable.control('', [Validators.required, Validators.pattern(/^https?:\/\//i)]),
-    image: this.fb.control<File | null>(null, [
-      Validators.required,
-      this.parameter.imageFileValidator,
-    ]),
+    cv: this.fb.nonNullable.control('', [Validators.required, httpsUrlValidator()]),
+    cv_es: this.fb.nonNullable.control('', [Validators.required, httpsUrlValidator()]),
+    image: this.fb.control<File | null>(null, [Validators.required, imageFileValidator()]),
   });
 
   readonly previousProfile = signal<Profile | null>(null);
@@ -101,8 +98,9 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
       title: data.title,
       title_es: data.title_es,
       cv: data.cv,
+      cv_es: data.cv_es || data.cv,
     });
-    this.controls.image.setValidators([this.parameter.imageFileValidator]);
+    this.controls.image.setValidators([imageFileValidator()]);
     this.controls.image.updateValueAndValidity();
   }
 
@@ -201,6 +199,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
     const input = event.target as HTMLInputElement;
     if (input?.files && input.files.length > 0) {
       this.controls.image.setValue(input.files[0]);
+      this.controls.image.markAsTouched();
     }
   }
 
@@ -219,6 +218,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
       title: value.title,
       title_es: value.title_es,
       cv: value.cv,
+      cv_es: value.cv_es,
     };
   }
 

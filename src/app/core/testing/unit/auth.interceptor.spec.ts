@@ -20,7 +20,7 @@ describe('authInterceptor', () => {
   let userInfo: {
     hasValidSession: boolean;
     hasStoredSession: boolean;
-    getToken: string;
+    token: string;
   };
 
   beforeEach(() => {
@@ -31,7 +31,7 @@ describe('authInterceptor', () => {
     userInfo = {
       hasValidSession: true,
       hasStoredSession: true,
-      getToken: 'access-token',
+      token: 'access-token',
     };
 
     TestBed.configureTestingModule({
@@ -72,8 +72,8 @@ describe('authInterceptor', () => {
 
   // Caso: no modifica solicitudes externas.
   it('does not modify external requests', () => {
-    http.get('https://ip.guide').subscribe();
-    const request = controller.expectOne('https://ip.guide');
+    http.get('https://example.com/public').subscribe();
+    const request = controller.expectOne('https://example.com/public');
     expect(request.request.headers.has('Accept')).toBe(false);
     expect(request.request.headers.has('Authorization')).toBe(false);
     request.flush({});

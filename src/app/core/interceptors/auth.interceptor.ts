@@ -13,7 +13,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
 
   const isLoginRequest = request.url.includes('/auth/login');
   const isApiRequest = request.url.startsWith(environment.url);
-  const token = userInfoService.hasValidSession ? userInfoService.getToken : '';
+  const token = userInfoService.hasValidSession ? userInfoService.token : '';
 
   const requestWithHeaders = isApiRequest
     ? request.clone({

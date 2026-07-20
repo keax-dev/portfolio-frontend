@@ -14,6 +14,9 @@ export async function mockPublicPortfolio(page: Page): Promise<void> {
     });
   });
 
+  // El test solo verifica la URL localizada del iframe, no carga el visor externo.
+  await page.route('https://docs.google.com/**', async (route) => route.abort());
+
   // Simula todos los endpoints consumidos al construir la página pública.
   await page.route(`${apiBase}/**`, async (route) => {
     const request = route.request();
@@ -27,7 +30,8 @@ export async function mockPublicPortfolio(page: Page): Promise<void> {
           last_name: 'Galarza',
           title: 'Software Engineer',
           title_es: 'Ingeniero de Software',
-          cv: 'https://example.com/cv.pdf',
+          cv: 'https://example.com/cv-en.pdf',
+          cv_es: 'https://example.com/cv-es.pdf',
           image: '/images/profile.jpg',
         }),
       );

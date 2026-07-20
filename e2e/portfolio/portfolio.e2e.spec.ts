@@ -17,6 +17,11 @@ test.describe('Public portfolio', () => {
     await page.goto('/');
     await expect(page.getByRole('heading', { name: 'Kevin Galarza' })).toBeVisible();
 
+    // El idioma inicial es español, por lo que el modal debe recibir el CV en español.
+    await page.locator('#home .btn-cv').click();
+    await expect(page.locator('app-cv-preview iframe')).toHaveAttribute('src', /cv-es\.pdf/);
+    await page.locator('app-cv-preview').getByRole('button', { name: 'Close CV preview' }).click();
+
     // Comprueba que las secciones principales y sus datos estén renderizados.
     await expect(page.getByRole('heading', { name: 'Educación' })).toBeVisible();
     const projectAccordion = page.locator('.project-accordion');
@@ -69,6 +74,10 @@ test.describe('Public portfolio', () => {
     await expect(page.getByRole('heading', { name: 'Education' })).toBeVisible();
     await expect(page.locator('#home').getByText('Software Engineer')).toBeVisible();
     await expect(page.getByTitle('English')).toHaveAttribute('aria-pressed', 'true');
+
+    // Al cambiar a inglés, el mismo botón debe abrir el CV en inglés.
+    await page.locator('#home .btn-cv').click();
+    await expect(page.locator('app-cv-preview iframe')).toHaveAttribute('src', /cv-en\.pdf/);
   });
 
   // Caso: valida y envía el diálogo de contacto de punta a punta.

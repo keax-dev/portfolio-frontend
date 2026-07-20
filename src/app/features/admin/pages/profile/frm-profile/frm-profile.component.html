@@ -56,10 +56,26 @@
 
       <div class="col-12 col-md-6">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>CV</mat-label>
+          <mat-label>CV URL (English)</mat-label>
           <input formControlName="cv" type="url" id="cv" matInput />
           @if (controls['cv'].touched && controls['cv'].errors?.['required']) {
-            <mat-error>The cv is required</mat-error>
+            <mat-error>The English CV URL is required</mat-error>
+          }
+          @if (controls['cv'].touched && controls['cv'].errors?.['pattern']) {
+            <mat-error>The English CV URL must start with http:// or https://</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>CV URL (Spanish)</mat-label>
+          <input formControlName="cv_es" type="url" id="cv_es" matInput />
+          @if (controls['cv_es'].touched && controls['cv_es'].errors?.['required']) {
+            <mat-error>The Spanish CV URL is required</mat-error>
+          }
+          @if (controls['cv_es'].touched && controls['cv_es'].errors?.['pattern']) {
+            <mat-error>The Spanish CV URL must start with http:// or https://</mat-error>
           }
         </mat-form-field>
       </div>

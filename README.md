@@ -28,7 +28,8 @@ Rutas principales:
 
 ### Portafolio público
 
-- Carga del perfil principal con foto, descripción, CV y enlaces sociales.
+- Carga del perfil principal con foto, descripción, CV localizado y enlaces sociales.
+- Apertura del CV en español o inglés según el idioma activo del portafolio.
 - Secciones de educación, habilidades y proyectos renderizadas desde la API.
 - Catálogo unificado de proyectos presentado como acordeón, con título, tecnologías ordenadas, carrusel centrado y acciones disponibles.
 - Carrusel para todos los proyectos, incluso cuando existe una sola imagen, con soporte de una a tres imágenes por proyecto.
@@ -52,6 +53,7 @@ Rutas principales:
 - Catálogo de tecnologías administrado únicamente por nombre; su posición se define por cada relación dentro de un proyecto.
 - Formulario de proyectos con una o varias tecnologías ordenadas, links tipados y ordenados, y entre una y tres imágenes.
 - Edición de imágenes existentes y eliminación precisa de tecnologías o links seleccionados, conservando las relaciones restantes.
+- Gestión independiente de las URLs del CV en inglés y español desde el perfil principal.
 - Dashboard de visitantes para revisar métricas, países, ciudades y trazas de acceso.
 - Tablas reutilizables con búsqueda, paginación, ordenamiento y estados vacíos/error/loading.
 - Formularios con Angular Material y botones reutilizables con estado de carga.

@@ -40,11 +40,19 @@ export class HeaderComponent {
     return `${this.translate.text(this.text.portfolio.profilePhotoAltPrefix)} ${this.profile().name}`;
   }
 
+  cvUrl(): string {
+    const profile = this.profile();
+    return this.translate.getLang === 'es'
+      ? profile.cv_es || profile.cv
+      : profile.cv || profile.cv_es;
+  }
+
   openCvPreview(): void {
-    if (!this.profile().cv) {
+    const url = this.cvUrl();
+    if (!url) {
       return;
     }
 
-    this.parameter.openDialog(CvPreviewComponent, { url: this.profile().cv }, '92%', '98%');
+    this.parameter.openDialog(CvPreviewComponent, { url }, '92%', '98%');
   }
 }

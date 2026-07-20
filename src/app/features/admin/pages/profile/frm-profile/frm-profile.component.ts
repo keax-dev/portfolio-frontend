@@ -50,6 +50,10 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
     title: this.fb.nonNullable.control('', Validators.required),
     title_es: this.fb.nonNullable.control('', Validators.required),
     cv: this.fb.nonNullable.control('', [Validators.required, Validators.pattern(/^https?:\/\//i)]),
+    cv_es: this.fb.nonNullable.control('', [
+      Validators.required,
+      Validators.pattern(/^https?:\/\//i),
+    ]),
     image: this.fb.control<File | null>(null, [
       Validators.required,
       this.parameter.imageFileValidator,
@@ -101,6 +105,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
       title: data.title,
       title_es: data.title_es,
       cv: data.cv,
+      cv_es: data.cv_es || data.cv,
     });
     this.controls.image.setValidators([this.parameter.imageFileValidator]);
     this.controls.image.updateValueAndValidity();
@@ -219,6 +224,7 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
       title: value.title,
       title_es: value.title_es,
       cv: value.cv,
+      cv_es: value.cv_es,
     };
   }
 

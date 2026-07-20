@@ -28,7 +28,8 @@ Main routes:
 
 ### Public portfolio
 
-- Main profile loading with photo, description, CV, and social links.
+- Main profile loading with photo, description, localized CV, and social links.
+- Spanish or English CV preview based on the portfolio's active language.
 - Education, skills, and projects sections rendered from the API.
 - Unified project catalog presented as an accordion with a title, ordered technologies, a centered carousel, and available actions.
 - Carousel for every project, even when only one image exists, with support for one to three images per project.
@@ -52,6 +53,7 @@ Main routes:
 - Technology catalog managed by name only; its position is defined per project relationship.
 - Project form with one or more ordered technologies, typed and ordered links, and between one and three images.
 - Existing image management and precise removal of the selected technology or link while preserving the remaining relationships.
+- Independent management of the English and Spanish CV URLs from the main profile.
 - Visitor dashboard with metrics, countries, cities, and visit traces.
 - Reusable tables with search, pagination, sorting, and empty/error/loading states.
 - Angular Material forms and reusable buttons with loading state support.

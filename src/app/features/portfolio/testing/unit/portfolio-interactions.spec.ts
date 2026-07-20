@@ -25,7 +25,8 @@ describe('portfolio interaction components', () => {
     last_name: 'Galarza',
     title: 'Engineer',
     title_es: 'Ingeniero',
-    cv: 'https://example.com/cv.pdf',
+    cv: 'https://example.com/cv-en.pdf',
+    cv_es: 'https://example.com/cv-es.pdf',
   };
   const project: Project = {
     id: 1,
@@ -83,14 +84,23 @@ describe('portfolio interaction components', () => {
     component.openCvPreview();
     expect(parameter.openDialog).toHaveBeenCalledWith(
       CvPreviewComponent,
+      { url: profile.cv_es },
+      '92%',
+      '98%',
+    );
+
+    translate.getLang = 'en';
+    component.openCvPreview();
+    expect(parameter.openDialog).toHaveBeenLastCalledWith(
+      CvPreviewComponent,
       { url: profile.cv },
       '92%',
       '98%',
     );
 
-    fixture.componentRef.setInput('profile', { ...profile, cv: '' });
+    fixture.componentRef.setInput('profile', { ...profile, cv: '', cv_es: '' });
     component.openCvPreview();
-    expect(parameter.openDialog).toHaveBeenCalledTimes(1);
+    expect(parameter.openDialog).toHaveBeenCalledTimes(2);
   });
 
   // Caso: emite acciones de contacto desde el footer.

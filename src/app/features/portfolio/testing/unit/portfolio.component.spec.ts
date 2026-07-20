@@ -67,7 +67,8 @@ describe('PortfolioComponent', () => {
           last_name: 'Galarza',
           title: 'Engineer',
           title_es: 'Ingeniero',
-          cv: 'https://example.com/cv.pdf',
+          cv: 'https://example.com/cv-en.pdf',
+          cv_es: 'https://example.com/cv-es.pdf',
         }),
       ),
     );

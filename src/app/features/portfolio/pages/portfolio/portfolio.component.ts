@@ -61,6 +61,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     title: 'INFORMATION SYSTEMS ENGINEER',
     title_es: 'INGENIERO EN SISTEMAS DE INFORMACIÓN',
     cv: '',
+    cv_es: '',
     image: './images/profile.jpg',
   });
 

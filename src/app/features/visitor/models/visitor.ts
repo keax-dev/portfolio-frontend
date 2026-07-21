@@ -25,3 +25,18 @@ export interface VisitorDashboard {
   countries: VisitorCountryCount[];
   cities: VisitorCityCount[];
 }
+
+export interface VisitorLocationResponse {
+  readonly ip?: string;
+  readonly location?: {
+    readonly city?: string;
+    readonly country?: string;
+  };
+}
+
+export interface VisitorRegisterPayload {
+  readonly path: string;
+  readonly ip?: string;
+  readonly country?: string;
+  readonly city?: string;
+}

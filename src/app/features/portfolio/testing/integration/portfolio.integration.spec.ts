@@ -66,11 +66,24 @@ describe('Public portfolio integration', () => {
     expect(component.socialNetworkList().map((item) => item.position)).toEqual([1, 2]);
   });
 
-  it('posts the visit path without contacting an external geolocation service', () => {
+  it('posts the visit path with the resolved visitor location', () => {
     component.registerVisit();
+    controller.expectOne(environment.visitorGeoUrl).flush({
+      ip: '203.0.113.10',
+      location: {
+        country: 'Ecuador',
+        city: 'Quito',
+      },
+    });
+
     const request = controller.expectOne(`${baseUrl}/visitor`);
     expect(request.request.method).toBe('POST');
-    expect(request.request.body).toEqual({ path: '/' });
+    expect(request.request.body).toEqual({
+      path: '/',
+      ip: '203.0.113.10',
+      country: 'Ecuador',
+      city: 'Quito',
+    });
     request.flush(api(null));
   });
 

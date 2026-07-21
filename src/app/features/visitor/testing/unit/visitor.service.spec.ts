@@ -19,8 +19,58 @@ describe('VisitorService', () => {
 
   afterEach(() => http.verify());
 
-  it('registers only the visited path and leaves location resolution to the backend', () => {
+  it('registers the resolved visitor location with the visited path', () => {
     service.registerVisit('/projects').subscribe();
+    const geoRequest = http.expectOne(environment.visitorGeoUrl);
+    expect(geoRequest.request.method).toBe('GET');
+    geoRequest.flush({
+      ip: '203.0.113.10',
+      location: {
+        country: 'Ecuador',
+        city: 'Quito',
+      },
+    });
+
+    const request = http.expectOne(`${baseUrl}/visitor`);
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({
+      path: '/projects',
+      ip: '203.0.113.10',
+      country: 'Ecuador',
+      city: 'Quito',
+    });
+    request.flush({ status: true, alert: 'ok', data: null });
+  });
+
+  it('skips backend registration for the owner IP range', () => {
+    let completed = false;
+
+    service.registerVisit('/projects').subscribe({
+      next: (response) => {
+        expect(response.data).toBeNull();
+        completed = true;
+      },
+    });
+
+    http.expectOne(environment.visitorGeoUrl).flush({
+      ip: '45.70.58.27',
+      location: {
+        country: 'Ecuador',
+        city: 'Quito',
+      },
+    });
+
+    http.expectNone(`${baseUrl}/visitor`);
+    expect(completed).toBe(true);
+  });
+
+  it('registers only the path when geolocation cannot be resolved', () => {
+    service.registerVisit('/projects').subscribe();
+    http.expectOne(environment.visitorGeoUrl).flush(null, {
+      status: 503,
+      statusText: 'Service Unavailable',
+    });
+
     const request = http.expectOne(`${baseUrl}/visitor`);
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual({ path: '/projects' });

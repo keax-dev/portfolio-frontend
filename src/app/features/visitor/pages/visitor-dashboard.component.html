@@ -103,7 +103,7 @@
             </thead>
 
             <tbody>
-              @for (visitor of records(); track visitor.id) {
+              @for (visitor of paginatedRecords(); track visitor.id) {
                 <tr>
                   <td>{{ visitor.visitedAt | date: 'medium' }}</td>
                   <td>{{ visitor.ip }}</td>
@@ -120,6 +120,35 @@
             </tbody>
           </table>
         </div>
+
+        @if (records().length) {
+          <div class="visitor-pagination">
+            <span class="pagination-summary">
+              Showing {{ pageStart() }}-{{ pageEnd() }} of {{ records().length }}
+            </span>
+
+            <div class="btn-group" role="group" aria-label="Visitor table pagination">
+              <button
+                class="btn btn-outline-primary btn-sm"
+                type="button"
+                (click)="previousPage()"
+                [disabled]="currentPage() <= 1"
+              >
+                <i class="pi pi-chevron-left" aria-hidden="true"></i>
+                Previous
+              </button>
+              <button
+                class="btn btn-outline-primary btn-sm"
+                type="button"
+                (click)="nextPage()"
+                [disabled]="currentPage() >= totalPages()"
+              >
+                Next
+                <i class="pi pi-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        }
       </div>
     </section>
   </div>

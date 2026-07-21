@@ -9,6 +9,7 @@ import {
   ChangeDetectionStrategy,
   DestroyRef,
   Component,
+  computed,
   inject,
   OnInit,
   signal,
@@ -41,7 +42,26 @@ export class VisitorDashboardComponent implements OnInit {
     cities: [],
   });
 
+  readonly currentPage = signal(1);
   readonly records = signal<readonly Visitor[]>([]);
+  readonly pageSize = 10;
+  readonly totalPages = computed(() =>
+    Math.max(1, Math.ceil(this.records().length / this.pageSize)),
+  );
+  readonly pageStart = computed(() => {
+    if (!this.records().length) {
+      return 0;
+    }
+
+    return (this.activePage() - 1) * this.pageSize + 1;
+  });
+  readonly pageEnd = computed(() =>
+    Math.min(this.records().length, this.activePage() * this.pageSize),
+  );
+  readonly paginatedRecords = computed(() => {
+    const start = (this.activePage() - 1) * this.pageSize;
+    return this.records().slice(start, start + this.pageSize);
+  });
   readonly isLoading = signal(false);
   startDate = '';
   endDate = '';
@@ -88,8 +108,17 @@ export class VisitorDashboardComponent implements OnInit {
         next: (result) => {
           this.dashboard.set(result.dashboard.data);
           this.records.set(result.visitors.data);
+          this.currentPage.set(1);
         },
       });
+  }
+
+  previousPage(): void {
+    this.currentPage.update((page) => Math.max(1, page - 1));
+  }
+
+  nextPage(): void {
+    this.currentPage.update((page) => Math.min(this.totalPages(), page + 1));
   }
 
   unknown(value?: string | null): string {
@@ -144,5 +173,9 @@ export class VisitorDashboardComponent implements OnInit {
   localDate(value: string): Date {
     const [year, month, day] = value.split('-').map(Number);
     return new Date(year, month - 1, day);
+  }
+
+  private activePage(): number {
+    return Math.min(this.currentPage(), this.totalPages());
   }
 }

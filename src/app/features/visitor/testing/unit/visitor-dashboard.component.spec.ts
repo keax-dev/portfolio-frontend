@@ -98,6 +98,33 @@ describe('VisitorDashboardComponent', () => {
     expect(component.isLoading()).toBe(false);
   });
 
+  it('paginates visitor records locally', () => {
+    visitor.getVisitorList.mockReturnValue(
+      of({
+        ...visitorsResponse,
+        data: Array.from({ length: 12 }, (_, index) => ({
+          id: index + 1,
+          ip: `203.0.113.${index + 1}`,
+          visitedAt: '2026-01-01T12:00:00.000Z',
+        })),
+      }),
+    );
+
+    component.ngOnInit();
+
+    expect(component.totalPages()).toBe(2);
+    expect(component.paginatedRecords()).toHaveLength(10);
+    expect(component.pageStart()).toBe(1);
+    expect(component.pageEnd()).toBe(10);
+
+    component.nextPage();
+
+    expect(component.currentPage()).toBe(2);
+    expect(component.paginatedRecords()).toHaveLength(2);
+    expect(component.pageStart()).toBe(11);
+    expect(component.pageEnd()).toBe(12);
+  });
+
   it('normalizes missing geographical values', () => {
     expect(component.unknown('Quito')).toBe('Quito');
     expect(component.unknown('')).toBe('Unknown');

@@ -7,7 +7,7 @@
 >
   <header>
     <h2 id="contact-title" class="h4 text-primary">
-      {{ translate.text(text.contact.title) }}
+      {{ translate.text(contactText.title) }}
     </h2>
   </header>
 
@@ -16,7 +16,7 @@
   <div class="container-fluid">
     <div class="col my-2">
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>{{ translate.text(text.contact.nameLabel) }}</mat-label>
+        <mat-label>{{ translate.text(contactText.nameLabel) }}</mat-label>
         <input
           [attr.aria-describedby]="
             controls['name'].touched && controls['name'].invalid ? 'name-error' : null
@@ -39,7 +39,7 @@
 
     <div class="col my-2">
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>{{ translate.text(text.contact.emailLabel) }}</mat-label>
+        <mat-label>{{ translate.text(contactText.emailLabel) }}</mat-label>
         <input
           [attr.aria-describedby]="
             controls['email'].touched && controls['email'].invalid ? 'email-error' : null
@@ -62,7 +62,7 @@
 
     <div class="col my-2">
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>{{ translate.text(text.contact.messageLabel) }}</mat-label>
+        <mat-label>{{ translate.text(contactText.messageLabel) }}</mat-label>
         <textarea
           [attr.aria-describedby]="
             controls['message'].touched && controls['message'].invalid ? 'message-error' : null

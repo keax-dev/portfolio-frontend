@@ -42,7 +42,8 @@ export class ContactComponent implements OnDestroy {
   private readonly ref = inject<MatDialogRef<unknown, boolean>>(MatDialogRef);
   private readonly fb = inject(NonNullableFormBuilder);
 
-  readonly text = uiText;
+  readonly actionText = uiText.actions;
+  readonly contactText = uiText.contact;
   readonly contactForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
     email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
@@ -94,42 +95,42 @@ export class ContactComponent implements OnDestroy {
 
     if (controlName === 'name') {
       if (control.hasError('minlength')) {
-        return this.translate.text(this.text.contact.nameMinLength);
+        return this.translate.text(this.contactText.nameMinLength);
       }
       if (control.hasError('maxlength')) {
-        return this.translate.text(this.text.contact.nameMaxLength);
+        return this.translate.text(this.contactText.nameMaxLength);
       }
-      return this.translate.text(this.text.contact.nameRequired);
+      return this.translate.text(this.contactText.nameRequired);
     }
 
     if (controlName === 'email') {
       if (control.hasError('maxlength')) {
-        return this.translate.text(this.text.contact.emailMaxLength);
+        return this.translate.text(this.contactText.emailMaxLength);
       }
       if (control.hasError('email')) {
-        return this.translate.text(this.text.contact.emailInvalid);
+        return this.translate.text(this.contactText.emailInvalid);
       }
-      return this.translate.text(this.text.contact.emailRequired);
+      return this.translate.text(this.contactText.emailRequired);
     }
 
     if (control.hasError('minlength')) {
-      return this.translate.text(this.text.contact.messageMinLength);
+      return this.translate.text(this.contactText.messageMinLength);
     }
     if (control.hasError('maxlength')) {
-      return this.translate.text(this.text.contact.messageMaxLength);
+      return this.translate.text(this.contactText.messageMaxLength);
     }
-    return this.translate.text(this.text.contact.messageRequired);
+    return this.translate.text(this.contactText.messageRequired);
   }
 
   sendActionLabel(): string {
-    return this.translate.text(this.text.actions.send);
+    return this.translate.text(this.actionText.send);
   }
 
   sendingActionLabel(): string {
-    return this.translate.text(this.text.actions.sending);
+    return this.translate.text(this.actionText.sending);
   }
 
   cancelActionLabel(): string {
-    return this.translate.text(this.text.actions.cancel);
+    return this.translate.text(this.actionText.cancel);
   }
 }

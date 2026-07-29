@@ -32,8 +32,8 @@ export class LoginComponent implements OnDestroy {
   private readonly fb = inject(NonNullableFormBuilder);
 
   readonly authForm = this.fb.group({
-    username: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(25)]],
-    password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(25)]],
+    username: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(120)]],
+    password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(128)]],
   });
 
   readonly isSubmitting = signal(false);
@@ -101,7 +101,7 @@ export class LoginComponent implements OnDestroy {
     }
 
     if (control.hasError('maxlength')) {
-      return 'The username cannot exceed 25 characters';
+      return 'The username cannot exceed 120 characters';
     }
 
     return '';
@@ -114,11 +114,11 @@ export class LoginComponent implements OnDestroy {
     }
 
     if (control.hasError('minlength')) {
-      return 'The password must have at least 4 characters';
+      return 'The password must have at least 8 characters';
     }
 
     if (control.hasError('maxlength')) {
-      return 'The password cannot exceed 25 characters';
+      return 'The password cannot exceed 128 characters';
     }
 
     return '';

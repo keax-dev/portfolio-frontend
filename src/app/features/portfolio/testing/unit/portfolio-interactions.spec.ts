@@ -67,20 +67,24 @@ describe('portfolio interaction components', () => {
 
   // Caso: deriva la clase del encabezado y abre solo CVs configurados.
   it('derives the header class and opens only configured CVs', async () => {
-    const translate = { getLang: 'es' };
     const parameter = { open: vi.fn() };
     await TestBed.configureTestingModule({
       imports: [HeaderComponent],
-      providers: [
-        { provide: TranslateService, useValue: translate },
-        { provide: DialogService, useValue: parameter },
-      ],
+      providers: [TranslateService, { provide: DialogService, useValue: parameter }],
     }).compileComponents();
+    const translate = TestBed.inject(TranslateService);
+    translate.setLang = 'es';
     const fixture = TestBed.createComponent(HeaderComponent);
     fixture.componentRef.setInput('profile', profile);
+    fixture.detectChanges();
     const component = fixture.componentInstance;
+    const video = fixture.nativeElement.querySelector('video') as HTMLVideoElement;
+    const sources = Array.from(video.querySelectorAll('source'));
 
     expect(component.classTitle).toBe('machine-2-es');
+    expect(video.poster).toContain('/background/bg-header-poster.webp');
+    expect(video.hasAttribute('muted')).toBe(true);
+    expect(sources.map((source) => source.type)).toEqual(['video/webm', 'video/mp4']);
     component.openCvPreview();
     expect(parameter.open).toHaveBeenCalledWith(CvPreviewComponent, {
       data: { url: profile.cv_es },
@@ -88,7 +92,7 @@ describe('portfolio interaction components', () => {
       mobileWidth: '98%',
     });
 
-    translate.getLang = 'en';
+    translate.setLang = 'en';
     component.openCvPreview();
     expect(parameter.open).toHaveBeenLastCalledWith(CvPreviewComponent, {
       data: { url: profile.cv },

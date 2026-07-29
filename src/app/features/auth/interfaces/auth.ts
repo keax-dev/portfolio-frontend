@@ -1,8 +1,5 @@
-export interface LoginCredentials {
-  readonly username: string;
-  readonly password: string;
-}
+import type { AuthDto, AuthDtoWritable } from '@shared/api/generated';
 
-export interface LoginResponse {
-  readonly token: string;
-}
+export type LoginCredentials = Readonly<Pick<AuthDtoWritable, 'username' | 'password'>>;
+
+export type LoginResponse = Readonly<Required<Pick<AuthDto, 'token'>>>;

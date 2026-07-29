@@ -244,7 +244,6 @@ describe('simple admin forms', () => {
       title_es: 'Título',
       institution: 2,
       place: 'Guayaquil',
-      place_es: '',
       start: '2020',
       start_es: '2020',
       end: '2024',

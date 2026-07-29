@@ -1,14 +1,11 @@
-export interface Profile {
-  name: string;
-  last_name: string;
-  title: string;
-  title_es: string;
-  cv: string;
-  cv_es: string;
-  image?: string | null;
-}
+import type { ProfileDto } from '@shared/api/generated';
 
-export type ProfilePayload = Pick<
-  Profile,
-  'name' | 'last_name' | 'title' | 'title_es' | 'cv' | 'cv_es'
+export type Profile = Readonly<
+  Pick<ProfileDto, 'name' | 'last_name' | 'title' | 'title_es' | 'cv' | 'cv_es'> & {
+    image?: ProfileDto['image'] | null;
+  }
+>;
+
+export type ProfilePayload = Readonly<
+  Pick<ProfileDto, 'name' | 'last_name' | 'title' | 'title_es' | 'cv' | 'cv_es'>
 >;

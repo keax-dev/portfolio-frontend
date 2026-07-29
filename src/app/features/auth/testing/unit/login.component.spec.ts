@@ -57,8 +57,8 @@ describe('LoginComponent', () => {
     expect(component.controls.password.hasError('minlength')).toBe(true);
 
     component.authForm.setValue({
-      username: 'a'.repeat(26),
-      password: 'a'.repeat(26),
+      username: 'a'.repeat(121),
+      password: 'a'.repeat(129),
     });
     expect(component.controls.username.hasError('maxlength')).toBe(true);
     expect(component.controls.password.hasError('maxlength')).toBe(true);
@@ -75,7 +75,7 @@ describe('LoginComponent', () => {
   // Caso: inicia sesión, guarda el estado y navega al home.
   it('logs in, stores the session and navigates home', () => {
     vi.spyOn(Date, 'now').mockReturnValue(1_000);
-    component.authForm.setValue({ username: 'admin', password: 'secret' });
+    component.authForm.setValue({ username: 'admin', password: 'secret-123' });
     loginService.login.mockReturnValue(
       of({
         status: true,
@@ -90,7 +90,7 @@ describe('LoginComponent', () => {
     expect(component.isSubmitting()).toBe(false);
     expect(loginService.login).toHaveBeenCalledWith({
       username: 'admin',
-      password: 'secret',
+      password: 'secret-123',
     });
     expect(alert.success).toHaveBeenCalledWith('Welcome');
     expect(userInfo.setSession).toHaveBeenCalledWith('jwt-token', 2_000_000);
@@ -111,7 +111,7 @@ describe('LoginComponent', () => {
   // Caso: reporta errores de login y siempre restablece el estado de envío.
   it('reports login errors and always resets the submit state', () => {
     const failure = new Error('invalid credentials');
-    component.authForm.setValue({ username: 'admin', password: 'wrong' });
+    component.authForm.setValue({ username: 'admin', password: 'wrong-pass' });
     loginService.login.mockReturnValue(throwError(() => failure));
 
     component.onSubmit();

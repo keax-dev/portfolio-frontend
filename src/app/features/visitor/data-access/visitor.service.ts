@@ -23,14 +23,6 @@ export class VisitorService {
   registerVisit(path: string): Observable<ApiResponse<Visitor | null>> {
     return this.resolveLocation().pipe(
       switchMap((location) => {
-        if (this.isExcludedIp(location.ip)) {
-          return of({
-            status: true,
-            alert: 'Visit ignored for owner IP',
-            data: null,
-          });
-        }
-
         return this.http.post<ApiResponse<Visitor | null>>(
           this.baseUrl + this.reference,
           this.buildRegisterPayload(path, location),

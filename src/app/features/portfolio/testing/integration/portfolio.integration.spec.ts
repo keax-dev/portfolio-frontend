@@ -97,7 +97,6 @@ describe('Public portfolio integration', () => {
       title: 'Degree',
       title_es: 'Título',
       place: 'City',
-      place_es: 'Ciudad',
       start: '2020',
       start_es: '2020',
       end: '2024',

@@ -1,9 +1,35 @@
 header {
-  background-image:
-    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/background/bg-header.gif');
+  position: relative;
+  overflow: hidden;
+  background-color: #111827;
+  background-image: url('/background/bg-header-poster.webp');
   background-position: left top;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.header-video-bg,
+.header-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.header-video-bg {
+  z-index: 0;
+  object-fit: cover;
+  object-position: left top;
+}
+
+.header-overlay {
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.header-content {
+  position: relative;
+  z-index: 2;
 }
 
 .btn-cv:hover {
@@ -63,11 +89,6 @@ header {
   max-width: 25vh;
 }
 
-.header-video-bg {
-  object-fit: cover;
-  object-position: bottom;
-}
-
 .machine-text {
   font-family: monospace;
 }
@@ -92,5 +113,11 @@ header {
 @keyframes blink {
   50% {
     border: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-video-bg {
+    display: none;
   }
 }

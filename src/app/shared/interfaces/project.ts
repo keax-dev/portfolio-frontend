@@ -1,56 +1,42 @@
-export type ProjectLinkType = 'DEPLOY' | 'GITHUB' | 'GITHUB_FRONTEND' | 'GITHUB_BACKEND';
+import type {
+  CreateProjectRequestDto,
+  ProjectDto,
+  ProjectImageDto,
+  ProjectLinkDto,
+  ProjectLinkRequestDto,
+  ProjectTechnologyDto,
+  ProjectTechnologyRequestDto,
+} from '@shared/api/generated';
 
-export interface ProjectTechnology {
-  readonly relation_id: number;
-  readonly id: number;
-  readonly name: string;
-  readonly position: number;
-}
+export type ProjectLinkType = ProjectLinkDto['type'];
 
-export interface ProjectLink {
-  readonly id: number;
-  readonly type: ProjectLinkType;
-  readonly url: string;
-  readonly position: number;
-}
+export type ProjectTechnology = Readonly<
+  Required<Pick<ProjectTechnologyDto, 'relation_id' | 'id' | 'name' | 'position'>>
+>;
 
-export interface ProjectImage {
-  readonly id: number;
-  readonly url: string;
-  readonly position: number;
-}
+export type ProjectLink = Readonly<
+  Required<Pick<ProjectLinkDto, 'id' | 'type' | 'url' | 'position'>>
+>;
 
-export interface Project {
-  readonly id: number;
-  readonly title: string;
-  readonly title_es: string;
-  readonly description: string;
-  readonly description_es: string;
-  readonly images: readonly ProjectImage[];
-  readonly position: number;
-  readonly technologies: readonly ProjectTechnology[];
-  readonly links: readonly ProjectLink[];
-}
+export type ProjectImage = Readonly<Required<Pick<ProjectImageDto, 'id' | 'url' | 'position'>>>;
 
-export interface ProjectTechnologyPayload {
-  readonly relation_id?: number;
-  readonly id: number;
-  readonly position: number;
-}
+export type Project = Readonly<
+  Required<
+    Pick<ProjectDto, 'id' | 'title' | 'title_es' | 'description' | 'description_es' | 'position'>
+  > & {
+    images: readonly ProjectImage[];
+    technologies: readonly ProjectTechnology[];
+    links: readonly ProjectLink[];
+  }
+>;
 
-export interface ProjectLinkPayload {
-  readonly id?: number;
-  readonly type: ProjectLinkType;
-  readonly url: string;
-  readonly position: number;
-}
+export type ProjectTechnologyPayload = Readonly<ProjectTechnologyRequestDto>;
 
-export interface ProjectPayload {
-  readonly title: string;
-  readonly title_es: string;
-  readonly description: string;
-  readonly description_es: string;
-  readonly position: number;
-  readonly technologies: readonly ProjectTechnologyPayload[];
-  readonly links: readonly ProjectLinkPayload[];
-}
+export type ProjectLinkPayload = Readonly<ProjectLinkRequestDto>;
+
+export type ProjectPayload = Readonly<
+  Required<Omit<CreateProjectRequestDto, 'technologies' | 'links'>> & {
+    technologies: ProjectTechnologyPayload[];
+    links: ProjectLinkPayload[];
+  }
+>;

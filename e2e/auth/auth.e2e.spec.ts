@@ -73,7 +73,7 @@ test.describe('Authentication lifecycle', () => {
     // Completa el formulario real y espera la nueva navegación protegida al dashboard.
     await page.goto('/login');
     await page.getByLabel('Username:').fill('admin');
-    await page.getByLabel('Password:').fill('secret');
+    await page.getByLabel('Password:').fill('secret-123');
     await page.getByRole('button', { name: 'Login' }).click();
     await expect(page).toHaveURL(/\/home\/visitor-dashboard$/);
     await expect(page.getByRole('heading', { name: 'Visitor Dashboard' })).toBeVisible();

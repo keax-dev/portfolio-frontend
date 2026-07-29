@@ -36,7 +36,7 @@ describe('Login flow integration', () => {
 
     // Escribe como un usuario real para integrar DOM y Reactive Forms.
     setInput(fixture.nativeElement.querySelector('#username'), 'admin');
-    setInput(fixture.nativeElement.querySelector('#password'), 'secret');
+    setInput(fixture.nativeElement.querySelector('#password'), 'secret-123');
     (fixture.nativeElement.querySelector('form') as HTMLFormElement).dispatchEvent(
       new Event('submit'),
     );
@@ -46,7 +46,7 @@ describe('Login flow integration', () => {
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual({
       username: 'admin',
-      password: 'secret',
+      password: 'secret-123',
     });
 
     // Responde con un JWT futuro y verifica todos los efectos integrados.

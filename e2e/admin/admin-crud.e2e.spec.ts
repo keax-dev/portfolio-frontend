@@ -153,9 +153,9 @@ test('removes the selected project technology and submits its reordered relation
   await expect
     .poll(() => submittedTechnologies)
     .toEqual([
-      { relation_id: 1, id: 1, position: 4 },
-      { relation_id: 9, id: 3, position: 3 },
-      { relation_id: 13, id: 4, position: 2 },
-      { relation_id: 14, id: 5, position: 1 },
+      { id: 1, position: 4 },
+      { id: 3, position: 3 },
+      { id: 4, position: 2 },
+      { id: 5, position: 1 },
     ]);
 });

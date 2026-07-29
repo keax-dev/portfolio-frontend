@@ -75,6 +75,8 @@ Main routes:
 - Route-level SEO title and metadata strategy.
 - Scroll restoration and anchor scrolling.
 - API configuration through `environment.ts` and `environment.prod.ts`.
+- Backend contract types generated from OpenAPI and versioned with the frontend.
+- Static prerendering of the public route with browser hydration.
 
 ## Technical stack
 
@@ -134,7 +136,7 @@ External service used for visitor tracking:
 
 ## Requirements
 
-- Node.js `^22.22.3 || ^24.15.0 || ^26.0.0`
+- Node.js `^22.22.3 || ^24.15.0`
 - npm compatible with the installed Node version
 - Docker Desktop or Docker Engine if you want to run the image locally
 
@@ -166,7 +168,10 @@ http://localhost:4200
 npm start
 npm run build
 npm run watch
+npm run api:types
 ```
+
+To update the typed contract, run the development backend on port `9090` and execute `npm run api:types`. You can also temporarily set `OPENAPI_INPUT` to another OpenAPI document URL.
 
 ### Quality
 
@@ -242,7 +247,7 @@ Manual build:
 
 ```bash
 docker build -t portfolio-frontend .
-docker run --rm -p 8080:80 portfolio-frontend
+docker run --rm -p 8080:8080 portfolio-frontend
 ```
 
 With Docker Compose:
@@ -268,12 +273,13 @@ npm run build -- --configuration=production
 Generated output:
 
 ```text
-dist/frontend
+dist/frontend/browser
 ```
 
 The production build includes:
 
 - `environment.ts` replacement with `environment.prod.ts`
+- static prerendering of the public page
 - `outputHashing`
 - bundle and style budgets
 

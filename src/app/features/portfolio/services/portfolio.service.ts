@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { Education } from '@shared/interfaces/education';
 import { Profile } from '@shared/interfaces/profile';
 import { Skill } from '@shared/interfaces/skill';
+import type { ContactDto } from '@shared/api/generated';
 
 @Injectable({
   providedIn: 'root',
@@ -40,7 +41,7 @@ export class PortfolioService {
     );
   }
 
-  sendEmail(info: { name: string; email: string; message: string }): Observable<ApiResponse<null>> {
+  sendEmail(info: ContactDto): Observable<ApiResponse<null>> {
     return this.http.post<ApiResponse<null>>(`${this.baseUrl}${this.reference}/contact`, info);
   }
 }

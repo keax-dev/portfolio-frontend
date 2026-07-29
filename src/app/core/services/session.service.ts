@@ -11,7 +11,7 @@ export class SessionService {
   private alertService = inject(AlertService);
   private router = inject(Router);
 
-  private expirationTimeoutId: ReturnType<typeof window.setTimeout> | null = null;
+  private expirationTimeoutId: number | null = null;
 
   resolveProtectedMatch(): true | UrlTree {
     if (this.userInfoService.hasValidSession) {
@@ -74,7 +74,7 @@ export class SessionService {
       return;
     }
 
-    clearTimeout(this.expirationTimeoutId);
+    window.clearTimeout(this.expirationTimeoutId);
     this.expirationTimeoutId = null;
   }
 

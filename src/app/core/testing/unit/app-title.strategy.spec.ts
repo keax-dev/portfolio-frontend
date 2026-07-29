@@ -58,8 +58,22 @@ describe('AppTitleStrategy', () => {
 
     expect(title.getTitle()).toBe('Kevin | Login');
     expect(meta.getTag('name="description"')?.content).toBe('Login description');
+    expect(meta.getTag('name="robots"')?.content).toBe('noindex,nofollow');
     expect(meta.getTag('property="og:title"')?.content).toBe('Kevin | Login');
+    expect(meta.getTag('property="og:url"')?.content).toMatch(/\/login$/);
+    expect(meta.getTag('property="og:image"')?.content).toMatch(
+      /^https?:\/\/.+\/images\/logo\.png$/,
+    );
     expect(meta.getTag('name="twitter:description"')?.content).toBe('Login description');
     expect(canonical?.href).toMatch(/\/login$/);
+  });
+
+  it('allows indexing only on the public portfolio route', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/');
+
+    const meta = TestBed.inject(Meta);
+    expect(meta.getTag('name="robots"')?.content).toBe('index,follow');
+    expect(meta.getTag('property="og:url"')?.content).toMatch(/\/$/);
   });
 });

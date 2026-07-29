@@ -7,6 +7,9 @@ const prettier = require('eslint-config-prettier');
 
 module.exports = defineConfig([
   {
+    ignores: ['src/app/shared/api/generated/**'],
+  },
+  {
     files: ['**/*.ts'],
     extends: [
       eslint.configs.recommended,

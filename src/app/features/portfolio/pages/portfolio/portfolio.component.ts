@@ -1,4 +1,5 @@
 import { finalize } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 import { ProjectComponent } from '@features/portfolio/pages/project/project.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EducationComponent } from '@features/portfolio/pages/education/education.component';
@@ -22,8 +23,9 @@ import { Router } from '@angular/router';
 import { Skill } from '@shared/interfaces/skill';
 import {
   ChangeDetectionStrategy,
-  DestroyRef,
   ErrorHandler,
+  PLATFORM_ID,
+  DestroyRef,
   OnDestroy,
   Component,
   OnInit,
@@ -36,8 +38,8 @@ import {
   templateUrl: './portfolio.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    ProjectComponent,
     EducationComponent,
+    ProjectComponent,
     HeaderComponent,
     NavbarComponent,
     FooterComponent,
@@ -46,6 +48,7 @@ import {
 })
 export class PortfolioComponent implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly platformId = inject(PLATFORM_ID);
 
   private facade = inject(PortfolioFacade);
   private visitorService = inject(VisitorService);
@@ -74,7 +77,9 @@ export class PortfolioComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getInformation();
-    this.registerVisit();
+    if (isPlatformBrowser(this.platformId)) {
+      this.registerVisit();
+    }
   }
 
   ngOnDestroy(): void {
@@ -103,7 +108,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
 
   registerVisit(): void {
     this.visitorService
-      .registerVisit(this.router.url || '/')
+      .registerVisit(this.router.url ?? '/')
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({ error: (error) => this.errorHandler.handleError(error) });
   }

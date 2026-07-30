@@ -2,12 +2,14 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { VISIT_TRACKER } from '@core/analytics/visit-tracker';
 import { AlertService } from '@core/services/alert.service';
 import { DialogService } from '@core/services/dialog.service';
 import { PortfolioComponent } from '@features/portfolio/pages/portfolio/portfolio.component';
 import { Project } from '@shared/interfaces/project';
 import { environment } from '@src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { of } from 'rxjs';
 
 describe('Public portfolio integration', () => {
   const baseUrl = environment.url;
@@ -24,6 +26,7 @@ describe('Public portfolio integration', () => {
         { provide: AlertService, useValue: { httpError: vi.fn() } },
         { provide: DialogService, useValue: { open: vi.fn() } },
         { provide: Router, useValue: { url: '/', navigate: vi.fn().mockResolvedValue(true) } },
+        { provide: VISIT_TRACKER, useValue: { track: vi.fn().mockReturnValue(of(undefined)) } },
       ],
     }).compileComponents();
     component = TestBed.createComponent(PortfolioComponent).componentInstance;
@@ -33,7 +36,7 @@ describe('Public portfolio integration', () => {
   afterEach(() => controller.verify());
 
   it('combines and orders all public API resources', () => {
-    component.getInformation();
+    component.ngOnInit();
     controller.expectOne(`${baseUrl}/portfolio/profile`).flush(
       api({
         name: 'Kevin',
@@ -71,27 +74,6 @@ describe('Public portfolio integration', () => {
     expect(component.projectList().map((item) => item.position)).toEqual([1, 2]);
     expect(component.projectList()[0].technologies.map((item) => item.position)).toEqual([1, 2]);
     expect(component.socialNetworkList().map((item) => item.position)).toEqual([1, 2]);
-  });
-
-  it('posts the visit path with the resolved visitor location', () => {
-    component.registerVisit();
-    controller.expectOne(environment.visitorGeoUrl).flush({
-      ip: '203.0.113.10',
-      location: {
-        country: 'Ecuador',
-        city: 'Quito',
-      },
-    });
-
-    const request = controller.expectOne(`${baseUrl}/visitor`);
-    expect(request.request.method).toBe('POST');
-    expect(request.request.body).toEqual({
-      path: '/',
-      ip: '203.0.113.10',
-      country: 'Ecuador',
-      city: 'Quito',
-    });
-    request.flush(api(null));
   });
 
   function api<T>(data: T): { status: boolean; alert: string; data: T } {

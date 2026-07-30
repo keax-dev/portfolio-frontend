@@ -7,10 +7,12 @@ import { imageFileValidator } from '@core/validators/image-file.validator';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { ApiResponse } from '@core/interfaces/apiresponse';
 import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
+import { persistWithOptionalFile } from '@features/admin/persistence/persist-with-file';
 import { SkillService } from '@features/admin/services/skill.service';
-import { finalize } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Skill } from '@shared/interfaces/skill';
 import {
   ChangeDetectionStrategy,
@@ -60,22 +62,17 @@ export class FrmSkillComponent implements OnInit {
 
   readonly isSaving = signal(false);
   readonly positionList = Array.from({ length: this.data.positions }, (_, i) => i + 1);
-  urlImage = '';
-  title = 'New Skill';
-
-  update = false;
+  readonly isUpdate = Boolean(this.data.skill);
+  readonly urlImage = this.data.skill?.picture ?? '';
+  readonly title = this.isUpdate ? 'Update Skill' : 'New Skill';
 
   ngOnInit(): void {
-    this.loadVariables();
+    this.initializeForm();
   }
 
-  loadVariables(): void {
+  private initializeForm(): void {
     if (this.data.skill) {
-      const skill = this.data.skill;
-      this.update = true;
-      this.urlImage = skill.picture || '';
-      this.title = 'Update Skill';
-      this.skillForm.patchValue(skill);
+      this.skillForm.patchValue(this.data.skill);
     }
   }
 
@@ -89,74 +86,22 @@ export class FrmSkillComponent implements OnInit {
       return;
     }
 
-    if (this.update) {
-      this.updateSkill();
-      return;
-    }
-
-    this.createSkill();
-  }
-
-  createSkill(): void {
     this.isSaving.set(true);
-    this.skillService
-      .createSkill(this.skill)
+    persistWithOptionalFile(this.persistMetadata(), this.controls.image.value, (skill, image) =>
+      this.imageService.uploadImageSkill(skill.id, image),
+    )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
-          this.alert.success(result.alert);
-          this.uploadImageInstitution(result.data);
-        },
-        error: (error) => {
-          this.isSaving.set(false);
-          this.alert.httpError(error);
-        },
-      });
-  }
-
-  updateSkill(): void {
-    this.isSaving.set(true);
-    this.skillService
-      .updateSkill(this.data.skill!.id!, this.skill)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (result) => {
-          this.alert.success(result.alert);
-          if (this.controls['image'].value) {
-            this.uploadImageInstitution(result.data);
-            return;
+          result.successMessages.forEach((message) => this.alert.success(message));
+          if (result.fileUploadError) {
+            this.alert.httpError(result.fileUploadError);
           }
-
-          this.close(result.data);
+          this.close(result.entity);
           this.isSaving.set(false);
         },
         error: (error) => {
           this.isSaving.set(false);
-          this.alert.httpError(error);
-        },
-      });
-  }
-
-  uploadImageInstitution(skill: Skill): void {
-    const image = this.controls.image.value;
-    if (!image) {
-      this.isSaving.set(false);
-      return;
-    }
-
-    this.imageService
-      .uploadImageSkill(skill.id!, image)
-      .pipe(
-        finalize(() => this.isSaving.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.alert.success(result.alert);
-          this.close(result.data);
-        },
-        error: (error) => {
-          this.close(skill);
           this.alert.httpError(error);
         },
       });
@@ -181,5 +126,11 @@ export class FrmSkillComponent implements OnInit {
   get skill() {
     const { name, position } = this.skillForm.getRawValue();
     return { name, position };
+  }
+
+  private persistMetadata(): Observable<ApiResponse<Skill>> {
+    return this.data.skill
+      ? this.skillService.updateSkill(this.data.skill.id, this.skill)
+      : this.skillService.createSkill(this.skill);
   }
 }

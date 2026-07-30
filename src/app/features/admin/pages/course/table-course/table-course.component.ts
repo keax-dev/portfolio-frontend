@@ -48,10 +48,15 @@ export class TableCourseComponent implements OnInit {
     {
       name: 'Certificate image',
       value: 'certificate_img',
-      image: true,
+      kind: 'image',
       imageAlt: (record) => `Certificate for ${record.name}`,
     },
-    { name: 'Public certificate URL', value: 'certificate_url' },
+    {
+      name: 'Public certificate URL',
+      value: 'certificate_url',
+      kind: 'link',
+      openInNewTab: true,
+    },
   ];
 
   ngOnInit(): void {

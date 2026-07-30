@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { VISITOR_TRACKING_CONFIG } from '@features/visitor/config/visitor-tracking.config';
 import { VisitorService } from '@features/visitor/data-access/visitor.service';
 import { environment } from '@src/environments/environment';
 
@@ -11,7 +12,17 @@ describe('VisitorService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: VISITOR_TRACKING_CONFIG,
+          useValue: {
+            geoUrl: environment.visitorGeoUrl,
+            excludedIpPrefixes: environment.visitorExcludedIpPrefixes,
+          },
+        },
+      ],
     });
     service = TestBed.inject(VisitorService);
     http = TestBed.inject(HttpTestingController);

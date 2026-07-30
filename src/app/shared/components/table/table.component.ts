@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { ButtonComponent } from '@shared/components/button/button.component';
-import { Column, ColumnKey } from '@shared/components/interfaces/column';
-import { uiText } from '@core/i18n/ui-text';
+import { Column, ColumnKey, ImageColumn, LinkColumn } from '@shared/components/interfaces/column';
+import { filterTableRecords, sortTableRecords } from './table-data';
 
 export interface TableCopy {
   readonly actions: string;
@@ -26,25 +26,25 @@ export interface TableCopy {
 }
 
 const DEFAULT_TABLE_COPY: TableCopy = {
-  actions: uiText.table.actions.en,
-  deleteRecord: uiText.table.deleteRecord.en,
-  editRecord: uiText.table.editRecord.en,
-  viewDetails: uiText.table.viewDetails.en,
-  loadErrorDescription: uiText.table.loadErrorDescription.en,
-  loadingDescription: uiText.table.loadingDescription.en,
-  loadingRecords: uiText.table.loadingRecords.en,
-  emptyRecords: uiText.table.emptyRecords.en,
-  emptySearchResults: uiText.table.emptySearchResults.en,
-  newLabel: uiText.table.newLabel.en,
-  next: uiText.table.next.en,
-  noImage: uiText.table.noImage.en,
-  page: uiText.table.page.en,
-  previous: uiText.table.previous.en,
-  recordImage: uiText.table.recordImage.en,
-  rows: uiText.table.rows.en,
-  searchAriaLabel: uiText.table.searchAriaLabel.en,
-  searchPlaceholder: uiText.table.searchPlaceholder.en,
-  sortBy: uiText.table.sortBy.en,
+  actions: 'Actions',
+  deleteRecord: 'Delete record',
+  editRecord: 'Edit record',
+  viewDetails: 'View details',
+  loadErrorDescription: 'The last request failed. Review the connection or try again later.',
+  loadingDescription: 'Please wait while the latest records are loaded.',
+  loadingRecords: 'Loading records...',
+  emptyRecords: 'There are no records.',
+  emptySearchResults: 'No records match the current search.',
+  newLabel: 'New',
+  next: 'Next',
+  noImage: 'No image',
+  page: 'Page',
+  previous: 'Previous',
+  recordImage: 'Record image',
+  rows: 'Rows',
+  searchAriaLabel: 'Search records',
+  searchPlaceholder: 'Search',
+  sortBy: 'Sort by',
 };
 
 @Component({
@@ -58,7 +58,7 @@ export class TableComponent<T extends object> {
   readonly columns = input.required<readonly Column<T>[]>();
   readonly copy = input<Readonly<TableCopy>>(DEFAULT_TABLE_COPY);
 
-  readonly detailsTxt = input(uiText.table.details.en);
+  readonly detailsTxt = input('Details');
   readonly sortName = input<ColumnKey<T> | ''>('');
   readonly newTxt = input('');
   readonly order = input(1);
@@ -83,17 +83,8 @@ export class TableComponent<T extends object> {
   protected readonly pageSize = signal(10);
 
   protected readonly filteredRecords = computed(() => {
-    const term = this.searchTerm().trim().toLocaleLowerCase();
-    if (!term) {
-      return [...this.records()];
-    }
-
-    return this.records().filter((record) =>
-      this.columns().some((column) =>
-        String(this.readValue(record, column.value) ?? '')
-          .toLocaleLowerCase()
-          .includes(term),
-      ),
+    return filterTableRecords(this.records(), this.columns(), this.searchTerm(), (record, key) =>
+      this.readValue(record, key),
     );
   });
 
@@ -102,13 +93,8 @@ export class TableComponent<T extends object> {
     const key = this.sortKey() || fallbackKey;
     const direction = this.sortKey() ? this.sortDirection() : this.order() < 0 ? -1 : 1;
 
-    if (!key) {
-      return this.filteredRecords();
-    }
-
-    return [...this.filteredRecords()].sort(
-      (left, right) =>
-        this.compare(this.readValue(left, key), this.readValue(right, key)) * direction,
+    return sortTableRecords(this.filteredRecords(), key, direction, (record, columnKey) =>
+      this.readValue(record, columnKey),
     );
   });
 
@@ -197,16 +183,32 @@ export class TableComponent<T extends object> {
   }
 
   cellValue(record: T, column: Column<T>): unknown {
-    return this.readValue(record, column.value);
+    return column.format?.(record) ?? this.readValue(record, column.value);
   }
 
-  imageUrl(record: T, column: Column<T>): string {
+  imageUrl(record: T, column: ImageColumn<T>): string {
     const value = this.readValue(record, column.value);
     return typeof value === 'string' ? value : '';
   }
 
-  imageAlt(record: T, column: Column<T>): string {
+  imageAlt(record: T, column: ImageColumn<T>): string {
     return column.imageAlt?.(record) || this.copy().recordImage;
+  }
+
+  linkUrl(record: T, column: LinkColumn<T>): string {
+    if (column.href) {
+      return column.href(record);
+    }
+    const value = this.readValue(record, column.value);
+    return typeof value === 'string' ? value : '';
+  }
+
+  isImageColumn(column: Column<T>): column is ImageColumn<T> {
+    return column.kind === 'image';
+  }
+
+  isLinkColumn(column: Column<T>): column is LinkColumn<T> {
+    return column.kind === 'link';
   }
 
   newItem(): void {
@@ -227,16 +229,5 @@ export class TableComponent<T extends object> {
 
   readValue(record: T, key: ColumnKey<T>): unknown {
     return record[key];
-  }
-
-  compare(left: unknown, right: unknown): number {
-    if (typeof left === 'number' && typeof right === 'number') {
-      return left - right;
-    }
-
-    return String(left ?? '').localeCompare(String(right ?? ''), undefined, {
-      numeric: true,
-      sensitivity: 'base',
-    });
   }
 }

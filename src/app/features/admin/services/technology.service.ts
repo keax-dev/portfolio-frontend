@@ -1,5 +1,6 @@
 import { Technology, TechnologyPayload } from '@shared/interfaces/technology';
 import { inject, Injectable } from '@angular/core';
+import { CrudResourceClient } from '@core/http/crud-resource-client';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { environment } from '@src/environments/environment';
 import { Observable } from 'rxjs';
@@ -9,32 +10,27 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class TechnologyService {
-  reference = '/technology';
-
-  private readonly baseUrl = environment.url;
-  private readonly http = inject(HttpClient);
+  private readonly resource = new CrudResourceClient<Technology, TechnologyPayload>(
+    inject(HttpClient),
+    `${environment.url}/technology`,
+  );
 
   getTechnologyList(): Observable<ApiResponse<Technology[]>> {
-    return this.http.get<ApiResponse<Technology[]>>(`${this.baseUrl}${this.reference}`);
+    return this.resource.list();
   }
 
   createTechnology(payload: TechnologyPayload): Observable<ApiResponse<Technology>> {
-    return this.http.post<ApiResponse<Technology>>(this.baseUrl + this.reference, payload);
+    return this.resource.create(payload);
   }
 
   updateTechnology(
     technologyId: number,
     payload: TechnologyPayload,
   ): Observable<ApiResponse<Technology>> {
-    return this.http.put<ApiResponse<Technology>>(
-      `${this.baseUrl}${this.reference}/${technologyId}`,
-      payload,
-    );
+    return this.resource.update(technologyId, payload);
   }
 
   deleteTechnology(technologyId: number): Observable<ApiResponse<Technology[]>> {
-    return this.http.delete<ApiResponse<Technology[]>>(
-      `${this.baseUrl}${this.reference}/${technologyId}`,
-    );
+    return this.resource.remove(technologyId);
   }
 }

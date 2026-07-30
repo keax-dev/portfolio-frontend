@@ -52,8 +52,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1.5MB",
-                  "maximumError": "2MB"
+                  "maximumWarning": "1MB",
+                  "maximumError": "1.25MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -103,6 +103,7 @@
               "src/app/**/*.spec.ts",
               "src/app/**/*.routes.ts",
               "src/app/**/*.config.ts",
+              "src/app/**/*.server.ts",
               "src/app/environments/**",
               "src/app/**/interfaces/**"
             ],

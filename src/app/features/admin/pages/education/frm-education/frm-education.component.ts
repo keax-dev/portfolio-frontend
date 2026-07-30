@@ -7,10 +7,11 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { EducationService } from '@features/admin/services/education.service';
 import { MatSelectModule } from '@angular/material/select';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { ApiResponse } from '@core/interfaces/apiresponse';
 import { AlertService } from '@core/services/alert.service';
 import { Institution } from '@shared/interfaces/institution';
 import { Education } from '@shared/interfaces/education';
-import { finalize } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import {
@@ -67,22 +68,19 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
   readonly institutionList = signal<readonly Institution[]>([]);
   readonly isSaving = signal(false);
   readonly positionList = Array.from({ length: this.data.positions }, (_, i) => i + 1);
-  title = 'New Education';
-
-  update = false;
+  readonly isUpdate = Boolean(this.data.education);
+  readonly title = this.isUpdate ? 'Update Education' : 'New Education';
 
   ngOnInit(): void {
-    this.loadVariables();
+    this.initializeForm();
   }
 
   ngOnDestroy(): void {
     this.spinner.hide();
   }
 
-  loadVariables(): void {
+  private initializeForm(): void {
     if (this.data.education) {
-      this.update = true;
-      this.title = 'Update Education';
       this.educationForm.patchValue(this.data.education);
     }
 
@@ -99,35 +97,8 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.update) {
-      this.updateEducation();
-      return;
-    }
-
-    this.createEducation();
-  }
-
-  createEducation(): void {
     this.isSaving.set(true);
-    this.educationService
-      .createEducation(this.educationForm.getRawValue())
-      .pipe(
-        finalize(() => this.isSaving.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.alert.success(result.alert);
-          this.close(result.data);
-        },
-        error: (error) => this.alert.httpError(error),
-      });
-  }
-
-  updateEducation(): void {
-    this.isSaving.set(true);
-    this.educationService
-      .updateEducation(this.data.education!.id!, this.educationForm.getRawValue())
+    this.persistMetadata()
       .pipe(
         finalize(() => this.isSaving.set(false)),
         takeUntilDestroyed(this.destroyRef),
@@ -161,5 +132,12 @@ export class FrmEducationComponent implements OnInit, OnDestroy {
 
   get controls(): typeof this.educationForm.controls {
     return this.educationForm.controls;
+  }
+
+  private persistMetadata(): Observable<ApiResponse<Education>> {
+    const payload = this.educationForm.getRawValue();
+    return this.data.education
+      ? this.educationService.updateEducation(this.data.education.id, payload)
+      : this.educationService.createEducation(payload);
   }
 }

@@ -101,7 +101,7 @@ describe('image admin forms', () => {
     component.ngOnInit();
     component.onSubmit();
 
-    expect(component.update).toBe(true);
+    expect(component.isUpdate).toBe(true);
     expect(component.urlImage).toBe('old.png');
     expect(service.updateInstitution).toHaveBeenCalledWith(2, {
       name: 'University',
@@ -155,7 +155,10 @@ describe('image admin forms', () => {
     await TestBed.configureTestingModule({
       imports: [FrmSkillComponent],
       providers: [
-        { provide: SkillService, useValue: {} },
+        {
+          provide: SkillService,
+          useValue: { createSkill: vi.fn().mockReturnValue(of(response(saved))) },
+        },
         {
           provide: ImageService,
           useValue: { uploadImageSkill: vi.fn().mockReturnValue(throwError(() => failure)) },
@@ -167,8 +170,12 @@ describe('image admin forms', () => {
       ],
     }).compileComponents();
     const component = TestBed.createComponent(FrmSkillComponent).componentInstance;
-    component.controls.image.setValue(new File(['x'], 'x.png', { type: 'image/png' }));
-    component.uploadImageInstitution(saved);
+    component.skillForm.setValue({
+      name: saved.name,
+      position: saved.position,
+      image: new File(['x'], 'x.png', { type: 'image/png' }),
+    });
+    component.onSubmit();
 
     expect(ref.close).toHaveBeenCalledWith(saved);
     expect(messages.httpError).toHaveBeenCalledWith(failure);
@@ -331,7 +338,7 @@ describe('image admin forms', () => {
     expect(imageService.uploadImageProfile).toHaveBeenCalledWith(file);
     expect(component.previousProfile()).toEqual(withImage);
     expect(component.urlPicture()).toBe('profile.png');
-    expect(component.update()).toBe(true);
+    expect(component.isUpdate()).toBe(true);
   });
 
   function project(id: number): Project {

@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import { CrudResourceClient } from '@core/http/crud-resource-client';
 import { inject, Injectable } from '@angular/core';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Course, CoursePayload } from '@shared/interfaces/course';
@@ -9,26 +10,24 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class CourseService {
-  private readonly reference = '/course';
-  private readonly baseUrl = environment.url;
-  private readonly http = inject(HttpClient);
+  private readonly resource = new CrudResourceClient<Course, CoursePayload>(
+    inject(HttpClient),
+    `${environment.url}/course`,
+  );
 
   getCourseList(): Observable<ApiResponse<Course[]>> {
-    return this.http.get<ApiResponse<Course[]>>(`${this.baseUrl}${this.reference}`);
+    return this.resource.list();
   }
 
   createCourse(payload: CoursePayload): Observable<ApiResponse<Course>> {
-    return this.http.post<ApiResponse<Course>>(`${this.baseUrl}${this.reference}`, payload);
+    return this.resource.create(payload);
   }
 
   updateCourse(courseId: number, payload: CoursePayload): Observable<ApiResponse<Course>> {
-    return this.http.put<ApiResponse<Course>>(
-      `${this.baseUrl}${this.reference}/${courseId}`,
-      payload,
-    );
+    return this.resource.update(courseId, payload);
   }
 
   deleteCourse(courseId: number): Observable<ApiResponse<Course[]>> {
-    return this.http.delete<ApiResponse<Course[]>>(`${this.baseUrl}${this.reference}/${courseId}`);
+    return this.resource.remove(courseId);
   }
 }

@@ -69,7 +69,12 @@ export class TableProjectComponent implements OnInit {
     { name: 'Title', value: 'title' },
     { name: 'Description', value: 'description' },
     { name: 'Images', value: 'image_count' },
-    { name: 'Preview', value: 'preview_image', image: true, imageAlt: (record) => record.title },
+    {
+      name: 'Preview',
+      value: 'preview_image',
+      kind: 'image',
+      imageAlt: (record) => record.title,
+    },
     { name: 'Links', value: 'link_types' },
   ];
 

@@ -48,7 +48,7 @@ export class TableEducationComponent implements OnInit {
     {
       name: 'Picture',
       value: 'institution_url',
-      image: true,
+      kind: 'image',
       imageAlt: (record) => record.institution_name,
     },
     { name: 'Place', value: 'place' },

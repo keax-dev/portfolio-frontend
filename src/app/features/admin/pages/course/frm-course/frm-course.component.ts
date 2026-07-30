@@ -12,8 +12,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
+import { ApiResponse } from '@core/interfaces/apiresponse';
 import { AlertService } from '@core/services/alert.service';
 import { imageFileValidator } from '@core/validators/image-file.validator';
+import { persistWithOptionalFile } from '@features/admin/persistence/persist-with-file';
 import { CourseService } from '@features/admin/services/course.service';
 import { ImageService } from '@features/admin/services/images.service';
 import { InstitutionService } from '@features/admin/services/institution.service';
@@ -21,7 +23,7 @@ import { ButtonComponent } from '@shared/components/button/button.component';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { Course } from '@shared/interfaces/course';
 import { Institution } from '@shared/interfaces/institution';
-import { catchError, finalize, map, Observable, of, switchMap, tap } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 
 interface CourseDialogData {
   readonly course?: Course;
@@ -100,15 +102,21 @@ export class FrmCourseComponent implements OnInit {
     }
 
     this.isSaving.set(true);
-    this.persistMetadata()
+    persistWithOptionalFile(this.persistMetadata(), this.controls.image.value, (course, image) =>
+      this.imageService.uploadCourseCertificate(course.id, image),
+    )
       .pipe(
-        tap((response) => this.alert.success(response.alert)),
-        switchMap((response) => this.uploadCertificateIfSelected(response.data)),
         finalize(() => this.isSaving.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: (course) => this.close(course),
+        next: (result) => {
+          result.successMessages.forEach((message) => this.alert.success(message));
+          if (result.fileUploadError) {
+            this.alert.httpError(result.fileUploadError);
+          }
+          this.close(result.entity);
+        },
         error: (error) => this.alert.httpError(error),
       });
   }
@@ -142,7 +150,7 @@ export class FrmCourseComponent implements OnInit {
     return this.courseForm.controls;
   }
 
-  private persistMetadata() {
+  private persistMetadata(): Observable<ApiResponse<Course>> {
     const payload = {
       name: this.controls.name.value,
       name_en: this.controls.name_en.value,
@@ -154,21 +162,5 @@ export class FrmCourseComponent implements OnInit {
     return this.data.course
       ? this.courseService.updateCourse(this.data.course.id, payload)
       : this.courseService.createCourse(payload);
-  }
-
-  private uploadCertificateIfSelected(course: Course): Observable<Course> {
-    const image = this.controls.image.value;
-    if (!image) {
-      return of(course);
-    }
-
-    return this.imageService.uploadCourseCertificate(course.id, image).pipe(
-      tap((response) => this.alert.success(response.alert)),
-      map((response) => response.data),
-      catchError((error: unknown) => {
-        this.alert.httpError(error);
-        return of(course);
-      }),
-    );
   }
 }

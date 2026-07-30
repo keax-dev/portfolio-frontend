@@ -7,10 +7,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { imageFileValidator } from '@core/validators/image-file.validator';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { MatInputModule } from '@angular/material/input';
+import { ApiResponse } from '@core/interfaces/apiresponse';
 import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
+import { persistWithOptionalFile } from '@features/admin/persistence/persist-with-file';
 import { Institution } from '@shared/interfaces/institution';
-import { finalize } from 'rxjs';
+import { Observable } from 'rxjs';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -52,20 +54,16 @@ export class FrmInstitutionComponent implements OnInit {
   });
 
   readonly isSaving = signal(false);
-  urlImage = '';
-  title = 'New Institution';
-
-  update = false;
+  readonly isUpdate = Boolean(this.data);
+  readonly urlImage = this.data?.url ?? '';
+  readonly title = this.isUpdate ? 'Update Institution' : 'New Institution';
 
   ngOnInit(): void {
-    this.loadVariables();
+    this.initializeForm();
   }
 
-  loadVariables(): void {
+  private initializeForm(): void {
     if (this.data) {
-      this.update = true;
-      this.urlImage = this.data.url ?? '';
-      this.title = 'Update Institution';
       this.institutionForm.patchValue(this.data);
     }
   }
@@ -80,74 +78,24 @@ export class FrmInstitutionComponent implements OnInit {
       return;
     }
 
-    if (this.update) {
-      this.updateInstitution();
-      return;
-    }
-
-    this.createInstitution();
-  }
-
-  createInstitution(): void {
     this.isSaving.set(true);
-    this.institutionService
-      .createInstitution(this.valuesName)
+    persistWithOptionalFile(
+      this.persistMetadata(),
+      this.controls.image.value,
+      (institution, image) => this.imageService.uploadImageInstitution(institution.id, image),
+    )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
-          this.alert.success(result.alert);
-          this.uploadImageInstitution(result.data);
-        },
-        error: (error) => {
-          this.isSaving.set(false);
-          this.alert.httpError(error);
-        },
-      });
-  }
-
-  updateInstitution(): void {
-    this.isSaving.set(true);
-    this.institutionService
-      .updateInstitution(this.data!.id!, this.valuesName)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (result) => {
-          this.alert.success(result.alert);
-          if (this.controls['image'].value) {
-            this.uploadImageInstitution(result.data);
-            return;
+          result.successMessages.forEach((message) => this.alert.success(message));
+          if (result.fileUploadError) {
+            this.alert.httpError(result.fileUploadError);
           }
-
-          this.close(result.data);
+          this.close(result.entity);
           this.isSaving.set(false);
         },
         error: (error) => {
           this.isSaving.set(false);
-          this.alert.httpError(error);
-        },
-      });
-  }
-
-  uploadImageInstitution(institution: Institution): void {
-    const image = this.controls.image.value;
-    if (!image) {
-      this.isSaving.set(false);
-      return;
-    }
-
-    this.imageService
-      .uploadImageInstitution(institution.id!, image)
-      .pipe(
-        finalize(() => this.isSaving.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.alert.success(result.alert);
-          this.close(result.data);
-        },
-        error: (error) => {
-          this.close(institution);
           this.alert.httpError(error);
         },
       });
@@ -172,5 +120,11 @@ export class FrmInstitutionComponent implements OnInit {
   get valuesName() {
     const { name, name_es } = this.institutionForm.getRawValue();
     return { name, name_es };
+  }
+
+  private persistMetadata(): Observable<ApiResponse<Institution>> {
+    return this.data
+      ? this.institutionService.updateInstitution(this.data.id, this.valuesName)
+      : this.institutionService.createInstitution(this.valuesName);
   }
 }

@@ -2,6 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { Router, UrlTree } from '@angular/router';
 import { UserInfoService } from '@core/services/user-info.service';
 import { AlertService } from '@core/services/alert.service';
+import { privateUiText } from '@core/i18n/private-ui-text';
+import { SessionExpiryScheduler } from '@core/services/session-expiry-scheduler.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,8 +12,7 @@ export class SessionService {
   private userInfoService = inject(UserInfoService);
   private alertService = inject(AlertService);
   private router = inject(Router);
-
-  private expirationTimeoutId: number | null = null;
+  private expiryScheduler = inject(SessionExpiryScheduler);
 
   resolveProtectedMatch(): true | UrlTree {
     if (this.userInfoService.hasValidSession) {
@@ -22,7 +23,7 @@ export class SessionService {
       return this.router.createUrlTree(['/login']);
     }
 
-    this.alertService.warning('You must sign in to continue');
+    this.alertService.warning(privateUiText.session.unauthorized);
     return this.router.createUrlTree(['/login']);
   }
 
@@ -57,38 +58,31 @@ export class SessionService {
   }
 
   startExpirationWatcher(): void {
-    this.stopExpirationWatcher();
-
     if (!this.userInfoService.hasValidSession) {
+      this.stopExpirationWatcher();
       return;
     }
 
-    this.expirationTimeoutId = window.setTimeout(() => {
-      this.expirationTimeoutId = null;
-      this.handleExpiredSessionRedirect();
-    }, this.userInfoService.remainingSessionTime);
+    this.expiryScheduler.schedule(this.userInfoService.remainingSessionTime, () =>
+      this.handleExpiredSessionRedirect(),
+    );
   }
 
   stopExpirationWatcher(): void {
-    if (this.expirationTimeoutId === null) {
-      return;
-    }
-
-    window.clearTimeout(this.expirationTimeoutId);
-    this.expirationTimeoutId = null;
+    this.expiryScheduler.cancel();
   }
 
   logOut(): void {
     this.stopExpirationWatcher();
     this.userInfoService.clearInfo();
-    this.alertService.success('Logged out');
+    this.alertService.success(privateUiText.session.loggedOut);
     void this.router.navigateByUrl('/');
   }
 
   handleExpiredSessionRedirect(): void {
     this.stopExpirationWatcher();
     this.userInfoService.clearInfo();
-    this.alertService.warning('Session expired');
+    this.alertService.warning(privateUiText.session.expired);
     void this.router.navigateByUrl('/login');
   }
 
@@ -101,7 +95,7 @@ export class SessionService {
     this.userInfoService.clearInfo();
 
     if (notify) {
-      this.alertService.warning('Session expired');
+      this.alertService.warning(privateUiText.session.expired);
     }
 
     return true;

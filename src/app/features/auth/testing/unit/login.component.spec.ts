@@ -64,6 +64,31 @@ describe('LoginComponent', () => {
     expect(component.controls.password.hasError('maxlength')).toBe(true);
   });
 
+  it('keeps every login label and validation message in English', () => {
+    component.authForm.setValue({ username: '', password: '' });
+    expect(component.usernameErrorMessage()).toBe('The username is required');
+    expect(component.passwordErrorMessage()).toBe('The password is required');
+
+    component.authForm.setValue({
+      username: 'a'.repeat(121),
+      password: 'short',
+    });
+    expect(component.usernameErrorMessage()).toBe('The username cannot exceed 120 characters');
+    expect(component.passwordErrorMessage()).toBe('The password must have at least 8 characters');
+
+    component.controls.password.setValue('a'.repeat(129));
+    expect(component.passwordErrorMessage()).toBe('The password cannot exceed 128 characters');
+    expect(component.authTitle()).toBe('Login');
+    expect(component.usernameLabel()).toBe('Username');
+    expect(component.passwordLabel()).toBe('Password');
+    expect(component.loginActionLabel()).toBe('Login');
+    expect(component.loggingInLabel()).toBe('Signing in...');
+    expect(component.passwordVisibilityLabel()).toBe('Show password');
+
+    component.hide = false;
+    expect(component.passwordVisibilityLabel()).toBe('Hide password');
+  });
+
   // Caso: marca un formulario inválido y no llama a la API.
   it('marks an invalid form and does not call the API', () => {
     component.onSubmit();

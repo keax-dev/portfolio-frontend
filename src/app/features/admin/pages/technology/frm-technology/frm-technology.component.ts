@@ -4,9 +4,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TechnologyService } from '@features/admin/services/technology.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { ApiResponse } from '@core/interfaces/apiresponse';
 import { AlertService } from '@core/services/alert.service';
 import { Technology } from '@shared/interfaces/technology';
-import { finalize } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import {
@@ -48,18 +49,15 @@ export class FrmTechnologyComponent implements OnInit {
   });
 
   readonly isSaving = signal(false);
-  title = 'New Technology';
-
-  update = false;
+  readonly isUpdate = Boolean(this.data.technology);
+  readonly title = this.isUpdate ? 'Update Technology' : 'New Technology';
 
   ngOnInit(): void {
-    this.loadVariables();
+    this.initializeForm();
   }
 
-  loadVariables(): void {
+  private initializeForm(): void {
     if (this.data.technology) {
-      this.update = true;
-      this.title = 'Update Technology';
       this.technologyForm.patchValue(this.data.technology);
     }
   }
@@ -74,35 +72,8 @@ export class FrmTechnologyComponent implements OnInit {
       return;
     }
 
-    if (this.update) {
-      this.updateTechnology();
-      return;
-    }
-
-    this.createTechnology();
-  }
-
-  createTechnology(): void {
     this.isSaving.set(true);
-    this.technologyService
-      .createTechnology(this.technologyForm.getRawValue())
-      .pipe(
-        finalize(() => this.isSaving.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.alert.success(result.alert);
-          this.close(result.data);
-        },
-        error: (error) => this.alert.httpError(error),
-      });
-  }
-
-  updateTechnology(): void {
-    this.isSaving.set(true);
-    this.technologyService
-      .updateTechnology(this.data.technology!.id!, this.technologyForm.getRawValue())
+    this.persistMetadata()
       .pipe(
         finalize(() => this.isSaving.set(false)),
         takeUntilDestroyed(this.destroyRef),
@@ -122,5 +93,12 @@ export class FrmTechnologyComponent implements OnInit {
 
   get controls(): typeof this.technologyForm.controls {
     return this.technologyForm.controls;
+  }
+
+  private persistMetadata(): Observable<ApiResponse<Technology>> {
+    const payload = this.technologyForm.getRawValue();
+    return this.data.technology
+      ? this.technologyService.updateTechnology(this.data.technology.id, payload)
+      : this.technologyService.createTechnology(payload);
   }
 }

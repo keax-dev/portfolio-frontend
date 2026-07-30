@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ProjectImage } from '@shared/interfaces/project';
 import { PROJECT_IMAGE_LIMITS } from './project-form.validators';
@@ -87,7 +87,10 @@ export class ProjectImagesControlComponent {
   readonly removeImage = output<ProjectImage>();
 
   readonly limits = PROJECT_IMAGE_LIMITS;
-  readonly remainingSlots = computed(() =>
-    Math.max(0, this.limits.max - this.existingImages().length - this.imagesControl().value.length),
-  );
+  remainingSlots(): number {
+    return Math.max(
+      0,
+      this.limits.max - this.existingImages().length - this.imagesControl().value.length,
+    );
+  }
 }

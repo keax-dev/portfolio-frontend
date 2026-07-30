@@ -80,11 +80,21 @@
             <tr>
               @for (column of columns(); track column.value) {
                 <td>
-                  @if (column.image) {
+                  @if (isImageColumn(column)) {
                     @if (imageUrl(row, column); as image) {
                       <img [src]="image" class="img-max" [alt]="imageAlt(row, column)" />
                     } @else {
                       <span>{{ copy().noImage }}</span>
+                    }
+                  } @else if (isLinkColumn(column)) {
+                    @if (linkUrl(row, column); as url) {
+                      <a
+                        [href]="url"
+                        [attr.target]="column.openInNewTab ? '_blank' : null"
+                        [attr.rel]="column.openInNewTab ? 'noopener noreferrer' : null"
+                      >
+                        {{ cellValue(row, column) }}
+                      </a>
                     }
                   } @else {
                     {{ cellValue(row, column) }}

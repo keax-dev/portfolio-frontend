@@ -4,7 +4,7 @@ import { ProjectImagesComponent } from '@features/portfolio/pages/project/projec
 import { TranslateService } from '@core/services/translate.service';
 import { LanguagePipe } from '@features/portfolio/pipe/language.pipe';
 import { Project, ProjectLink } from '@shared/interfaces/project';
-import { PROJECT_LINK_META } from '@shared/config/project-link-meta';
+import { PROJECT_LINK_META } from '@core/config/project-link-meta';
 import { uiText } from '@core/i18n/ui-text';
 
 @Component({

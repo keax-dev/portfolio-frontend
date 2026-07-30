@@ -6,7 +6,7 @@
   <hr />
 
   <form (ngSubmit)="onSubmit()" [formGroup]="profileForm" class="m-0">
-    @if (update()) {
+    @if (isUpdate()) {
       <div class="w-100 d-flex justify-content-center align-items-center">
         <img [src]="urlPicture()" alt="Current profile picture" />
       </div>

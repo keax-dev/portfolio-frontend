@@ -6,8 +6,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { SocialNetwork } from '@shared/interfaces/social-network';
+import { ApiResponse } from '@core/interfaces/apiresponse';
 import { AlertService } from '@core/services/alert.service';
-import { finalize } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 import { httpsUrlValidator } from '@core/validators/external-url.validator';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -57,18 +58,15 @@ export class FrmSocialNetworkComponent implements OnInit {
 
   readonly isSaving = signal(false);
   readonly positionList = Array.from({ length: this.data.positions }, (_, i) => i + 1);
-  title = 'New Social Network';
-
-  update = false;
+  readonly isUpdate = Boolean(this.data.socialNetwork);
+  readonly title = this.isUpdate ? 'Update Social Network' : 'New Social Network';
 
   ngOnInit(): void {
-    this.loadVariables();
+    this.initializeForm();
   }
 
-  loadVariables(): void {
+  private initializeForm(): void {
     if (this.data.socialNetwork) {
-      this.update = true;
-      this.title = 'Update Social Network';
       this.socialNetworkForm.patchValue(this.data.socialNetwork);
     }
   }
@@ -83,35 +81,8 @@ export class FrmSocialNetworkComponent implements OnInit {
       return;
     }
 
-    if (this.update) {
-      this.updateSocialNetwork();
-      return;
-    }
-
-    this.createSocialNetwork();
-  }
-
-  createSocialNetwork(): void {
     this.isSaving.set(true);
-    this.socialNetworkService
-      .createSocialNetwork(this.socialNetworkForm.getRawValue())
-      .pipe(
-        finalize(() => this.isSaving.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          this.alert.success(result.alert);
-          this.close(result.data);
-        },
-        error: (error) => this.alert.httpError(error),
-      });
-  }
-
-  updateSocialNetwork(): void {
-    this.isSaving.set(true);
-    this.socialNetworkService
-      .updateSocialNetwork(this.data.socialNetwork!.id!, this.socialNetworkForm.getRawValue())
+    this.persistMetadata()
       .pipe(
         finalize(() => this.isSaving.set(false)),
         takeUntilDestroyed(this.destroyRef),
@@ -131,5 +102,12 @@ export class FrmSocialNetworkComponent implements OnInit {
 
   get controls(): typeof this.socialNetworkForm.controls {
     return this.socialNetworkForm.controls;
+  }
+
+  private persistMetadata(): Observable<ApiResponse<SocialNetwork>> {
+    const payload = this.socialNetworkForm.getRawValue();
+    return this.data.socialNetwork
+      ? this.socialNetworkService.updateSocialNetwork(this.data.socialNetwork.id, payload)
+      : this.socialNetworkService.createSocialNetwork(payload);
   }
 }

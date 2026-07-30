@@ -13,6 +13,7 @@ import { ButtonComponent } from '@shared/components/button/button.component';
 import { LoginResponse } from '@features/auth/interfaces/auth';
 import { LoginService } from '@features/auth/services/login.service';
 import { AlertService } from '@core/services/alert.service';
+import { privateUiText } from '@core/i18n/private-ui-text';
 import { finalize } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -73,7 +74,7 @@ export class LoginComponent implements OnDestroy {
     const expiration = this.resolveSessionExpiration(data.token);
     if (!expiration) {
       this.userInfoService.clearInfo();
-      this.alert.error('The token does not include a valid expiration date.', 'Unauthorized');
+      this.alert.error(privateUiText.auth.invalidToken, privateUiText.alerts.titlesByStatus[401]);
       return;
     }
 
@@ -97,11 +98,11 @@ export class LoginComponent implements OnDestroy {
   usernameErrorMessage(): string {
     const control = this.controls.username;
     if (control.hasError('required')) {
-      return 'The username is required';
+      return privateUiText.auth.usernameRequired;
     }
 
     if (control.hasError('maxlength')) {
-      return 'The username cannot exceed 120 characters';
+      return privateUiText.auth.usernameMaxLength;
     }
 
     return '';
@@ -110,41 +111,41 @@ export class LoginComponent implements OnDestroy {
   passwordErrorMessage(): string {
     const control = this.controls.password;
     if (control.hasError('required')) {
-      return 'The password is required';
+      return privateUiText.auth.passwordRequired;
     }
 
     if (control.hasError('minlength')) {
-      return 'The password must have at least 8 characters';
+      return privateUiText.auth.passwordMinLength;
     }
 
     if (control.hasError('maxlength')) {
-      return 'The password cannot exceed 128 characters';
+      return privateUiText.auth.passwordMaxLength;
     }
 
     return '';
   }
 
   authTitle(): string {
-    return 'Login';
+    return privateUiText.auth.title;
   }
 
   usernameLabel(): string {
-    return 'Username';
+    return privateUiText.auth.usernameLabel;
   }
 
   passwordLabel(): string {
-    return 'Password';
+    return privateUiText.auth.passwordLabel;
   }
 
   passwordVisibilityLabel(): string {
-    return this.hide ? 'Show password' : 'Hide password';
+    return this.hide ? privateUiText.auth.showPassword : privateUiText.auth.hidePassword;
   }
 
   loginActionLabel(): string {
-    return 'Login';
+    return privateUiText.auth.login;
   }
 
   loggingInLabel(): string {
-    return 'Signing in...';
+    return privateUiText.auth.loggingIn;
   }
 }

@@ -85,7 +85,7 @@ describe('simple admin forms', () => {
     component.ngOnInit();
     component.onSubmit();
 
-    expect(component.update).toBe(true);
+    expect(component.isUpdate).toBe(true);
     expect(component.title).toBe('Update Technology');
     expect(service.updateTechnology).toHaveBeenCalledWith(3, { name: 'Angular' });
     expect(ref.close).toHaveBeenCalledWith(existing);

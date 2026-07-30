@@ -1,9 +1,10 @@
-import type { SocialNetworkDto } from '@shared/api/generated';
+export interface SocialNetwork {
+  readonly id: number;
+  readonly name: string;
+  readonly icon: string;
+  readonly color: string;
+  readonly position: number;
+  readonly url: string;
+}
 
-type SocialNetworkFields = 'id' | 'name' | 'icon' | 'color' | 'position' | 'url';
-
-export type SocialNetwork = Readonly<Required<Pick<SocialNetworkDto, SocialNetworkFields>>>;
-
-export type SocialNetworkPayload = Readonly<
-  Required<Pick<SocialNetworkDto, Exclude<SocialNetworkFields, 'id'>>>
->;
+export type SocialNetworkPayload = Readonly<Omit<SocialNetwork, 'id'>>;

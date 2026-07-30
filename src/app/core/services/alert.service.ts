@@ -2,6 +2,7 @@ import { NotificationService } from '@core/notifications/notification.service';
 import { inject, Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiResponse } from '@core/interfaces/apiresponse';
+import { privateUiText } from '@core/i18n/private-ui-text';
 
 @Injectable({
   providedIn: 'root',
@@ -10,23 +11,23 @@ export class AlertService {
   private notifications = inject(NotificationService);
 
   success(sms: string): void {
-    this.notifications.show('success', sms, 'Success');
+    this.notifications.show('success', sms, privateUiText.alerts.successTitle);
   }
 
   info(sms: string): void {
-    this.notifications.show('info', sms, 'Information');
+    this.notifications.show('info', sms, privateUiText.alerts.infoTitle);
   }
 
   warning(sms: string): void {
-    this.notifications.show('warning', sms, 'Warning');
+    this.notifications.show('warning', sms, privateUiText.alerts.warningTitle);
   }
 
   error(sms: string, title?: string): void {
-    this.notifications.show('error', sms, title || 'An error occurred');
+    this.notifications.show('error', sms, title || privateUiText.alerts.genericErrorTitle);
   }
 
   applicationError(sms?: string, title?: string): void {
-    this.error(sms || 'Contact support', title);
+    this.error(sms || privateUiText.alerts.contactSupport, title);
   }
 
   httpError(error: unknown, fallbackMessage?: string): void {
@@ -72,44 +73,10 @@ export class AlertService {
   }
 
   titleByStatus(status: number): string {
-    switch (status) {
-      case 400:
-        return 'Invalid request';
-      case 401:
-        return 'Unauthorized';
-      case 403:
-        return 'Forbidden';
-      case 404:
-        return 'Not found';
-      case 409:
-        return 'Conflict';
-      case 500:
-        return 'Server error';
-      case 0:
-        return 'Connection error';
-      default:
-        return 'An error occurred';
-    }
+    return privateUiText.alerts.titlesByStatus[status] ?? privateUiText.alerts.genericErrorTitle;
   }
 
   messageByStatus(status: number): string {
-    switch (status) {
-      case 400:
-        return 'Review the submitted information';
-      case 401:
-        return 'Your session is not valid';
-      case 403:
-        return 'You do not have permission to perform this action';
-      case 404:
-        return 'The requested resource was not found';
-      case 409:
-        return 'The operation conflicts with existing data';
-      case 500:
-        return 'Please try again later';
-      case 0:
-        return 'Could not connect to the server';
-      default:
-        return 'Contact support';
-    }
+    return privateUiText.alerts.messagesByStatus[status] ?? privateUiText.alerts.contactSupport;
   }
 }

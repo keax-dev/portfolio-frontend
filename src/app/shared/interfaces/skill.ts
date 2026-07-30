@@ -1,7 +1,8 @@
-import type { SkillDto } from '@shared/api/generated';
+export interface Skill {
+  readonly id: number;
+  readonly name: string;
+  readonly position: number;
+  readonly picture?: string;
+}
 
-export type Skill = Readonly<
-  Required<Pick<SkillDto, 'id' | 'name' | 'position'>> & Pick<SkillDto, 'picture'>
->;
-
-export type SkillPayload = Readonly<Required<Pick<SkillDto, 'name' | 'position'>>>;
+export type SkillPayload = Readonly<Pick<Skill, 'name' | 'position'>>;

@@ -1,5 +1,6 @@
-import type { TechnologyDto } from '@shared/api/generated';
+export interface Technology {
+  readonly id: number;
+  readonly name: string;
+}
 
-export type Technology = Readonly<Required<Pick<TechnologyDto, 'id' | 'name'>>>;
-
-export type TechnologyPayload = Readonly<Pick<TechnologyDto, 'name'>>;
+export type TechnologyPayload = Readonly<Pick<Technology, 'name'>>;

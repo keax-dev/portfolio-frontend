@@ -15,7 +15,7 @@ Aplicación frontend del portafolio público y panel administrativo, construida 
 
 Este proyecto expone dos experiencias principales:
 
-- Portafolio público con perfil, educación, habilidades, catálogo de proyectos, redes sociales y formulario de contacto.
+- Portafolio público con perfil, educación, habilidades, catálogo de proyectos, cursos y certificados, redes sociales y formulario de contacto.
 - Panel administrativo protegido para gestionar el contenido del portafolio y consultar el dashboard de visitantes.
 
 Rutas principales:
@@ -31,6 +31,7 @@ Rutas principales:
 - Carga del perfil principal con foto, descripción, CV localizado y enlaces sociales.
 - Apertura del CV en español o inglés según el idioma activo del portafolio.
 - Secciones de educación, habilidades y proyectos renderizadas desde la API.
+- Sección bilingüe de cursos y certificados con institución, imagen y enlace público opcional.
 - Catálogo unificado de proyectos presentado como acordeón, con título, tecnologías ordenadas, carrusel centrado y acciones disponibles.
 - Carrusel para todos los proyectos, incluso cuando existe una sola imagen, con soporte de una a tres imágenes por proyecto.
 - Modal de detalles con descripción localizada, tecnologías, links e imágenes apiladas; la ampliación de imágenes está disponible únicamente desde este modal.
@@ -45,6 +46,7 @@ Rutas principales:
 - Gestión CRUD de:
   - instituciones
   - educación
+  - cursos y certificados
   - habilidades
   - tecnologías
   - proyectos
@@ -54,6 +56,7 @@ Rutas principales:
 - Formulario de proyectos con una o varias tecnologías ordenadas, links tipados y ordenados, y entre una y tres imágenes.
 - Edición de imágenes existentes y eliminación precisa de tecnologías o links seleccionados, conservando las relaciones restantes.
 - Gestión independiente de las URLs del CV en inglés y español desde el perfil principal.
+- Gestión de cursos con nombres en español e inglés, posición de visualización, institución, imagen del certificado y URL pública opcional.
 - Dashboard de visitantes para revisar métricas, países, ciudades y trazas de acceso.
 - Tablas reutilizables con búsqueda, paginación, ordenamiento y estados vacíos/error/loading.
 - Formularios con Angular Material y botones reutilizables con estado de carga.

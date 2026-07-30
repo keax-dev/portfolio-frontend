@@ -1,7 +1,7 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export const IMAGE_RULES = {
-  allowedTypes: ['image/png', 'image/jpeg', 'image/gif'] as const,
+  allowedTypes: ['image/png', 'image/jpeg', 'image/webp'] as const,
   maxBytes: 5 * 1024 * 1024,
 } as const;
 

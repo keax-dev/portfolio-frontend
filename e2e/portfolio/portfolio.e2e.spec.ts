@@ -68,10 +68,18 @@ test.describe('Public portfolio', () => {
     await expect(page.locator('app-show-image')).toHaveCount(0);
     await projectDetails.getByRole('button', { name: 'Cerrar detalles del proyecto' }).click();
     await expect(page.locator('#portfolio-title')).toHaveText('Portafolio');
+    await expect(page.getByRole('heading', { name: 'Cursos y Certificados' })).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'Ver certificado: SPRING BOOT DESDE CERO' }),
+    ).toBeVisible();
 
     // Cambia el idioma desde la navegación y verifica contenido derivado del signal.
     await page.getByTitle('English').click();
     await expect(page.getByRole('heading', { name: 'Education' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Courses & Certificates' })).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'View certificate: SPRING BOOT MASTERCLASS' }),
+    ).toHaveAttribute('href', 'https://www.udemy.com/certificate/example');
     await expect(page.locator('#home').getByText('Software Engineer')).toBeVisible();
     await expect(page.getByTitle('English')).toHaveAttribute('aria-pressed', 'true');
 

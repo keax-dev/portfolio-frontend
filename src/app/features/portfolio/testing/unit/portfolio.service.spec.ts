@@ -23,12 +23,13 @@ describe('PortfolioService', () => {
   afterEach(() => http.verify());
 
   // Casos parametrizados: aplica el mismo contrato a cada entrada definida.
-  it.each(['profile', 'education', 'skill', 'project', 'socialNetwork'])(
+  it.each(['profile', 'education', 'course', 'skill', 'project', 'socialNetwork'])(
     'gets public %s information',
     (resource) => {
       const calls: Record<string, () => void> = {
         profile: () => service.getProfile().subscribe(),
         education: () => service.getEducation().subscribe(),
+        course: () => service.getCourse().subscribe(),
         skill: () => service.getSkill().subscribe(),
         project: () => service.getProject().subscribe(),
         socialNetwork: () => service.getSocialNetwork().subscribe(),

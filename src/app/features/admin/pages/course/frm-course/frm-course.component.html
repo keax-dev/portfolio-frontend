@@ -1,0 +1,122 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="courseForm" class="m-3">
+  <header>
+    <h4 class="text-primary">{{ title }}</h4>
+  </header>
+
+  <hr />
+
+  <div class="row g-3">
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Course name (Spanish)</mat-label>
+        <input formControlName="name" id="course-name" appUppercase matInput />
+        @if (controls.name.touched && controls.name.invalid) {
+          <mat-error>The Spanish course name is required (maximum 200 characters)</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Course name (English)</mat-label>
+        <input formControlName="name_en" id="course-name-en" appUppercase matInput />
+        @if (controls.name_en.touched && controls.name_en.invalid) {
+          <mat-error>The English course name is required (maximum 200 characters)</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Institution</mat-label>
+        <mat-select
+          [disabled]="isLoadingInstitutions()"
+          formControlName="institution"
+          id="course-institution"
+        >
+          <mat-option [value]="0" disabled>Select an institution</mat-option>
+          @for (institution of institutionList(); track institution.id) {
+            <mat-option [value]="institution.id">{{ institution.name }}</mat-option>
+          }
+        </mat-select>
+        @if (controls.institution.touched && controls.institution.invalid) {
+          <mat-error>The institution is required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Position</mat-label>
+        <input
+          formControlName="position"
+          id="course-position"
+          matInput
+          min="1"
+          step="1"
+          type="number"
+        />
+        @if (controls.position.touched && controls.position.invalid) {
+          <mat-error>The position must be greater than zero</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Public certificate URL (optional)</mat-label>
+        <input
+          formControlName="certificate_url"
+          id="course-certificate-url"
+          inputmode="url"
+          matInput
+          placeholder="https://www.udemy.com/certificate/..."
+          type="url"
+        />
+        @if (controls.certificate_url.touched && controls.certificate_url.invalid) {
+          <mat-error>Enter a valid HTTP or HTTPS URL (maximum 2048 characters)</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <label for="course-certificate" class="form-label fw-bold">
+        Certificate image{{ isUpdate ? ' (optional)' : '' }}
+      </label>
+      <input
+        (change)="onFileSelected($event)"
+        accept="image/png,image/jpeg,image/webp"
+        class="form-control"
+        id="course-certificate"
+        type="file"
+      />
+      @if (controls.image.touched && controls.image.errors?.['required']) {
+        <small class="text-danger appear">The certificate image is required</small>
+      }
+      @if (controls.image.touched && controls.image.errors?.['invalidFileType']) {
+        <small class="text-danger appear">Only PNG, JPG, JPEG or WEBP images are allowed</small>
+      }
+      @if (controls.image.touched && controls.image.errors?.['maxFileSize']) {
+        <small class="text-danger appear">The image must be 5 MB or smaller</small>
+      }
+    </div>
+
+    @if (currentCertificateImg) {
+      <div class="col-12 col-md-6">
+        <p class="fw-bolder text-center mb-2">Current certificate</p>
+        <div class="text-center">
+          <img
+            [src]="currentCertificateImg"
+            [alt]="'Certificate for ' + controls.name.value"
+            class="img-max"
+          />
+        </div>
+      </div>
+    }
+  </div>
+
+  <footer class="w-100 d-flex justify-content-center align-items-center mt-3">
+    <app-button [cancel]="true" (action)="close()"></app-button>
+    <app-button [loading]="isSaving()"></app-button>
+  </footer>
+</form>

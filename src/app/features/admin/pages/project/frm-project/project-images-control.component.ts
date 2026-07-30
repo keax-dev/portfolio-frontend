@@ -21,7 +21,7 @@ import { PROJECT_IMAGE_LIMITS } from './project-form.validators';
       <input
         (change)="filesSelected.emit($event)"
         [disabled]="existingImages().length === limits.max"
-        accept="image/png,image/jpeg,image/gif"
+        accept="image/png,image/jpeg,image/webp"
         class="form-control"
         type="file"
         id="images"
@@ -31,7 +31,7 @@ import { PROJECT_IMAGE_LIMITS } from './project-form.validators';
         <small class="text-danger appear">At least one image is required</small>
       }
       @if (imagesControl().touched && imagesControl().errors?.['invalidFileType']) {
-        <small class="text-danger appear">Only image files (png, jpg, jpeg, gif) are allowed</small>
+        <small class="text-danger appear">Only PNG, JPG, JPEG or WEBP images are allowed</small>
       }
       @if (imagesControl().touched && imagesControl().errors?.['maxFileSize']) {
         <small class="text-danger appear">Each image must be 5 MB or smaller</small>

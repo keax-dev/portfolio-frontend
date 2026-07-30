@@ -1,0 +1,73 @@
+<section
+  aria-labelledby="courses-title"
+  class="course-section container py-4 py-md-5"
+  id="certificates"
+>
+  <header class="course-section__header">
+    <span class="course-section__eyebrow" aria-hidden="true">
+      <i class="pi pi-verified"></i>
+    </span>
+    <h2 id="courses-title" class="course-section__title text-primary display-5">
+      {{ titleLabel() }}
+    </h2>
+  </header>
+
+  @if (courseList().length) {
+    <ul class="course-grid list-unstyled mb-0">
+      @for (course of courseList(); track course.id) {
+        <li class="course-grid__item" [style.--course-index]="$index">
+          <article class="course-card">
+            @if (course.certificate_img) {
+              <a
+                [href]="certificateHref(course)"
+                [attr.aria-label]="viewCertificateLabel() + ': ' + courseName(course)"
+                class="course-card__media"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <img
+                  [src]="course.certificate_img"
+                  [alt]="certificateAlt(course)"
+                  class="course-card__image"
+                  decoding="async"
+                  loading="lazy"
+                />
+                <span class="course-card__action">
+                  <i class="pi pi-external-link" aria-hidden="true"></i>
+                  {{ viewCertificateLabel() }}
+                </span>
+              </a>
+            } @else {
+              @if (course.certificate_url) {
+                <a
+                  [href]="course.certificate_url"
+                  [attr.aria-label]="viewCertificateLabel() + ': ' + courseName(course)"
+                  class="course-card__media course-card__media--empty"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <i class="pi pi-external-link" aria-hidden="true"></i>
+                  <span class="course-card__action">{{ viewCertificateLabel() }}</span>
+                </a>
+              } @else {
+                <div class="course-card__media course-card__media--empty">
+                  <i class="pi pi-image" aria-hidden="true"></i>
+                </div>
+              }
+            }
+
+            <div class="course-card__body">
+              <p class="course-card__institution">
+                <i class="pi pi-building" aria-hidden="true"></i>
+                {{ institutionName(course) }}
+              </p>
+              <h3 class="course-card__name">{{ courseName(course) }}</h3>
+            </div>
+          </article>
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="text-center text-secondary py-3">{{ emptyMessage() }}</p>
+  }
+</section>

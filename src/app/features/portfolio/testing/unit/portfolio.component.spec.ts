@@ -30,6 +30,7 @@ describe('PortfolioComponent', () => {
       cv_es: 'https://example.com/cv-es.pdf',
     },
     education: [],
+    courses: [],
     projects: [],
     skills: [{ id: 1, name: 'Angular', position: 1 }],
     socialNetworks: [],

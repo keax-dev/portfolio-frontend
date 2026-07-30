@@ -135,12 +135,17 @@ export const uiText = {
       backendCode: { en: 'Backend code', es: 'Código backend' },
       linkFor: { en: 'for', es: 'de' },
     },
+    course: {
+      viewCertificate: { en: 'View certificate', es: 'Ver certificado' },
+      certificateFor: { en: 'Certificate for', es: 'Certificado de' },
+    },
     rightsReserved: { en: 'All rights reserved.', es: 'Todos los derechos reservados.' },
     sections: {
       home: { en: 'Home', es: 'Inicio' },
       education: { en: 'Education', es: 'Educación' },
       skills: { en: 'Skills', es: 'Habilidades' },
       portfolio: { en: 'Portfolio', es: 'Portafolio' },
+      courses: { en: 'Courses & Certificates', es: 'Cursos y Certificados' },
       contact: { en: 'Contact', es: 'Contacto' },
       login: { en: 'Login', es: 'Iniciar sesión' },
     },
@@ -224,6 +229,11 @@ export const portfolioNavigationItems: readonly NavigationItem[] = [
     label: uiText.portfolio.sections.portfolio.en,
     label_es: uiText.portfolio.sections.portfolio.es,
     routerLink: '#portfolio',
+  },
+  {
+    label: uiText.portfolio.sections.courses.en,
+    label_es: uiText.portfolio.sections.courses.es,
+    routerLink: '#certificates',
   },
   {
     label: uiText.portfolio.sections.contact.en,

@@ -45,6 +45,12 @@ describe('Public portfolio integration', () => {
       }),
     );
     controller.expectOne(`${baseUrl}/portfolio/education`).flush(api([education(2), education(1)]));
+    controller.expectOne(`${baseUrl}/portfolio/course`).flush(
+      api([
+        { id: 2, name: 'TypeScript', name_en: 'TypeScript', position: 2, institution: 1 },
+        { id: 1, name: 'Angular', name_en: 'Angular', position: 1, institution: 1 },
+      ]),
+    );
     controller.expectOne(`${baseUrl}/portfolio/skill`).flush(
       api([
         { id: 2, name: 'RxJS', position: 2 },
@@ -60,6 +66,7 @@ describe('Public portfolio integration', () => {
     );
 
     expect(component.educationList().map((item) => item.position)).toEqual([1, 2]);
+    expect(component.courseList().map((item) => item.name)).toEqual(['Angular', 'TypeScript']);
     expect(component.skillList().map((item) => item.position)).toEqual([1, 2]);
     expect(component.projectList().map((item) => item.position)).toEqual([1, 2]);
     expect(component.projectList()[0].technologies.map((item) => item.position)).toEqual([1, 2]);

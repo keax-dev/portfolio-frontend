@@ -12,6 +12,7 @@ import { TranslateService } from '@core/services/translate.service';
 import { NavbarComponent } from '@features/portfolio/pages/navbar/navbar.component';
 import { FooterComponent } from '@features/portfolio/pages/footer/footer.component';
 import { HeaderComponent } from '@features/portfolio/pages/header/header.component';
+import { CourseComponent } from '@features/portfolio/pages/course/course.component';
 import { SessionService } from '@core/services/session.service';
 import { HomeComponent } from '@features/admin/pages/home/home.component';
 import { provideRouter } from '@angular/router';
@@ -117,6 +118,39 @@ describe('portfolio interaction components', () => {
     component.contactEmit();
     expect(contact).toHaveBeenCalledOnce();
     expect(component.year).toBe(new Date().getFullYear());
+  });
+
+  it('renders a course certificate with localized institution information', async () => {
+    await TestBed.configureTestingModule({
+      imports: [CourseComponent],
+      providers: [
+        {
+          provide: TranslateService,
+          useValue: { getLang: 'es', text: (value: { es: string }) => value.es },
+        },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(CourseComponent);
+    fixture.componentRef.setInput('courseList', [
+      {
+        id: 1,
+        name: 'SPRING BOOT DESDE CERO',
+        name_en: 'SPRING BOOT FROM SCRATCH',
+        institution: 2,
+        institution_name: 'UDEMY',
+        institution_name_es: 'UDEMY',
+        certificate_img: 'certificate.png',
+        certificate_url: 'https://udemy.test/certificate/1',
+        position: 1,
+      },
+    ]);
+    fixture.detectChanges();
+
+    const link = fixture.nativeElement.querySelector('.course-card__media') as HTMLAnchorElement;
+    expect(fixture.nativeElement.textContent).toContain('Cursos y Certificados');
+    expect(fixture.nativeElement.textContent).toContain('SPRING BOOT DESDE CERO');
+    expect(link.getAttribute('href')).toBe('https://udemy.test/certificate/1');
+    expect(link.getAttribute('rel')).toBe('noopener noreferrer');
   });
 
   // Caso: construye identificadores del carrusel y abre diálogos de proyectos.
@@ -259,6 +293,6 @@ describe('portfolio interaction components', () => {
     expect(session.ensureProtectedSession).toHaveBeenCalledOnce();
     expect(session.logOut).toHaveBeenCalledOnce();
     expect(session.stopExpirationWatcher).toHaveBeenCalledOnce();
-    expect(component.menuList).toHaveLength(8);
+    expect(component.menuList).toHaveLength(9);
   });
 });

@@ -15,7 +15,7 @@ Frontend application for the public portfolio and admin panel, built with Angula
 
 This project exposes two main experiences:
 
-- Public portfolio with profile, education, skills, project catalog, social links, and contact form.
+- Public portfolio with profile, education, skills, project catalog, courses and certificates, social links, and contact form.
 - Protected admin panel used to manage portfolio content and inspect the visitor dashboard.
 
 Main routes:
@@ -31,6 +31,7 @@ Main routes:
 - Main profile loading with photo, description, localized CV, and social links.
 - Spanish or English CV preview based on the portfolio's active language.
 - Education, skills, and projects sections rendered from the API.
+- Bilingual courses and certificates section with institution, image, and optional public link.
 - Unified project catalog presented as an accordion with a title, ordered technologies, a centered carousel, and available actions.
 - Carousel for every project, even when only one image exists, with support for one to three images per project.
 - Details modal with localized description, technologies, links, and stacked images; image enlargement is available only from this modal.
@@ -45,6 +46,7 @@ Main routes:
 - CRUD management for:
   - institutions
   - education
+  - courses and certificates
   - skills
   - technologies
   - projects
@@ -54,6 +56,7 @@ Main routes:
 - Project form with one or more ordered technologies, typed and ordered links, and between one and three images.
 - Existing image management and precise removal of the selected technology or link while preserving the remaining relationships.
 - Independent management of the English and Spanish CV URLs from the main profile.
+- Course management with Spanish and English names, display position, institution, certificate image, and optional public URL.
 - Visitor dashboard with metrics, countries, cities, and visit traces.
 - Reusable tables with search, pagination, sorting, and empty/error/loading states.
 - Angular Material forms and reusable buttons with loading state support.

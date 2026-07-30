@@ -3,6 +3,7 @@
  */
 import { FrmSocialNetworkComponent } from '@features/admin/pages/social-network/frm-social-network/frm-social-network.component';
 import { FrmEducationComponent } from '@features/admin/pages/education/frm-education/frm-education.component';
+import { FrmCourseComponent } from '@features/admin/pages/course/frm-course/frm-course.component';
 import { FrmTechnologyComponent } from '@features/admin/pages/technology/frm-technology/frm-technology.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SocialNetworkService } from '@features/admin/services/social-network.service';
@@ -10,6 +11,8 @@ import { InstitutionService } from '@features/admin/services/institution.service
 import { TechnologyService } from '@features/admin/services/technology.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { EducationService } from '@features/admin/services/education.service';
+import { CourseService } from '@features/admin/services/course.service';
+import { ImageService } from '@features/admin/services/images.service';
 import { of, throwError } from 'rxjs';
 import { SocialNetwork } from '@shared/interfaces/social-network';
 import { AlertService } from '@core/services/alert.service';
@@ -235,6 +238,67 @@ describe('simple admin forms', () => {
     const component = TestBed.createComponent(FrmEducationComponent).componentInstance;
     component.getInstitutionList();
     expect(messages.httpError).toHaveBeenCalledWith(failure);
+  });
+
+  it('creates a course and uploads its certificate', async () => {
+    const created = {
+      id: 7,
+      name: 'SPRING BOOT DESDE CERO',
+      name_en: 'SPRING BOOT FROM SCRATCH',
+      certificate_url: 'https://udemy.test/certificate/7',
+      position: 3,
+      institution: 2,
+      institution_name: 'UDEMY',
+    };
+    const uploaded = { ...created, certificate_img: 'certificate.png' };
+    const courseService = {
+      createCourse: vi.fn().mockReturnValue(of(response(created))),
+      updateCourse: vi.fn(),
+    };
+    const imageService = {
+      uploadCourseCertificate: vi.fn().mockReturnValue(of(response(uploaded))),
+    };
+    const institutionService = {
+      getInstitutionList: vi
+        .fn()
+        .mockReturnValue(of(response([{ id: 2, name: 'Udemy', name_es: 'Udemy' }]))),
+    };
+    const ref = dialogRef();
+
+    await TestBed.configureTestingModule({
+      imports: [FrmCourseComponent],
+      providers: [
+        { provide: CourseService, useValue: courseService },
+        { provide: InstitutionService, useValue: institutionService },
+        { provide: ImageService, useValue: imageService },
+        { provide: AlertService, useValue: alert() },
+        { provide: MatDialogRef, useValue: ref },
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+      ],
+    }).compileComponents();
+    const component = TestBed.createComponent(FrmCourseComponent).componentInstance;
+    component.ngOnInit();
+    const certificate = new File(['certificate'], 'certificate.png', { type: 'image/png' });
+    component.courseForm.setValue({
+      name: 'Spring Boot desde cero',
+      name_en: 'Spring Boot from scratch',
+      certificate_url: 'https://udemy.test/certificate/7',
+      position: 3,
+      institution: 2,
+      image: certificate,
+    });
+
+    component.onSubmit();
+
+    expect(courseService.createCourse).toHaveBeenCalledWith({
+      name: 'Spring Boot desde cero',
+      name_en: 'Spring Boot from scratch',
+      certificate_url: 'https://udemy.test/certificate/7',
+      position: 3,
+      institution: 2,
+    });
+    expect(imageService.uploadCourseCertificate).toHaveBeenCalledWith(7, certificate);
+    expect(ref.close).toHaveBeenCalledWith(uploaded);
   });
 
   function education(position: number): Education {

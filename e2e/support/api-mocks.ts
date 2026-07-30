@@ -57,6 +57,26 @@ export async function mockPublicPortfolio(page: Page): Promise<void> {
       return;
     }
 
+    if (path === '/api/portfolio/course') {
+      await json(
+        route,
+        api([
+          {
+            id: 1,
+            name: 'SPRING BOOT DESDE CERO',
+            name_en: 'SPRING BOOT MASTERCLASS',
+            certificate_img: '/images/logo.png',
+            certificate_url: 'https://www.udemy.com/certificate/example',
+            position: 1,
+            institution: 2,
+            institution_name: 'Udemy',
+            institution_name_es: 'Udemy',
+          },
+        ]),
+      );
+      return;
+    }
+
     if (path === '/api/portfolio/skill') {
       await json(
         route,

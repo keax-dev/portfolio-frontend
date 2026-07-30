@@ -23,7 +23,7 @@ describe('DialogService and image validation', () => {
     dialogs = TestBed.inject(DialogService);
   });
 
-  it.each(['image/png', 'image/jpeg', 'image/gif'])('accepts %s images', (type) => {
+  it.each(['image/png', 'image/jpeg', 'image/webp'])('accepts %s images', (type) => {
     expect(
       imageFileValidator()(new FormControl(new File(['image'], 'image', { type }))),
     ).toBeNull();

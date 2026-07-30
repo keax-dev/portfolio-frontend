@@ -4,12 +4,14 @@ import { AlertService } from '@core/services/alert.service';
 import { ConfirmationService } from '@core/services/confirmation.service';
 import { DialogService } from '@core/services/dialog.service';
 import { TableEducationComponent } from '@features/admin/pages/education/table-education/table-education.component';
+import { TableCourseComponent } from '@features/admin/pages/course/table-course/table-course.component';
 import { TableInstitutionComponent } from '@features/admin/pages/institution/table-institution/table-institution.component';
 import { TableProjectComponent } from '@features/admin/pages/project/table-project/table-project.component';
 import { TableSkillComponent } from '@features/admin/pages/skill/table-skill/table-skill.component';
 import { TableSocialNetworkComponent } from '@features/admin/pages/social-network/table-social-network/table-social-network.component';
 import { TableTechnologyComponent } from '@features/admin/pages/technology/table-technology/table-technology.component';
 import { EducationService } from '@features/admin/services/education.service';
+import { CourseService } from '@features/admin/services/course.service';
 import { InstitutionService } from '@features/admin/services/institution.service';
 import { ProjectService } from '@features/admin/services/project.service';
 import { SkillService } from '@features/admin/services/skill.service';
@@ -32,6 +34,27 @@ interface TableCase {
 
 describe('admin table components', () => {
   const cases: readonly TableCase[] = [
+    {
+      name: 'course',
+      component: TableCourseComponent,
+      serviceToken: CourseService,
+      loadMethod: 'getCourseList',
+      deleteMethod: 'deleteCourse',
+      modalMethod: 'modalCourse',
+      confirmMethod: 'confirmDelete',
+      serviceLoadMethod: 'getCourseList',
+      serviceDeleteMethod: 'deleteCourse',
+      record: {
+        id: 7,
+        name: 'Spring Boot desde cero',
+        name_en: 'Spring Boot from scratch',
+        institution: 1,
+        institution_name: 'Udemy',
+        certificate_img: 'certificate.png',
+        certificate_url: 'https://udemy.test/certificate/7',
+        position: 1,
+      },
+    },
     {
       name: 'institution',
       component: TableInstitutionComponent,

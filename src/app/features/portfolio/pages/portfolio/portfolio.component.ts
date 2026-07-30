@@ -12,6 +12,7 @@ import { NavbarComponent } from '@features/portfolio/pages/navbar/navbar.compone
 import { FooterComponent } from '@features/portfolio/pages/footer/footer.component';
 import { SkillComponent } from '@features/portfolio/pages/skill/skill.component';
 import { RevealOnScrollDirective } from '@features/portfolio/directives/reveal-on-scroll.directive';
+import { CourseComponent } from '@features/portfolio/pages/course/course.component';
 import { VisitorService } from '@features/visitor/data-access/visitor.service';
 import { portfolioNavigationItems } from '@core/i18n/ui-text';
 import { NavigationItem } from '@shared/interfaces/navigation-item';
@@ -22,6 +23,7 @@ import { Education } from '@shared/interfaces/education';
 import { Profile } from '@shared/interfaces/profile';
 import { Router } from '@angular/router';
 import { Skill } from '@shared/interfaces/skill';
+import { Course } from '@shared/interfaces/course';
 import {
   ChangeDetectionStrategy,
   ErrorHandler,
@@ -46,6 +48,7 @@ import {
     NavbarComponent,
     FooterComponent,
     SkillComponent,
+    CourseComponent,
     RevealOnScrollDirective,
   ],
 })
@@ -75,6 +78,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
 
   readonly projectList = signal<readonly Project[]>([]);
   readonly educationList = signal<readonly Education[]>([]);
+  readonly courseList = signal<readonly Course[]>([]);
   readonly socialNetworkList = signal<readonly SocialNetwork[]>([]);
   readonly skillList = signal<readonly Skill[]>([]);
 
@@ -101,6 +105,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
         next: (data) => {
           if (data.profile) this.profile.set(data.profile);
           this.educationList.set(data.education);
+          this.courseList.set(data.courses);
           this.projectList.set(data.projects);
           this.skillList.set(data.skills);
           this.socialNetworkList.set(data.socialNetworks);

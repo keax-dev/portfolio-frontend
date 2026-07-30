@@ -43,6 +43,17 @@ export const homeRoutes: Routes = [
           ),
       },
       {
+        path: 'course',
+        title: 'Courses / Certificates',
+        data: {
+          description: 'Gestión de cursos, instituciones y certificados del portafolio.',
+        },
+        loadComponent: () =>
+          import('@features/admin/pages/course/table-course/table-course.component').then(
+            (component) => component.TableCourseComponent,
+          ),
+      },
+      {
         path: 'skill',
         title: 'Skills',
         data: {

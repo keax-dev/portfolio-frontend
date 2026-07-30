@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { Education } from '@shared/interfaces/education';
+import { Course } from '@shared/interfaces/course';
 import { Profile } from '@shared/interfaces/profile';
 import { Project } from '@shared/interfaces/project';
 import { Skill } from '@shared/interfaces/skill';
@@ -12,6 +13,7 @@ import { PortfolioService } from './portfolio.service';
 export interface PortfolioPageData {
   readonly profile: Profile | null;
   readonly education: readonly Education[];
+  readonly courses: readonly Course[];
   readonly projects: readonly Project[];
   readonly skills: readonly Skill[];
   readonly socialNetworks: readonly SocialNetwork[];
@@ -34,6 +36,7 @@ export class PortfolioFacade {
         this.portfolioService.getEducation(),
         [] as readonly Education[],
       ),
+      courses: this.loadResource(this.portfolioService.getCourse(), [] as readonly Course[]),
       projects: this.loadResource(this.portfolioService.getProject(), [] as readonly Project[]),
       skills: this.loadResource(this.portfolioService.getSkill(), [] as readonly Skill[]),
       socialNetworks: this.loadResource(
@@ -44,6 +47,7 @@ export class PortfolioFacade {
       map((result) => ({
         profile: result.profile.data,
         education: sortByPosition(result.education.data),
+        courses: sortByPosition(result.courses.data),
         projects: normalizeProjects(result.projects.data),
         skills: sortByPosition(result.skills.data),
         socialNetworks: sortByPosition(result.socialNetworks.data),

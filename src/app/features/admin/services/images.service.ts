@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { Project } from '@shared/interfaces/project';
 import { Profile } from '@shared/interfaces/profile';
 import { Skill } from '@shared/interfaces/skill';
+import { Course } from '@shared/interfaces/course';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +28,13 @@ export class ImageService {
   uploadImageSkill(skillId: number, image: File): Observable<ApiResponse<Skill>> {
     return this.http.post<ApiResponse<Skill>>(
       `${this.baseUrl}${this.reference}/skill/${skillId}`,
+      this.formData(image),
+    );
+  }
+
+  uploadCourseCertificate(courseId: number, image: File): Observable<ApiResponse<Course>> {
+    return this.http.post<ApiResponse<Course>>(
+      `${this.baseUrl}${this.reference}/course/${courseId}`,
       this.formData(image),
     );
   }

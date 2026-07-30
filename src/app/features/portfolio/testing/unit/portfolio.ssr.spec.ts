@@ -24,6 +24,7 @@ describe('PortfolioComponent server rendering', () => {
               of({
                 profile: null,
                 education: [],
+                courses: [],
                 projects: [],
                 skills: [],
                 socialNetworks: [],

@@ -9,6 +9,7 @@ import { Education } from '@shared/interfaces/education';
 import { Profile } from '@shared/interfaces/profile';
 import { Skill } from '@shared/interfaces/skill';
 import type { ContactDto } from '@shared/api/generated';
+import { Course } from '@shared/interfaces/course';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,10 @@ export class PortfolioService {
 
   getEducation(): Observable<ApiResponse<Education[]>> {
     return this.http.get<ApiResponse<Education[]>>(`${this.baseUrl}${this.reference}/education`);
+  }
+
+  getCourse(): Observable<ApiResponse<Course[]>> {
+    return this.http.get<ApiResponse<Course[]>>(`${this.baseUrl}${this.reference}/course`);
   }
 
   getSkill(): Observable<ApiResponse<Skill[]>> {

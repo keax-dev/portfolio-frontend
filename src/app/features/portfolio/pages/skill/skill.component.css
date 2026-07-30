@@ -2,9 +2,15 @@
   position: relative;
   width: 10rem;
   aspect-ratio: 1 / 1;
-  border-radius: 1rem;
+  border: 1px solid rgba(13, 110, 253, 0.12);
+  border-radius: 1.15rem;
   overflow: hidden;
-  transition: transform 0.3s ease;
+  background: linear-gradient(145deg, #ffffff, #f4f8ff);
+  box-shadow: 0 0.75rem 1.75rem rgba(15, 23, 42, 0.09) !important;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
   cursor: pointer;
 }
 
@@ -18,7 +24,9 @@
 }
 
 .skill-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-0.65rem) rotateX(3deg) rotateY(-3deg) scale(1.025);
+  border-color: rgba(13, 110, 253, 0.42);
+  box-shadow: 0 1.4rem 2.8rem rgba(13, 110, 253, 0.18) !important;
 }
 
 .skill-card figcaption {
@@ -27,7 +35,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
+  background: linear-gradient(145deg, rgba(2, 6, 23, 0.78), rgba(13, 110, 253, 0.7));
   color: white;
   font-weight: 600;
   font-size: 1rem;
@@ -42,4 +50,31 @@
 .skill-card:hover img {
   transform: scale(1.1);
   opacity: 0.8;
+}
+
+@supports (animation-timeline: view()) {
+  li {
+    animation: skill-entry cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--skill-index, 0) * 40ms);
+    animation-timeline: view(block);
+    animation-range: entry 5% cover 25%;
+  }
+}
+
+@keyframes skill-entry {
+  from {
+    opacity: 0.15;
+    transform: translateY(1.5rem) scale(0.88);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  li,
+  .skill-card,
+  .skill-card img,
+  .skill-card figcaption {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }

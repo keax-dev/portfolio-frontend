@@ -7,34 +7,27 @@
     type="button"
   ></button>
 
-  <header class="text-center mb-3">
-    <h2 class="text-primary fw-bolder">
-      {{ project | language: 'title' : translate.getLang }}
-    </h2>
+  <header class="row text-center mb-3">
+    <div class="col-12">
+      <h2 class="text-primary fw-bolder">
+        {{ project | language: 'title' : translate.getLang }}
+      </h2>
 
-    <div
-      class="d-flex flex-wrap justify-content-center gap-2 mt-3"
-      [attr.aria-label]="translate.text(text.portfolio.project.technologies)"
-    >
-      @for (technology of project.technologies; track technology.id) {
-        <span class="badge rounded-pill text-bg-light border text-secondary">
-          {{ technology.name }}
-        </span>
-      }
+      <div
+        class="d-flex flex-wrap justify-content-center gap-2 mt-3"
+        [attr.aria-label]="translate.text(text.portfolio.project.technologies)"
+      >
+        @for (technology of project.technologies; track technology.id) {
+          <span class="badge rounded-pill text-bg-light border text-secondary">
+            {{ technology.name }}
+          </span>
+        }
+      </div>
     </div>
   </header>
 
-  <hr />
-  <p>{{ project | language: 'description' : translate.getLang }}</p>
-  <hr />
 
-  <div class="d-flex justify-content-center align-items-center">
-    <app-project-images [project]="project" layout="stack"></app-project-images>
-  </div>
-
-  <hr />
-
-  <footer class="row">
+  <div class="row">
     <div class="col-12 text-center">
       @for (link of project.links; track link.id ?? link.type) {
         <a
@@ -49,5 +42,16 @@
         </a>
       }
     </div>
-  </footer>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-12">
+      <p>{{ project | language: 'description' : translate.getLang }}</p>
+    </div>
+  </div>
+  <hr />
+
+  <div class="row">
+    <app-project-images [project]="project" layout="stack" class="col-12"></app-project-images>
+  </div>
 </article>

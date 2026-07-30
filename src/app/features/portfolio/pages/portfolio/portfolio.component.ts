@@ -11,6 +11,7 @@ import { HeaderComponent } from '@features/portfolio/pages/header/header.compone
 import { NavbarComponent } from '@features/portfolio/pages/navbar/navbar.component';
 import { FooterComponent } from '@features/portfolio/pages/footer/footer.component';
 import { SkillComponent } from '@features/portfolio/pages/skill/skill.component';
+import { RevealOnScrollDirective } from '@features/portfolio/directives/reveal-on-scroll.directive';
 import { VisitorService } from '@features/visitor/data-access/visitor.service';
 import { portfolioNavigationItems } from '@core/i18n/ui-text';
 import { NavigationItem } from '@shared/interfaces/navigation-item';
@@ -36,6 +37,7 @@ import {
 @Component({
   selector: 'app-portfolio',
   templateUrl: './portfolio.component.html',
+  styleUrl: './portfolio.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     EducationComponent,
@@ -44,6 +46,7 @@ import {
     NavbarComponent,
     FooterComponent,
     SkillComponent,
+    RevealOnScrollDirective,
   ],
 })
 export class PortfolioComponent implements OnInit, OnDestroy {

@@ -9,6 +9,7 @@ import { uiText } from '@core/i18n/ui-text';
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
+  styleUrl: './footer.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TitleCasePipe, LanguagePipe],
 })

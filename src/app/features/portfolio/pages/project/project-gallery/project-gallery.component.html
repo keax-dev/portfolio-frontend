@@ -13,7 +13,9 @@
       </summary>
 
       <div class="accordion-body project-accordion__body">
-        <div class="d-flex justify-content-center align-items-center flex-column gap-3">
+        <div
+          class="project-accordion__body-inner d-flex justify-content-center align-items-center flex-column gap-3"
+        >
           <p class="text-center text-secondary">
             @for (technology of project.technologies; track technology.id; let last = $last) {
               <span
@@ -32,7 +34,8 @@
                 [href]="link.url"
                 [attr.aria-label]="projectLinkLabel(link, project)"
                 [class.btn-secondary]="link.type === 'DEPLOY'"
-                [class.btn-dark]="link.type !== 'DEPLOY'"
+                [class.btn-light]="link.type === 'GITHUB_FRONTEND'"
+                [class.btn-dark]="link.type === 'GITHUB_BACKEND'"
                 [title]="linkLabel(link)"
                 class="btn project-accordion__action"
                 target="_blank"

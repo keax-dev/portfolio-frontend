@@ -29,7 +29,7 @@ test.describe('Public portfolio', () => {
 
   test('renders and interacts with the project portfolio', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('heading', { name: 'Educación' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Educación', exact: true })).toBeVisible();
     const projectAccordion = page.locator('.project-accordion');
     const firstProject = projectAccordion.locator('details').first();
     await expect(projectAccordion.getByText('Angular', { exact: true })).toBeVisible();

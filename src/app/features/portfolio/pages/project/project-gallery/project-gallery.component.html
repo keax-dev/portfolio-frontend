@@ -5,7 +5,8 @@
         <p class="text-center text-secondary">
           <span class="text-primary fw-bold fs-5">
             {{ project | language: 'title' : translate.getLang }}
-          </span> | 
+          </span>
+          |
           @for (technology of project.technologies; track technology.id; let last = $last) {
             <span
               class="badge rounded-pill text-bg-light border text-secondary fw-semibold m-1 fs-6"

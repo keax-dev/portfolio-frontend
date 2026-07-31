@@ -1,5 +1,5 @@
-import { TestBed } from '@angular/core/testing';
 import { SessionExpiryScheduler } from '@core/services/session-expiry-scheduler.service';
+import { TestBed } from '@angular/core/testing';
 
 describe('SessionExpiryScheduler', () => {
   beforeEach(() => {

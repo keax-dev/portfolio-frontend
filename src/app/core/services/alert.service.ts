@@ -1,8 +1,8 @@
 import { NotificationService } from '@core/notifications/notification.service';
 import { inject, Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ApiResponse } from '@core/interfaces/apiresponse';
 import { privateUiText } from '@core/i18n/private-ui-text';
+import { ApiResponse } from '@core/interfaces/apiresponse';
 
 @Injectable({
   providedIn: 'root',

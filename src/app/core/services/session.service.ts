@@ -1,9 +1,9 @@
+import { SessionExpiryScheduler } from '@core/services/session-expiry-scheduler.service';
 import { inject, Injectable } from '@angular/core';
 import { Router, UrlTree } from '@angular/router';
 import { UserInfoService } from '@core/services/user-info.service';
-import { AlertService } from '@core/services/alert.service';
 import { privateUiText } from '@core/i18n/private-ui-text';
-import { SessionExpiryScheduler } from '@core/services/session-expiry-scheduler.service';
+import { AlertService } from '@core/services/alert.service';
 
 @Injectable({
   providedIn: 'root',

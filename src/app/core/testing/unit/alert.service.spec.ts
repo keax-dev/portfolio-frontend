@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { TestBed } from '@angular/core/testing';
 import { NotificationService } from '@core/notifications/notification.service';
 import { AlertService } from '@core/services/alert.service';
+import { TestBed } from '@angular/core/testing';
 
 describe('AlertService', () => {
   let service: AlertService;

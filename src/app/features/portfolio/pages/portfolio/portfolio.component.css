@@ -1,0 +1,184 @@
+:host {
+  --portfolio-ink: #0f172a;
+  --portfolio-blue: #0d6efd;
+  --portfolio-cyan: #38bdf8;
+  display: block;
+  color: var(--portfolio-ink);
+}
+
+.portfolio-experience {
+  position: relative;
+  min-height: 100%;
+  overflow: clip;
+  background:
+    radial-gradient(circle at 8% 28%, rgba(13, 110, 253, 0.1), transparent 24rem),
+    radial-gradient(circle at 90% 70%, rgba(56, 189, 248, 0.12), transparent 28rem),
+    linear-gradient(180deg, #f8fbff 0%, #eef4fb 52%, #f8fafc 100%);
+}
+
+.portfolio-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 1100;
+  height: 0.2rem;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--portfolio-blue), var(--portfolio-cyan));
+  box-shadow: 0 0 1rem rgba(56, 189, 248, 0.7);
+  pointer-events: none;
+}
+
+.portfolio-hero,
+.portfolio-navigation,
+.portfolio-section,
+.portfolio-footer {
+  display: block;
+}
+
+.portfolio-hero {
+  animation: hero-arrival 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.portfolio-navigation {
+  animation: navigation-arrival 0.65s 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.portfolio-main {
+  position: relative;
+  isolation: isolate;
+  padding-block: clamp(1rem, 4vw, 3.5rem);
+}
+
+.portfolio-section {
+  position: relative;
+  z-index: 1;
+  margin-block: clamp(1.5rem, 6vw, 5rem);
+  will-change: opacity, transform;
+}
+
+.portfolio-reveal.is-reveal-pending {
+  opacity: 0;
+  transform: translate3d(0, 3rem, 0) scale(0.985);
+  filter: blur(0.2rem);
+  transition:
+    opacity 0.75s ease,
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.75s ease;
+}
+
+.portfolio-section--left.is-reveal-pending {
+  transform: translate3d(-2.5rem, 3rem, 0) scale(0.985);
+}
+
+.portfolio-section--right.is-reveal-pending {
+  transform: translate3d(2.5rem, 3rem, 0) scale(0.985);
+}
+
+.portfolio-reveal.is-reveal-pending.is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0);
+}
+
+.portfolio-orb {
+  position: absolute;
+  z-index: 0;
+  width: clamp(12rem, 26vw, 24rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0.45;
+  filter: blur(0.25rem);
+  pointer-events: none;
+}
+
+.portfolio-orb--one {
+  top: 8%;
+  left: -12rem;
+  background: radial-gradient(circle, rgba(13, 110, 253, 0.22), transparent 68%);
+}
+
+.portfolio-orb--two {
+  right: -10rem;
+  bottom: 8%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.2), transparent 70%);
+}
+
+@supports (animation-timeline: scroll()) {
+  .portfolio-progress {
+    animation: reading-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .portfolio-orb--one {
+    animation: orb-drift-one linear both;
+    animation-timeline: scroll(root block);
+  }
+
+  .portfolio-orb--two {
+    animation: orb-drift-two linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+@keyframes reading-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes hero-arrival {
+  from {
+    opacity: 0;
+    transform: scale(1.025);
+  }
+}
+
+@keyframes navigation-arrival {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+}
+
+@keyframes orb-drift-one {
+  to {
+    transform: translate3d(10rem, 18rem, 0) scale(1.25);
+  }
+}
+
+@keyframes orb-drift-two {
+  to {
+    transform: translate3d(-8rem, -14rem, 0) scale(0.8);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .portfolio-main {
+    padding-block: 0.5rem 2rem;
+  }
+
+  .portfolio-section {
+    margin-block: 1.5rem 3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-progress,
+  .portfolio-hero,
+  .portfolio-navigation,
+  .portfolio-section,
+  .portfolio-reveal,
+  .portfolio-orb {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+  }
+
+  .portfolio-progress {
+    display: none;
+  }
+}

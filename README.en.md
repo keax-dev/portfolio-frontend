@@ -15,7 +15,7 @@ Frontend application for the public portfolio and admin panel, built with Angula
 
 This project exposes two main experiences:
 
-- Public portfolio with profile, education, skills, project catalog, social links, and contact form.
+- Public portfolio with profile, education, skills, project catalog, courses and certificates, social links, and contact form.
 - Protected admin panel used to manage portfolio content and inspect the visitor dashboard.
 
 Main routes:
@@ -31,6 +31,7 @@ Main routes:
 - Main profile loading with photo, description, localized CV, and social links.
 - Spanish or English CV preview based on the portfolio's active language.
 - Education, skills, and projects sections rendered from the API.
+- Bilingual courses and certificates section with institution, image, and optional public link.
 - Unified project catalog presented as an accordion with a title, ordered technologies, a centered carousel, and available actions.
 - Carousel for every project, even when only one image exists, with support for one to three images per project.
 - Details modal with localized description, technologies, links, and stacked images; image enlargement is available only from this modal.
@@ -45,6 +46,7 @@ Main routes:
 - CRUD management for:
   - institutions
   - education
+  - courses and certificates
   - skills
   - technologies
   - projects
@@ -54,6 +56,7 @@ Main routes:
 - Project form with one or more ordered technologies, typed and ordered links, and between one and three images.
 - Existing image management and precise removal of the selected technology or link while preserving the remaining relationships.
 - Independent management of the English and Spanish CV URLs from the main profile.
+- Course management with Spanish and English names, display position, institution, certificate image, and optional public URL.
 - Visitor dashboard with metrics, countries, cities, and visit traces.
 - Reusable tables with search, pagination, sorting, and empty/error/loading states.
 - Angular Material forms and reusable buttons with loading state support.
@@ -75,6 +78,8 @@ Main routes:
 - Route-level SEO title and metadata strategy.
 - Scroll restoration and anchor scrolling.
 - API configuration through `environment.ts` and `environment.prod.ts`.
+- Backend contract types generated from OpenAPI and versioned with the frontend.
+- Static prerendering of the public route with browser hydration.
 
 ## Technical stack
 
@@ -134,7 +139,7 @@ External service used for visitor tracking:
 
 ## Requirements
 
-- Node.js `^22.22.3 || ^24.15.0 || ^26.0.0`
+- Node.js `^22.22.3 || ^24.15.0`
 - npm compatible with the installed Node version
 - Docker Desktop or Docker Engine if you want to run the image locally
 
@@ -166,7 +171,10 @@ http://localhost:4200
 npm start
 npm run build
 npm run watch
+npm run api:types
 ```
+
+To update the typed contract, run the development backend on port `9090` and execute `npm run api:types`. You can also temporarily set `OPENAPI_INPUT` to another OpenAPI document URL.
 
 ### Quality
 
@@ -242,7 +250,7 @@ Manual build:
 
 ```bash
 docker build -t portfolio-frontend .
-docker run --rm -p 8080:80 portfolio-frontend
+docker run --rm -p 8080:8080 portfolio-frontend
 ```
 
 With Docker Compose:
@@ -268,12 +276,13 @@ npm run build -- --configuration=production
 Generated output:
 
 ```text
-dist/frontend
+dist/frontend/browser
 ```
 
 The production build includes:
 
 - `environment.ts` replacement with `environment.prod.ts`
+- static prerendering of the public page
 - `outputHashing`
 - bundle and style budgets
 

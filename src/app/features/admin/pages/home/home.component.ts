@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     { icon: 'pi pi-chart-bar', label: 'Dashboard', routerLink: 'visitor-dashboard' },
     { icon: 'pi pi-warehouse', label: 'Institutions', routerLink: 'institution' },
     { icon: 'pi pi-graduation-cap', label: 'Education', routerLink: 'education' },
+    { icon: 'pi pi-verified', label: 'Courses / Certificates', routerLink: 'course' },
     { icon: 'pi pi-star', label: 'Skills', routerLink: 'skill' },
     { icon: 'pi pi-code', label: 'Technologies', routerLink: 'technology' },
     { icon: 'pi pi-folder-open', label: 'Projects', routerLink: 'project' },

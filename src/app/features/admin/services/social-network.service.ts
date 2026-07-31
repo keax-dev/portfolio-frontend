@@ -1,5 +1,6 @@
 import { SocialNetwork, SocialNetworkPayload } from '@shared/interfaces/social-network';
 import { inject, Injectable } from '@angular/core';
+import { CrudResourceClient } from '@core/http/crud-resource-client';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { environment } from '@src/environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -9,32 +10,27 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class SocialNetworkService {
-  reference = '/socialNetwork';
-
-  private readonly baseUrl = environment.url;
-  private readonly http = inject(HttpClient);
+  private readonly resource = new CrudResourceClient<SocialNetwork, SocialNetworkPayload>(
+    inject(HttpClient),
+    `${environment.url}/socialNetwork`,
+  );
 
   getSocialNetworkList(): Observable<ApiResponse<SocialNetwork[]>> {
-    return this.http.get<ApiResponse<SocialNetwork[]>>(`${this.baseUrl}${this.reference}`);
+    return this.resource.list();
   }
 
   createSocialNetwork(payload: SocialNetworkPayload): Observable<ApiResponse<SocialNetwork>> {
-    return this.http.post<ApiResponse<SocialNetwork>>(this.baseUrl + this.reference, payload);
+    return this.resource.create(payload);
   }
 
   updateSocialNetwork(
     socialNetworkId: number,
     payload: SocialNetworkPayload,
   ): Observable<ApiResponse<SocialNetwork>> {
-    return this.http.put<ApiResponse<SocialNetwork>>(
-      `${this.baseUrl}${this.reference}/${socialNetworkId}`,
-      payload,
-    );
+    return this.resource.update(socialNetworkId, payload);
   }
 
   deleteSocialNetwork(socialNetworkId: number): Observable<ApiResponse<SocialNetwork[]>> {
-    return this.http.delete<ApiResponse<SocialNetwork[]>>(
-      `${this.baseUrl}${this.reference}/${socialNetworkId}`,
-    );
+    return this.resource.remove(socialNetworkId);
   }
 }

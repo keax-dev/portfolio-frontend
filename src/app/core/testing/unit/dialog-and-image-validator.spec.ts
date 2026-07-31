@@ -1,9 +1,9 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { TestBed } from '@angular/core/testing';
+import { imageFileValidator } from '@core/validators/image-file.validator';
+import { DialogService } from '@core/services/dialog.service';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogService } from '@core/services/dialog.service';
-import { imageFileValidator } from '@core/validators/image-file.validator';
+import { TestBed } from '@angular/core/testing';
 
 describe('DialogService and image validation', () => {
   let dialogs: DialogService;
@@ -23,7 +23,7 @@ describe('DialogService and image validation', () => {
     dialogs = TestBed.inject(DialogService);
   });
 
-  it.each(['image/png', 'image/jpeg', 'image/gif'])('accepts %s images', (type) => {
+  it.each(['image/png', 'image/jpeg', 'image/webp'])('accepts %s images', (type) => {
     expect(
       imageFileValidator()(new FormControl(new File(['image'], 'image', { type }))),
     ).toBeNull();

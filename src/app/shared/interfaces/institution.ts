@@ -5,7 +5,4 @@ export interface Institution {
   readonly url?: string;
 }
 
-export interface InstitutionPayload {
-  readonly name: string;
-  readonly name_es: string;
-}
+export type InstitutionPayload = Readonly<Pick<Institution, 'name' | 'name_es'>>;

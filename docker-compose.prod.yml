@@ -7,5 +7,18 @@ services:
     container_name: portfolio-frontend
     image: ${FRONTEND_IMAGE}
     ports:
-      - '127.0.0.1:4201:80'
+      - '127.0.0.1:4201:8080'
     restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--output-document=/dev/null', 'http://127.0.0.1:8080/']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

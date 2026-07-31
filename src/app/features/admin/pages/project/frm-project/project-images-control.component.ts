@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ProjectImage } from '@shared/interfaces/project';
 import { PROJECT_IMAGE_LIMITS } from './project-form.validators';
@@ -21,7 +21,7 @@ import { PROJECT_IMAGE_LIMITS } from './project-form.validators';
       <input
         (change)="filesSelected.emit($event)"
         [disabled]="existingImages().length === limits.max"
-        accept="image/png,image/jpeg,image/gif"
+        accept="image/png,image/jpeg,image/webp"
         class="form-control"
         type="file"
         id="images"
@@ -31,7 +31,7 @@ import { PROJECT_IMAGE_LIMITS } from './project-form.validators';
         <small class="text-danger appear">At least one image is required</small>
       }
       @if (imagesControl().touched && imagesControl().errors?.['invalidFileType']) {
-        <small class="text-danger appear">Only image files (png, jpg, jpeg, gif) are allowed</small>
+        <small class="text-danger appear">Only PNG, JPG, JPEG or WEBP images are allowed</small>
       }
       @if (imagesControl().touched && imagesControl().errors?.['maxFileSize']) {
         <small class="text-danger appear">Each image must be 5 MB or smaller</small>
@@ -87,7 +87,10 @@ export class ProjectImagesControlComponent {
   readonly removeImage = output<ProjectImage>();
 
   readonly limits = PROJECT_IMAGE_LIMITS;
-  readonly remainingSlots = computed(() =>
-    Math.max(0, this.limits.max - this.existingImages().length - this.imagesControl().value.length),
-  );
+  remainingSlots(): number {
+    return Math.max(
+      0,
+      this.limits.max - this.existingImages().length - this.imagesControl().value.length,
+    );
+  }
 }

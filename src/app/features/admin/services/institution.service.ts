@@ -1,5 +1,6 @@
 import { Institution, InstitutionPayload } from '@shared/interfaces/institution';
 import { inject, Injectable } from '@angular/core';
+import { CrudResourceClient } from '@core/http/crud-resource-client';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { environment } from '@src/environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -9,32 +10,27 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class InstitutionService {
-  reference = '/institution';
-
-  private readonly baseUrl = environment.url;
-  private readonly http = inject(HttpClient);
+  private readonly resource = new CrudResourceClient<Institution, InstitutionPayload>(
+    inject(HttpClient),
+    `${environment.url}/institution`,
+  );
 
   getInstitutionList(): Observable<ApiResponse<Institution[]>> {
-    return this.http.get<ApiResponse<Institution[]>>(`${this.baseUrl}${this.reference}`);
+    return this.resource.list();
   }
 
   createInstitution(payload: InstitutionPayload): Observable<ApiResponse<Institution>> {
-    return this.http.post<ApiResponse<Institution>>(this.baseUrl + this.reference, payload);
+    return this.resource.create(payload);
   }
 
   updateInstitution(
     institutionId: number,
     payload: InstitutionPayload,
   ): Observable<ApiResponse<Institution>> {
-    return this.http.put<ApiResponse<Institution>>(
-      `${this.baseUrl}${this.reference}/${institutionId}`,
-      payload,
-    );
+    return this.resource.update(institutionId, payload);
   }
 
   deleteInstitution(institutionId: number): Observable<ApiResponse<Institution[]>> {
-    return this.http.delete<ApiResponse<Institution[]>>(
-      `${this.baseUrl}${this.reference}/${institutionId}`,
-    );
+    return this.resource.remove(institutionId);
   }
 }

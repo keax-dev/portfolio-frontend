@@ -1,9 +1,62 @@
-.card {
+.education-card {
+  position: relative;
+  overflow: hidden;
+  border-width: 1px;
+  background: linear-gradient(135deg, #ffffff, #f8fbff);
   transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s ease,
+    border-color 0.45s ease;
 }
 
-.card:hover {
-  transform: translateY(-15px);
+.education-card::after {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%) skewX(-16deg);
+  background: linear-gradient(90deg, transparent, rgba(13, 110, 253, 0.08), transparent);
+  content: '';
+  transition: transform 0.7s ease;
+  pointer-events: none;
+}
+
+.education-card:hover {
+  transform: translateY(-0.55rem) scale(1.012);
+  border-color: rgba(13, 110, 253, 0.7);
+  box-shadow: 0 1.25rem 2.5rem rgba(15, 23, 42, 0.14) !important;
+}
+
+.education-card:hover::after {
+  transform: translateX(120%) skewX(-16deg);
+}
+
+.education-card img {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.education-card:hover img {
+  transform: scale(1.07);
+}
+
+@supports (animation-timeline: view()) {
+  article {
+    animation: education-entry cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-timeline: view(block);
+    animation-range: entry 8% cover 28%;
+  }
+}
+
+@keyframes education-entry {
+  from {
+    opacity: 0.2;
+    transform: translateY(1.75rem) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  article,
+  .education-card,
+  .education-card img {
+    animation: none !important;
+    transform: none !important;
+  }
 }

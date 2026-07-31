@@ -1,5 +1,6 @@
 import { Education, EducationPayload } from '@shared/interfaces/education';
 import { inject, Injectable } from '@angular/core';
+import { CrudResourceClient } from '@core/http/crud-resource-client';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { environment } from '@src/environments/environment';
 import { Observable } from 'rxjs';
@@ -9,32 +10,27 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class EducationService {
-  reference = '/education';
-
-  private readonly baseUrl = environment.url;
-  private readonly http = inject(HttpClient);
+  private readonly resource = new CrudResourceClient<Education, EducationPayload>(
+    inject(HttpClient),
+    `${environment.url}/education`,
+  );
 
   getEducationList(): Observable<ApiResponse<Education[]>> {
-    return this.http.get<ApiResponse<Education[]>>(`${this.baseUrl}${this.reference}`);
+    return this.resource.list();
   }
 
   createEducation(payload: EducationPayload): Observable<ApiResponse<Education>> {
-    return this.http.post<ApiResponse<Education>>(this.baseUrl + this.reference, payload);
+    return this.resource.create(payload);
   }
 
   updateEducation(
     educationId: number,
     payload: EducationPayload,
   ): Observable<ApiResponse<Education>> {
-    return this.http.put<ApiResponse<Education>>(
-      `${this.baseUrl}${this.reference}/${educationId}`,
-      payload,
-    );
+    return this.resource.update(educationId, payload);
   }
 
   deleteEducation(educationId: number): Observable<ApiResponse<Education[]>> {
-    return this.http.delete<ApiResponse<Education[]>>(
-      `${this.baseUrl}${this.reference}/${educationId}`,
-    );
+    return this.resource.remove(educationId);
   }
 }

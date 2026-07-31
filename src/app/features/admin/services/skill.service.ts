@@ -1,5 +1,6 @@
 import { Skill, SkillPayload } from '@shared/interfaces/skill';
 import { inject, Injectable } from '@angular/core';
+import { CrudResourceClient } from '@core/http/crud-resource-client';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { environment } from '@src/environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -9,27 +10,24 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class SkillService {
-  reference = '/skill';
-
-  private readonly baseUrl = environment.url;
-  private readonly http = inject(HttpClient);
+  private readonly resource = new CrudResourceClient<Skill, SkillPayload>(
+    inject(HttpClient),
+    `${environment.url}/skill`,
+  );
 
   getSkillList(): Observable<ApiResponse<Skill[]>> {
-    return this.http.get<ApiResponse<Skill[]>>(`${this.baseUrl}${this.reference}`);
+    return this.resource.list();
   }
 
   createSkill(payload: SkillPayload): Observable<ApiResponse<Skill>> {
-    return this.http.post<ApiResponse<Skill>>(this.baseUrl + this.reference, payload);
+    return this.resource.create(payload);
   }
 
   updateSkill(skillId: number, payload: SkillPayload): Observable<ApiResponse<Skill>> {
-    return this.http.put<ApiResponse<Skill>>(
-      `${this.baseUrl}${this.reference}/${skillId}`,
-      payload,
-    );
+    return this.resource.update(skillId, payload);
   }
 
   deleteSkill(skillId: number): Observable<ApiResponse<Skill[]>> {
-    return this.http.delete<ApiResponse<Skill[]>>(`${this.baseUrl}${this.reference}/${skillId}`);
+    return this.resource.remove(skillId);
   }
 }

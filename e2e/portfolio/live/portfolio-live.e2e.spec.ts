@@ -29,6 +29,7 @@ test.describe('Live public portfolio contract', () => {
     ] = await Promise.all([
       page.waitForResponse(`${apiBaseUrl}/portfolio/profile`),
       page.waitForResponse(`${apiBaseUrl}/portfolio/education`),
+      page.waitForResponse(`${apiBaseUrl}/portfolio/course`),
       page.waitForResponse(`${apiBaseUrl}/portfolio/skill`),
       page.waitForResponse(`${apiBaseUrl}/portfolio/project`),
       page.waitForResponse(`${apiBaseUrl}/portfolio/socialNetwork`),

@@ -3,6 +3,4 @@ export interface Technology {
   readonly name: string;
 }
 
-export interface TechnologyPayload {
-  readonly name: string;
-}
+export type TechnologyPayload = Readonly<Pick<Technology, 'name'>>;

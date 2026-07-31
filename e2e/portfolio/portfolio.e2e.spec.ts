@@ -2,8 +2,8 @@
  * E2E del portafolio público: carga de contenido, traducción y formulario de contacto.
  * Los casos operan sobre la aplicación compilada y eventos reales del navegador.
  */
-import { expect, test } from '@playwright/test';
 import { mockPublicPortfolio } from '../support/api-mocks';
+import { expect, test } from '@playwright/test';
 
 test.describe('Public portfolio', () => {
   test.beforeEach(async ({ page }) => {
@@ -11,19 +11,25 @@ test.describe('Public portfolio', () => {
     await mockPublicPortfolio(page);
   });
 
-  // Caso: renderiza el contenido de la API y cambia el idioma activo.
-  test('renders API content and changes the active language', async ({ page }) => {
-    // Navega por la aplicación real y espera el perfil devuelto por la API simulada.
+  test('renders the profile and opens the CV for the active language', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('heading', { name: 'Kevin Galarza' })).toBeVisible();
 
-    // El idioma inicial es español, por lo que el modal debe recibir el CV en español.
     await page.locator('#home .btn-cv').click();
     await expect(page.locator('app-cv-preview iframe')).toHaveAttribute('src', /cv-es\.pdf/);
     await page.locator('app-cv-preview').getByRole('button', { name: 'Close CV preview' }).click();
 
-    // Comprueba que las secciones principales y sus datos estén renderizados.
-    await expect(page.getByRole('heading', { name: 'Educación' })).toBeVisible();
+    await page.getByTitle('English').click();
+    await expect(page.locator('#home').getByText('Software Engineer')).toBeVisible();
+    await expect(page.getByTitle('English')).toHaveAttribute('aria-pressed', 'true');
+
+    await page.locator('#home .btn-cv').click();
+    await expect(page.locator('app-cv-preview iframe')).toHaveAttribute('src', /cv-en\.pdf/);
+  });
+
+  test('renders and interacts with the project portfolio', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('heading', { name: 'Educación', exact: true })).toBeVisible();
     const projectAccordion = page.locator('.project-accordion');
     const firstProject = projectAccordion.locator('details').first();
     await expect(projectAccordion.getByText('Angular', { exact: true })).toBeVisible();
@@ -68,16 +74,21 @@ test.describe('Public portfolio', () => {
     await expect(page.locator('app-show-image')).toHaveCount(0);
     await projectDetails.getByRole('button', { name: 'Cerrar detalles del proyecto' }).click();
     await expect(page.locator('#portfolio-title')).toHaveText('Portafolio');
+  });
 
-    // Cambia el idioma desde la navegación y verifica contenido derivado del signal.
+  test('renders courses and translates only the public portfolio', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('heading', { name: 'Cursos y Certificados' })).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'Ver certificado: SPRING BOOT DESDE CERO' }),
+    ).toBeVisible();
+
     await page.getByTitle('English').click();
     await expect(page.getByRole('heading', { name: 'Education' })).toBeVisible();
-    await expect(page.locator('#home').getByText('Software Engineer')).toBeVisible();
-    await expect(page.getByTitle('English')).toHaveAttribute('aria-pressed', 'true');
-
-    // Al cambiar a inglés, el mismo botón debe abrir el CV en inglés.
-    await page.locator('#home .btn-cv').click();
-    await expect(page.locator('app-cv-preview iframe')).toHaveAttribute('src', /cv-en\.pdf/);
+    await expect(page.getByRole('heading', { name: 'Courses & Certificates' })).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'View certificate: SPRING BOOT MASTERCLASS' }),
+    ).toHaveAttribute('href', 'https://www.udemy.com/certificate/example');
   });
 
   // Caso: valida y envía el diálogo de contacto de punta a punta.

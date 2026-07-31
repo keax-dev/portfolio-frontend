@@ -16,3 +16,14 @@ export type ProjectLinkFormGroup = FormGroup<{
 
 export type ProjectTechnologyFormArray = FormArray<ProjectTechnologyFormGroup>;
 export type ProjectLinkFormArray = FormArray<ProjectLinkFormGroup>;
+
+export type ProjectFormGroup = FormGroup<{
+  title: FormControl<string>;
+  title_es: FormControl<string>;
+  description: FormControl<string>;
+  description_es: FormControl<string>;
+  position: FormControl<number>;
+  technologies: ProjectTechnologyFormArray;
+  links: ProjectLinkFormArray;
+  images: FormControl<File[]>;
+}>;

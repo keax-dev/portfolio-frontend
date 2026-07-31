@@ -1,6 +1,7 @@
 import { ActivatedRouteSnapshot, RouterStateSnapshot, TitleStrategy } from '@angular/router';
 import { Injectable, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
+import { environment } from '@src/environments/environment';
 import { DOCUMENT } from '@angular/common';
 
 const DEFAULT_DESCRIPTION =
@@ -17,20 +18,30 @@ export class AppTitleStrategy extends TitleStrategy {
     const fullTitle = routeTitle.startsWith('Kevin') ? routeTitle : `Kevin | ${routeTitle}`;
     const description = this.resolveDescription(snapshot.root) ?? DEFAULT_DESCRIPTION;
     const canonicalUrl = this.buildCanonicalUrl(snapshot);
+    const socialImageUrl = new URL('/images/logo.png', environment.siteUrl).toString();
+    const isPublicRoute = new URL(canonicalUrl).pathname === '/';
 
     this.title.setTitle(fullTitle);
     this.meta.updateTag({ name: 'description', content: description });
+    this.meta.updateTag({
+      name: 'robots',
+      content: isPublicRoute ? 'index,follow' : 'noindex,nofollow',
+    });
     this.meta.updateTag({ property: 'og:title', content: fullTitle });
     this.meta.updateTag({ property: 'og:description', content: description });
     this.meta.updateTag({ property: 'og:url', content: canonicalUrl });
+    this.meta.updateTag({ property: 'og:image', content: socialImageUrl });
     this.meta.updateTag({ name: 'twitter:title', content: fullTitle });
     this.meta.updateTag({ name: 'twitter:description', content: description });
+    this.meta.updateTag({ name: 'twitter:image', content: socialImageUrl });
     this.updateCanonicalLink(canonicalUrl);
   }
 
   private buildCanonicalUrl(snapshot: RouterStateSnapshot): string {
-    const baseUrl = this.document.location?.origin ?? 'http://localhost:4200';
-    return new URL(snapshot.url || '/', baseUrl).toString();
+    const url = new URL(snapshot.url || '/', environment.siteUrl);
+    url.hash = '';
+    url.search = '';
+    return url.toString();
   }
 
   private resolveDescription(snapshot: ActivatedRouteSnapshot): string | null {

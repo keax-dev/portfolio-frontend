@@ -1,5 +1,5 @@
-import { TestBed } from '@angular/core/testing';
 import { AUTH_STORAGE } from '@core/storage/auth-storage';
+import { TestBed } from '@angular/core/testing';
 
 describe('AUTH_STORAGE', () => {
   beforeEach(() => {

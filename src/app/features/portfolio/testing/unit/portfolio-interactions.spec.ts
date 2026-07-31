@@ -12,6 +12,7 @@ import { TranslateService } from '@core/services/translate.service';
 import { NavbarComponent } from '@features/portfolio/pages/navbar/navbar.component';
 import { FooterComponent } from '@features/portfolio/pages/footer/footer.component';
 import { HeaderComponent } from '@features/portfolio/pages/header/header.component';
+import { CourseComponent } from '@features/portfolio/pages/course/course.component';
 import { SessionService } from '@core/services/session.service';
 import { HomeComponent } from '@features/admin/pages/home/home.component';
 import { provideRouter } from '@angular/router';
@@ -67,20 +68,24 @@ describe('portfolio interaction components', () => {
 
   // Caso: deriva la clase del encabezado y abre solo CVs configurados.
   it('derives the header class and opens only configured CVs', async () => {
-    const translate = { getLang: 'es' };
     const parameter = { open: vi.fn() };
     await TestBed.configureTestingModule({
       imports: [HeaderComponent],
-      providers: [
-        { provide: TranslateService, useValue: translate },
-        { provide: DialogService, useValue: parameter },
-      ],
+      providers: [TranslateService, { provide: DialogService, useValue: parameter }],
     }).compileComponents();
+    const translate = TestBed.inject(TranslateService);
+    translate.setLang = 'es';
     const fixture = TestBed.createComponent(HeaderComponent);
     fixture.componentRef.setInput('profile', profile);
+    fixture.detectChanges();
     const component = fixture.componentInstance;
+    const video = fixture.nativeElement.querySelector('video') as HTMLVideoElement;
+    const sources = Array.from(video.querySelectorAll('source'));
 
     expect(component.classTitle).toBe('machine-2-es');
+    expect(video.poster).toContain('/background/bg-header-poster.webp');
+    expect(video.hasAttribute('muted')).toBe(true);
+    expect(sources.map((source) => source.type)).toEqual(['video/webm', 'video/mp4']);
     component.openCvPreview();
     expect(parameter.open).toHaveBeenCalledWith(CvPreviewComponent, {
       data: { url: profile.cv_es },
@@ -88,7 +93,7 @@ describe('portfolio interaction components', () => {
       mobileWidth: '98%',
     });
 
-    translate.getLang = 'en';
+    translate.setLang = 'en';
     component.openCvPreview();
     expect(parameter.open).toHaveBeenLastCalledWith(CvPreviewComponent, {
       data: { url: profile.cv },
@@ -113,6 +118,83 @@ describe('portfolio interaction components', () => {
     component.contactEmit();
     expect(contact).toHaveBeenCalledOnce();
     expect(component.year).toBe(new Date().getFullYear());
+  });
+
+  it('renders a course certificate with localized institution information', async () => {
+    await TestBed.configureTestingModule({
+      imports: [CourseComponent],
+      providers: [
+        {
+          provide: TranslateService,
+          useValue: { getLang: 'es', text: (value: { es: string }) => value.es },
+        },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(CourseComponent);
+    fixture.componentRef.setInput('courseList', [
+      {
+        id: 1,
+        name: 'SPRING BOOT DESDE CERO',
+        name_en: 'SPRING BOOT FROM SCRATCH',
+        institution: 2,
+        institution_name: 'UDEMY',
+        institution_name_es: 'UDEMY',
+        certificate_img: 'certificate.png',
+        certificate_url: 'https://udemy.test/certificate/1',
+        position: 1,
+      },
+    ]);
+    fixture.detectChanges();
+
+    const link = fixture.nativeElement.querySelector('.course-card__media') as HTMLAnchorElement;
+    expect(fixture.nativeElement.textContent).toContain('Cursos y Certificados');
+    expect(fixture.nativeElement.textContent).toContain('SPRING BOOT DESDE CERO');
+    expect(link.getAttribute('href')).toBe('https://udemy.test/certificate/1');
+    expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+  });
+
+  it('reveals courses in batches of three until the complete list is visible', async () => {
+    await TestBed.configureTestingModule({
+      imports: [CourseComponent],
+      providers: [
+        {
+          provide: TranslateService,
+          useValue: { getLang: 'en', text: (value: { en: string }) => value.en },
+        },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(CourseComponent);
+    fixture.componentRef.setInput(
+      'courseList',
+      Array.from({ length: 7 }, (_, index) => ({
+        id: index + 1,
+        name: `CURSO ${index + 1}`,
+        name_en: `COURSE ${index + 1}`,
+        institution: 1,
+        institution_name: 'UDEMY',
+        institution_name_es: 'UDEMY',
+        position: index + 1,
+      })),
+    );
+    fixture.detectChanges();
+
+    const renderedCourses = (): NodeListOf<HTMLElement> =>
+      fixture.nativeElement.querySelectorAll('.course-grid__item');
+    const viewMoreButton = (): HTMLButtonElement | null =>
+      fixture.nativeElement.querySelector('.course-section__more-button');
+
+    expect(renderedCourses()).toHaveLength(3);
+    expect(viewMoreButton()?.textContent).toContain('View more');
+
+    viewMoreButton()?.click();
+    fixture.detectChanges();
+    expect(renderedCourses()).toHaveLength(6);
+    expect(viewMoreButton()).not.toBeNull();
+
+    viewMoreButton()?.click();
+    fixture.detectChanges();
+    expect(renderedCourses()).toHaveLength(7);
+    expect(viewMoreButton()).toBeNull();
   });
 
   // Caso: construye identificadores del carrusel y abre diálogos de proyectos.
@@ -255,6 +337,6 @@ describe('portfolio interaction components', () => {
     expect(session.ensureProtectedSession).toHaveBeenCalledOnce();
     expect(session.logOut).toHaveBeenCalledOnce();
     expect(session.stopExpirationWatcher).toHaveBeenCalledOnce();
-    expect(component.menuList).toHaveLength(8);
+    expect(component.menuList).toHaveLength(9);
   });
 });

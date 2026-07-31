@@ -2,8 +2,8 @@
  * E2E administrativo representativo: crea y elimina una institución con subida de imagen.
  * Cubre tabla, diálogo, formulario, multipart, confirmación y recarga del listado.
  */
-import { expect, test } from '@playwright/test';
 import { api, installValidSession, json } from '../support/api-mocks';
+import { expect, test } from '@playwright/test';
 
 // Caso: crea y elimina una institución desde la interfaz administrativa.
 test('creates and deletes an institution through the admin UI', async ({ page }) => {
@@ -153,9 +153,9 @@ test('removes the selected project technology and submits its reordered relation
   await expect
     .poll(() => submittedTechnologies)
     .toEqual([
-      { relation_id: 1, id: 1, position: 4 },
-      { relation_id: 9, id: 3, position: 3 },
-      { relation_id: 13, id: 4, position: 2 },
-      { relation_id: 14, id: 5, position: 1 },
+      { id: 1, position: 4 },
+      { id: 3, position: 3 },
+      { id: 4, position: 2 },
+      { id: 5, position: 1 },
     ]);
 });

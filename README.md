@@ -15,7 +15,7 @@ Aplicación frontend del portafolio público y panel administrativo, construida 
 
 Este proyecto expone dos experiencias principales:
 
-- Portafolio público con perfil, educación, habilidades, catálogo de proyectos, redes sociales y formulario de contacto.
+- Portafolio público con perfil, educación, habilidades, catálogo de proyectos, cursos y certificados, redes sociales y formulario de contacto.
 - Panel administrativo protegido para gestionar el contenido del portafolio y consultar el dashboard de visitantes.
 
 Rutas principales:
@@ -31,6 +31,7 @@ Rutas principales:
 - Carga del perfil principal con foto, descripción, CV localizado y enlaces sociales.
 - Apertura del CV en español o inglés según el idioma activo del portafolio.
 - Secciones de educación, habilidades y proyectos renderizadas desde la API.
+- Sección bilingüe de cursos y certificados con institución, imagen y enlace público opcional.
 - Catálogo unificado de proyectos presentado como acordeón, con título, tecnologías ordenadas, carrusel centrado y acciones disponibles.
 - Carrusel para todos los proyectos, incluso cuando existe una sola imagen, con soporte de una a tres imágenes por proyecto.
 - Modal de detalles con descripción localizada, tecnologías, links e imágenes apiladas; la ampliación de imágenes está disponible únicamente desde este modal.
@@ -45,6 +46,7 @@ Rutas principales:
 - Gestión CRUD de:
   - instituciones
   - educación
+  - cursos y certificados
   - habilidades
   - tecnologías
   - proyectos
@@ -54,6 +56,7 @@ Rutas principales:
 - Formulario de proyectos con una o varias tecnologías ordenadas, links tipados y ordenados, y entre una y tres imágenes.
 - Edición de imágenes existentes y eliminación precisa de tecnologías o links seleccionados, conservando las relaciones restantes.
 - Gestión independiente de las URLs del CV en inglés y español desde el perfil principal.
+- Gestión de cursos con nombres en español e inglés, posición de visualización, institución, imagen del certificado y URL pública opcional.
 - Dashboard de visitantes para revisar métricas, países, ciudades y trazas de acceso.
 - Tablas reutilizables con búsqueda, paginación, ordenamiento y estados vacíos/error/loading.
 - Formularios con Angular Material y botones reutilizables con estado de carga.
@@ -75,6 +78,8 @@ Rutas principales:
 - Estrategia de títulos y metadatos SEO por ruta.
 - Scroll restoration y anchor scrolling en la navegación.
 - Configuración de API por `environment.ts` y `environment.prod.ts`.
+- Tipos del contrato backend generados desde OpenAPI y versionados junto al frontend.
+- Prerenderizado estático de la ruta pública con hidratación en el navegador.
 
 ## Stack técnico
 
@@ -134,7 +139,7 @@ Servicio externo usado por el registro de visitas:
 
 ## Requisitos
 
-- Node.js `^22.22.3 || ^24.15.0 || ^26.0.0`
+- Node.js `^22.22.3 || ^24.15.0`
 - npm compatible con la versión instalada de Node
 - Docker Desktop o Docker Engine si vas a probar la imagen localmente
 
@@ -166,7 +171,10 @@ http://localhost:4200
 npm start
 npm run build
 npm run watch
+npm run api:types
 ```
+
+Para actualizar el contrato tipado, levanta el backend de desarrollo en el puerto `9090` y ejecuta `npm run api:types`. También puedes definir temporalmente `OPENAPI_INPUT` con la URL de otro documento OpenAPI.
 
 ### Calidad
 
@@ -242,7 +250,7 @@ Construcción manual:
 
 ```bash
 docker build -t portfolio-frontend .
-docker run --rm -p 8080:80 portfolio-frontend
+docker run --rm -p 8080:8080 portfolio-frontend
 ```
 
 Con Docker Compose:
@@ -268,12 +276,13 @@ npm run build -- --configuration=production
 Salida generada:
 
 ```text
-dist/frontend
+dist/frontend/browser
 ```
 
 La build de producción incluye:
 
 - reemplazo de `environment.ts` por `environment.prod.ts`
+- prerenderizado estático de la página pública
 - `outputHashing`
 - budgets de bundle y estilos
 

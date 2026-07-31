@@ -2,6 +2,11 @@ export const ADMIN_TABLE_LOAD_ERROR_MESSAGE = 'We could not load the records. Pl
 export const ADMIN_POSITION_BUFFER = 5;
 
 export const adminTableCopy = {
+  course: {
+    entity: 'Course / Certificate',
+    title: 'Courses / Certificates',
+    subtitle: 'Manage completed courses, their institutions and certificate images.',
+  },
   education: {
     entity: 'Education',
     title: 'Educations',

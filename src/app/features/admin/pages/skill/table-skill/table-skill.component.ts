@@ -44,7 +44,7 @@ export class TableSkillComponent implements OnInit {
   readonly columns: readonly Column<Skill>[] = [
     { name: 'Position', value: 'position' },
     { name: 'Skill', value: 'name' },
-    { name: 'Picture', value: 'picture', image: true, imageAlt: (record) => record.name },
+    { name: 'Picture', value: 'picture', kind: 'image', imageAlt: (record) => record.name },
   ];
 
   ngOnInit(): void {

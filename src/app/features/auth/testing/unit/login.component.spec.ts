@@ -57,11 +57,36 @@ describe('LoginComponent', () => {
     expect(component.controls.password.hasError('minlength')).toBe(true);
 
     component.authForm.setValue({
-      username: 'a'.repeat(26),
-      password: 'a'.repeat(26),
+      username: 'a'.repeat(121),
+      password: 'a'.repeat(129),
     });
     expect(component.controls.username.hasError('maxlength')).toBe(true);
     expect(component.controls.password.hasError('maxlength')).toBe(true);
+  });
+
+  it('keeps every login label and validation message in English', () => {
+    component.authForm.setValue({ username: '', password: '' });
+    expect(component.usernameErrorMessage()).toBe('The username is required');
+    expect(component.passwordErrorMessage()).toBe('The password is required');
+
+    component.authForm.setValue({
+      username: 'a'.repeat(121),
+      password: 'short',
+    });
+    expect(component.usernameErrorMessage()).toBe('The username cannot exceed 120 characters');
+    expect(component.passwordErrorMessage()).toBe('The password must have at least 8 characters');
+
+    component.controls.password.setValue('a'.repeat(129));
+    expect(component.passwordErrorMessage()).toBe('The password cannot exceed 128 characters');
+    expect(component.authTitle()).toBe('Login');
+    expect(component.usernameLabel()).toBe('Username');
+    expect(component.passwordLabel()).toBe('Password');
+    expect(component.loginActionLabel()).toBe('Login');
+    expect(component.loggingInLabel()).toBe('Signing in...');
+    expect(component.passwordVisibilityLabel()).toBe('Show password');
+
+    component.hide = false;
+    expect(component.passwordVisibilityLabel()).toBe('Hide password');
   });
 
   // Caso: marca un formulario inválido y no llama a la API.
@@ -75,7 +100,7 @@ describe('LoginComponent', () => {
   // Caso: inicia sesión, guarda el estado y navega al home.
   it('logs in, stores the session and navigates home', () => {
     vi.spyOn(Date, 'now').mockReturnValue(1_000);
-    component.authForm.setValue({ username: 'admin', password: 'secret' });
+    component.authForm.setValue({ username: 'admin', password: 'secret-123' });
     loginService.login.mockReturnValue(
       of({
         status: true,
@@ -90,7 +115,7 @@ describe('LoginComponent', () => {
     expect(component.isSubmitting()).toBe(false);
     expect(loginService.login).toHaveBeenCalledWith({
       username: 'admin',
-      password: 'secret',
+      password: 'secret-123',
     });
     expect(alert.success).toHaveBeenCalledWith('Welcome');
     expect(userInfo.setSession).toHaveBeenCalledWith('jwt-token', 2_000_000);
@@ -111,7 +136,7 @@ describe('LoginComponent', () => {
   // Caso: reporta errores de login y siempre restablece el estado de envío.
   it('reports login errors and always resets the submit state', () => {
     const failure = new Error('invalid credentials');
-    component.authForm.setValue({ username: 'admin', password: 'wrong' });
+    component.authForm.setValue({ username: 'admin', password: 'wrong-pass' });
     loginService.login.mockReturnValue(throwError(() => failure));
 
     component.onSubmit();

@@ -27,12 +27,10 @@ export function toProjectPayload(value: ProjectFormValue): ProjectPayload {
     description_es: value.description_es,
     position: value.position,
     technologies: value.technologies.map((technology) => ({
-      ...(technology.relation_id ? { relation_id: technology.relation_id } : {}),
       id: technology.id,
       position: technology.position,
     })),
     links: value.links.map((link) => ({
-      ...(link.id ? { id: link.id } : {}),
       type: link.type,
       url: link.url.trim(),
       position: link.position,

@@ -1,5 +1,6 @@
 import { Project, ProjectPayload } from '@shared/interfaces/project';
 import { inject, Injectable } from '@angular/core';
+import { CrudResourceClient } from '@core/http/crud-resource-client';
 import { ApiResponse } from '@core/interfaces/apiresponse';
 import { environment } from '@src/environments/environment';
 import { Observable } from 'rxjs';
@@ -9,29 +10,24 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class ProjectService {
-  reference = '/project';
-
-  private readonly baseUrl = environment.url;
-  private readonly http = inject(HttpClient);
+  private readonly resource = new CrudResourceClient<Project, ProjectPayload>(
+    inject(HttpClient),
+    `${environment.url}/project`,
+  );
 
   getProjectList(): Observable<ApiResponse<Project[]>> {
-    return this.http.get<ApiResponse<Project[]>>(`${this.baseUrl}${this.reference}`);
+    return this.resource.list();
   }
 
   createProject(payload: ProjectPayload): Observable<ApiResponse<Project>> {
-    return this.http.post<ApiResponse<Project>>(this.baseUrl + this.reference, payload);
+    return this.resource.create(payload);
   }
 
   updateProject(projectId: number, payload: ProjectPayload): Observable<ApiResponse<Project>> {
-    return this.http.put<ApiResponse<Project>>(
-      `${this.baseUrl}${this.reference}/${projectId}`,
-      payload,
-    );
+    return this.resource.update(projectId, payload);
   }
 
   deleteProject(projectId: number): Observable<ApiResponse<Project[]>> {
-    return this.http.delete<ApiResponse<Project[]>>(
-      `${this.baseUrl}${this.reference}/${projectId}`,
-    );
+    return this.resource.remove(projectId);
   }
 }

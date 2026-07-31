@@ -42,7 +42,7 @@ export class TableInstitutionComponent implements OnInit {
   readonly loadErrorMessage = this.state.loadErrorMessage;
   readonly columns: readonly Column<Institution>[] = [
     { name: 'Institution', value: 'name' },
-    { name: 'Picture', value: 'url', image: true, imageAlt: (record) => record.name },
+    { name: 'Picture', value: 'url', kind: 'image', imageAlt: (record) => record.name },
   ];
 
   ngOnInit(): void {

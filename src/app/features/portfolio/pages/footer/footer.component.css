@@ -1,0 +1,75 @@
+:host {
+  display: block;
+}
+
+footer {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(56, 189, 248, 0.24), transparent 28rem),
+    linear-gradient(135deg, #0d6efd, #0a4da8) !important;
+}
+
+footer::before {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, 0.08), transparent 80%);
+  content: '';
+  pointer-events: none;
+}
+
+footer img {
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s ease;
+}
+
+footer img:hover {
+  transform: translateY(-0.25rem) rotate(-3deg) scale(1.04);
+  box-shadow: 0 1rem 2rem rgba(2, 6, 23, 0.25);
+}
+
+footer a,
+footer button {
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.3s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+footer .btn-light:hover {
+  transform: translateY(-0.35rem) scale(1.08);
+  box-shadow: 0 0.8rem 1.6rem rgba(2, 6, 23, 0.22);
+}
+
+footer nav:not([aria-label]) a:hover,
+footer nav button:hover {
+  transform: translateY(-0.1rem);
+}
+
+@supports (animation-timeline: view()) {
+  footer .col {
+    animation: footer-entry cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-timeline: view(block);
+    animation-range: entry 5% cover 28%;
+  }
+}
+
+@keyframes footer-entry {
+  from {
+    opacity: 0.15;
+    transform: translateY(1.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  footer .col,
+  footer img,
+  footer a,
+  footer button {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

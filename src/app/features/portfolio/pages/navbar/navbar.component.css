@@ -1,10 +1,107 @@
-.nav-link:hover {
-  background-color: white !important;
-  color: black !important;
+:host {
+  display: block;
 }
+
+.navbar {
+  background: linear-gradient(115deg, rgba(13, 110, 253, 0.96), rgba(14, 83, 190, 0.96)) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(1rem) saturate(1.25);
+  box-shadow: 0 0.75rem 2rem rgba(15, 23, 42, 0.16) !important;
+}
+
+.navbar a,
+.navbar button {
+  transition:
+    color 0.25s ease,
+    background-color 0.25s ease,
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease;
+}
+
+.navbar > .container-fluid > div:first-child > a:hover {
+  transform: translateX(0.25rem);
+}
+
+.nav-link {
+  position: relative;
+  border-radius: 0.45rem;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  color: #0f172a !important;
+  transform: translateX(0.25rem);
+}
+
+.btn-link[aria-pressed='true'] {
+  position: relative;
+  transform: translateY(-0.1rem);
+}
+
+.btn-link[aria-pressed='true']::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.25rem;
+  left: 0;
+  height: 0.12rem;
+  border-radius: 999px;
+  background: white;
+  content: '';
+  animation: active-language 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 .navbar-toggler-icon {
   font-size: 0.75rem;
 }
+
+.navbar-toggler {
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.navbar-toggler[aria-expanded='true'] {
+  transform: rotate(90deg);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.navbar-collapse.collapse {
+  display: grid !important;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.25s ease,
+    visibility 0.35s;
+}
+
+.navbar-collapse.collapse.show {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  opacity: 1;
+}
+
+.navbar-nav {
+  min-height: 0;
+  overflow: hidden;
+}
+
 .z-index-navbar {
   z-index: 1030 !important;
+}
+
+@keyframes active-language {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar-collapse.collapse,
+  .navbar a,
+  .navbar button {
+    transition: none;
+  }
 }

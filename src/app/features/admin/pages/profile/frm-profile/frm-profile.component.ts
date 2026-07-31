@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UppercaseDirective } from '@shared/components/directive/uppercase.directive';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ApiResponse } from '@core/interfaces/apiresponse';
 import { imageFileValidator } from '@core/validators/image-file.validator';
 import { httpsUrlValidator } from '@core/validators/external-url.validator';
 import { ButtonComponent } from '@shared/components/button/button.component';
@@ -10,7 +11,8 @@ import { ProfileService } from '@features/admin/services/profile.service';
 import { MatInputModule } from '@angular/material/input';
 import { AlertService } from '@core/services/alert.service';
 import { ImageService } from '@features/admin/services/images.service';
-import { finalize } from 'rxjs';
+import { persistWithOptionalFile } from '@features/admin/persistence/persist-with-file';
+import { finalize, Observable } from 'rxjs';
 import { Profile } from '@shared/interfaces/profile';
 import {
   ChangeDetectionStrategy,
@@ -57,18 +59,14 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
   readonly urlPicture = signal('');
   readonly isSaving = signal(false);
   readonly title = signal('New Profile');
-  readonly update = signal(false);
+  readonly isUpdate = signal(false);
 
   ngOnInit(): void {
-    this.loadVariables();
+    this.getProfile();
   }
 
   ngOnDestroy(): void {
     this.spinner.hide();
-  }
-
-  loadVariables(): void {
-    this.getProfile();
   }
 
   getProfile(): void {
@@ -82,15 +80,15 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (result) => {
           this.previousProfile.set(result.data);
-          this.loadVariablesUpdate(result.data);
+          this.applyProfile(result.data);
         },
         error: (error) => this.alert.httpError(error),
       });
   }
 
-  loadVariablesUpdate(data: Profile): void {
+  applyProfile(data: Profile): void {
     this.title.set('Update Profile');
-    this.update.set(true);
+    this.isUpdate.set(true);
     this.urlPicture.set(data.image ?? '');
     this.profileForm.patchValue({
       name: data.name,
@@ -114,84 +112,29 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.update()) {
-      this.updateProfile();
-      return;
-    }
-
-    this.createProfile();
-  }
-
-  updateProfile(): void {
     this.isSaving.set(true);
-    this.profileService
-      .updateProfile(this.profile)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (result) => {
-          this.alert.success(result.alert);
-          if (this.controls['image'].value) {
-            this.uploadImageProfile(result.data);
-            return;
-          }
-
-          this.previousProfile.set(result.data);
-          this.isSaving.set(false);
-        },
-        error: (error) => {
-          this.isSaving.set(false);
-          this.alert.httpError(error);
-        },
-      });
-  }
-
-  createProfile(): void {
-    this.isSaving.set(true);
-    this.profileService
-      .createProfile(this.profile)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (result) => {
-          this.alert.success(result.alert);
-          if (this.controls['image'].value) {
-            this.uploadImageProfile(result.data, true);
-            return;
-          }
-
-          this.previousProfile.set(result.data);
-          this.isSaving.set(false);
-        },
-        error: (error) => {
-          this.isSaving.set(false);
-          this.alert.httpError(error);
-        },
-      });
-  }
-
-  uploadImageProfile(profile: Profile, create?: boolean): void {
-    const image = this.controls.image.value;
-    if (!image) {
-      this.isSaving.set(false);
-      return;
-    }
-
-    this.imageService
-      .uploadImageProfile(image)
+    const wasCreating = !this.isUpdate();
+    persistWithOptionalFile(this.persistMetadata(), this.controls.image.value, (_profile, image) =>
+      this.imageService.uploadImageProfile(image),
+    )
       .pipe(
         finalize(() => this.isSaving.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (result) => {
-          this.alert.success(result.alert);
-          this.previousProfile.set(result.data);
-          this.urlPicture.set(result.data.image ?? '');
-          if (create) this.loadVariablesUpdate(result.data);
+          result.successMessages.forEach((message) => this.alert.success(message));
+          if (result.fileUploadError) {
+            this.alert.httpError(result.fileUploadError);
+          }
+
+          this.previousProfile.set(result.entity);
+          this.urlPicture.set(result.entity.image ?? '');
+          if (wasCreating) {
+            this.applyProfile(result.entity);
+          }
         },
-        error: (error) => {
-          this.previousProfile.set(profile);
-          this.alert.httpError(error);
-        },
+        error: (error) => this.alert.httpError(error),
       });
   }
 
@@ -224,5 +167,11 @@ export class FrmProfileComponent implements OnInit, OnDestroy {
 
   get controls(): typeof this.profileForm.controls {
     return this.profileForm.controls;
+  }
+
+  private persistMetadata(): Observable<ApiResponse<Profile>> {
+    return this.isUpdate()
+      ? this.profileService.updateProfile(this.profile)
+      : this.profileService.createProfile(this.profile);
   }
 }

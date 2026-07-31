@@ -18,7 +18,6 @@ export class HeaderComponent {
   protected readonly translate = inject(TranslateService);
   private readonly dialogs = inject(DialogService);
 
-  readonly text = uiText;
   readonly profile = input.required<Profile>();
 
   get classTitle() {
@@ -33,11 +32,11 @@ export class HeaderComponent {
   }
 
   cvLabel(): string {
-    return this.translate.text(this.text.portfolio.viewCv);
+    return this.translate.text(uiText.portfolio.viewCv);
   }
 
   profilePhotoAlt(): string {
-    return `${this.translate.text(this.text.portfolio.profilePhotoAltPrefix)} ${this.profile().name}`;
+    return `${this.translate.text(uiText.portfolio.profilePhotoAltPrefix)} ${this.profile().name}`;
   }
 
   cvUrl(): string {

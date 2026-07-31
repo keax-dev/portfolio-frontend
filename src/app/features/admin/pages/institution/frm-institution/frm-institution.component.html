@@ -34,14 +34,14 @@
       }
 
       @if (controls['image'].touched && controls['image'].errors?.['invalidFileType']) {
-        <small class="text-danger appear">Only image files (png, jpg, jpeg, gif) are allowed</small>
+        <small class="text-danger appear">Only PNG, JPG, JPEG or WEBP images are allowed</small>
       }
       @if (controls['image'].touched && controls['image'].errors?.['maxFileSize']) {
         <small class="text-danger appear">The image must be 5 MB or smaller</small>
       }
     </div>
 
-    @if (update) {
+    @if (isUpdate) {
       <div class="col-12 col-md-6">
         <p class="fw-bolder text-center mb-2">Previous Image:</p>
 

@@ -5,7 +5,4 @@ export interface Skill {
   readonly picture?: string;
 }
 
-export interface SkillPayload {
-  readonly name: string;
-  readonly position: number;
-}
+export type SkillPayload = Readonly<Pick<Skill, 'name' | 'position'>>;

@@ -40,15 +40,20 @@
               "node_modules/ngx-spinner/animations/ball-atom.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
-            "scripts": ["node_modules/bootstrap/dist/js/bootstrap.min.js"]
+            "scripts": ["node_modules/bootstrap/dist/js/bootstrap.min.js"],
+            "server": "src/main.server.ts",
+            "outputMode": "static",
+            "security": {
+              "allowedHosts": []
+            }
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1.5MB",
-                  "maximumError": "2MB"
+                  "maximumWarning": "1MB",
+                  "maximumError": "1.25MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -98,6 +103,7 @@
               "src/app/**/*.spec.ts",
               "src/app/**/*.routes.ts",
               "src/app/**/*.config.ts",
+              "src/app/**/*.server.ts",
               "src/app/environments/**",
               "src/app/**/interfaces/**"
             ],

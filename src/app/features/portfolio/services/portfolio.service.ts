@@ -8,6 +8,8 @@ import { Observable } from 'rxjs';
 import { Education } from '@shared/interfaces/education';
 import { Profile } from '@shared/interfaces/profile';
 import { Skill } from '@shared/interfaces/skill';
+import type { ContactDto } from '@shared/api/generated';
+import { Course } from '@shared/interfaces/course';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +28,10 @@ export class PortfolioService {
     return this.http.get<ApiResponse<Education[]>>(`${this.baseUrl}${this.reference}/education`);
   }
 
+  getCourse(): Observable<ApiResponse<Course[]>> {
+    return this.http.get<ApiResponse<Course[]>>(`${this.baseUrl}${this.reference}/course`);
+  }
+
   getSkill(): Observable<ApiResponse<Skill[]>> {
     return this.http.get<ApiResponse<Skill[]>>(`${this.baseUrl}${this.reference}/skill`);
   }
@@ -40,7 +46,7 @@ export class PortfolioService {
     );
   }
 
-  sendEmail(info: { name: string; email: string; message: string }): Observable<ApiResponse<null>> {
+  sendEmail(info: ContactDto): Observable<ApiResponse<null>> {
     return this.http.post<ApiResponse<null>>(`${this.baseUrl}${this.reference}/contact`, info);
   }
 }

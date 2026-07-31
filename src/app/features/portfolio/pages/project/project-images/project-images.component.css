@@ -23,7 +23,15 @@
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
-  object-fit: cover;
+  object-fit: contain;
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.55s ease;
+}
+
+.project-images:hover .project-images__image {
+  transform: scale(1.018);
+  filter: saturate(1.06) contrast(1.02);
 }
 
 .project-images__control {
@@ -35,4 +43,11 @@
 .project-images__control:focus-visible {
   position: relative;
   z-index: 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-images__image {
+    transform: none !important;
+    transition: none !important;
+  }
 }

@@ -14,6 +14,7 @@ describe('PortfolioFacade', () => {
     service = {
       getProfile: vi.fn().mockReturnValue(of(api(null))),
       getEducation: vi.fn().mockReturnValue(of(api([]))),
+      getCourse: vi.fn().mockReturnValue(of(api([]))),
       getProject: vi.fn().mockReturnValue(of(api([]))),
       getSkill: vi.fn().mockReturnValue(of(api([]))),
       getSocialNetwork: vi.fn().mockReturnValue(of(api([]))),
@@ -43,6 +44,19 @@ describe('PortfolioFacade', () => {
     expect(result.projects).toEqual([]);
     expect(result.skills).toHaveLength(1);
     expect(result.errors).toEqual([failure]);
+  });
+
+  it('sorts courses by position without mutating the API response', async () => {
+    const courses = [
+      { id: 2, name: 'TypeScript', name_en: 'TypeScript', position: 2, institution: 1 },
+      { id: 1, name: 'Angular', name_en: 'Angular', position: 1, institution: 1 },
+    ];
+    service['getCourse'].mockReturnValue(of(api(courses)));
+
+    const result = await firstValueFrom(facade.load());
+
+    expect(result.courses.map((course) => course.name)).toEqual(['Angular', 'TypeScript']);
+    expect(courses.map((course) => course.name)).toEqual(['TypeScript', 'Angular']);
   });
 
   it('treats an empty-resource 400 response as an empty collection without reporting it', async () => {

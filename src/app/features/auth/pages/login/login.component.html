@@ -21,7 +21,7 @@
             controls['username'].touched && controls['username'].invalid ? 'username-error' : null
           "
           [attr.aria-invalid]="controls['username'].touched && controls['username'].invalid"
-          [maxLength]="25"
+          [maxLength]="120"
           [minlength]="1"
           autocomplete="username"
           autocapitalize="none"
@@ -49,8 +49,8 @@
                   : null
               "
               [attr.aria-invalid]="controls['password'].touched && controls['password'].invalid"
-              [maxLength]="25"
-              [minlength]="4"
+              [maxLength]="128"
+              [minlength]="8"
               [type]="hide ? 'password' : 'text'"
               autocomplete="current-password"
               formControlName="password"

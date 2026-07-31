@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /home
+
+Sitemap: https://www.keax.dev/sitemap.xml

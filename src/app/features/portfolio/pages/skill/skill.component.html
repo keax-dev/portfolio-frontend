@@ -6,7 +6,7 @@
       }
       <ul class="d-flex flex-wrap gap-4 justify-content-center list-unstyled p-4">
         @for (skill of skillList(); track skill.id) {
-          <li>
+          <li [style.--skill-index]="$index">
             <figure class="card skill-card text-center pointer shadow">
               <img
                 [src]="skill.picture"

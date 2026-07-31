@@ -2,12 +2,13 @@
  * E2E de autenticación: protección de rutas, login real, persistencia, logout y expiración.
  * Verifica los límites de seguridad desde URLs y sessionStorage observables por el usuario.
  */
-import { expect, test } from '@playwright/test';
 import { api, json, mockPublicPortfolio } from '../support/api-mocks';
+import { expect, test } from '@playwright/test';
 
 test.describe('Authentication lifecycle', () => {
   // Caso: redirige a los usuarios anónimos fuera del área administrativa.
   test('redirects anonymous users away from the admin area', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('language', 'es'));
     // Solicita directamente una URL protegida sin preparar sessionStorage.
     await page.goto('/home');
 
@@ -15,11 +16,14 @@ test.describe('Authentication lifecycle', () => {
     await expect(page).toHaveURL(/\/login$/);
     await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
     await expect(page.getByText('You must sign in to continue')).toBeVisible();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page.getByText('Iniciar sesión')).toHaveCount(0);
   });
 
   // Caso: inicia sesión, carga el dashboard, envía el bearer token y cierra sesión.
   test('logs in, sends the bearer token and logs out', async ({ page }) => {
     let authorizationHeader: string | undefined;
+    await page.addInitScript(() => localStorage.setItem('language', 'es'));
 
     // Simula el endpoint de login con un JWT válido durante una hora.
     await page.route('http://localhost:9090/api/**', async (route) => {
@@ -73,11 +77,12 @@ test.describe('Authentication lifecycle', () => {
     // Completa el formulario real y espera la nueva navegación protegida al dashboard.
     await page.goto('/login');
     await page.getByLabel('Username:').fill('admin');
-    await page.getByLabel('Password:').fill('secret');
+    await page.getByLabel('Password:').fill('secret-123');
     await page.getByRole('button', { name: 'Login' }).click();
     await expect(page).toHaveURL(/\/home\/visitor-dashboard$/);
     await expect(page.getByRole('heading', { name: 'Visitor Dashboard' })).toBeVisible();
     await expect(page.getByText('Total visits in range')).toBeVisible();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
 
     // Confirma persistencia y uso efectivo del token por el interceptor en el dashboard.
     expect(await page.evaluate(() => sessionStorage.getItem('token'))).toBeTruthy();

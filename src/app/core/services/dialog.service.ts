@@ -1,6 +1,6 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
 import { inject, Injectable, Type } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 export interface ResponsiveDialogConfig<D> {
   readonly data?: D;

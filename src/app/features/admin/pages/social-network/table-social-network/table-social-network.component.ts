@@ -46,7 +46,7 @@ export class TableSocialNetworkComponent implements OnInit {
     { name: 'Name', value: 'name' },
     { name: 'Icon', value: 'icon' },
     { name: 'Color', value: 'color' },
-    { name: 'Url', value: 'url' },
+    { name: 'Url', value: 'url', kind: 'link', openInNewTab: true },
   ];
 
   ngOnInit(): void {

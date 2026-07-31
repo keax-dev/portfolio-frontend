@@ -3,7 +3,6 @@ export interface Education {
   readonly title: string;
   readonly title_es: string;
   readonly place: string;
-  readonly place_es: string;
   readonly start: string;
   readonly start_es: string;
   readonly end: string;
@@ -16,14 +15,17 @@ export interface Education {
   readonly institution_url: string;
 }
 
-export interface EducationPayload {
-  readonly title: string;
-  readonly title_es: string;
-  readonly institution: number;
-  readonly place: string;
-  readonly start: string;
-  readonly start_es: string;
-  readonly end: string;
-  readonly end_es: string;
-  readonly position: number;
-}
+export type EducationPayload = Readonly<
+  Pick<
+    Education,
+    | 'title'
+    | 'title_es'
+    | 'institution'
+    | 'place'
+    | 'start'
+    | 'start_es'
+    | 'end'
+    | 'end_es'
+    | 'position'
+  >
+>;

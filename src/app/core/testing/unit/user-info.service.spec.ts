@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
-import { UserInfoService } from '@core/services/user-info.service';
 import { AUTH_STORAGE, AuthStorage } from '@core/storage/auth-storage';
+import { UserInfoService } from '@core/services/user-info.service';
+import { TestBed } from '@angular/core/testing';
 
 describe('UserInfoService', () => {
   let values: Map<string, string>;

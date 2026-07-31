@@ -138,7 +138,7 @@ describe('TableComponent', () => {
       {
         name: 'Picture',
         value: 'picture',
-        image: true,
+        kind: 'image',
         imageAlt: (record: { name: string }) => record.name,
       },
     ]);
@@ -152,6 +152,27 @@ describe('TableComponent', () => {
     expect(image.getAttribute('src')).toContain('angular.png');
     expect(image.alt).toBe('Angular');
     expect(fixture.nativeElement.textContent).toContain('No image');
+  });
+
+  it('renders formatted external links without coupling the table to a resource', () => {
+    fixture.componentRef.setInput('columns', [
+      {
+        name: 'Profile',
+        value: 'name',
+        kind: 'link',
+        href: (record: Row) => `https://example.com/${record.name.toLowerCase()}`,
+        format: (record: Row) => `Open ${record.name}`,
+        openInNewTab: true,
+      },
+    ]);
+    fixture.componentRef.setInput('records', [{ name: 'Angular', position: 1 }]);
+    fixture.detectChanges();
+
+    const link = fixture.nativeElement.querySelector('tbody a') as HTMLAnchorElement;
+    expect(link.href).toBe('https://example.com/angular');
+    expect(link.textContent?.trim()).toBe('Open Angular');
+    expect(link.target).toBe('_blank');
+    expect(link.rel).toBe('noopener noreferrer');
   });
 
   function renderedColumn(index: number): string[] {

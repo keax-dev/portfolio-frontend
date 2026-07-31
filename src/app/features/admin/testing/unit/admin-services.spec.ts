@@ -11,6 +11,8 @@ import { TechnologyPayload } from '@shared/interfaces/technology';
 import { TechnologyService } from '@features/admin/services/technology.service';
 import { EducationPayload } from '@shared/interfaces/education';
 import { EducationService } from '@features/admin/services/education.service';
+import { CourseService } from '@features/admin/services/course.service';
+import { CoursePayload } from '@shared/interfaces/course';
 import { ProfilePayload } from '@shared/interfaces/profile';
 import { ProjectPayload } from '@shared/interfaces/project';
 import { ProfileService } from '@features/admin/services/profile.service';
@@ -57,6 +59,26 @@ describe('admin HTTP services', () => {
     expectRequest('PUT', `${baseUrl}/education/7`, payload);
     service.deleteEducation(7).subscribe();
     expectRequest('DELETE', `${baseUrl}/education/7`);
+  });
+
+  it('uses the course CRUD contract', () => {
+    const service = TestBed.inject(CourseService);
+    const payload: CoursePayload = {
+      name: 'Spring Boot desde cero',
+      name_en: 'Spring Boot from scratch',
+      certificate_url: 'https://udemy.test/certificate/7',
+      position: 2,
+      institution: 2,
+    };
+
+    service.getCourseList().subscribe();
+    expectRequest('GET', `${baseUrl}/course`);
+    service.createCourse(payload).subscribe();
+    expectRequest('POST', `${baseUrl}/course`, payload);
+    service.updateCourse(7, payload).subscribe();
+    expectRequest('PUT', `${baseUrl}/course/7`, payload);
+    service.deleteCourse(7).subscribe();
+    expectRequest('DELETE', `${baseUrl}/course/7`);
   });
 
   // Caso: usa el contrato CRUD de instituciones.
@@ -174,6 +196,7 @@ describe('admin HTTP services', () => {
   // Casos parametrizados: aplica el mismo contrato a cada entrada definida.
   it.each([
     ['institution', 4],
+    ['course', 7],
     ['skill', 5],
     ['project', 6],
   ] as const)('uploads a %s image as FormData', (resource, id) => {
@@ -181,6 +204,7 @@ describe('admin HTTP services', () => {
     const file = new File(['image'], 'image.png', { type: 'image/png' });
 
     if (resource === 'institution') service.uploadImageInstitution(id, file).subscribe();
+    if (resource === 'course') service.uploadCourseCertificate(id, file).subscribe();
     if (resource === 'skill') service.uploadImageSkill(id, file).subscribe();
     if (resource === 'project') service.uploadProjectImages(id, [file]).subscribe();
 

@@ -1,7 +1,7 @@
-import { TestBed } from '@angular/core/testing';
-import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationService } from '@core/services/confirmation.service';
 import { firstValueFrom, of } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { TestBed } from '@angular/core/testing';
 
 describe('ConfirmationService', () => {
   it.each([

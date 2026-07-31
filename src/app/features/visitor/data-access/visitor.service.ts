@@ -2,7 +2,9 @@ import { catchError, map, Observable, of, switchMap } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ApiResponse } from '@core/interfaces/apiresponse';
+import { VisitTracker } from '@core/analytics/visit-tracker';
 import { environment } from '@src/environments/environment';
+import { VISITOR_TRACKING_CONFIG } from '@features/visitor/config/visitor-tracking.config';
 import {
   VisitorDashboard,
   VisitorLocationResponse,
@@ -13,12 +15,16 @@ import {
 @Injectable({
   providedIn: 'root',
 })
-export class VisitorService {
+export class VisitorService implements VisitTracker {
   private readonly reference = '/visitor';
-  private readonly excludedIpPrefix = '45.70.58.';
 
   private readonly baseUrl = environment.url;
   private readonly http = inject(HttpClient);
+  private readonly config = inject(VISITOR_TRACKING_CONFIG);
+
+  track(path: string): Observable<void> {
+    return this.registerVisit(path).pipe(map(() => undefined));
+  }
 
   registerVisit(path: string): Observable<ApiResponse<Visitor | null>> {
     return this.resolveLocation().pipe(
@@ -26,7 +32,7 @@ export class VisitorService {
         if (this.isExcludedIp(location.ip)) {
           return of({
             status: true,
-            alert: 'Visit ignored for owner IP',
+            alert: '',
             data: null,
           });
         }
@@ -69,7 +75,7 @@ export class VisitorService {
   }
 
   private resolveLocation(): Observable<Partial<VisitorRegisterPayload>> {
-    return this.http.get<VisitorLocationResponse>(environment.visitorGeoUrl).pipe(
+    return this.http.get<VisitorLocationResponse>(this.config.geoUrl).pipe(
       map((response) => ({
         ip: this.clean(response.ip),
         country: this.clean(response.location?.country),
@@ -92,7 +98,7 @@ export class VisitorService {
   }
 
   private isExcludedIp(ip?: string): boolean {
-    return ip?.startsWith(this.excludedIpPrefix) ?? false;
+    return ip ? this.config.excludedIpPrefixes.some((prefix) => ip.startsWith(prefix)) : false;
   }
 
   private clean(value?: string): string | undefined {

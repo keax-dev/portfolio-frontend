@@ -26,23 +26,21 @@ export interface Project {
   readonly title_es: string;
   readonly description: string;
   readonly description_es: string;
-  readonly images: readonly ProjectImage[];
   readonly position: number;
+  readonly images: readonly ProjectImage[];
   readonly technologies: readonly ProjectTechnology[];
   readonly links: readonly ProjectLink[];
 }
 
 export interface ProjectTechnologyPayload {
-  readonly relation_id?: number;
   readonly id: number;
-  readonly position: number;
+  readonly position?: number;
 }
 
 export interface ProjectLinkPayload {
-  readonly id?: number;
   readonly type: ProjectLinkType;
   readonly url: string;
-  readonly position: number;
+  readonly position?: number;
 }
 
 export interface ProjectPayload {
@@ -51,6 +49,6 @@ export interface ProjectPayload {
   readonly description: string;
   readonly description_es: string;
   readonly position: number;
-  readonly technologies: readonly ProjectTechnologyPayload[];
-  readonly links: readonly ProjectLinkPayload[];
+  readonly technologies: ProjectTechnologyPayload[];
+  readonly links: ProjectLinkPayload[];
 }

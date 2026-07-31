@@ -39,6 +39,7 @@
 
 .course-grid__item {
   min-width: 0;
+  animation: course-card-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .course-card {
@@ -149,6 +150,62 @@
   line-height: 1.35;
 }
 
+.course-section__more {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.course-section__more-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-width: 9rem;
+  padding: 0.75rem 1.35rem;
+  border: 1px solid rgba(13, 110, 253, 0.3);
+  border-radius: 999px;
+  color: var(--portfolio-blue, #0d6efd);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0.75rem 2rem rgba(13, 110, 253, 0.1);
+  font-weight: 700;
+  transition:
+    color 0.25s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.course-section__more-button:hover {
+  border-color: var(--portfolio-blue, #0d6efd);
+  color: #fff;
+  background: var(--portfolio-blue, #0d6efd);
+  box-shadow: 0 1rem 2.25rem rgba(13, 110, 253, 0.2);
+  transform: translateY(-0.2rem);
+}
+
+.course-section__more-button:focus-visible {
+  outline: 0.25rem solid rgba(13, 110, 253, 0.25);
+  outline-offset: 0.2rem;
+}
+
+.course-section__more-button .pi {
+  font-size: 0.8rem;
+}
+
+@keyframes course-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(1rem) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (hover: none) {
   .course-card__action {
     opacity: 1;
@@ -159,8 +216,11 @@
 @media (prefers-reduced-motion: reduce) {
   .course-card,
   .course-card__image,
-  .course-card__action {
+  .course-card__action,
+  .course-section__more-button,
+  .course-grid__item {
     transform: none !important;
     transition: none !important;
+    animation: none !important;
   }
 }

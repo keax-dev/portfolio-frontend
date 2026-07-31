@@ -153,6 +153,50 @@ describe('portfolio interaction components', () => {
     expect(link.getAttribute('rel')).toBe('noopener noreferrer');
   });
 
+  it('reveals courses in batches of three until the complete list is visible', async () => {
+    await TestBed.configureTestingModule({
+      imports: [CourseComponent],
+      providers: [
+        {
+          provide: TranslateService,
+          useValue: { getLang: 'en', text: (value: { en: string }) => value.en },
+        },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(CourseComponent);
+    fixture.componentRef.setInput(
+      'courseList',
+      Array.from({ length: 7 }, (_, index) => ({
+        id: index + 1,
+        name: `CURSO ${index + 1}`,
+        name_en: `COURSE ${index + 1}`,
+        institution: 1,
+        institution_name: 'UDEMY',
+        institution_name_es: 'UDEMY',
+        position: index + 1,
+      })),
+    );
+    fixture.detectChanges();
+
+    const renderedCourses = (): NodeListOf<HTMLElement> =>
+      fixture.nativeElement.querySelectorAll('.course-grid__item');
+    const viewMoreButton = (): HTMLButtonElement | null =>
+      fixture.nativeElement.querySelector('.course-section__more-button');
+
+    expect(renderedCourses()).toHaveLength(3);
+    expect(viewMoreButton()?.textContent).toContain('View more');
+
+    viewMoreButton()?.click();
+    fixture.detectChanges();
+    expect(renderedCourses()).toHaveLength(6);
+    expect(viewMoreButton()).not.toBeNull();
+
+    viewMoreButton()?.click();
+    fixture.detectChanges();
+    expect(renderedCourses()).toHaveLength(7);
+    expect(viewMoreButton()).toBeNull();
+  });
+
   // Caso: construye identificadores del carrusel y abre diálogos de proyectos.
   it('opens project gallery dialogs and formats links', async () => {
     const parameter = { open: vi.fn() };

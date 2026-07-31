@@ -80,6 +80,7 @@ export const uiText = {
     course: {
       viewCertificate: { en: 'View certificate', es: 'Ver certificado' },
       certificateFor: { en: 'Certificate for', es: 'Certificado de' },
+      viewMore: { en: 'View more', es: 'Ver más' },
     },
     rightsReserved: { en: 'All rights reserved.', es: 'Todos los derechos reservados.' },
     sections: {
